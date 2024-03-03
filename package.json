@@ -14,7 +14,8 @@
     "markup": "markuplint \"src/**/*.html\"",
     "markup:fix": "markuplint \"src/**/*.html\" --fix",
     "check": "npm run lint && npm run format && npm run markup",
-    "check:fix": "npm run lint:fix && npm run format:fix && npm run markup:fix"
+    "check:fix": "npm run lint:fix && npm run format:fix && npm run markup:fix",
+    "prepare": "husky"
   },
   "dependencies": {
     "@radix-ui/themes": "^3.0.2",
@@ -35,6 +36,7 @@
     "eslint-plugin-react": "^7.35.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
+    "husky": "^9.0.11",
     "markuplint": "^4.9.2",
     "prettier": "^3.3.3",
     "typescript": "^5.4.5",
