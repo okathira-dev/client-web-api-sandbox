@@ -11,8 +11,8 @@
     "lint:fix": "eslint --cache \"src/**/*\" --fix",
     "format": "prettier --cache --check \"./src\"",
     "format:fix": "prettier --cache --write \"./src\"",
-    "markup": "markuplint \"src/**/*.html\"",
-    "markup:fix": "markuplint \"src/**/*.html\" --fix",
+    "markup": "markuplint \"src/**/*.{jsx,tsx,html}\"",
+    "markup:fix": "markuplint \"src/**/*.{jsx,tsx,html}\" --fix",
     "check": "npm run lint && npm run format && npm run markup",
     "check:fix": "npm run lint:fix && npm run format:fix && npm run markup:fix",
     "prepare": "husky"
@@ -23,6 +23,8 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@markuplint/jsx-parser": "^4.7.5",
+    "@markuplint/react-spec": "^4.5.5",
     "@types/dom-mediacapture-transform": "^0.1.9",
     "@types/node": "^20.14.11",
     "@types/react": "^18.3.3",
@@ -44,10 +46,12 @@
     "vite": "^5.2.12"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx,html}": [
-      "eslint --cache",
-      "prettier --check",
+    "*.{jsx,tsx,html}": [
       "markuplint"
+    ],
+    "src/**/*": [
+      "eslint --cache",
+      "prettier --check"
     ]
   }
 }
