@@ -12,18 +12,18 @@ export function App() {
           </Link>
         </Box>
 
-        <Flex direction="column" id="app" gap="4">
-          <Flex wrap="wrap" id="video-container" gap="2">
-            <canvas id="src" width="640" height="480"></canvas>
-            <canvas id="dst" width="640" height="480"></canvas>
+        <Flex direction="column" gap="4">
+          <Flex wrap="wrap" gap="2">
+            <canvas width="640" height="480"></canvas>
+            <canvas width="640" height="480"></canvas>
           </Flex>
-          <Flex id="controls" gap="2">
-            <Button id="start">Start</Button>
-            <Button id="stop">Stop</Button>
-            <Button id="play">Play</Button>
-            <Button id="pause">Pause</Button>
-            <Button id="double">Double</Button>
-            <Button id="drop">Drop</Button>
+          <Flex gap="2">
+            <Button>Start</Button>
+            <Button>Stop</Button>
+            <Button>Play</Button>
+            <Button>Pause</Button>
+            <Button>Double</Button>
+            <Button>Drop</Button>
           </Flex>
         </Flex>
       </Flex>
