@@ -1,14 +1,17 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { App } from "./App.tsx";
-import { Theme } from "@radix-ui/themes";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
 
-import "@radix-ui/themes/styles.css";
+// MUIのテーマを作成
+const theme = createTheme();
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <Theme scaling="110%">
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
       <App />
-    </Theme>
+    </ThemeProvider>
   </React.StrictMode>,
 );

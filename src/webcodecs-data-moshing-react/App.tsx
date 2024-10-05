@@ -1,32 +1,36 @@
-import { Box, Button, Flex, Heading, Link, Text } from "@radix-ui/themes";
+import { Box, Button, Typography, Link, Container } from "@mui/material";
 
 export function App() {
   return (
-    <>
-      <Flex direction="column" gap="5">
+    <Container>
+      <Box display="flex" flexDirection="column" gap={5}>
         <Box>
-          <Heading as="h1">keyframe dropping</Heading>
-          <Text>original sample codes: </Text>
+          <Typography variant="h1">keyframe dropping</Typography>
+          <Typography>original sample codes: </Typography>
           <Link href="https://developer.chrome.com/docs/web-platform/best-practices/webcodecs">
             WebCodecs による動画処理 | Web Platform | Chrome for Developers
           </Link>
         </Box>
 
-        <Flex direction="column" gap="4">
-          <Flex wrap="wrap" gap="2">
-            <canvas width="640" height="480"></canvas>
-            <canvas width="640" height="480"></canvas>
-          </Flex>
-          <Flex gap="2">
-            <Button>Start</Button>
-            <Button>Stop</Button>
-            <Button>Play</Button>
-            <Button>Pause</Button>
-            <Button>Double</Button>
-            <Button>Drop</Button>
-          </Flex>
-        </Flex>
-      </Flex>
-    </>
+        <Box display="flex" flexDirection="column" gap={4}>
+          <Box display="flex" flexWrap="wrap" gap={2}>
+            <Box>
+              <canvas width="640" height="480"></canvas>
+            </Box>
+            <Box>
+              <canvas width="640" height="480"></canvas>
+            </Box>
+          </Box>
+          <Box display="flex" gap={2}>
+            <Button variant="contained">Start</Button>
+            <Button variant="contained">Stop</Button>
+            <Button variant="contained">Play</Button>
+            <Button variant="contained">Pause</Button>
+            <Button variant="contained">Double</Button>
+            <Button variant="contained">Drop</Button>
+          </Box>
+        </Box>
+      </Box>
+    </Container>
   );
 }
