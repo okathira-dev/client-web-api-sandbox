@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@markuplint/jsx-parser": "^4.7.9",
-    "@markuplint/react-spec": "^4.5.9",
+    "@markuplint/react-spec": "^4.5.11",
     "@types/dom-mediacapture-transform": "^0.1.9",
     "@types/node": "^22.7.7",
     "@types/react": "^18.3.3",
