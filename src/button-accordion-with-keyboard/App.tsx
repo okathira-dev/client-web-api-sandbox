@@ -10,54 +10,50 @@ const concertPitch = 440; // A4の周波数[Hz]
 
 // TODO: 音を鳴らす処理はAppコンポーネントに置きたい
 // TODO: tone.jsの機能を活用して書く
+// TODO: 最初に音をすべて作成しておいて、ボタンが押されたときは再生するだけにする。
+Tone.setContext(new Tone.Context({ latencyHint: "interactive" }));
+Tone.getContext().lookAhead = 0;
+
+const synthAtom = atom<Tone.PolySynth | null>(null);
+
 const Accordion: React.FC = () => {
   const [buttonStates, setButtonStates] = useAtom(buttonStatesAtom);
-  const [synths, setSynths] = useState<{ [key: string]: Tone.Synth }>({});
+  const [synth, setSynth] = useAtom(synthAtom);
   const [volume, setVolume] = useState<number>(0);
 
-  const initSynth = useCallback(
-    (key: string, semitones: number) => {
-      const synth = new Tone.Synth().toDestination();
-      synth.volume.value = volume;
-      const frequency = Tone.Frequency(
-        concertPitch * Math.pow(2, semitones / 12),
-      ).toFrequency();
-      synth.triggerAttack(frequency);
-      setSynths((prev) => ({ ...prev, [key]: synth }));
-    },
-    [volume],
-  );
-
-  const stopSynth = useCallback(
-    (key: string) => {
-      const synth = synths[key];
-      if (synth) {
-        synth.triggerRelease();
-        delete synths[key];
-        setSynths({ ...synths });
-      }
-    },
-    [synths],
-  );
+  useEffect(() => {
+    const newSynth = new Tone.PolySynth().toDestination();
+    newSynth.volume.value = volume;
+    setSynth(newSynth);
+  }, [volume, setSynth]);
 
   const buttonDown = useCallback(
     (key: string) => {
       const semitoneOffset = KEY_MAP[key];
       if (semitoneOffset !== undefined && !buttonStates[key]) {
         void Tone.start();
-        initSynth(key, semitoneOffset);
+        const frequency = Tone.Frequency(
+          concertPitch * Math.pow(2, semitoneOffset / 12),
+        ).toFrequency();
+        synth?.triggerAttack(frequency);
         setButtonStates((prev) => ({ ...prev, [key]: true }));
       }
     },
-    [buttonStates, initSynth, setButtonStates],
+    [buttonStates, synth, setButtonStates],
   );
 
   const buttonUp = useCallback(
     (key: string) => {
-      stopSynth(key);
-      setButtonStates((prev) => ({ ...prev, [key]: false }));
+      const semitoneOffset = KEY_MAP[key];
+      if (semitoneOffset !== undefined) {
+        const frequency = Tone.Frequency(
+          concertPitch * Math.pow(2, semitoneOffset / 12),
+        ).toFrequency();
+        synth?.triggerRelease(frequency);
+        setButtonStates((prev) => ({ ...prev, [key]: false }));
+      }
     },
-    [setButtonStates, stopSynth],
+    [synth, setButtonStates],
   );
 
   useEffect(() => {
