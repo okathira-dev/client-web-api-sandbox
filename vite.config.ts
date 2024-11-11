@@ -25,6 +25,11 @@ export default defineConfig({
           "webcodecs-data-moshing-react",
           "index.html",
         ),
+        "button-accordion-with-keyboard": resolve(
+          root,
+          "button-accordion-with-keyboard",
+          "index.html",
+        ),
       },
     },
   },
