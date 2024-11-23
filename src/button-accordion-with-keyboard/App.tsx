@@ -1,12 +1,15 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { atom, useAtom } from "jotai";
 import * as Tone from "tone";
-import { KEYBOARD_LAYOUT, KEY_MAP, ifWhiteKey } from "./instrumentConfig";
+import {
+  KEYBOARD_LAYOUT,
+  KEY_MAP,
+  getFrequency,
+  ifWhiteKey,
+} from "./instrumentConfig";
 import Slider from "@mui/material/Slider";
 
 const buttonStatesAtom = atom<Record<string, boolean>>({});
-
-const concertPitch = 440; // A4の周波数[Hz]
 
 // TODO: 音を鳴らす処理はAppコンポーネントに置きたい
 // TODO: tone.jsの機能を活用して書く
@@ -32,9 +35,7 @@ const Accordion: React.FC = () => {
       const semitoneOffset = KEY_MAP[key];
       if (semitoneOffset !== undefined && !buttonStates[key]) {
         void Tone.start();
-        const frequency = Tone.Frequency(
-          concertPitch * Math.pow(2, semitoneOffset / 12),
-        ).toFrequency();
+        const frequency = getFrequency(key);
         synth?.triggerAttack(frequency);
         setButtonStates((prev) => ({ ...prev, [key]: true }));
       }
@@ -46,9 +47,7 @@ const Accordion: React.FC = () => {
     (key: string) => {
       const semitoneOffset = KEY_MAP[key];
       if (semitoneOffset !== undefined) {
-        const frequency = Tone.Frequency(
-          concertPitch * Math.pow(2, semitoneOffset / 12),
-        ).toFrequency();
+        const frequency = getFrequency(key);
         synth?.triggerRelease(frequency);
         setButtonStates((prev) => ({ ...prev, [key]: false }));
       }

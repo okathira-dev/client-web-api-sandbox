@@ -21,6 +21,10 @@ module.exports = {
   },
   rules: {
     "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
+    ],
   },
   ignorePatterns: ["dist", ".eslintrc.*", "vite.config.*"],
   plugins: ["html", "react-refresh"],
