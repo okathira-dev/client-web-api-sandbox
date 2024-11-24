@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import { atom, useAtom } from "jotai";
 import {
   KEYBOARD_LAYOUT,
@@ -7,23 +7,30 @@ import {
   ifWhiteKey,
 } from "./instrumentConfig";
 import Slider from "@mui/material/Slider";
-import { useInitReedM1, usePlayReedM1, useSetReedM1Volume } from "./reedAtoms";
+import {
+  initReeds,
+  usePlayReedM1,
+  useSetReedM1Volume,
+  useSetVolume,
+  useVolume,
+} from "./reedAtoms";
 
 const buttonStatesAtom = atom<Record<string, boolean>>({});
 
 const Accordion: React.FC = () => {
   const [buttonStates, setButtonStates] = useAtom(buttonStatesAtom);
 
-  const [volume, setVolume] = useState<number>(-12);
-
-  const initReedM1 = useInitReedM1();
+  const volume = useVolume();
+  const setVolume = useSetVolume();
   const { playReedM1, stopReedM1 } = usePlayReedM1();
-  const SetReedM1Volume = useSetReedM1Volume();
+  const setReedM1Volume = useSetReedM1Volume();
 
-  // 音源の初期化
+  setReedM1Volume(volume);
+
+  // init sound system
   useEffect(() => {
-    initReedM1(volume);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    initReeds();
+  }, []);
 
   const buttonDown = useCallback(
     (key: string) => {
@@ -82,7 +89,6 @@ const Accordion: React.FC = () => {
         onChange={(_, newValue) => {
           const newVolume = newValue as number;
           setVolume(newVolume);
-          SetReedM1Volume(newVolume);
         }}
         aria-labelledby="volume-slider"
         min={-60}
