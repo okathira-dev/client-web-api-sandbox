@@ -32,8 +32,8 @@ const combinedPartials = sawtoothPartials.map((value, index) => {
 
 // L1, M1, M2, M3, H1 のリード音源を格納する atom を定義する
 
-// M1
-const reedM1Atom = atom<Tone.PolySynth | null>(
+// M2
+const reedM2Atom = atom<Tone.PolySynth | null>(
   new Tone.PolySynth(Tone.Synth, {
     portamento: 0,
     volume: -16, // CHECK: とりあえず
@@ -50,23 +50,23 @@ const reedM1Atom = atom<Tone.PolySynth | null>(
     },
   }).toDestination(),
 );
-export const useReedM1 = () => {
-  return useAtomValue(reedM1Atom);
+export const useReedM2 = () => {
+  return useAtomValue(reedM2Atom);
 };
-export const useSetReedM1 = () => {
-  return useSetAtom(reedM1Atom);
+export const useSetReedM2 = () => {
+  return useSetAtom(reedM2Atom);
 };
-export const useSetReedM1Volume = () => {
-  const reedM1 = useReedM1();
-  const setReedM1Volume = (volume: number) => {
-    reedM1?.set({ volume });
+export const useSetReedM2Volume = () => {
+  const reedM2 = useReedM2();
+  const setReedM2Volume = (volume: number) => {
+    reedM2?.set({ volume });
   };
 
-  return setReedM1Volume;
+  return setReedM2Volume;
 };
-export const usePlayReedM1 = () => {
-  const reedM1 = useReedM1();
-  const playReedM1 = (frequency: number) => {
+export const usePlayReedM2 = () => {
+  const reedM2 = useReedM2();
+  const playReedM2 = (frequency: number) => {
     if (!isReady) {
       void Tone.start().then(() => {
         console.log("Tone is ready");
@@ -74,13 +74,13 @@ export const usePlayReedM1 = () => {
       isReady = true;
     }
 
-    reedM1?.triggerAttack(frequency);
+    reedM2?.triggerAttack(frequency);
   };
-  const stopReedM1 = (frequency: number) => {
-    reedM1?.triggerRelease(frequency);
+  const stopReedM2 = (frequency: number) => {
+    reedM2?.triggerRelease(frequency);
   };
 
-  return { playReedM1, stopReedM1 };
+  return { playReedM2, stopReedM2 };
 };
 
 // TODO: リードをまとめて管理する atom を定義する
