@@ -13,7 +13,7 @@ import {
   useSetReedM2Volume,
   useSetVolume,
   useVolume,
-} from "./reedAtoms";
+} from "./reeds";
 
 const buttonStatesAtom = atom<Record<string, boolean>>({});
 
