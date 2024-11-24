@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { atom, useAtom } from "jotai";
-import * as Tone from "tone";
 import {
   KEYBOARD_LAYOUT,
   KEY_MAP,
@@ -8,39 +7,34 @@ import {
   ifWhiteKey,
 } from "./instrumentConfig";
 import Slider from "@mui/material/Slider";
+import { useInitReedM1, usePlayReedM1, useSetReedM1Volume } from "./reedAtoms";
 
 const buttonStatesAtom = atom<Record<string, boolean>>({});
 
-// TODO: 音を鳴らす処理はAppコンポーネントに置きたい
-// TODO: tone.jsの機能を活用して書く
-// TODO: 最初に音をすべて作成しておいて、ボタンが押されたときは再生するだけにする。
-Tone.setContext(new Tone.Context({ latencyHint: "interactive" }));
-Tone.getContext().lookAhead = 0;
-
-const synthAtom = atom<Tone.PolySynth | null>(null);
-
 const Accordion: React.FC = () => {
   const [buttonStates, setButtonStates] = useAtom(buttonStatesAtom);
-  const [synth, setSynth] = useAtom(synthAtom);
-  const [volume, setVolume] = useState<number>(0);
 
+  const [volume, setVolume] = useState<number>(-12);
+
+  const initReedM1 = useInitReedM1();
+  const { playReedM1, stopReedM1 } = usePlayReedM1();
+  const SetReedM1Volume = useSetReedM1Volume();
+
+  // 音源の初期化
   useEffect(() => {
-    const newSynth = new Tone.PolySynth().toDestination();
-    newSynth.volume.value = volume;
-    setSynth(newSynth);
-  }, [volume, setSynth]);
+    initReedM1(volume);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const buttonDown = useCallback(
     (key: string) => {
       const semitoneOffset = KEY_MAP[key];
       if (semitoneOffset !== undefined && !buttonStates[key]) {
-        void Tone.start();
         const frequency = getFrequency(key);
-        synth?.triggerAttack(frequency);
+        playReedM1(frequency);
         setButtonStates((prev) => ({ ...prev, [key]: true }));
       }
     },
-    [buttonStates, synth, setButtonStates],
+    [buttonStates, playReedM1, setButtonStates],
   );
 
   const buttonUp = useCallback(
@@ -48,11 +42,11 @@ const Accordion: React.FC = () => {
       const semitoneOffset = KEY_MAP[key];
       if (semitoneOffset !== undefined) {
         const frequency = getFrequency(key);
-        synth?.triggerRelease(frequency);
+        stopReedM1(frequency);
         setButtonStates((prev) => ({ ...prev, [key]: false }));
       }
     },
-    [synth, setButtonStates],
+    [setButtonStates, stopReedM1],
   );
 
   useEffect(() => {
@@ -85,7 +79,11 @@ const Accordion: React.FC = () => {
     >
       <Slider
         value={volume}
-        onChange={(_, newValue) => setVolume(newValue as number)}
+        onChange={(_, newValue) => {
+          const newVolume = newValue as number;
+          setVolume(newVolume);
+          SetReedM1Volume(newVolume);
+        }}
         aria-labelledby="volume-slider"
         min={-60}
         max={0}
