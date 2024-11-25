@@ -58,7 +58,7 @@ const startWorker = (
   });
 
   const stream = srcCanvas.captureStream(FPS);
-  const track = stream.getVideoTracks()[0];
+  const track = stream.getVideoTracks()[0]!; // とりあえず最初のトラックを取得
   const mediaProcessor = new MediaStreamTrackProcessor({ track });
   const reader = mediaProcessor.readable;
 

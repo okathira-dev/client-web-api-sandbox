@@ -1,59 +1,59 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import { atom, useAtom } from "jotai";
-import * as Tone from "tone";
-import { KEYBOARD_LAYOUT, KEY_MAP, ifWhiteKey } from "./instrumentConfig";
+import {
+  KEYBOARD_LAYOUT,
+  KEY_MAP,
+  getFrequency,
+  ifWhiteKey,
+} from "./instrumentConfig";
 import Slider from "@mui/material/Slider";
+import {
+  initReeds,
+  usePlayReedM2,
+  useSetReedM2Volume,
+  useSetVolume,
+  useVolume,
+} from "./reeds";
 
 const buttonStatesAtom = atom<Record<string, boolean>>({});
 
-const concertPitch = 440; // A4の周波数[Hz]
-
-// TODO: 音を鳴らす処理はAppコンポーネントに置きたい
-// TODO: tone.jsの機能を活用して書く
-// TODO: 最初に音をすべて作成しておいて、ボタンが押されたときは再生するだけにする。
-Tone.setContext(new Tone.Context({ latencyHint: "interactive" }));
-Tone.getContext().lookAhead = 0;
-
-const synthAtom = atom<Tone.PolySynth | null>(null);
-
 const Accordion: React.FC = () => {
   const [buttonStates, setButtonStates] = useAtom(buttonStatesAtom);
-  const [synth, setSynth] = useAtom(synthAtom);
-  const [volume, setVolume] = useState<number>(0);
 
+  const volume = useVolume();
+  const setVolume = useSetVolume();
+  const { playReedM2, stopReedM2 } = usePlayReedM2();
+  const setReedM2Volume = useSetReedM2Volume();
+
+  setReedM2Volume(volume);
+
+  // init sound system
   useEffect(() => {
-    const newSynth = new Tone.PolySynth().toDestination();
-    newSynth.volume.value = volume;
-    setSynth(newSynth);
-  }, [volume, setSynth]);
+    initReeds();
+  }, []);
 
   const buttonDown = useCallback(
     (key: string) => {
       const semitoneOffset = KEY_MAP[key];
       if (semitoneOffset !== undefined && !buttonStates[key]) {
-        void Tone.start();
-        const frequency = Tone.Frequency(
-          concertPitch * Math.pow(2, semitoneOffset / 12),
-        ).toFrequency();
-        synth?.triggerAttack(frequency);
+        const frequency = getFrequency(key);
+        playReedM2(frequency);
         setButtonStates((prev) => ({ ...prev, [key]: true }));
       }
     },
-    [buttonStates, synth, setButtonStates],
+    [buttonStates, playReedM2, setButtonStates],
   );
 
   const buttonUp = useCallback(
     (key: string) => {
       const semitoneOffset = KEY_MAP[key];
       if (semitoneOffset !== undefined) {
-        const frequency = Tone.Frequency(
-          concertPitch * Math.pow(2, semitoneOffset / 12),
-        ).toFrequency();
-        synth?.triggerRelease(frequency);
+        const frequency = getFrequency(key);
+        stopReedM2(frequency);
         setButtonStates((prev) => ({ ...prev, [key]: false }));
       }
     },
-    [synth, setButtonStates],
+    [setButtonStates, stopReedM2],
   );
 
   useEffect(() => {
@@ -86,7 +86,10 @@ const Accordion: React.FC = () => {
     >
       <Slider
         value={volume}
-        onChange={(_, newValue) => setVolume(newValue as number)}
+        onChange={(_, newValue) => {
+          const newVolume = newValue as number;
+          setVolume(newVolume);
+        }}
         aria-labelledby="volume-slider"
         min={-60}
         max={0}

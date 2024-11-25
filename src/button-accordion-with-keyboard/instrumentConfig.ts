@@ -1,3 +1,6 @@
+// A4の周波数[Hz]
+const CONCERT_PITCH = 440;
+
 // ボタンアコーディオンの音階のマッピング
 // 右上のキーは半音１つ分高く、右隣のキーは半音３つ分高い。そのため同じ音が鳴るキーが存在する。
 // 'C'のキーがC4となるように、A4を基準にした半音の差分を記述している。
@@ -52,6 +55,34 @@ export const KEY_MAP: Record<string, number> = {
   ",": 6,
   ".": 9,
   "/": 12,
+};
+
+// 基準音から半音何個分離れているかを受け取り周波数を計算する
+const semitoneToFrequency = (semitone: number) => {
+  return CONCERT_PITCH * Math.pow(2, semitone / 12);
+};
+
+// 音階と周波数のマッピング
+// 0は440, 12は880
+// KEY_MAPのvalueに対応する周波数を計算して格納する
+const FREQUENCY_MAP: Record<number, number> = Object.fromEntries(
+  Object.entries(KEY_MAP).map(([_keyName, semitone]) => [
+    semitone,
+    semitoneToFrequency(semitone),
+  ]),
+);
+
+// キーに対応する周波数を取得する
+export const getFrequency = (key: string) => {
+  const semitoneOffset = KEY_MAP[key];
+  if (semitoneOffset === undefined) {
+    throw new Error("semitone offset not found");
+  }
+  const frequency = FREQUENCY_MAP[semitoneOffset];
+  if (frequency === undefined) {
+    throw new Error("frequency not found");
+  }
+  return frequency;
 };
 
 // キーボードのレイアウト
