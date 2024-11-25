@@ -22,6 +22,33 @@ import {
 
 const buttonStatesAtom = atom<Record<string, boolean>>({});
 
+const VolumeControl: React.FC = () => {
+  const volume = useVolume();
+  const setVolume = useSetVolume();
+
+  const adaptAllReedVolumes = useAdaptAllReedVolumes();
+  adaptAllReedVolumes(); // CHECK: ボリュームの更新
+
+  return (
+    <div style={{ width: "700px" }}>
+      <label>
+        Volume
+        <Slider
+          value={volume}
+          onChange={(_, newValue) => {
+            const newVolume = newValue as number;
+            setVolume(newVolume);
+          }}
+          min={-60}
+          max={0}
+          step={1}
+          valueLabelDisplay="auto"
+        />
+      </label>
+    </div>
+  );
+};
+
 const ReedPitchControls: React.FC = () => {
   const relativeReedPitches = useRelativeReedPitches();
   const setRelativeReedPitches = useSetRelativeReedPitches();
@@ -63,12 +90,7 @@ const ReedPitchControls: React.FC = () => {
 const Accordion: React.FC = () => {
   const [buttonStates, setButtonStates] = useAtom(buttonStatesAtom);
 
-  const volume = useVolume();
-  const setVolume = useSetVolume();
   const { playReedM2, stopReedM2 } = usePlayReedM2();
-  const adaptAllReedVolumes = useAdaptAllReedVolumes();
-
-  adaptAllReedVolumes(); // CHECK: ボリュームの更新
 
   // init sound system
   useEffect(() => {
@@ -127,18 +149,6 @@ const Accordion: React.FC = () => {
         borderRadius: "16px",
       }}
     >
-      <Slider
-        value={volume}
-        onChange={(_, newValue) => {
-          const newVolume = newValue as number;
-          setVolume(newVolume);
-        }}
-        aria-labelledby="volume-slider"
-        min={-60}
-        max={0}
-        step={1}
-        valueLabelDisplay="auto"
-      />
       {KEYBOARD_LAYOUT.map((row, rowIndex) => (
         <div
           key={rowIndex}
@@ -199,6 +209,7 @@ export function App() {
         height: "100vh",
       }}
     >
+      <VolumeControl />
       <ReedPitchControls />
       <Accordion />
     </div>
