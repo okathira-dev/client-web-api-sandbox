@@ -7,15 +7,58 @@ import {
   ifWhiteKey,
 } from "./instrumentConfig";
 import Slider from "@mui/material/Slider";
+import TextField from "@mui/material/TextField";
 import {
   initReeds,
   usePlayReedM2,
-  useSetReedM2Volume,
   useSetVolume,
   useVolume,
+  useRelativeReedPitches,
+  useSetRelativeReedPitches,
+  reedNames,
+  useAdaptAllReedPitches,
+  useAdaptAllReedVolumes,
 } from "./reeds";
 
 const buttonStatesAtom = atom<Record<string, boolean>>({});
+
+const ReedPitchControls: React.FC = () => {
+  const relativeReedPitches = useRelativeReedPitches();
+  const setRelativeReedPitches = useSetRelativeReedPitches();
+
+  const adaptAllReedPitches = useAdaptAllReedPitches();
+  adaptAllReedPitches(); // CHECK: ピッチの更新
+
+  return (
+    <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
+      {reedNames.map((reed) => (
+        <div
+          key={reed}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <span>{reed}</span>
+          <TextField
+            type="number"
+            value={relativeReedPitches[reed]}
+            onChange={(e) => {
+              const newValue = parseInt(e.target.value, 10);
+              setRelativeReedPitches((prev) => ({
+                ...prev,
+                [reed]: isNaN(newValue) ? prev[reed] : newValue,
+              }));
+            }}
+            slotProps={{ htmlInput: { min: -2500, max: 2500, step: 1 } }}
+            aria-labelledby={`${reed}-pitch-input`}
+          />
+        </div>
+      ))}
+    </div>
+  );
+};
 
 const Accordion: React.FC = () => {
   const [buttonStates, setButtonStates] = useAtom(buttonStatesAtom);
@@ -23,13 +66,13 @@ const Accordion: React.FC = () => {
   const volume = useVolume();
   const setVolume = useSetVolume();
   const { playReedM2, stopReedM2 } = usePlayReedM2();
-  const setReedM2Volume = useSetReedM2Volume();
+  const adaptAllReedVolumes = useAdaptAllReedVolumes();
 
-  setReedM2Volume(volume);
+  adaptAllReedVolumes(); // CHECK: ボリュームの更新
 
   // init sound system
   useEffect(() => {
-    initReeds();
+    console.log("context is set", initReeds());
   }, []);
 
   const buttonDown = useCallback(
@@ -150,11 +193,13 @@ export function App() {
       // 画面の中央に配置する
       style={{
         display: "flex",
+        flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
         height: "100vh",
       }}
     >
+      <ReedPitchControls />
       <Accordion />
     </div>
   );
