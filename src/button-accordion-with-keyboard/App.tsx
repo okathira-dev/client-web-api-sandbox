@@ -10,7 +10,6 @@ import Slider from "@mui/material/Slider";
 import TextField from "@mui/material/TextField";
 import {
   initReeds,
-  usePlayReedM2,
   useSetVolume,
   useVolume,
   useRelativeReedPitches,
@@ -18,6 +17,7 @@ import {
   reedNames,
   useAdaptAllReedPitches,
   useAdaptAllReedVolumes,
+  usePlayActiveReeds,
 } from "./reeds";
 
 const buttonStatesAtom = atom<Record<string, boolean>>({});
@@ -90,7 +90,7 @@ const ReedPitchControls: React.FC = () => {
 const Accordion: React.FC = () => {
   const [buttonStates, setButtonStates] = useAtom(buttonStatesAtom);
 
-  const { playReedM2, stopReedM2 } = usePlayReedM2();
+  const { playActiveReeds, stopActiveReeds } = usePlayActiveReeds();
 
   // init sound system
   useEffect(() => {
@@ -102,11 +102,11 @@ const Accordion: React.FC = () => {
       const semitoneOffset = KEY_MAP[key];
       if (semitoneOffset !== undefined && !buttonStates[key]) {
         const frequency = getFrequency(key);
-        playReedM2(frequency);
+        playActiveReeds(frequency);
         setButtonStates((prev) => ({ ...prev, [key]: true }));
       }
     },
-    [buttonStates, playReedM2, setButtonStates],
+    [buttonStates, playActiveReeds, setButtonStates],
   );
 
   const buttonUp = useCallback(
@@ -114,11 +114,11 @@ const Accordion: React.FC = () => {
       const semitoneOffset = KEY_MAP[key];
       if (semitoneOffset !== undefined) {
         const frequency = getFrequency(key);
-        stopReedM2(frequency);
+        stopActiveReeds(frequency);
         setButtonStates((prev) => ({ ...prev, [key]: false }));
       }
     },
-    [setButtonStates, stopReedM2],
+    [setButtonStates, stopActiveReeds],
   );
 
   useEffect(() => {

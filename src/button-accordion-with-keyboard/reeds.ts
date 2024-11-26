@@ -30,15 +30,10 @@ const combinedPartials = sawtoothPartials.map((value, index) => {
   return value - (squarePartials[index] ?? 0) / 2;
 });
 
-// TODO: リード音源をatomで管理する必要があるか確認する
-// L1, M1, M2, M3, H1 のリード音源を格納する atom を定義する
-
-// M2
-const reedM2Atom = atom<Tone.PolySynth | null>(
+// 共通のPolySynth設定
+const createPolySynth = () =>
   new Tone.PolySynth(Tone.Synth, {
     portamento: 0,
-    // volume: -16, // コンポーネント側で設定する
-    // detune: 0, // コンポーネント側で設定する
     envelope: {
       attack: 0.0001,
       decay: 0.1,
@@ -49,14 +44,94 @@ const reedM2Atom = atom<Tone.PolySynth | null>(
       type: "custom",
       partials: combinedPartials,
     },
-  }).toDestination(),
-);
-export const useReedM2 = () => {
-  return useAtomValue(reedM2Atom);
+  }).toDestination();
+
+// TODO: リード音源をatomで管理する必要があるか確認する
+// リード音源をatomで管理する
+// 一旦コピペ
+
+// L1
+const reedL1Atom = atom<Tone.PolySynth | null>(createPolySynth());
+export const useReedL1 = () => useAtomValue(reedL1Atom);
+export const useSetReedL1 = () => useSetAtom(reedL1Atom);
+export const useSetReedL1Volume = () => {
+  const reedL1 = useReedL1();
+  const setReedL1Volume = (volume: number) => {
+    reedL1?.set({ volume });
+  };
+
+  return setReedL1Volume;
 };
-export const useSetReedM2 = () => {
-  return useSetAtom(reedM2Atom);
+export const useSetReedL1Pitch = () => {
+  const reedL1 = useReedL1();
+  const setReedL1Pitch = (detune: number) => {
+    reedL1?.set({ detune });
+  };
+
+  return setReedL1Pitch;
 };
+export const usePlayReedL1 = () => {
+  const reedL1 = useReedL1();
+  const playReedL1 = (frequency: number) => {
+    if (!isReady) {
+      void Tone.start().then(() => {
+        console.log("Tone is ready");
+      });
+      isReady = true;
+    }
+
+    reedL1?.triggerAttack(frequency);
+  };
+  const stopReedL1 = (frequency: number) => {
+    reedL1?.triggerRelease(frequency);
+  };
+
+  return { playReedL1, stopReedL1 };
+};
+
+// M1
+const reedM1Atom = atom<Tone.PolySynth | null>(createPolySynth());
+export const useReedM1 = () => useAtomValue(reedM1Atom);
+export const useSetReedM1 = () => useSetAtom(reedM1Atom);
+export const useSetReedM1Volume = () => {
+  const reedM1 = useReedM1();
+  const setReedM1Volume = (volume: number) => {
+    reedM1?.set({ volume });
+  };
+
+  return setReedM1Volume;
+};
+export const useSetReedM1Pitch = () => {
+  const reedM1 = useReedM1();
+  const setReedM1Pitch = (detune: number) => {
+    reedM1?.set({ detune });
+  };
+
+  return setReedM1Pitch;
+};
+export const usePlayReedM1 = () => {
+  const reedM1 = useReedM1();
+  const playReedM1 = (frequency: number) => {
+    if (!isReady) {
+      void Tone.start().then(() => {
+        console.log("Tone is ready");
+      });
+      isReady = true;
+    }
+
+    reedM1?.triggerAttack(frequency);
+  };
+  const stopReedM1 = (frequency: number) => {
+    reedM1?.triggerRelease(frequency);
+  };
+
+  return { playReedM1, stopReedM1 };
+};
+
+// M2
+const reedM2Atom = atom<Tone.PolySynth | null>(createPolySynth());
+export const useReedM2 = () => useAtomValue(reedM2Atom);
+export const useSetReedM2 = () => useSetAtom(reedM2Atom);
 export const useSetReedM2Volume = () => {
   const reedM2 = useReedM2();
   const setReedM2Volume = (volume: number) => {
@@ -92,9 +167,85 @@ export const usePlayReedM2 = () => {
   return { playReedM2, stopReedM2 };
 };
 
+// M3
+const reedM3Atom = atom<Tone.PolySynth | null>(createPolySynth());
+export const useReedM3 = () => useAtomValue(reedM3Atom);
+export const useSetReedM3 = () => useSetAtom(reedM3Atom);
+export const useSetReedM3Volume = () => {
+  const reedM3 = useReedM3();
+  const setReedM3Volume = (volume: number) => {
+    reedM3?.set({ volume });
+  };
+
+  return setReedM3Volume;
+};
+export const useSetReedM3Pitch = () => {
+  const reedM3 = useReedM3();
+  const setReedM3Pitch = (detune: number) => {
+    reedM3?.set({ detune });
+  };
+
+  return setReedM3Pitch;
+};
+export const usePlayReedM3 = () => {
+  const reedM3 = useReedM3();
+  const playReedM3 = (frequency: number) => {
+    if (!isReady) {
+      void Tone.start().then(() => {
+        console.log("Tone is ready");
+      });
+      isReady = true;
+    }
+
+    reedM3?.triggerAttack(frequency);
+  };
+  const stopReedM3 = (frequency: number) => {
+    reedM3?.triggerRelease(frequency);
+  };
+
+  return { playReedM3, stopReedM3 };
+};
+
+// H1
+const reedH1Atom = atom<Tone.PolySynth | null>(createPolySynth());
+export const useReedH1 = () => useAtomValue(reedH1Atom);
+export const useSetReedH1 = () => useSetAtom(reedH1Atom);
+export const useSetReedH1Volume = () => {
+  const reedH1 = useReedH1();
+  const setReedH1Volume = (volume: number) => {
+    reedH1?.set({ volume });
+  };
+
+  return setReedH1Volume;
+};
+export const useSetReedH1Pitch = () => {
+  const reedH1 = useReedH1();
+  const setReedH1Pitch = (detune: number) => {
+    reedH1?.set({ detune });
+  };
+
+  return setReedH1Pitch;
+};
+export const usePlayReedH1 = () => {
+  const reedH1 = useReedH1();
+  const playReedH1 = (frequency: number) => {
+    if (!isReady) {
+      void Tone.start().then(() => {
+        console.log("Tone is ready");
+      });
+      isReady = true;
+    }
+
+    reedH1?.triggerAttack(frequency);
+  };
+  const stopReedH1 = (frequency: number) => {
+    reedH1?.triggerRelease(frequency);
+  };
+
+  return { playReedH1, stopReedH1 };
+};
+
 // TODO: リードをまとめて管理する atom を定義する
-// TODO: どのリードが有効になっているかを管理する atom を定義する
-// TODO: 有効なリードの音を再生する関数を定義する
 
 // 全体設定
 export const initReeds = () => {
@@ -116,10 +267,18 @@ export const useSetVolume = () => {
 };
 export const useAdaptAllReedVolumes = () => {
   const reedVolume = useVolume();
+  const setReedL1Volume = useSetReedL1Volume();
+  const setReedM1Volume = useSetReedM1Volume();
   const setReedM2Volume = useSetReedM2Volume();
+  const setReedM3Volume = useSetReedM3Volume();
+  const setReedH1Volume = useSetReedH1Volume();
 
   const adaptAll = () => {
+    setReedL1Volume(reedVolume);
+    setReedM1Volume(reedVolume);
     setReedM2Volume(reedVolume);
+    setReedM3Volume(reedVolume);
+    setReedH1Volume(reedVolume);
   };
 
   return adaptAll;
@@ -179,11 +338,46 @@ export const useReedPitches = () => {
 };
 export const useAdaptAllReedPitches = () => {
   const reedPitches = useReedPitches();
+  const setReedL1Pitch = useSetReedL1Pitch();
+  const setReedM1Pitch = useSetReedM1Pitch();
   const setReedM2Pitch = useSetReedM2Pitch();
+  const setReedM3Pitch = useSetReedM3Pitch();
+  const setReedH1Pitch = useSetReedH1Pitch();
 
   const adaptAll = () => {
+    setReedL1Pitch(reedPitches.L1);
+    setReedM1Pitch(reedPitches.M1);
     setReedM2Pitch(reedPitches.M2);
+    setReedM3Pitch(reedPitches.M3);
+    setReedH1Pitch(reedPitches.H1);
   };
 
   return adaptAll;
+};
+
+export const usePlayActiveReeds = () => {
+  const reedActivation = useReedActivation();
+  const { playReedL1, stopReedL1 } = usePlayReedL1();
+  const { playReedM1, stopReedM1 } = usePlayReedM1();
+  const { playReedM2, stopReedM2 } = usePlayReedM2();
+  const { playReedM3, stopReedM3 } = usePlayReedM3();
+  const { playReedH1, stopReedH1 } = usePlayReedH1();
+
+  const playActiveReeds = (frequency: number) => {
+    if (reedActivation.L1) playReedL1(frequency);
+    if (reedActivation.M1) playReedM1(frequency);
+    if (reedActivation.M2) playReedM2(frequency);
+    if (reedActivation.M3) playReedM3(frequency);
+    if (reedActivation.H1) playReedH1(frequency);
+  };
+
+  const stopActiveReeds = (frequency: number) => {
+    if (reedActivation.L1) stopReedL1(frequency);
+    if (reedActivation.M1) stopReedM1(frequency);
+    if (reedActivation.M2) stopReedM2(frequency);
+    if (reedActivation.M3) stopReedM3(frequency);
+    if (reedActivation.H1) stopReedH1(frequency);
+  };
+
+  return { playActiveReeds, stopActiveReeds };
 };
