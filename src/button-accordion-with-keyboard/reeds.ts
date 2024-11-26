@@ -244,9 +244,6 @@ export const usePlayReedH1 = () => {
 
   return { playReedH1, stopReedH1 };
 };
-
-// TODO: リードをまとめて管理する atom を定義する
-
 // 全体設定
 export const initReeds = () => {
   // ここだけ Tone.js 全体に関わる設定
@@ -284,10 +281,38 @@ export const useAdaptAllReedVolumes = () => {
   return adaptAll;
 };
 
-// どのリードが有効になっているかを管理する atom
-export const reedNames = ["L1", "M1", "M2", "M3", "H1"] as const;
-type Reed = (typeof reedNames)[number];
-type ReedActivation = Record<Reed, boolean>;
+// 12個の音色切り替えスイッチに対応する ReedActivation を定義する
+const reedActivationPresets: ReedActivation[] = [
+  { L1: true, M1: false, M2: false, M3: false, H1: false },
+  { L1: false, M1: true, M2: false, M3: false, H1: false },
+  { L1: false, M1: false, M2: true, M3: false, H1: false },
+  { L1: false, M1: false, M2: false, M3: true, H1: false },
+  { L1: false, M1: false, M2: false, M3: false, H1: true },
+  { L1: true, M1: true, M2: false, M3: false, H1: false },
+  { L1: false, M1: true, M2: true, M3: false, H1: false },
+  { L1: false, M1: false, M2: true, M3: true, H1: false },
+  { L1: false, M1: false, M2: false, M3: true, H1: true },
+  { L1: true, M1: false, M2: false, M3: false, H1: true },
+  { L1: true, M1: true, M2: true, M3: false, H1: false },
+  { L1: false, M1: true, M2: true, M3: true, H1: true },
+];
+
+const selectedPresetAtom = atom<number>(0);
+export const useSelectedPreset = () => useAtomValue(selectedPresetAtom);
+export const useSetSelectedPreset = () => useSetAtom(selectedPresetAtom);
+export const useAdoptPreset = () => {
+  const setReedActivation = useSetReedActivation();
+
+  const adoptPreset = (selectedPreset: number) => {
+    const newReedActivation = reedActivationPresets[selectedPreset];
+
+    if (newReedActivation) {
+      setReedActivation(newReedActivation);
+    }
+  };
+
+  return adoptPreset;
+};
 
 const reedActivationAtom = atom<ReedActivation>({
   L1: false,
@@ -296,12 +321,14 @@ const reedActivationAtom = atom<ReedActivation>({
   M3: false,
   H1: false,
 });
-export const useReedActivation = () => {
-  return useAtomValue(reedActivationAtom);
-};
-export const useSetReedActivation = () => {
-  return useSetAtom(reedActivationAtom);
-};
+
+export const useReedActivation = () => useAtomValue(reedActivationAtom);
+export const useSetReedActivation = () => useSetAtom(reedActivationAtom);
+
+// どのリードが有効になっているかを管理する atom
+export const reedNames = ["L1", "M1", "M2", "M3", "H1"] as const;
+export type Reed = (typeof reedNames)[number];
+type ReedActivation = Record<Reed, boolean>;
 
 // それぞれのリードのピッチ[cent]を管理する atom
 const baseReedPitchAtom = atom<number>(0);

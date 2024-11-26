@@ -18,6 +18,12 @@ import {
   useAdaptAllReedPitches,
   useAdaptAllReedVolumes,
   usePlayActiveReeds,
+  useReedActivation,
+  useSetReedActivation,
+  Reed,
+  useSelectedPreset,
+  useSetSelectedPreset,
+  useAdoptPreset,
 } from "./reeds";
 
 const buttonStatesAtom = atom<Record<string, boolean>>({});
@@ -82,6 +88,106 @@ const ReedPitchControls: React.FC = () => {
             aria-labelledby={`${reed}-pitch-input`}
           />
         </div>
+      ))}
+    </div>
+  );
+};
+
+const ReedSwitch: React.FC = () => {
+  const reedActivation = useReedActivation();
+  const setReedActivation = useSetReedActivation();
+
+  const toggleReed = (reed: Reed) => {
+    setReedActivation((prev) => ({
+      ...prev,
+      [reed]: !prev[reed],
+    }));
+  };
+
+  return (
+    <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
+      {reedNames.map((reed) => (
+        <button
+          key={reed}
+          onClick={() => toggleReed(reed)}
+          style={{
+            width: "48px",
+            height: "48px",
+            borderRadius: "50%",
+            backgroundColor: reedActivation[reed] ? "green" : "gray",
+            color: "white",
+            border: "1px solid lightgray",
+            fontSize: "20px",
+            textAlign: "center",
+            lineHeight: "48px",
+            fontWeight: "bold",
+            boxShadow: reedActivation[reed]
+              ? "inset 0px 0px 6px 2px black"
+              : "none",
+            transform: reedActivation[reed] ? "translateY(2px)" : "none",
+          }}
+        >
+          {reed}
+        </button>
+      ))}
+    </div>
+  );
+};
+
+const PresetSwitch: React.FC = () => {
+  const selectedPreset = useSelectedPreset();
+  const setSelectedPreset = useSetSelectedPreset();
+  const adaptPreset = useAdoptPreset();
+
+  const handlePresetChange = useCallback(
+    (index: number) => {
+      setSelectedPreset(index);
+      adaptPreset(index);
+    },
+    [setSelectedPreset, adaptPreset],
+  );
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key.startsWith("F") && !isNaN(Number(e.key.slice(1)))) {
+        const presetIndex = Number(e.key.slice(1)) - 1;
+        if (presetIndex >= 0 && presetIndex < 12) {
+          e.preventDefault(); // ファンクションキーのデフォルトの動作を無効化
+          handlePresetChange(presetIndex);
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handlePresetChange]);
+
+  return (
+    <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
+      {Array.from({ length: 12 }, (_, index) => (
+        <button
+          key={index}
+          onClick={() => handlePresetChange(index)}
+          style={{
+            width: "48px",
+            height: "48px",
+            borderRadius: "50%",
+            backgroundColor: selectedPreset === index ? "blue" : "gray",
+            color: "white",
+            border: "1px solid lightgray",
+            fontSize: "20px",
+            textAlign: "center",
+            lineHeight: "48px",
+            fontWeight: "bold",
+            boxShadow:
+              selectedPreset === index ? "inset 0px 0px 6px 2px black" : "none",
+            transform: selectedPreset === index ? "translateY(2px)" : "none",
+          }}
+        >
+          F{index + 1}
+        </button>
       ))}
     </div>
   );
@@ -211,6 +317,8 @@ export function App() {
     >
       <VolumeControl />
       <ReedPitchControls />
+      <ReedSwitch />
+      <PresetSwitch />
       <Accordion />
     </div>
   );
