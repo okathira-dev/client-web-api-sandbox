@@ -65,7 +65,7 @@ const ReedPitchControls: React.FC = () => {
   adaptAllReedPitches(); // CHECK: ピッチの更新
 
   return (
-    <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
+    <div style={{ display: "flex", gap: "8px" }}>
       {reedNames.map((reed) => (
         <div
           key={reed}
@@ -145,6 +145,7 @@ const VoicePresetSwitch: React.FC = () => {
   const selectedPreset = useSelectedPreset();
   const setSelectedPreset = useSetSelectedPreset();
   const adaptPreset = useAdoptPreset();
+  const reedActivation = useReedActivation();
 
   const handlePresetChange = useCallback(
     (index: number) => {
@@ -177,63 +178,70 @@ const VoicePresetSwitch: React.FC = () => {
     <div
       style={{ display: "flex", gap: "2px", marginBottom: buttonPressedMargin }}
     >
-      {reedActivationPresets.map((preset, index) => (
-        <Button
-          key={index}
-          onClick={() => handlePresetChange(index)}
-          variant="contained"
-          color={selectedPreset === index ? "primary" : "inherit"}
-          style={{
-            width: "56px",
-            minWidth: "56px",
-            height: "96px",
-            borderRadius: "8px",
-            padding: "2px",
-            fontSize: "16px",
-            textAlign: "center",
-            lineHeight: "16px",
-            fontWeight: "bold",
-            boxShadow:
-              selectedPreset === index ? "inset 0px 0px 6px 2px black" : "none",
-            transform:
-              selectedPreset === index
-                ? `translateY(${buttonPressedMargin})`
-                : "none",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-around",
-            alignItems: "center",
-          }}
-        >
-          <span>F{index + 1}</span>
-          <span
+      {reedActivationPresets.map((preset, index) => {
+        const isActive =
+          JSON.stringify(preset) === JSON.stringify(reedActivation);
+        return (
+          <Button
+            key={index}
+            onClick={() => handlePresetChange(index)}
+            variant="contained"
+            color={selectedPreset === index && isActive ? "primary" : "inherit"}
             style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(4, 1fr)",
-              gridTemplateRows: "repeat(3, 1fr)",
-              gap: "2px",
+              width: "56px",
+              minWidth: "56px",
+              height: "96px",
+              borderRadius: "8px",
+              padding: "2px",
+              fontSize: "16px",
+              textAlign: "center",
+              lineHeight: "16px",
+              fontWeight: "bold",
+              boxShadow:
+                selectedPreset === index && isActive
+                  ? "inset 0px 0px 6px 2px black"
+                  : "none",
+              transform:
+                selectedPreset === index && isActive
+                  ? `translateY(${buttonPressedMargin})`
+                  : "none",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-around",
+              alignItems: "center",
+              opacity: isActive ? 1 : 0.5,
             }}
           >
-            {/* 
-              H_1_
-              M123
-              L_1_          
-            */}
-            <span>H</span>
-            <span></span>
-            <span>{preset.H1 && "1"}</span>
-            <span></span>
-            <span>M</span>
-            <span>{preset.M1 && "1"}</span>
-            <span>{preset.M2 && "2"}</span>
-            <span>{preset.M3 && "3"}</span>
-            <span>L</span>
-            <span></span>
-            <span>{preset.L1 && "1"}</span>
-            <span></span>
-          </span>
-        </Button>
-      ))}
+            <span>F{index + 1}</span>
+            <span
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(4, 1fr)",
+                gridTemplateRows: "repeat(3, 1fr)",
+                gap: "2px",
+              }}
+            >
+              {/* 
+                H_1_
+                M123
+                L_1_          
+              */}
+              <span>H</span>
+              <span></span>
+              <span>{preset.H1 && "1"}</span>
+              <span></span>
+              <span>M</span>
+              <span>{preset.M1 && "1"}</span>
+              <span>{preset.M2 && "2"}</span>
+              <span>{preset.M3 && "3"}</span>
+              <span>L</span>
+              <span></span>
+              <span>{preset.L1 && "1"}</span>
+              <span></span>
+            </span>
+          </Button>
+        );
+      })}
     </div>
   );
 };
@@ -355,6 +363,7 @@ export function App() {
       style={{
         display: "flex",
         flexDirection: "column",
+        gap: "8px",
         justifyContent: "center",
         alignItems: "center",
         height: "100vh",
