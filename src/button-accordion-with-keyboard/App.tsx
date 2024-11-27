@@ -6,6 +6,7 @@ import {
   getFrequency,
   ifWhiteKey,
 } from "./instrumentConfig";
+import Button from "@mui/material/Button";
 import Slider from "@mui/material/Slider";
 import TextField from "@mui/material/TextField";
 import {
@@ -24,6 +25,7 @@ import {
   useSelectedPreset,
   useSetSelectedPreset,
   useAdoptPreset,
+  reedActivationPresets,
 } from "./reeds";
 
 const buttonStatesAtom = atom<Record<string, boolean>>({});
@@ -104,19 +106,22 @@ const ReedSwitch: React.FC = () => {
     }));
   };
 
+  const buttonPressedMargin = "4px";
+
   return (
-    <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
+    <div
+      style={{ display: "flex", gap: "8px", marginBottom: buttonPressedMargin }}
+    >
       {reedNames.map((reed) => (
-        <button
+        <Button
           key={reed}
           onClick={() => toggleReed(reed)}
+          variant="contained"
+          color={reedActivation[reed] ? "success" : "inherit"}
           style={{
             width: "48px",
             height: "48px",
             borderRadius: "50%",
-            backgroundColor: reedActivation[reed] ? "green" : "gray",
-            color: "white",
-            border: "1px solid lightgray",
             fontSize: "20px",
             textAlign: "center",
             lineHeight: "48px",
@@ -124,17 +129,19 @@ const ReedSwitch: React.FC = () => {
             boxShadow: reedActivation[reed]
               ? "inset 0px 0px 6px 2px black"
               : "none",
-            transform: reedActivation[reed] ? "translateY(2px)" : "none",
+            transform: reedActivation[reed]
+              ? `translateY(${buttonPressedMargin})`
+              : "none",
           }}
         >
           {reed}
-        </button>
+        </Button>
       ))}
     </div>
   );
 };
 
-const PresetSwitch: React.FC = () => {
+const VoicePresetSwitch: React.FC = () => {
   const selectedPreset = useSelectedPreset();
   const setSelectedPreset = useSetSelectedPreset();
   const adaptPreset = useAdoptPreset();
@@ -164,30 +171,68 @@ const PresetSwitch: React.FC = () => {
     };
   }, [handlePresetChange]);
 
+  const buttonPressedMargin = "4px";
+
   return (
-    <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
-      {Array.from({ length: 12 }, (_, index) => (
-        <button
+    <div
+      style={{ display: "flex", gap: "2px", marginBottom: buttonPressedMargin }}
+    >
+      {reedActivationPresets.map((preset, index) => (
+        <Button
           key={index}
           onClick={() => handlePresetChange(index)}
+          variant="contained"
+          color={selectedPreset === index ? "primary" : "inherit"}
           style={{
-            width: "48px",
-            height: "48px",
-            borderRadius: "50%",
-            backgroundColor: selectedPreset === index ? "blue" : "gray",
-            color: "white",
-            border: "1px solid lightgray",
-            fontSize: "20px",
+            width: "56px",
+            minWidth: "56px",
+            height: "96px",
+            borderRadius: "8px",
+            padding: "2px",
+            fontSize: "16px",
             textAlign: "center",
-            lineHeight: "48px",
+            lineHeight: "16px",
             fontWeight: "bold",
             boxShadow:
               selectedPreset === index ? "inset 0px 0px 6px 2px black" : "none",
-            transform: selectedPreset === index ? "translateY(2px)" : "none",
+            transform:
+              selectedPreset === index
+                ? `translateY(${buttonPressedMargin})`
+                : "none",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-around",
+            alignItems: "center",
           }}
         >
-          F{index + 1}
-        </button>
+          <span>F{index + 1}</span>
+          <span
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(4, 1fr)",
+              gridTemplateRows: "repeat(3, 1fr)",
+              gap: "2px",
+            }}
+          >
+            {/* 
+              H_1_
+              M123
+              L_1_          
+            */}
+            <span>H</span>
+            <span></span>
+            <span>{preset.H1 && "1"}</span>
+            <span></span>
+            <span>M</span>
+            <span>{preset.M1 && "1"}</span>
+            <span>{preset.M2 && "2"}</span>
+            <span>{preset.M3 && "3"}</span>
+            <span>L</span>
+            <span></span>
+            <span>{preset.L1 && "1"}</span>
+            <span></span>
+          </span>
+        </Button>
       ))}
     </div>
   );
@@ -318,7 +363,7 @@ export function App() {
       <VolumeControl />
       <ReedPitchControls />
       <ReedSwitch />
-      <PresetSwitch />
+      <VoicePresetSwitch />
       <Accordion />
     </div>
   );

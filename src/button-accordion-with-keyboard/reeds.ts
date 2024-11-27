@@ -282,22 +282,24 @@ export const useAdaptAllReedVolumes = () => {
 };
 
 // 12個の音色切り替えスイッチに対応する ReedActivation を定義する
-const reedActivationPresets: ReedActivation[] = [
-  { L1: true, M1: false, M2: false, M3: false, H1: false },
-  { L1: false, M1: true, M2: false, M3: false, H1: false },
-  { L1: false, M1: false, M2: true, M3: false, H1: false },
-  { L1: false, M1: false, M2: false, M3: true, H1: false },
-  { L1: false, M1: false, M2: false, M3: false, H1: true },
-  { L1: true, M1: true, M2: false, M3: false, H1: false },
-  { L1: false, M1: true, M2: true, M3: false, H1: false },
-  { L1: false, M1: false, M2: true, M3: true, H1: false },
-  { L1: false, M1: false, M2: false, M3: true, H1: true },
-  { L1: true, M1: false, M2: false, M3: false, H1: true },
-  { L1: true, M1: true, M2: true, M3: false, H1: false },
-  { L1: false, M1: true, M2: true, M3: true, H1: true },
+export const reedActivationPresets: ReedActivation[] = [
+  { L1: true, M1: false, M2: false, M3: false, H1: false }, // bassoon
+  { L1: true, M1: false, M2: true, M3: false, H1: false }, // bandoneon
+  { L1: true, M1: false, M2: true, M3: true, H1: false }, // accordion
+  { L1: true, M1: false, M2: true, M3: false, H1: true }, // harmonium
+  { L1: true, M1: true, M2: false, M3: true, H1: true }, // master
+  { L1: false, M1: false, M2: true, M3: false, H1: true }, // oboe
+  { L1: false, M1: true, M2: true, M3: true, H1: false }, // musette
+  { L1: false, M1: false, M2: true, M3: true, H1: false }, // violin
+  { L1: false, M1: false, M2: true, M3: false, H1: false }, // clarinet
+  { L1: true, M1: false, M2: false, M3: false, H1: true }, // organ
+  { L1: false, M1: true, M2: true, M3: true, H1: true }, // ???
+  { L1: false, M1: false, M2: false, M3: false, H1: true }, // piccolo
 ];
 
-const selectedPresetAtom = atom<number>(0);
+const INITIAL_SELECTED_PRESET = 2;
+
+const selectedPresetAtom = atom<number>(INITIAL_SELECTED_PRESET);
 export const useSelectedPreset = () => useAtomValue(selectedPresetAtom);
 export const useSetSelectedPreset = () => useSetAtom(selectedPresetAtom);
 export const useAdoptPreset = () => {
@@ -314,13 +316,9 @@ export const useAdoptPreset = () => {
   return adoptPreset;
 };
 
-const reedActivationAtom = atom<ReedActivation>({
-  L1: false,
-  M1: false,
-  M2: true,
-  M3: false,
-  H1: false,
-});
+const reedActivationAtom = atom<ReedActivation>(
+  reedActivationPresets[INITIAL_SELECTED_PRESET]!,
+);
 
 export const useReedActivation = () => useAtomValue(reedActivationAtom);
 export const useSetReedActivation = () => useSetAtom(reedActivationAtom);
