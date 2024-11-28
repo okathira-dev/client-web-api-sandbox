@@ -35,10 +35,10 @@ const createPolySynth = () =>
   new Tone.PolySynth(Tone.Synth, {
     portamento: 0,
     envelope: {
-      attack: 0.0001,
+      attack: 0.001,
       decay: 0.1,
-      sustain: 0.95,
-      release: 0.25,
+      sustain: 0.975,
+      release: 0.175,
     },
     oscillator: {
       type: "custom",
@@ -132,9 +132,13 @@ const {
 
 // 全体設定
 export const initReeds = () => {
-  // ここだけ Tone.js 全体に関わる設定
+  // レイテンシーを最小限に抑えるための設定
   Tone.setContext(
-    new Tone.Context({ latencyHint: "interactive", lookAhead: 0 }),
+    new Tone.Context({
+      latencyHint: "interactive",
+      lookAhead: 0,
+      updateInterval: 0.01, // 更新間隔を短く設定
+    }),
   );
 
   return Tone.getContext();
@@ -202,14 +206,13 @@ export const useAdoptPreset = () => {
   return adoptPreset;
 };
 
+// どのリードが有効になっているかを管理する atom
 const reedActivationAtom = atom<ReedActivation>(
   reedActivationPresets[INITIAL_SELECTED_PRESET]!,
 );
 
 export const useReedActivation = () => useAtomValue(reedActivationAtom);
 export const useSetReedActivation = () => useSetAtom(reedActivationAtom);
-
-// どのリードが有効になっているかを管理する atom
 
 type ReedActivation = Record<ReedName, boolean>;
 
