@@ -4,14 +4,14 @@ import {
   useReedActivation,
   useSetReedActivation,
   reedNames,
-  Reed,
+  ReedName,
 } from "../reeds";
 
 export const ReedSwitch: React.FC = () => {
   const reedActivation = useReedActivation();
   const setReedActivation = useSetReedActivation();
 
-  const toggleReed = (reed: Reed) => {
+  const toggleReed = (reed: ReedName) => {
     setReedActivation((prev) => ({
       ...prev,
       [reed]: !prev[reed],
