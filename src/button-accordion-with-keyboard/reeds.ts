@@ -62,11 +62,12 @@ const reeds: ReedSynths = {
 
 // 共通の関数を生成するファクトリ関数
 const createReedHooks = (reedName: ReedName) => {
-  const useSetReedVolume = () => {
-    return (volume: number) => {
-      reeds[reedName].set({ volume });
-    };
-  };
+  //  今のところボリュームを個別で設定することは無い
+  // const useSetReedVolume = () => {
+  //   return (volume: number) => {
+  //     reeds[reedName].set({ volume });
+  //   };
+  // };
 
   const useSetReedPitch = () => {
     return (detune: number) => {
@@ -93,42 +94,27 @@ const createReedHooks = (reedName: ReedName) => {
   };
 
   return {
-    useSetReedVolume,
+    // useSetReedVolume,
     useSetReedPitch,
     usePlayReed,
   };
 };
 
 // 各リードのhooksを生成と名前付け
-const {
-  useSetReedVolume: useSetReedL1Volume,
-  useSetReedPitch: useSetReedL1Pitch,
-  usePlayReed: usePlayReedL1,
-} = createReedHooks("L1");
+const { useSetReedPitch: useSetReedL1Pitch, usePlayReed: usePlayReedL1 } =
+  createReedHooks("L1");
 
-const {
-  useSetReedVolume: useSetReedM1Volume,
-  useSetReedPitch: useSetReedM1Pitch,
-  usePlayReed: usePlayReedM1,
-} = createReedHooks("M1");
+const { useSetReedPitch: useSetReedM1Pitch, usePlayReed: usePlayReedM1 } =
+  createReedHooks("M1");
 
-const {
-  useSetReedVolume: useSetReedM2Volume,
-  useSetReedPitch: useSetReedM2Pitch,
-  usePlayReed: usePlayReedM2,
-} = createReedHooks("M2");
+const { useSetReedPitch: useSetReedM2Pitch, usePlayReed: usePlayReedM2 } =
+  createReedHooks("M2");
 
-const {
-  useSetReedVolume: useSetReedM3Volume,
-  useSetReedPitch: useSetReedM3Pitch,
-  usePlayReed: usePlayReedM3,
-} = createReedHooks("M3");
+const { useSetReedPitch: useSetReedM3Pitch, usePlayReed: usePlayReedM3 } =
+  createReedHooks("M3");
 
-const {
-  useSetReedVolume: useSetReedH1Volume,
-  useSetReedPitch: useSetReedH1Pitch,
-  usePlayReed: usePlayReedH1,
-} = createReedHooks("H1");
+const { useSetReedPitch: useSetReedH1Pitch, usePlayReed: usePlayReedH1 } =
+  createReedHooks("H1");
 
 // 全体設定
 export const initReeds = () => {
@@ -144,31 +130,11 @@ export const initReeds = () => {
   return Tone.getContext();
 };
 
-// 音量を管理する atom
-const volumeAtom = atom<number>(-18);
-export const useVolume = () => {
-  return useAtomValue(volumeAtom);
-};
-export const useSetVolume = () => {
-  return useSetAtom(volumeAtom);
-};
-export const useAdaptAllReedVolumes = () => {
-  const reedVolume = useVolume();
-  const setReedL1Volume = useSetReedL1Volume();
-  const setReedM1Volume = useSetReedM1Volume();
-  const setReedM2Volume = useSetReedM2Volume();
-  const setReedM3Volume = useSetReedM3Volume();
-  const setReedH1Volume = useSetReedH1Volume();
-
-  const adaptAll = () => {
-    setReedL1Volume(reedVolume);
-    setReedM1Volume(reedVolume);
-    setReedM2Volume(reedVolume);
-    setReedM3Volume(reedVolume);
-    setReedH1Volume(reedVolume);
-  };
-
-  return adaptAll;
+// 音量を直接設定する関数をエクスポート
+export const setAllReedVolumes = (volume: number) => {
+  Object.values(reeds).forEach((reed) => {
+    reed.set({ volume });
+  });
 };
 
 // 12個の音色切り替えスイッチに対応する ReedActivation を定義する

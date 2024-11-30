@@ -1,13 +1,19 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Slider from "@mui/material/Slider";
-import { useVolume, useSetVolume, useAdaptAllReedVolumes } from "../reeds";
+import { setAllReedVolumes } from "../reeds";
 
 export const VolumeControl: React.FC = () => {
-  const volume = useVolume();
-  const setVolume = useSetVolume();
+  const [volume, setVolume] = useState<number>(-18);
 
-  const adaptAllReedVolumes = useAdaptAllReedVolumes();
-  adaptAllReedVolumes(); // CHECK: ボリュームの更新
+  useEffect(() => {
+    setAllReedVolumes(volume);
+  }, []);
+
+  const handleVolumeChange = (_: Event, newValue: number | number[]) => {
+    const newVolume = newValue as number;
+    setVolume(newVolume);
+    setAllReedVolumes(newVolume);
+  };
 
   return (
     <div style={{ width: "700px" }}>
@@ -15,10 +21,7 @@ export const VolumeControl: React.FC = () => {
         Volume
         <Slider
           value={volume}
-          onChange={(_, newValue) => {
-            const newVolume = newValue as number;
-            setVolume(newVolume);
-          }}
+          onChange={handleVolumeChange}
           min={-60}
           max={0}
           step={1}

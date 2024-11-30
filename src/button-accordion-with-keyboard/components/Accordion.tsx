@@ -1,6 +1,4 @@
-import React, { useCallback, useEffect } from "react";
-import { useAtom } from "jotai";
-import { buttonStatesAtom } from "../atoms/buttonStates";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   KEYBOARD_LAYOUT,
   KEY_MAP,
@@ -10,7 +8,7 @@ import {
 import { initReeds, usePlayActiveReeds } from "../reeds";
 
 export const Accordion: React.FC = () => {
-  const [buttonStates, setButtonStates] = useAtom(buttonStatesAtom);
+  const [buttonStates, setButtonStates] = useState<Record<string, boolean>>({});
 
   const { playActiveReeds, stopActiveReeds } = usePlayActiveReeds();
 
