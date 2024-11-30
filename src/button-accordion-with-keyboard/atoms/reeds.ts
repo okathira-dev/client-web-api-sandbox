@@ -153,3 +153,26 @@ export const usePlayActiveReeds = () => {
 
   return { playActiveReeds, stopActiveReeds };
 };
+
+// プリセットの順序を管理するアトムを修正
+// 各インデックスの位置にあるプリセットの番号を保持
+const presetOrderAtom = atom<number[]>(Array.from({ length: 12 }, (_, i) => i));
+
+// プリセットの取得用のヘルパー関数を追加
+export const usePresetAtPosition = (position: number) => {
+  const presetOrder = useAtomValue(presetOrderAtom);
+  // プリセットの範囲内であることを確認
+  if (
+    position >= 0 &&
+    position < presetOrder.length &&
+    presetOrder[position] !== undefined &&
+    presetOrder[position] < reedActivationPresets.length
+  ) {
+    return reedActivationPresets[presetOrder[position]];
+  }
+  // デフォルトのプリセットを返す
+  return reedActivationPresets[0];
+};
+
+export const usePresetOrder = () => useAtomValue(presetOrderAtom);
+export const useSetPresetOrder = () => useSetAtom(presetOrderAtom);
