@@ -1,6 +1,14 @@
 import * as Tone from "tone";
 
-let isReady = false;
+// コンテキストの設定
+Tone.setContext(
+  new Tone.Context({
+    latencyHint: "interactive",
+    lookAhead: 0,
+    updateInterval: 0.01,
+  }),
+);
+console.log("Tone context", Tone.getContext());
 
 // 倍音の計算
 const calculateSawtoothPartial = (index: number) => {
@@ -67,12 +75,6 @@ export const createReedHooks = (reedName: ReedName) => {
 
   const usePlayReed = () => {
     const playReed = (frequency: number) => {
-      if (!isReady) {
-        void Tone.start().then(() => {
-          console.log("Tone is ready");
-        });
-        isReady = true;
-      }
       reeds[reedName].triggerAttack(frequency);
     };
 
@@ -91,15 +93,9 @@ export const createReedHooks = (reedName: ReedName) => {
 
 // 全体設定
 export const initReeds = () => {
-  Tone.setContext(
-    new Tone.Context({
-      latencyHint: "interactive",
-      lookAhead: 0,
-      updateInterval: 0.01,
-    }),
-  );
-
-  return Tone.getContext();
+  void Tone.start().then(() => {
+    console.log("Tone started");
+  });
 };
 
 // 音量を一律で設定する関数

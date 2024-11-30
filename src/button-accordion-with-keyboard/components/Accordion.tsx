@@ -5,18 +5,12 @@ import {
   getFrequency,
   ifWhiteKey,
 } from "../instrumentConfig";
-import { initReeds } from "../audio/synth";
 import { usePlayActiveReeds } from "../atoms/reeds";
 
 export const Accordion: React.FC = () => {
   const [buttonStates, setButtonStates] = useState<Record<string, boolean>>({});
 
   const { playActiveReeds, stopActiveReeds } = usePlayActiveReeds();
-
-  // init sound system
-  useEffect(() => {
-    console.log("context is set", initReeds());
-  }, []);
 
   const buttonDown = useCallback(
     (key: string) => {
