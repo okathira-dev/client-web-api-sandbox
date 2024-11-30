@@ -8,7 +8,8 @@ import {
   reedActivationPresets,
 } from "../atoms/reeds";
 
-export const VoicePresetSwitch: React.FC = () => {
+// 音色切り替えスイッチ
+export const RegisterSwitch: React.FC = () => {
   const selectedPreset = useSelectedPreset();
   const setSelectedPreset = useSetSelectedPreset();
   const adaptPreset = useAdoptPreset();

@@ -1,7 +1,7 @@
 import { VolumeControl } from "./components/VolumeControl";
 import { ReedPitchControls } from "./components/ReedPitchControls";
 import { ReedSwitch } from "./components/ReedSwitch";
-import { VoicePresetSwitch } from "./components/VoicePresetSwitch";
+import { RegisterSwitch } from "./components/RegisterSwitch";
 import { Accordion } from "./components/Accordion";
 import { AudioInitializer } from "./components/AudioInitializer";
 
@@ -21,7 +21,7 @@ export function App() {
         <VolumeControl />
         <ReedPitchControls />
         <ReedSwitch />
-        <VoicePresetSwitch />
+        <RegisterSwitch />
         <Accordion />
       </div>
     </AudioInitializer>
