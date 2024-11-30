@@ -127,29 +127,25 @@ export const useAdaptAllReedPitches = () => {
   return adaptAll;
 };
 
-export const usePlayActiveReeds = () => {
-  const reedActivation = useReedActivation();
-  const { playReed: playReedL1, stopReed: stopReedL1 } = usePlayReedL1();
-  const { playReed: playReedM1, stopReed: stopReedM1 } = usePlayReedM1();
-  const { playReed: playReedM2, stopReed: stopReedM2 } = usePlayReedM2();
-  const { playReed: playReedM3, stopReed: stopReedM3 } = usePlayReedM3();
-  const { playReed: playReedH1, stopReed: stopReedH1 } = usePlayReedH1();
+// プリセットの順序を管理するアトムを修正
+// 各インデックスの位置にあるプリセットの番号を保持
+const presetOrderAtom = atom<number[]>(Array.from({ length: 12 }, (_, i) => i));
 
-  const playActiveReeds = (frequency: number) => {
-    if (reedActivation.L1) playReedL1(frequency);
-    if (reedActivation.M1) playReedM1(frequency);
-    if (reedActivation.M2) playReedM2(frequency);
-    if (reedActivation.M3) playReedM3(frequency);
-    if (reedActivation.H1) playReedH1(frequency);
-  };
-
-  const stopActiveReeds = (frequency: number) => {
-    if (reedActivation.L1) stopReedL1(frequency);
-    if (reedActivation.M1) stopReedM1(frequency);
-    if (reedActivation.M2) stopReedM2(frequency);
-    if (reedActivation.M3) stopReedM3(frequency);
-    if (reedActivation.H1) stopReedH1(frequency);
-  };
-
-  return { playActiveReeds, stopActiveReeds };
+// プリセットの取得用のヘルパー関数を追加
+export const usePresetAtPosition = (position: number) => {
+  const presetOrder = useAtomValue(presetOrderAtom);
+  // プリセットの範囲内であることを確認
+  if (
+    position >= 0 &&
+    position < presetOrder.length &&
+    presetOrder[position] !== undefined &&
+    presetOrder[position] < reedActivationPresets.length
+  ) {
+    return reedActivationPresets[presetOrder[position]];
+  }
+  // デフォルトのプリセットを返す
+  return reedActivationPresets[0];
 };
+
+export const usePresetOrder = () => useAtomValue(presetOrderAtom);
+export const useSetPresetOrder = () => useSetAtom(presetOrderAtom);
