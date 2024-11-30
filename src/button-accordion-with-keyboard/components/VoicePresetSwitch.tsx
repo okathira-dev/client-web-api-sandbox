@@ -6,7 +6,7 @@ import {
   useAdoptPreset,
   useReedActivation,
   reedActivationPresets,
-} from "../reeds";
+} from "../atoms/reeds";
 
 export const VoicePresetSwitch: React.FC = () => {
   const selectedPreset = useSelectedPreset();

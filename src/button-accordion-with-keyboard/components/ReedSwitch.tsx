@@ -1,11 +1,7 @@
 import React from "react";
 import Button from "@mui/material/Button";
-import {
-  useReedActivation,
-  useSetReedActivation,
-  reedNames,
-  ReedName,
-} from "../reeds";
+import { useReedActivation, useSetReedActivation } from "../atoms/reeds";
+import { ReedName, reedNames } from "../audio/synth";
 
 export const ReedSwitch: React.FC = () => {
   const reedActivation = useReedActivation();

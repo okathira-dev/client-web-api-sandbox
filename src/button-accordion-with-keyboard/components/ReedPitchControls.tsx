@@ -4,9 +4,8 @@ import {
   useRelativeReedPitches,
   useSetRelativeReedPitches,
   useAdaptAllReedPitches,
-  reedNames,
-} from "../reeds";
-
+} from "../atoms/reeds";
+import { reedNames } from "../audio/synth";
 export const ReedPitchControls: React.FC = () => {
   const relativeReedPitches = useRelativeReedPitches();
   const setRelativeReedPitches = useSetRelativeReedPitches();

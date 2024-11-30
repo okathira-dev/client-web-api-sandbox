@@ -5,7 +5,8 @@ import {
   getFrequency,
   ifWhiteKey,
 } from "../instrumentConfig";
-import { initReeds, usePlayActiveReeds } from "../reeds";
+import { initReeds } from "../audio/synth";
+import { usePlayActiveReeds } from "../atoms/reeds";
 
 export const Accordion: React.FC = () => {
   const [buttonStates, setButtonStates] = useState<Record<string, boolean>>({});
