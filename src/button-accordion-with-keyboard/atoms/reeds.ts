@@ -76,7 +76,9 @@ export const useSetReedActivation = () => useSetAtom(reedActivationAtom);
 type ReedPitches = Record<ReedName, number>;
 
 // リード全体の基準となるピッチ。そのままだとA4=440Hzになる。
-const baseReedPitchAtom = atom<number>(0);
+export const baseReedPitchAtom = atom<number>(0);
+export const useBaseReedPitch = () => useAtomValue(baseReedPitchAtom);
+export const useSetBaseReedPitch = () => useSetAtom(baseReedPitchAtom);
 
 // 基準ピッチに対する各リードの相対値
 const relativeReedPitchesAtom = atom<ReedPitches>({
