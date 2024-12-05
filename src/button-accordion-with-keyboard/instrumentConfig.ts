@@ -105,3 +105,16 @@ export const ifWhiteKey = (key: string) => {
   if (semitoneOffset === undefined) return false;
   return whiteKeyOffsets.includes(((semitoneOffset % 12) + 12) % 12);
 };
+
+// ピッチ指定の単位を定義
+export type PitchUnit = "cent" | "hz";
+
+// Hz から cent への変換関数
+export const hzToCent = (hz: number): number => {
+  return 1200 * Math.log2(hz / CONCERT_PITCH);
+};
+
+// cent から Hz への変換関数
+export const centToHz = (cent: number): number => {
+  return CONCERT_PITCH * Math.pow(2, cent / 1200);
+};

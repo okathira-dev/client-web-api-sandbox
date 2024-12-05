@@ -16,18 +16,16 @@ export const VolumeControl: React.FC = () => {
   };
 
   return (
-    <div style={{ width: "700px" }}>
-      <label>
-        Volume
-        <Slider
-          value={volume}
-          onChange={handleVolumeChange}
-          min={-60}
-          max={0}
-          step={1}
-          valueLabelDisplay="auto"
-        />
-      </label>
-    </div>
+    <label style={{ width: "100%" }}>
+      Volume
+      <Slider
+        value={volume}
+        onChange={handleVolumeChange}
+        min={-60}
+        max={0}
+        step={1}
+        valueLabelDisplay="auto"
+      />
+    </label>
   );
 };

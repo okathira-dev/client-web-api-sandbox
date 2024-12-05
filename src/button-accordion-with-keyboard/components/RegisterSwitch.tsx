@@ -26,6 +26,7 @@ import {
   usePresetOrder,
   useSetPresetOrder,
 } from "../atoms/reeds";
+import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 
 const SortablePresetButton = ({
   position,
@@ -126,19 +127,16 @@ const SortablePresetButton = ({
           <div
             style={{
               position: "absolute",
-              top: "2px",
+              top: "0",
               left: "50%",
               transform: "translateX(-50%)",
-              fontSize: "18px",
-              fontWeight: "bold",
               color:
                 isSelected && isActive
                   ? "rgba(255,255,255,0.8)"
                   : "rgba(0,0,0,0.6)",
-              letterSpacing: "-1px",
             }}
           >
-            ⋮⋮
+            <DragIndicatorIcon fontSize="small" />
           </div>
           <span
             style={{

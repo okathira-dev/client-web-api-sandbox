@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { initReeds } from "../audio/synth";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 
 export function AudioInitializer({ children }: { children: React.ReactNode }) {
   const [isAudioInitialized, setIsAudioInitialized] = useState(false);
@@ -41,9 +42,7 @@ export function AudioInitializer({ children }: { children: React.ReactNode }) {
               gap: "10px",
             }}
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M8 5v14l11-7z" />
-            </svg>
+            <PlayArrowIcon />
             Play Sounds
           </button>
         </div>
