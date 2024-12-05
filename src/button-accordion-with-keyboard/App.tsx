@@ -16,6 +16,8 @@ export function App() {
           justifyContent: "center",
           alignItems: "center",
           height: "100vh",
+          width: "700px",
+          margin: "auto",
         }}
       >
         <VolumeControl />
