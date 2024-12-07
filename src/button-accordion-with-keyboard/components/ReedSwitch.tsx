@@ -18,7 +18,13 @@ export const ReedSwitch: React.FC = () => {
 
   return (
     <div
-      style={{ display: "flex", gap: "8px", marginBottom: buttonPressedMargin }}
+      style={{
+        display: "flex",
+        gap: "8px",
+        marginBottom: buttonPressedMargin,
+        userSelect: "none",
+        WebkitUserSelect: "none",
+      }}
     >
       {reedNames.map((reed) => (
         <Button

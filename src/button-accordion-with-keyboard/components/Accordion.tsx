@@ -62,6 +62,8 @@ export const Accordion: React.FC = () => {
         padding: "16px",
         backgroundColor: "lightgray",
         borderRadius: "16px",
+        userSelect: "none",
+        WebkitUserSelect: "none",
       }}
     >
       {KEYBOARD_LAYOUT.map((row, rowIndex) => (
