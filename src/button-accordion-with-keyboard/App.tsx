@@ -9,8 +9,9 @@ import TuneIcon from "@mui/icons-material/Tune";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import PianoIcon from "@mui/icons-material/Piano";
 import QueueMusicIcon from "@mui/icons-material/QueueMusic";
+import { CSSProperties } from "react";
 
-const containerStyle = {
+const containerStyle: CSSProperties = {
   display: "flex",
   alignItems: "center",
   gap: "8px",
@@ -18,12 +19,14 @@ const containerStyle = {
   position: "relative",
 } as const;
 
-const iconContainerStyle = {
+const iconContainerStyle: CSSProperties = {
   position: "absolute",
   left: "-40px",
+  userSelect: "none",
+  WebkitUserSelect: "none",
 } as const;
 
-const componentContainerStyle = {
+const componentContainerStyle: CSSProperties = {
   width: "100%",
   display: "flex",
   justifyContent: "center",

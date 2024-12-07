@@ -223,21 +223,23 @@ export const RegisterSwitch: React.FC = () => {
   const buttonPressedMargin = "4px";
 
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCenter}
-      onDragEnd={handleDragEnd}
+    <div
+      style={{
+        display: "flex",
+        gap: "2px",
+        marginBottom: buttonPressedMargin,
+        userSelect: "none",
+        WebkitUserSelect: "none",
+      }}
     >
-      <SortableContext
-        items={presetOrder}
-        strategy={horizontalListSortingStrategy}
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
       >
-        <div
-          style={{
-            display: "flex",
-            gap: "2px",
-            marginBottom: buttonPressedMargin,
-          }}
+        <SortableContext
+          items={presetOrder}
+          strategy={horizontalListSortingStrategy}
         >
           {presetOrder.map((presetIndex, position) => {
             const preset = reedActivationPresets[presetIndex]!;
@@ -257,8 +259,8 @@ export const RegisterSwitch: React.FC = () => {
               />
             );
           })}
-        </div>
-      </SortableContext>
-    </DndContext>
+        </SortableContext>
+      </DndContext>
+    </div>
   );
 };
