@@ -29,6 +29,9 @@ module.exports = {
   ignorePatterns: ["dist", ".eslintrc.*", "vite.config.*", "*.md"],
   plugins: ["html", "react-refresh"],
   settings: {
+    react: {
+      version: "detect",
+    },
     "html/html-extensions": [".html"],
   },
 };
