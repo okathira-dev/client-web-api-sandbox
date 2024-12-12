@@ -26,7 +26,7 @@ module.exports = {
       { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
     ],
   },
-  ignorePatterns: ["dist", ".eslintrc.*", "vite.config.*"],
+  ignorePatterns: ["dist", ".eslintrc.*", "vite.config.*", "*.md"],
   plugins: ["html", "react-refresh"],
   settings: {
     "html/html-extensions": [".html"],
