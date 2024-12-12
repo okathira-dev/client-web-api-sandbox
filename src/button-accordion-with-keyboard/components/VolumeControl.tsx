@@ -7,12 +7,11 @@ export const VolumeControl: React.FC = () => {
 
   useEffect(() => {
     setAllReedVolumes(volume);
-  }, []);
+  }, [volume]);
 
   const handleVolumeChange = (_: Event, newValue: number | number[]) => {
     const newVolume = newValue as number;
     setVolume(newVolume);
-    setAllReedVolumes(newVolume);
   };
 
   return (
