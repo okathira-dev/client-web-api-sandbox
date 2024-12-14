@@ -12,7 +12,7 @@ import tsconfigNode from "./tsconfig.node.json" with { type: "json" };
 export default tsEslint.config(
   // 全般
   { files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"] },
-  { ignores: ["dist"] },
+  { ignores: ["dist", "**/*.d.ts"] },
   {
     languageOptions: {
       globals: { ...globals.browser, ...globals.es2021, ...globals.node },
