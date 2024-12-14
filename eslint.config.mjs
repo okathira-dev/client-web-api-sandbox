@@ -7,7 +7,7 @@ import globals from "globals";
 import typescriptEslintParser from "@typescript-eslint/parser";
 import html from "eslint-plugin-html";
 
-// import tsconfigNode from "./tsconfig.node.json" with { type: "json" };
+import tsconfigNode from "./tsconfig.node.json" with { type: "json" };
 
 export default tsEslint.config(
   // 全般
@@ -37,14 +37,20 @@ export default tsEslint.config(
   reactPlugin.configs.flat["jsx-runtime"],
   {
     // eslint-plugin-react-hooks
-    plugins: { "react-hooks": pluginReactHooks },
+    // eslint-plugin-react-hooksプラグインは型がない
+    plugins: {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      "react-hooks": pluginReactHooks,
+    },
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     rules: {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       ...pluginReactHooks.configs.recommended.rules,
     },
   },
   {
     // node
-    files: ["vite.config.ts", "eslint.config.mjs", ".prettierrc.js"], // tsconfigNode.include
+    files: tsconfigNode.include,
     languageOptions: {
       parser: typescriptEslintParser,
       ecmaVersion: "latest",
@@ -59,10 +65,11 @@ export default tsEslint.config(
   },
   {
     // html
+    // eslint-plugin-htmlプラグインは型がない
     files: ["**/*.html"],
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     plugins: { html },
   },
-  eslintConfigPrettier, // eslint-config-prettier は最後
   {
     rules: {
       "@typescript-eslint/explicit-function-return-type": "off",
@@ -72,4 +79,7 @@ export default tsEslint.config(
       ],
     },
   },
+  // eslint-config-prettierプラグインは型がない
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  eslintConfigPrettier, // 最後に適用する
 );
