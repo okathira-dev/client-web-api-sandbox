@@ -5,9 +5,12 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
-    "strict": true
+    "strict": true,
+    "resolveJsonModule": true
   },
   "include": [
-    "vite.config.ts"
+    "vite.config.ts",
+    "eslint.config.mjs",
+    ".prettierrc.js"
   ]
 }
