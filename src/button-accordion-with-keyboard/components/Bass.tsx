@@ -3,12 +3,12 @@ import {
   BASS_KEY_MAP,
   getBassSemitones,
   getTypeFromRow,
-  BassType,
+  StradellaType,
 } from "../bassConfig";
 import { usePlayActiveReeds } from "../hooks/usePlayActiveReeds";
 import { KEYBOARD_LAYOUT, semitoneToFrequency } from "../instrumentConfig";
 
-const bassTypeColors: Record<BassType, string> = {
+const bassTypeColors: Record<StradellaType, string> = {
   Counter: "#ff9800", // オレンジ
   Fundamental: "#2196f3", // ブルー
   Major: "#4caf50", // グリーン
