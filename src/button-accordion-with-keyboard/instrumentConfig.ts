@@ -106,27 +106,42 @@ export const ifWhiteKey = (key: string) => {
   return whiteKeyOffsets.includes(((semitoneOffset % 12) + 12) % 12);
 };
 // 音階の名前のマッピング
-const NOTE_NAMES = [
-  "C",
-  "C#",
-  "D",
-  "D#",
-  "E",
-  "F",
-  "F#",
-  "G",
-  "G#",
-  "A",
-  "A#",
-  "B",
-];
-export const getNoteLabel = (key: string): string => {
+type NoteNameStyle = "en" | "ja";
+export type KeyLabelStyle = "key" | NoteNameStyle;
+const KEY_Label_TEXTS: Record<NoteNameStyle, string[]> = {
+  en: ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"],
+  ja: [
+    "ド",
+    "ド#",
+    "レ",
+    "レ#",
+    "ミ",
+    "ファ",
+    "ファ#",
+    "ソ",
+    "ソ#",
+    "ラ",
+    "ラ#",
+    "シ",
+  ],
+};
+export const getNoteLabel = (key: string, style: KeyLabelStyle): string => {
+  if (style === "key") return key.toUpperCase();
+
   const semitoneOffset = KEY_MAP[key];
-  if (semitoneOffset === undefined) return "";
+  if (semitoneOffset === undefined)
+    throw new Error("semitone offset not found");
+
   const adjustedOffset = semitoneOffset - 3;
-  const octave = Math.floor(adjustedOffset / 12) + 4; // A4を基準にオクターブを計算
   const noteIndex = ((adjustedOffset % 12) + 12) % 12;
-  return `${NOTE_NAMES[noteIndex]}${octave}`;
+  const octave = Math.floor(adjustedOffset / 12) + 4; // A4を基準にオクターブを計算
+
+  switch (style) {
+    case "en":
+      return `${KEY_Label_TEXTS[style][noteIndex]}${octave}`;
+    case "ja":
+      return `${KEY_Label_TEXTS[style][noteIndex]}`;
+  }
 };
 
 // ピッチ指定の単位を定義

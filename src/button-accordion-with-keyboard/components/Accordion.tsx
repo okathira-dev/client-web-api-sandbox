@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import {
   KEYBOARD_LAYOUT,
   KEY_MAP,
+  KeyLabelStyle,
   getFrequency,
   getNoteLabel,
   ifWhiteKey,
@@ -14,7 +15,7 @@ import Typography from "@mui/material/Typography";
 
 export const Accordion: React.FC = () => {
   const [buttonStates, setButtonStates] = useState<Record<string, boolean>>({});
-  const [displayLabel, setDisplayLabel] = useState<"key" | "note">("note");
+  const [keyLabelStyle, setKeyLabelStyle] = useState<KeyLabelStyle>("en");
 
   const { playActiveReeds, stopActiveReeds } = usePlayActiveReeds();
 
@@ -59,29 +60,31 @@ export const Accordion: React.FC = () => {
     };
   }, [buttonDown, buttonUp]);
 
-  const handleDisplayLabelChange = (
+  const handleKeyLabelStyleChange = (
     _event: React.MouseEvent<HTMLElement>,
-    newDisplayLabel: "key" | "note",
+    newKeyLabelStyle: KeyLabelStyle | null,
   ) => {
-    if (newDisplayLabel !== null) {
-      setDisplayLabel(newDisplayLabel);
-    }
+    if (newKeyLabelStyle === null) return; // 常にどれか一つは選択されているようにする
+    setKeyLabelStyle(newKeyLabelStyle);
   };
 
   return (
     <div>
       <ToggleButtonGroup
         color="primary"
-        value={displayLabel}
+        value={keyLabelStyle}
         exclusive
-        onChange={handleDisplayLabelChange}
+        onChange={handleKeyLabelStyleChange}
         aria-label="display label"
       >
         <ToggleButton value="key" aria-label="key">
           <Typography>Key Labels (QWERTY)</Typography>
         </ToggleButton>
-        <ToggleButton value="note" aria-label="note">
+        <ToggleButton value="en" aria-label="note en">
           <Typography>Note Labels (C4, C#4...)</Typography>
+        </ToggleButton>
+        <ToggleButton value="ja" aria-label="note ja">
+          <Typography>Note Labels (ドレミ)</Typography>
         </ToggleButton>
       </ToggleButtonGroup>
       <div
@@ -107,13 +110,13 @@ export const Accordion: React.FC = () => {
           >
             {row.map((key) => {
               const isWhite = ifWhiteKey(key);
-              const label =
-                displayLabel === "key" ? key.toUpperCase() : getNoteLabel(key);
+              const label = getNoteLabel(key, keyLabelStyle);
 
               return (
                 <AccordionButton
                   key={key}
                   label={label}
+                  fontSize={keyLabelStyle === "ja" ? "18px" : "20px"}
                   isWhite={isWhite}
                   isActive={!!buttonStates[key]}
                   onMouseDown={() => buttonDown(key)}
