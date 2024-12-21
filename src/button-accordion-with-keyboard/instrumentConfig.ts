@@ -105,6 +105,29 @@ export const ifWhiteKey = (key: string) => {
   if (semitoneOffset === undefined) return false;
   return whiteKeyOffsets.includes(((semitoneOffset % 12) + 12) % 12);
 };
+// 音階の名前のマッピング
+const NOTE_NAMES = [
+  "C",
+  "C#",
+  "D",
+  "D#",
+  "E",
+  "F",
+  "F#",
+  "G",
+  "G#",
+  "A",
+  "A#",
+  "B",
+];
+export const getNoteLabel = (key: string): string => {
+  const semitoneOffset = KEY_MAP[key];
+  if (semitoneOffset === undefined) return "";
+  const adjustedOffset = semitoneOffset - 3;
+  const octave = Math.floor(adjustedOffset / 12) + 4; // A4を基準にオクターブを計算
+  const noteIndex = ((adjustedOffset % 12) + 12) % 12;
+  return `${NOTE_NAMES[noteIndex]}${octave}`;
+};
 
 // ピッチ指定の単位を定義
 export type PitchUnit = "cent" | "hz";

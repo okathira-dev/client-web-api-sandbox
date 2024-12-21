@@ -3,12 +3,18 @@ import {
   KEYBOARD_LAYOUT,
   KEY_MAP,
   getFrequency,
+  getNoteLabel,
   ifWhiteKey,
 } from "../instrumentConfig";
 import { usePlayActiveReeds } from "../hooks/usePlayActiveReeds";
+import { AccordionButton } from "./AccordionButton";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import Typography from "@mui/material/Typography";
 
 export const Accordion: React.FC = () => {
   const [buttonStates, setButtonStates] = useState<Record<string, boolean>>({});
+  const [displayLabel, setDisplayLabel] = useState<"key" | "note">("note");
 
   const { playActiveReeds, stopActiveReeds } = usePlayActiveReeds();
 
@@ -53,63 +59,71 @@ export const Accordion: React.FC = () => {
     };
   }, [buttonDown, buttonUp]);
 
-  return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: "4px",
-        padding: "16px",
-        backgroundColor: "lightgray",
-        borderRadius: "16px",
-        userSelect: "none",
-        WebkitUserSelect: "none",
-      }}
-    >
-      {KEYBOARD_LAYOUT.map((row, rowIndex) => (
-        <div
-          key={rowIndex}
-          style={{
-            display: "flex",
-            marginLeft: `${rowIndex * (24 + 2)}px`, // 行が下がるごとに右にずらす
-            gap: "4px",
-          }}
-        >
-          {row.map((key) => {
-            const isWhite = ifWhiteKey(key);
+  const handleDisplayLabelChange = (
+    _event: React.MouseEvent<HTMLElement>,
+    newDisplayLabel: "key" | "note",
+  ) => {
+    if (newDisplayLabel !== null) {
+      setDisplayLabel(newDisplayLabel);
+    }
+  };
 
-            return (
-              <button
-                key={key}
-                style={{
-                  width: "48px",
-                  height: "48px",
-                  padding: 0,
-                  borderRadius: "50%",
-                  backgroundColor: isWhite ? "white" : "black",
-                  color: isWhite ? "black" : "white",
-                  border: "1px solid lightgray",
-                  fontSize: "20px",
-                  textAlign: "center",
-                  lineHeight: "48px",
-                  fontWeight: "bold",
-                  boxShadow: buttonStates[key]
-                    ? "0px 0px 6px 2px green"
-                    : "none",
-                }}
-                onMouseDown={() => {
-                  buttonDown(key);
-                }}
-                onMouseUp={() => {
-                  buttonUp(key);
-                }}
-              >
-                {key.toUpperCase()}
-              </button>
-            );
-          })}
-        </div>
-      ))}
+  return (
+    <div>
+      <ToggleButtonGroup
+        color="primary"
+        value={displayLabel}
+        exclusive
+        onChange={handleDisplayLabelChange}
+        aria-label="display label"
+      >
+        <ToggleButton value="key" aria-label="key">
+          <Typography>Key Labels (QWERTY)</Typography>
+        </ToggleButton>
+        <ToggleButton value="note" aria-label="note">
+          <Typography>Note Labels (C4, C#4...)</Typography>
+        </ToggleButton>
+      </ToggleButtonGroup>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "4px",
+          padding: "16px",
+          backgroundColor: "lightgray",
+          borderRadius: "16px",
+          userSelect: "none",
+          WebkitUserSelect: "none",
+        }}
+      >
+        {KEYBOARD_LAYOUT.map((row, rowIndex) => (
+          <div
+            key={rowIndex}
+            style={{
+              display: "flex",
+              marginLeft: `${rowIndex * (24 + 2)}px`, // 行が下がるごとに右にずらす
+              gap: "4px",
+            }}
+          >
+            {row.map((key) => {
+              const isWhite = ifWhiteKey(key);
+              const label =
+                displayLabel === "key" ? key.toUpperCase() : getNoteLabel(key);
+
+              return (
+                <AccordionButton
+                  key={key}
+                  label={label}
+                  isWhite={isWhite}
+                  isActive={!!buttonStates[key]}
+                  onMouseDown={() => buttonDown(key)}
+                  onMouseUp={() => buttonUp(key)}
+                />
+              );
+            })}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
