@@ -132,9 +132,9 @@ export const getNoteLabel = (key: string, style: KeyLabelStyle): string => {
   if (semitoneOffset === undefined)
     throw new Error("semitone offset not found");
 
-  const adjustedOffset = semitoneOffset - 3;
+  const adjustedOffset = semitoneOffset + 9; // C4を基準にオフセットを計算
   const noteIndex = ((adjustedOffset % 12) + 12) % 12;
-  const octave = Math.floor(adjustedOffset / 12) + 4; // A4を基準にオクターブを計算
+  const octave = Math.floor(adjustedOffset / 12) + 4; // 0をA4としてオクターブを計算
 
   switch (style) {
     case "en":
