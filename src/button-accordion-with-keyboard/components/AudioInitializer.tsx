@@ -2,10 +2,19 @@ import { useState } from "react";
 import { initReeds } from "../audio/synth";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 
+const disableAltKey = () => {
+  document.addEventListener("keydown", (e) => {
+    if (e.altKey) {
+      e.preventDefault();
+    }
+  });
+};
+
 export function AudioInitializer({ children }: { children: React.ReactNode }) {
   const [isAudioInitialized, setIsAudioInitialized] = useState(false);
 
   const handleInitialize = () => {
+    disableAltKey();
     initReeds();
     setIsAudioInitialized(true);
   };
