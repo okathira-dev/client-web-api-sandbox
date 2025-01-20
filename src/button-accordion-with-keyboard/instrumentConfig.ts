@@ -1,5 +1,5 @@
 // A4の周波数[Hz]
-const CONCERT_PITCH = 440;
+export const CONCERT_PITCH = 440;
 
 // ボタンアコーディオンの音階のマッピング
 // 右上のキーは半音１つ分高く、右隣のキーは半音３つ分高い。そのため同じ音が鳴るキーが存在する。
@@ -58,7 +58,7 @@ export const KEY_MAP: Record<string, number> = {
 };
 
 // 基準音から半音何個分離れているかを受け取り周波数を計算する
-const semitoneToFrequency = (semitone: number) => {
+export const semitoneToFrequency = (semitone: number) => {
   return CONCERT_PITCH * Math.pow(2, semitone / 12);
 };
 

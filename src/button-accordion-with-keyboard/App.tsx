@@ -3,13 +3,15 @@ import { ReedPitchControls } from "./components/ReedPitchControls";
 import { ReedSwitch } from "./components/ReedSwitch";
 import { RegisterSwitch } from "./components/RegisterSwitch";
 import { Accordion } from "./components/Accordion";
+import { Bass } from "./components/Bass";
 import { AudioInitializer } from "./components/AudioInitializer";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import TuneIcon from "@mui/icons-material/Tune";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import PianoIcon from "@mui/icons-material/Piano";
 import QueueMusicIcon from "@mui/icons-material/QueueMusic";
-import { CSSProperties } from "react";
+import { CSSProperties, useState } from "react";
+import { FormControlLabel, Switch } from "@mui/material";
 
 const containerStyle: CSSProperties = {
   display: "flex",
@@ -49,6 +51,8 @@ const ComponentWithIcon = ({ Icon, Component }: ComponentWithIconProps) => (
 );
 
 export function App() {
+  const [isRightHand, setIsRightHand] = useState(true);
+
   return (
     <AudioInitializer>
       <div
@@ -67,7 +71,19 @@ export function App() {
         <ComponentWithIcon Icon={TuneIcon} Component={ReedPitchControls} />
         <ComponentWithIcon Icon={MusicNoteIcon} Component={ReedSwitch} />
         <ComponentWithIcon Icon={QueueMusicIcon} Component={RegisterSwitch} />
-        <ComponentWithIcon Icon={PianoIcon} Component={Accordion} />
+        <FormControlLabel
+          control={
+            <Switch
+              checked={isRightHand}
+              onChange={(e) => setIsRightHand(e.target.checked)}
+            />
+          }
+          label={isRightHand ? "右手側" : "左手側"}
+        />
+        <ComponentWithIcon
+          Icon={PianoIcon}
+          Component={isRightHand ? Accordion : Bass}
+        />
       </div>
     </AudioInitializer>
   );
