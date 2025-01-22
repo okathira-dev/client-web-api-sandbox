@@ -55,7 +55,7 @@
     "prettier": "^3.3.3",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.18.1",
-    "vite": "^5.4.10"
+    "vite": "^5.4.14"
   },
   "lint-staged": {
     "*.{jsx,tsx,html}": [
