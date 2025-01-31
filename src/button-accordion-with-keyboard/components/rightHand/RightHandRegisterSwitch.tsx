@@ -22,11 +22,12 @@ import {
   useSetSelectedPreset,
   useAdoptPreset,
   useReedActivation,
-  reedActivationPresets,
   usePresetOrder,
   useSetPresetOrder,
-} from "../atoms/reeds";
+  rightHandReedActivationPresets,
+} from "../../atoms/rightHand/rightHandState";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
+import { ReedName } from "../../config/rightHand/rightHandConfig";
 
 const SortablePresetButton = ({
   position,
@@ -41,7 +42,7 @@ const SortablePresetButton = ({
   presetIndex: number;
   isActive: boolean;
   isSelected: boolean;
-  preset: (typeof reedActivationPresets)[number];
+  preset: Record<ReedName, boolean>;
   onPresetChange: (index: number) => void;
   buttonPressedMargin: string;
 }) => {
@@ -148,15 +149,15 @@ const SortablePresetButton = ({
           >
             <span>H</span>
             <span></span>
-            <span>{preset.H1 && "1"}</span>
+            <span>{preset.HIGH && "1"}</span>
             <span></span>
             <span>M</span>
-            <span>{preset.M1 && "1"}</span>
-            <span>{preset.M2 && "2"}</span>
-            <span>{preset.M3 && "3"}</span>
+            <span>{preset.MID_1 && "1"}</span>
+            <span>{preset.MID_2 && "2"}</span>
+            <span>{preset.MID_3 && "3"}</span>
             <span>L</span>
             <span></span>
-            <span>{preset.L1 && "1"}</span>
+            <span>{preset.LOW && "1"}</span>
             <span></span>
           </span>
         </div>
@@ -165,8 +166,7 @@ const SortablePresetButton = ({
   );
 };
 
-// 音色切り替えスイッチ
-export const RegisterSwitch: React.FC = () => {
+export const RightHandRegisterSwitch: React.FC = () => {
   const selectedPreset = useSelectedPreset();
   const setSelectedPreset = useSetSelectedPreset();
   const adaptPreset = useAdoptPreset();
@@ -242,7 +242,7 @@ export const RegisterSwitch: React.FC = () => {
           strategy={horizontalListSortingStrategy}
         >
           {presetOrder.map((presetIndex, position) => {
-            const preset = reedActivationPresets[presetIndex]!;
+            const preset = rightHandReedActivationPresets[presetIndex]!;
             const isActive =
               JSON.stringify(preset) === JSON.stringify(reedActivation);
 

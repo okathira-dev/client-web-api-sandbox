@@ -1,14 +1,14 @@
 import React from "react";
-import { useReedActivation } from "../atoms/reeds";
+import { useReedActivation } from "../../atoms/rightHand/rightHandState";
 import {
   usePlayReedL1,
   usePlayReedM1,
   usePlayReedM2,
   usePlayReedM3,
   usePlayReedH1,
-} from "../atoms/reeds";
+} from "../../atoms/rightHand/rightHandState";
 
-export const usePlayActiveReeds = () => {
+export const useRightHandPlayActiveReeds = () => {
   const reedActivation = useReedActivation();
   const { playReed: playReedL1, stopReed: stopReedL1 } = usePlayReedL1();
   const { playReed: playReedM1, stopReed: stopReedM1 } = usePlayReedM1();
@@ -28,25 +28,25 @@ export const usePlayActiveReeds = () => {
 
     // 各リードについて、状態が変化した場合のみ処理を行う
     frequencies.forEach((frequency) => {
-      if (prevActivation.L1 !== reedActivation.L1) {
-        if (prevActivation.L1) stopReedL1(frequency);
-        if (reedActivation.L1) playReedL1(frequency);
+      if (prevActivation.LOW !== reedActivation.LOW) {
+        if (prevActivation.LOW) stopReedL1(frequency);
+        if (reedActivation.LOW) playReedL1(frequency);
       }
-      if (prevActivation.M1 !== reedActivation.M1) {
-        if (prevActivation.M1) stopReedM1(frequency);
-        if (reedActivation.M1) playReedM1(frequency);
+      if (prevActivation.MID_1 !== reedActivation.MID_1) {
+        if (prevActivation.MID_1) stopReedM1(frequency);
+        if (reedActivation.MID_1) playReedM1(frequency);
       }
-      if (prevActivation.M2 !== reedActivation.M2) {
-        if (prevActivation.M2) stopReedM2(frequency);
-        if (reedActivation.M2) playReedM2(frequency);
+      if (prevActivation.MID_2 !== reedActivation.MID_2) {
+        if (prevActivation.MID_2) stopReedM2(frequency);
+        if (reedActivation.MID_2) playReedM2(frequency);
       }
-      if (prevActivation.M3 !== reedActivation.M3) {
-        if (prevActivation.M3) stopReedM3(frequency);
-        if (reedActivation.M3) playReedM3(frequency);
+      if (prevActivation.MID_3 !== reedActivation.MID_3) {
+        if (prevActivation.MID_3) stopReedM3(frequency);
+        if (reedActivation.MID_3) playReedM3(frequency);
       }
-      if (prevActivation.H1 !== reedActivation.H1) {
-        if (prevActivation.H1) stopReedH1(frequency);
-        if (reedActivation.H1) playReedH1(frequency);
+      if (prevActivation.HIGH !== reedActivation.HIGH) {
+        if (prevActivation.HIGH) stopReedH1(frequency);
+        if (reedActivation.HIGH) playReedH1(frequency);
       }
     });
 
@@ -67,20 +67,20 @@ export const usePlayActiveReeds = () => {
 
   const playActiveReeds = (frequency: number) => {
     activeFrequenciesRef.current.add(frequency);
-    if (reedActivation.L1) playReedL1(frequency);
-    if (reedActivation.M1) playReedM1(frequency);
-    if (reedActivation.M2) playReedM2(frequency);
-    if (reedActivation.M3) playReedM3(frequency);
-    if (reedActivation.H1) playReedH1(frequency);
+    if (reedActivation.LOW) playReedL1(frequency);
+    if (reedActivation.MID_1) playReedM1(frequency);
+    if (reedActivation.MID_2) playReedM2(frequency);
+    if (reedActivation.MID_3) playReedM3(frequency);
+    if (reedActivation.HIGH) playReedH1(frequency);
   };
 
   const stopActiveReeds = (frequency: number) => {
     activeFrequenciesRef.current.delete(frequency);
-    if (reedActivation.L1) stopReedL1(frequency);
-    if (reedActivation.M1) stopReedM1(frequency);
-    if (reedActivation.M2) stopReedM2(frequency);
-    if (reedActivation.M3) stopReedM3(frequency);
-    if (reedActivation.H1) stopReedH1(frequency);
+    if (reedActivation.LOW) stopReedL1(frequency);
+    if (reedActivation.MID_1) stopReedM1(frequency);
+    if (reedActivation.MID_2) stopReedM2(frequency);
+    if (reedActivation.MID_3) stopReedM3(frequency);
+    if (reedActivation.HIGH) stopReedH1(frequency);
   };
 
   return { playActiveReeds, stopActiveReeds };

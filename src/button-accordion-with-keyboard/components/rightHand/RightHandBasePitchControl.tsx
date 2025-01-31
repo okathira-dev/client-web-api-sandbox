@@ -3,19 +3,19 @@ import TextField from "@mui/material/TextField";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
-import { PitchUnit, hzToCent, centToHz } from "../../instrumentConfig";
+import { PitchUnit, hzToCent, centToHz } from "../../config/shared/audioConfig";
 import {
   useBaseReedPitch,
   useSetBaseReedPitch,
   useAdaptAllReedPitches,
-} from "../../atoms/reeds";
+} from "../../atoms/rightHand/rightHandState";
 
 // ピッチ単位に応じたステップ値を返す
 const getPitchLimits = (unit: PitchUnit) => {
   return unit === "cent" ? { step: 1 } : { step: 0.1 };
 };
 
-export const BasePitchControl: React.FC = () => {
+export const RightHandBasePitchControl: React.FC = () => {
   const basePitchCent = useBaseReedPitch();
   const setBasePitch = useSetBaseReedPitch();
   const [pitchUnit, setPitchUnit] = useState<PitchUnit>("cent");
