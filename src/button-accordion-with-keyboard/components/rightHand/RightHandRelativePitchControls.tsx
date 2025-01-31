@@ -3,10 +3,18 @@ import TextField from "@mui/material/TextField";
 import {
   useRelativeReedPitches,
   useSetRelativeReedPitches,
-} from "../../atoms/reeds";
-import { reedNames } from "../../audio/synth";
+} from "../../atoms/rightHand/rightHandState";
+import { ReedName } from "../../config/rightHand/rightHandConfig";
 
-export const RelativePitchControls: React.FC = () => {
+const reedLabels: Record<ReedName, string> = {
+  LOW: "L1",
+  MID_1: "M1",
+  MID_2: "M2",
+  MID_3: "M3",
+  HIGH: "H1",
+};
+
+export const RightHandRelativePitchControls: React.FC = () => {
   const relativeReedPitches = useRelativeReedPitches();
   const setRelativeReedPitches = useSetRelativeReedPitches();
 
@@ -14,7 +22,7 @@ export const RelativePitchControls: React.FC = () => {
     <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
       <span style={{ flexShrink: 0 }}>相対ピッチ</span>
       <div style={{ display: "flex", gap: "8px" }}>
-        {reedNames.map((reed) => (
+        {(Object.keys(relativeReedPitches) as ReedName[]).map((reed) => (
           <div
             key={reed}
             style={{
@@ -23,7 +31,7 @@ export const RelativePitchControls: React.FC = () => {
               alignItems: "center",
             }}
           >
-            <span>{reed}</span>
+            <span>{reedLabels[reed]}</span>
             <TextField
               type="number"
               value={relativeReedPitches[reed]}

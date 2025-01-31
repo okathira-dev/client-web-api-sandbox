@@ -1,9 +1,9 @@
-import { VolumeControl } from "./components/VolumeControl";
-import { ReedPitchControls } from "./components/ReedPitchControls";
-import { ReedSwitch } from "./components/ReedSwitch";
-import { RegisterSwitch } from "./components/RegisterSwitch";
-import { Accordion } from "./components/Accordion";
-import { AudioInitializer } from "./components/AudioInitializer";
+import { RightHandVolumeControl } from "./components/rightHand/RightHandVolumeControl";
+import { RightHandReedPitchControls } from "./components/rightHand/RightHandReedPitchControls";
+import { RightHandReedSwitch } from "./components/rightHand/RightHandReedSwitch";
+import { RightHandRegisterSwitch } from "./components/rightHand/RightHandRegisterSwitch";
+import { RightHandAccordion } from "./components/rightHand/RightHandAccordion";
+import { AudioInitializer } from "./components/shared/AudioInitializer";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import TuneIcon from "@mui/icons-material/Tune";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
@@ -63,11 +63,23 @@ export function App() {
           margin: "auto",
         }}
       >
-        <ComponentWithIcon Icon={VolumeUpIcon} Component={VolumeControl} />
-        <ComponentWithIcon Icon={TuneIcon} Component={ReedPitchControls} />
-        <ComponentWithIcon Icon={MusicNoteIcon} Component={ReedSwitch} />
-        <ComponentWithIcon Icon={QueueMusicIcon} Component={RegisterSwitch} />
-        <ComponentWithIcon Icon={PianoIcon} Component={Accordion} />
+        <ComponentWithIcon
+          Icon={VolumeUpIcon}
+          Component={RightHandVolumeControl}
+        />
+        <ComponentWithIcon
+          Icon={TuneIcon}
+          Component={RightHandReedPitchControls}
+        />
+        <ComponentWithIcon
+          Icon={MusicNoteIcon}
+          Component={RightHandReedSwitch}
+        />
+        <ComponentWithIcon
+          Icon={QueueMusicIcon}
+          Component={RightHandRegisterSwitch}
+        />
+        <ComponentWithIcon Icon={PianoIcon} Component={RightHandAccordion} />
       </div>
     </AudioInitializer>
   );
