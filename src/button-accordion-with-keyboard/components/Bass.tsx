@@ -4,6 +4,7 @@ import {
   getBassSemitones,
   getTypeFromRow,
   StradellaType,
+  getKeyLabel,
 } from "../bassConfig";
 import { usePlayActiveReeds } from "../hooks/usePlayActiveReeds";
 import { KEYBOARD_LAYOUT, semitoneToFrequency } from "../instrumentConfig";
@@ -111,12 +112,16 @@ export const Bass: React.FC = () => {
                   boxShadow: buttonStates[key]
                     ? "0px 0px 6px 2px rgba(0,0,0,0.3)"
                     : "none",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
                 onMouseDown={() => buttonDown(key)}
                 onMouseUp={() => buttonUp(key)}
                 onMouseLeave={() => buttonStates[key] && buttonUp(key)}
               >
-                {key.toUpperCase()}
+                {getKeyLabel(key)}
               </button>
             );
           })}

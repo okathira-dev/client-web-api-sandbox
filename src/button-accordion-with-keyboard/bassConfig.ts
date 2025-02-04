@@ -96,3 +96,50 @@ export const getBassSemitones = (row: number, col: number): number[] => {
   const semitones = calculateSemitones(type, rootSemitone);
   return semitones;
 };
+
+// A4を基準とした音程から音階名のインデックスを計算する
+const getNoteIndex = (semitone: number, offset: number = 9): number => {
+  return (((semitone + offset) % 12) + 12) % 12;
+};
+
+// コードの種類の表示名
+export const CHORD_TYPE_LABELS: Record<
+  StradellaType,
+  (rootNote: number) => string
+> = {
+  Counter: (rootNote) => {
+    const thirdNote = getNoteIndex(rootNote + 4);
+    return NOTE_LABELS.en[thirdNote] ?? "?";
+  },
+  Fundamental: (rootNote) => {
+    const noteIndex = getNoteIndex(rootNote);
+    return NOTE_LABELS.en[noteIndex] ?? "?";
+  },
+  Major: (rootNote) => {
+    const noteIndex = getNoteIndex(rootNote);
+    return `${NOTE_LABELS.en[noteIndex] ?? "?"}M`;
+  },
+  Minor: (rootNote) => {
+    const noteIndex = getNoteIndex(rootNote);
+    return `${NOTE_LABELS.en[noteIndex] ?? "?"}m`;
+  },
+} as const;
+
+// 音階の名前のマッピング
+export const NOTE_LABELS = {
+  en: ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"],
+} as const;
+
+// キーに対応する音階とコードの種類を取得する
+export const getKeyLabel = (key: string): string => {
+  const bassInfo = BASS_KEY_MAP[key];
+  if (!bassInfo) return key.toUpperCase();
+
+  const { row, col } = bassInfo;
+  const type = getTypeFromRow(row);
+  const rootNote = ROOT_NOTES[col];
+  if (rootNote === undefined) return key.toUpperCase();
+
+  const chordType = CHORD_TYPE_LABELS[type](rootNote);
+  return chordType;
+};
