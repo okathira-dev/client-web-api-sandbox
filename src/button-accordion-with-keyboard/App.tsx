@@ -10,8 +10,20 @@ import TuneIcon from "@mui/icons-material/Tune";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import PianoIcon from "@mui/icons-material/Piano";
 import QueueMusicIcon from "@mui/icons-material/QueueMusic";
+import KeyboardIcon from "@mui/icons-material/Keyboard";
 import { CSSProperties, useState } from "react";
-import { FormControlLabel, Switch } from "@mui/material";
+import {
+  FormControlLabel,
+  Switch,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@mui/material";
+import {
+  KeyboardLayoutType,
+  setKeyboardLayout as setGlobalKeyboardLayout,
+} from "./instrumentConfig";
 
 const containerStyle: CSSProperties = {
   display: "flex",
@@ -52,6 +64,15 @@ const ComponentWithIcon = ({ Icon, Component }: ComponentWithIconProps) => (
 
 export function App() {
   const [isRightHand, setIsRightHand] = useState(true);
+  const [keyboardLayout, setKeyboardLayout] =
+    useState<KeyboardLayoutType>("us");
+
+  const handleLayoutChange = (layout: KeyboardLayoutType) => {
+    setKeyboardLayout(layout); // Reactのstate更新
+    setGlobalKeyboardLayout(layout); // グローバルな設定を更新
+  };
+
+  const KeyboardLayoutLabelId = "keyboard-layout-label";
 
   return (
     <AudioInitializer>
@@ -71,15 +92,38 @@ export function App() {
         <ComponentWithIcon Icon={TuneIcon} Component={ReedPitchControls} />
         <ComponentWithIcon Icon={MusicNoteIcon} Component={ReedSwitch} />
         <ComponentWithIcon Icon={QueueMusicIcon} Component={RegisterSwitch} />
-        <FormControlLabel
-          control={
-            <Switch
-              checked={isRightHand}
-              onChange={(e) => setIsRightHand(e.target.checked)}
-            />
-          }
-          label={isRightHand ? "右手側" : "左手側"}
-        />
+        <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={isRightHand}
+                onChange={(e) => setIsRightHand(e.target.checked)}
+              />
+            }
+            label={isRightHand ? "右手側" : "左手側"}
+          />
+          <FormControl size="small" style={{ minWidth: 120 }}>
+            <InputLabel id={KeyboardLayoutLabelId}>
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "4px" }}
+              >
+                <KeyboardIcon fontSize="small" />
+                キーボード
+              </div>
+            </InputLabel>
+            <Select
+              id={KeyboardLayoutLabelId}
+              value={keyboardLayout}
+              label="キーボード"
+              onChange={(e) =>
+                handleLayoutChange(e.target.value as KeyboardLayoutType)
+              }
+            >
+              <MenuItem value="us">USキーボード</MenuItem>
+              <MenuItem value="jp">日本語キーボード</MenuItem>
+            </Select>
+          </FormControl>
+        </div>
         <ComponentWithIcon
           Icon={PianoIcon}
           Component={isRightHand ? Accordion : Bass}

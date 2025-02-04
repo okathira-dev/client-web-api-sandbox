@@ -1,13 +1,16 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
-  BASS_KEY_MAP,
+  getBassKeyMap,
   getBassSemitones,
   getTypeFromRow,
   StradellaType,
   getKeyLabel,
 } from "../bassConfig";
 import { usePlayActiveReeds } from "../hooks/usePlayActiveReeds";
-import { KEYBOARD_LAYOUT, semitoneToFrequency } from "../instrumentConfig";
+import {
+  currentKeyboardLayout,
+  semitoneToFrequency,
+} from "../instrumentConfig";
 
 const bassTypeColors: Record<StradellaType, string> = {
   Counter: "#ff9800", // オレンジ
@@ -22,7 +25,7 @@ export const Bass: React.FC = () => {
 
   const buttonDown = useCallback(
     (key: string) => {
-      const position = BASS_KEY_MAP[key];
+      const position = getBassKeyMap()[key];
       if (position && !buttonStates[key]) {
         const semitones = getBassSemitones(position.row, position.col);
         const frequencies = semitones.map(semitoneToFrequency);
@@ -35,7 +38,7 @@ export const Bass: React.FC = () => {
 
   const buttonUp = useCallback(
     (key: string) => {
-      const position = BASS_KEY_MAP[key];
+      const position = getBassKeyMap()[key];
       if (position) {
         const semitones = getBassSemitones(position.row, position.col);
         const frequencies = semitones.map(semitoneToFrequency);
@@ -76,7 +79,7 @@ export const Bass: React.FC = () => {
         WebkitUserSelect: "none",
       }}
     >
-      {KEYBOARD_LAYOUT.map((row, rowIndex) => (
+      {currentKeyboardLayout.map((row: string[], rowIndex: number) => (
         <div
           key={rowIndex}
           style={{
@@ -85,10 +88,11 @@ export const Bass: React.FC = () => {
             gap: "4px",
           }}
         >
-          {row.map((key) => {
+          {row.map((key: string | null) => {
             if (key === null) return null;
-            if (!(key in BASS_KEY_MAP)) return null;
-            const position = BASS_KEY_MAP[key];
+            const bassKeyMap = getBassKeyMap();
+            if (!(key in bassKeyMap)) return null;
+            const position = bassKeyMap[key];
             if (position === undefined) return null;
             const type = getTypeFromRow(position.row);
 

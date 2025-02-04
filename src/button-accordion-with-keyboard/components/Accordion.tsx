@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
-  KEYBOARD_LAYOUT,
-  KEY_MAP,
+  currentKeyboardLayout,
+  currentKeyMap,
   KeyLabelStyle,
   getFrequency,
   getNoteLabel,
@@ -21,7 +21,7 @@ export const Accordion: React.FC = () => {
 
   const buttonDown = useCallback(
     (key: string) => {
-      const semitoneOffset = KEY_MAP[key];
+      const semitoneOffset = currentKeyMap[key];
       if (semitoneOffset !== undefined && !buttonStates[key]) {
         const frequency = getFrequency(key);
         playActiveReeds(frequency);
@@ -33,7 +33,7 @@ export const Accordion: React.FC = () => {
 
   const buttonUp = useCallback(
     (key: string) => {
-      const semitoneOffset = KEY_MAP[key];
+      const semitoneOffset = currentKeyMap[key];
       if (semitoneOffset !== undefined) {
         const frequency = getFrequency(key);
         stopActiveReeds(frequency);
@@ -99,7 +99,7 @@ export const Accordion: React.FC = () => {
           WebkitUserSelect: "none",
         }}
       >
-        {KEYBOARD_LAYOUT.map((row, rowIndex) => (
+        {currentKeyboardLayout.map((row: string[], rowIndex: number) => (
           <div
             key={rowIndex}
             style={{
@@ -108,7 +108,8 @@ export const Accordion: React.FC = () => {
               gap: "4px",
             }}
           >
-            {row.map((key) => {
+            {row.map((key: string | null) => {
+              if (key === null) return null;
               const isWhite = ifWhiteKey(key);
               const label = getNoteLabel(key, keyLabelStyle);
 

@@ -1,4 +1,4 @@
-import { KEYBOARD_LAYOUT } from "./instrumentConfig";
+import { currentKeyboardLayout } from "./instrumentConfig";
 
 // ベース音のタイプ
 export type StradellaType = "Counter" | "Fundamental" | "Major" | "Minor";
@@ -36,15 +36,21 @@ export const getTypeFromRow = (row: number): StradellaType => {
   }
 };
 
-// キーとベースボタンのマッピング
-export const BASS_KEY_MAP: Record<string, { row: number; col: number }> = {};
-KEYBOARD_LAYOUT.forEach((row, rowIndex) => {
-  row.forEach((key, colIndex) => {
-    if (key !== null) {
-      BASS_KEY_MAP[key] = { row: rowIndex, col: colIndex };
-    }
+// キーとベースボタンのマッピングを生成する関数
+export const getBassKeyMap = (): Record<
+  string,
+  { row: number; col: number }
+> => {
+  const bassKeyMap: Record<string, { row: number; col: number }> = {};
+  currentKeyboardLayout.forEach((row, rowIndex) => {
+    row.forEach((key, colIndex) => {
+      if (key !== null) {
+        bassKeyMap[key] = { row: rowIndex, col: colIndex };
+      }
+    });
   });
-});
+  return bassKeyMap;
+};
 
 // TODO: リードセットの実装
 // const chordReeds = ["soprano", "alto"] as const; // TODO: "contralto" もあるらしいが音程がよくわからないので調べる
@@ -115,7 +121,7 @@ const CENTER_INDEX = 5;
 
 // キーに対応する音階とコードの種類を取得する
 export const getKeyLabel = (key: string): string => {
-  const bassInfo = BASS_KEY_MAP[key];
+  const bassInfo = getBassKeyMap()[key];
   if (!bassInfo) return key.toUpperCase();
 
   const { row, col } = bassInfo;
