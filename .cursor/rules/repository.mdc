@@ -1,0 +1,45 @@
+---
+description: このリポジトリ全体に関する説明。それぞれのディレクトリのプロジェクトについての概要。
+globs: 
+---
+
+# リポジトリ
+
+このリポジトリは様々な Web API を使ったサンドボックスです。
+
+## 環境
+
+主に以下のフレームワーク・ライブラリを使います
+
+- Vite
+- TypeScript
+- React
+- Jotai
+- MUI
+
+その他はプロジェクトに応じて必要なものを使います。
+
+## start dev
+
+```bash
+npm run dev
+```
+
+## プロジェクトフォルダ
+
+### src/index.html
+
+以下のページの目次となるページ
+
+### src/button-accordion-with-keyboard
+
+クロマティックボタンアコーディオンを演奏できるウェブアプリ
+
+### src/webcodecs-data-moshing
+
+データモッシングの PoC
+
+### src/webcodecs-data-moshing-react
+
+データモッシングの React App
+
