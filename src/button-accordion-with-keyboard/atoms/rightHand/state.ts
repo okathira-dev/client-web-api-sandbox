@@ -1,6 +1,6 @@
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { ReedActivation, ReedPitches } from "../shared/types";
-import { createReedHooks } from "../../audio/rightHand/rightHandAudioProcessor";
+import { createReedHooks } from "../../audio/rightHand/audioProcessor";
 
 // 各リードのhooksを生成と名前付け
 export const {

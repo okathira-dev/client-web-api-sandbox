@@ -3,8 +3,8 @@ import TextField from "@mui/material/TextField";
 import {
   useRelativeReedPitches,
   useSetRelativeReedPitches,
-} from "../../atoms/rightHand/rightHandState";
-import { ReedName } from "../../config/rightHand/rightHandConfig";
+} from "../../atoms/rightHand/state";
+import { ReedName } from "../../config/rightHand/config";
 
 const reedLabels: Record<ReedName, string> = {
   LOW: "L1",

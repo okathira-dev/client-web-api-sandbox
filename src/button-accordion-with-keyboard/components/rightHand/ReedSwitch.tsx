@@ -5,8 +5,8 @@ import Typography from "@mui/material/Typography";
 import {
   useReedActivation,
   useSetReedActivation,
-} from "../../atoms/rightHand/rightHandState";
-import { ReedName } from "../../config/rightHand/rightHandConfig";
+} from "../../atoms/rightHand/state";
+import { ReedName } from "../../config/rightHand/config";
 
 export const ReedSwitch: React.FC = () => {
   const reedActivation = useReedActivation();

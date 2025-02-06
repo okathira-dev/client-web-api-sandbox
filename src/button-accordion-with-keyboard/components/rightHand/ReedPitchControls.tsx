@@ -1,6 +1,6 @@
 import React from "react";
-import { BasePitchControl } from "./RightHandBasePitchControl";
-import { RelativePitchControls } from "./RightHandRelativePitchControls";
+import { BasePitchControl } from "./BasePitchControl";
+import { RelativePitchControls } from "./RelativePitchControls";
 
 export const ReedPitchControls: React.FC = () => {
   return (

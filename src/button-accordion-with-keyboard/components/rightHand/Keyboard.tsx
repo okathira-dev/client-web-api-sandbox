@@ -5,10 +5,10 @@ import {
   getFrequency,
   getNoteLabel,
   isWhiteKey,
-} from "../../config/rightHand/rightHandConfig";
+} from "../../config/rightHand/config";
 import { KeyLabelStyle } from "../../config/shared/audioConfig";
-import { usePlayActiveReeds } from "../../hooks/rightHand/useRightHandPlayActiveReeds";
-import { KeyboardButton } from "../shared/AccordionButton";
+import { usePlayActiveReeds } from "../../hooks/rightHand/usePlayActiveReeds";
+import { KeyboardButton } from "../shared/KeyboardButton";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Typography from "@mui/material/Typography";

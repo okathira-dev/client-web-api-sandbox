@@ -8,7 +8,7 @@ import {
   useBaseReedPitch,
   useSetBaseReedPitch,
   useAdaptAllReedPitches,
-} from "../../atoms/rightHand/rightHandState";
+} from "../../atoms/rightHand/state";
 
 // ピッチ単位に応じたステップ値を返す
 const getPitchLimits = (unit: PitchUnit) => {

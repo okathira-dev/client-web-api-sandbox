@@ -25,9 +25,9 @@ import {
   usePresetOrder,
   useSetPresetOrder,
   reedActivationPresets,
-} from "../../atoms/rightHand/rightHandState";
+} from "../../atoms/rightHand/state";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
-import { ReedName } from "../../config/rightHand/rightHandConfig";
+import { ReedName } from "../../config/rightHand/config";
 
 const SortablePresetButton = ({
   position,
