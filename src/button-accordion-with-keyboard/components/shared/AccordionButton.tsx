@@ -1,6 +1,6 @@
 import React from "react";
 
-type AccordionButtonProps = {
+type KeyboardButtonProps = {
   label: string;
   fontSize: string;
   isWhite: boolean;
@@ -9,7 +9,7 @@ type AccordionButtonProps = {
   onMouseUp: () => void;
 };
 
-export const AccordionButton: React.FC<AccordionButtonProps> = ({
+export const KeyboardButton: React.FC<KeyboardButtonProps> = ({
   label,
   fontSize,
   isWhite,

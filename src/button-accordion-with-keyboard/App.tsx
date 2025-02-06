@@ -1,8 +1,8 @@
-import { RightHandVolumeControl } from "./components/rightHand/RightHandVolumeControl";
-import { RightHandReedPitchControls } from "./components/rightHand/RightHandReedPitchControls";
-import { RightHandReedSwitch } from "./components/rightHand/RightHandReedSwitch";
-import { RightHandRegisterSwitch } from "./components/rightHand/RightHandRegisterSwitch";
-import { RightHandAccordion } from "./components/rightHand/RightHandAccordion";
+import { VolumeControl } from "./components/rightHand/RightHandVolumeControl";
+import { ReedPitchControls } from "./components/rightHand/RightHandReedPitchControls";
+import { ReedSwitch } from "./components/rightHand/RightHandReedSwitch";
+import { RegisterSwitch } from "./components/rightHand/RightHandRegisterSwitch";
+import { Keyboard } from "./components/rightHand/RightHandAccordion";
 import { AudioInitializer } from "./components/shared/AudioInitializer";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import TuneIcon from "@mui/icons-material/Tune";
@@ -63,23 +63,11 @@ export function App() {
           margin: "auto",
         }}
       >
-        <ComponentWithIcon
-          Icon={VolumeUpIcon}
-          Component={RightHandVolumeControl}
-        />
-        <ComponentWithIcon
-          Icon={TuneIcon}
-          Component={RightHandReedPitchControls}
-        />
-        <ComponentWithIcon
-          Icon={MusicNoteIcon}
-          Component={RightHandReedSwitch}
-        />
-        <ComponentWithIcon
-          Icon={QueueMusicIcon}
-          Component={RightHandRegisterSwitch}
-        />
-        <ComponentWithIcon Icon={PianoIcon} Component={RightHandAccordion} />
+        <ComponentWithIcon Icon={VolumeUpIcon} Component={VolumeControl} />
+        <ComponentWithIcon Icon={TuneIcon} Component={ReedPitchControls} />
+        <ComponentWithIcon Icon={MusicNoteIcon} Component={ReedSwitch} />
+        <ComponentWithIcon Icon={QueueMusicIcon} Component={RegisterSwitch} />
+        <ComponentWithIcon Icon={PianoIcon} Component={Keyboard} />
       </div>
     </AudioInitializer>
   );

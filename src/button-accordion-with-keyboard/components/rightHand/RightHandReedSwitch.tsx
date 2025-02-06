@@ -8,7 +8,7 @@ import {
 } from "../../atoms/rightHand/rightHandState";
 import { ReedName } from "../../config/rightHand/rightHandConfig";
 
-export const RightHandReedSwitch: React.FC = () => {
+export const ReedSwitch: React.FC = () => {
   const reedActivation = useReedActivation();
   const setReedActivation = useSetReedActivation();
 

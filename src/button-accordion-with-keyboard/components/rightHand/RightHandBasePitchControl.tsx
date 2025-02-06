@@ -15,7 +15,7 @@ const getPitchLimits = (unit: PitchUnit) => {
   return unit === "cent" ? { step: 1 } : { step: 0.1 };
 };
 
-export const RightHandBasePitchControl: React.FC = () => {
+export const BasePitchControl: React.FC = () => {
   const basePitchCent = useBaseReedPitch();
   const setBasePitch = useSetBaseReedPitch();
   const [pitchUnit, setPitchUnit] = useState<PitchUnit>("cent");

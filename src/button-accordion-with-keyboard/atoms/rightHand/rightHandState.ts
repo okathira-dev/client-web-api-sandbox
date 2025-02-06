@@ -1,35 +1,35 @@
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { ReedActivation, ReedPitches } from "../shared/types";
-import { createRightHandReedHooks } from "../../audio/rightHand/rightHandAudioProcessor";
+import { createReedHooks } from "../../audio/rightHand/rightHandAudioProcessor";
 
 // 各リードのhooksを生成と名前付け
 export const {
   useSetReedPitch: useSetReedL1Pitch,
   usePlayReed: usePlayReedL1,
-} = createRightHandReedHooks("LOW");
+} = createReedHooks("LOW");
 
 export const {
   useSetReedPitch: useSetReedM1Pitch,
   usePlayReed: usePlayReedM1,
-} = createRightHandReedHooks("MID_1");
+} = createReedHooks("MID_1");
 
 export const {
   useSetReedPitch: useSetReedM2Pitch,
   usePlayReed: usePlayReedM2,
-} = createRightHandReedHooks("MID_2");
+} = createReedHooks("MID_2");
 
 export const {
   useSetReedPitch: useSetReedM3Pitch,
   usePlayReed: usePlayReedM3,
-} = createRightHandReedHooks("MID_3");
+} = createReedHooks("MID_3");
 
 export const {
   useSetReedPitch: useSetReedH1Pitch,
   usePlayReed: usePlayReedH1,
-} = createRightHandReedHooks("HIGH");
+} = createReedHooks("HIGH");
 
 // 12個の音色切り替えスイッチに対応する ReedActivation を定義する
-export const rightHandReedActivationPresets: ReedActivation[] = [
+export const reedActivationPresets: ReedActivation[] = [
   { LOW: true, MID_1: false, MID_2: false, MID_3: false, HIGH: false }, // bassoon
   { LOW: true, MID_1: false, MID_2: true, MID_3: false, HIGH: false }, //  bandoneon
   { LOW: true, MID_1: false, MID_2: true, MID_3: true, HIGH: false }, //   accordion
@@ -56,7 +56,7 @@ export const useAdoptPreset = () => {
   const setReedActivation = useSetReedActivation();
 
   const adoptPreset = (selectedPreset: number) => {
-    const newReedActivation = rightHandReedActivationPresets[selectedPreset];
+    const newReedActivation = reedActivationPresets[selectedPreset];
     if (newReedActivation) {
       setReedActivation(newReedActivation);
     }
@@ -67,7 +67,7 @@ export const useAdoptPreset = () => {
 
 // リードの有効/無効状態
 const reedActivationAtom = atom<ReedActivation>(
-  rightHandReedActivationPresets[INITIAL_SELECTED_PRESET]!,
+  reedActivationPresets[INITIAL_SELECTED_PRESET]!,
 );
 export const useReedActivation = () => useAtomValue(reedActivationAtom);
 export const useSetReedActivation = () => useSetAtom(reedActivationAtom);
@@ -136,11 +136,11 @@ export const usePresetAtPosition = (position: number) => {
     position >= 0 &&
     position < presetOrder.length &&
     presetOrder[position] !== undefined &&
-    presetOrder[position] < rightHandReedActivationPresets.length
+    presetOrder[position] < reedActivationPresets.length
   ) {
-    return rightHandReedActivationPresets[presetOrder[position]];
+    return reedActivationPresets[presetOrder[position]];
   }
-  return rightHandReedActivationPresets[0];
+  return reedActivationPresets[0];
 };
 
 export const usePresetOrder = () => useAtomValue(presetOrderAtom);

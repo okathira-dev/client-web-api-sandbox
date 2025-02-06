@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Slider from "@mui/material/Slider";
-import { setRightHandVolumes } from "../../audio/rightHand/rightHandAudioProcessor";
+import { setVolumes } from "../../audio/rightHand/rightHandAudioProcessor";
 
-export const RightHandVolumeControl: React.FC = () => {
+export const VolumeControl: React.FC = () => {
   const [volume, setVolume] = useState<number>(-18);
 
   useEffect(() => {
-    setRightHandVolumes(volume);
+    setVolumes(volume);
   }, [volume]);
 
   const handleVolumeChange = (_event: Event, value: number | number[]) => {

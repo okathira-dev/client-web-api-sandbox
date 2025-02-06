@@ -14,7 +14,7 @@ const reedLabels: Record<ReedName, string> = {
   HIGH: "H1",
 };
 
-export const RightHandRelativePitchControls: React.FC = () => {
+export const RelativePitchControls: React.FC = () => {
   const relativeReedPitches = useRelativeReedPitches();
   const setRelativeReedPitches = useSetRelativeReedPitches();
 

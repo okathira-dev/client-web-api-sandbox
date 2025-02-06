@@ -24,7 +24,7 @@ import {
   useReedActivation,
   usePresetOrder,
   useSetPresetOrder,
-  rightHandReedActivationPresets,
+  reedActivationPresets,
 } from "../../atoms/rightHand/rightHandState";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import { ReedName } from "../../config/rightHand/rightHandConfig";
@@ -166,7 +166,7 @@ const SortablePresetButton = ({
   );
 };
 
-export const RightHandRegisterSwitch: React.FC = () => {
+export const RegisterSwitch: React.FC = () => {
   const selectedPreset = useSelectedPreset();
   const setSelectedPreset = useSetSelectedPreset();
   const adaptPreset = useAdoptPreset();
@@ -242,7 +242,7 @@ export const RightHandRegisterSwitch: React.FC = () => {
           strategy={horizontalListSortingStrategy}
         >
           {presetOrder.map((presetIndex, position) => {
-            const preset = rightHandReedActivationPresets[presetIndex]!;
+            const preset = reedActivationPresets[presetIndex]!;
             const isActive =
               JSON.stringify(preset) === JSON.stringify(reedActivation);
 

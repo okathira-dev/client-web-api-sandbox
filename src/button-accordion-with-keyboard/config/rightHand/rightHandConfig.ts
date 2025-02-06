@@ -5,7 +5,7 @@ import {
 } from "../shared/audioConfig";
 
 // リードの定義
-export const RIGHT_HAND_REEDS = {
+export const REEDS = {
   LOW: "L1",
   MID_1: "M1",
   MID_2: "M2",
@@ -13,10 +13,10 @@ export const RIGHT_HAND_REEDS = {
   HIGH: "H1",
 } as const;
 
-export type ReedName = keyof typeof RIGHT_HAND_REEDS;
+export type ReedName = keyof typeof REEDS;
 
 // 右手側のキーマッピング
-export const RIGHT_HAND_KEY_MAP: Record<string, number> = {
+export const KEY_MAP: Record<string, number> = {
   // 1列目
   "1": -18,
   "2": -15,
@@ -70,7 +70,7 @@ export const RIGHT_HAND_KEY_MAP: Record<string, number> = {
 };
 
 // キーボードのレイアウト
-export const RIGHT_HAND_KEYBOARD_LAYOUT = [
+export const KEYBOARD_LAYOUT = [
   ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "="],
   ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "[", "]", "\\"],
   ["a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'"],
@@ -84,13 +84,13 @@ const whiteKeyOffsets = [-9, -7, -5, -4, -2, 0, 2].map(
 
 // ユーティリティ関数
 export const isWhiteKey = (key: string): boolean => {
-  const semitoneOffset = RIGHT_HAND_KEY_MAP[key];
+  const semitoneOffset = KEY_MAP[key];
   if (semitoneOffset === undefined) return false;
   return whiteKeyOffsets.includes(((semitoneOffset % 12) + 12) % 12);
 };
 
 export const getFrequency = (key: string): number => {
-  const semitoneOffset = RIGHT_HAND_KEY_MAP[key];
+  const semitoneOffset = KEY_MAP[key];
   if (semitoneOffset === undefined) {
     throw new Error("semitone offset not found");
   }
@@ -100,7 +100,7 @@ export const getFrequency = (key: string): number => {
 export const getNoteLabel = (key: string, style: KeyLabelStyle): string => {
   if (style === "key") return key.toUpperCase();
 
-  const semitoneOffset = RIGHT_HAND_KEY_MAP[key];
+  const semitoneOffset = KEY_MAP[key];
   if (semitoneOffset === undefined) {
     throw new Error("semitone offset not found");
   }

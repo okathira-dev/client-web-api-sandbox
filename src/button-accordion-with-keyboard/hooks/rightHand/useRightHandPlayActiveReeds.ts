@@ -8,7 +8,7 @@ import {
   usePlayReedH1,
 } from "../../atoms/rightHand/rightHandState";
 
-export const useRightHandPlayActiveReeds = () => {
+export const usePlayActiveReeds = () => {
   const reedActivation = useReedActivation();
   const { playReed: playReedL1, stopReed: stopReedL1 } = usePlayReedL1();
   const { playReed: playReedM1, stopReed: stopReedM1 } = usePlayReedM1();

@@ -2,10 +2,10 @@ import * as Tone from "tone";
 import { ReedName } from "../../config/rightHand/rightHandConfig";
 import { createPolySynth } from "../shared/audioCore";
 
-type RightHandSynths = Record<ReedName, Tone.PolySynth>;
+type Synths = Record<ReedName, Tone.PolySynth>;
 
 // 右手側のリード音源を管理
-export const rightHandReeds: RightHandSynths = {
+export const reeds: Synths = {
   LOW: createPolySynth(),
   MID_1: createPolySynth(),
   MID_2: createPolySynth(),
@@ -14,20 +14,20 @@ export const rightHandReeds: RightHandSynths = {
 };
 
 // 右手側のリードのフック生成
-export const createRightHandReedHooks = (reedName: ReedName) => {
+export const createReedHooks = (reedName: ReedName) => {
   const useSetReedPitch = () => {
     return (detune: number) => {
-      rightHandReeds[reedName].set({ detune });
+      reeds[reedName].set({ detune });
     };
   };
 
   const usePlayReed = () => {
     const playReed = (frequency: number) => {
-      rightHandReeds[reedName].triggerAttack(frequency);
+      reeds[reedName].triggerAttack(frequency);
     };
 
     const stopReed = (frequency: number) => {
-      rightHandReeds[reedName].triggerRelease(frequency);
+      reeds[reedName].triggerRelease(frequency);
     };
 
     return { playReed, stopReed };
@@ -40,8 +40,8 @@ export const createRightHandReedHooks = (reedName: ReedName) => {
 };
 
 // 右手側の音量制御
-export const setRightHandVolumes = (volume: number) => {
-  Object.values(rightHandReeds).forEach((reed) => {
+export const setVolumes = (volume: number) => {
+  Object.values(reeds).forEach((reed) => {
     reed.set({ volume });
   });
 };

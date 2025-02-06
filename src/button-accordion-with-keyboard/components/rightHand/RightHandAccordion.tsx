@@ -1,27 +1,27 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
-  RIGHT_HAND_KEYBOARD_LAYOUT,
-  RIGHT_HAND_KEY_MAP,
+  KEYBOARD_LAYOUT,
+  KEY_MAP,
   getFrequency,
   getNoteLabel,
   isWhiteKey,
 } from "../../config/rightHand/rightHandConfig";
 import { KeyLabelStyle } from "../../config/shared/audioConfig";
-import { useRightHandPlayActiveReeds } from "../../hooks/rightHand/useRightHandPlayActiveReeds";
-import { AccordionButton } from "../shared/AccordionButton";
+import { usePlayActiveReeds } from "../../hooks/rightHand/useRightHandPlayActiveReeds";
+import { KeyboardButton } from "../shared/AccordionButton";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Typography from "@mui/material/Typography";
 
-export const RightHandAccordion: React.FC = () => {
+export const Keyboard: React.FC = () => {
   const [buttonStates, setButtonStates] = useState<Record<string, boolean>>({});
   const [keyLabelStyle, setKeyLabelStyle] = useState<KeyLabelStyle>("en");
 
-  const { playActiveReeds, stopActiveReeds } = useRightHandPlayActiveReeds();
+  const { playActiveReeds, stopActiveReeds } = usePlayActiveReeds();
 
   const buttonDown = useCallback(
     (key: string) => {
-      const semitoneOffset = RIGHT_HAND_KEY_MAP[key];
+      const semitoneOffset = KEY_MAP[key];
       if (semitoneOffset !== undefined && !buttonStates[key]) {
         const frequency = getFrequency(key);
         playActiveReeds(frequency);
@@ -33,7 +33,7 @@ export const RightHandAccordion: React.FC = () => {
 
   const buttonUp = useCallback(
     (key: string) => {
-      const semitoneOffset = RIGHT_HAND_KEY_MAP[key];
+      const semitoneOffset = KEY_MAP[key];
       if (semitoneOffset !== undefined) {
         const frequency = getFrequency(key);
         stopActiveReeds(frequency);
@@ -99,7 +99,7 @@ export const RightHandAccordion: React.FC = () => {
           WebkitUserSelect: "none",
         }}
       >
-        {RIGHT_HAND_KEYBOARD_LAYOUT.map((row, rowIndex) => (
+        {KEYBOARD_LAYOUT.map((row, rowIndex) => (
           <div
             key={rowIndex}
             style={{
@@ -113,7 +113,7 @@ export const RightHandAccordion: React.FC = () => {
               const label = getNoteLabel(key, keyLabelStyle);
 
               return (
-                <AccordionButton
+                <KeyboardButton
                   key={key}
                   label={label}
                   fontSize={keyLabelStyle === "ja" ? "18px" : "20px"}
