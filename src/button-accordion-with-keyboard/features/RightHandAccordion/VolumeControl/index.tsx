@@ -1,7 +1,9 @@
-import { FC } from "react";
-import { useEffect, useState } from "react";
 import Slider from "@mui/material/Slider";
+import { useEffect, useState } from "react";
+
 import { setVolumes } from "../audio/audioProcessor";
+
+import type { FC } from "react";
 
 export const VolumeControl: FC = () => {
   const [volume, setVolume] = useState<number>(-18);

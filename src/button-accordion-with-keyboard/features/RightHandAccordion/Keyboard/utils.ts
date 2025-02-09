@@ -1,5 +1,7 @@
+import { KEY_LABEL_TEXTS, KEY_MAP } from "./consts";
 import { semitoneToFrequency } from "../../../audio/utils";
-import { KEY_LABEL_TEXTS, KEY_MAP, NoteNameStyle } from "./consts";
+
+import type { NoteNameStyle } from "./consts";
 
 // 白鍵の判定用オフセット
 const whiteKeyOffsets = [-9, -7, -5, -4, -2, 0, 2].map(

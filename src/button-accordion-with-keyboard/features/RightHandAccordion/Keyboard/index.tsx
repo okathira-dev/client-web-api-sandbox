@@ -1,11 +1,15 @@
-import { useCallback, useEffect, useState, FC, MouseEvent } from "react";
-import { KEYBOARD_LAYOUT, KEY_MAP } from "./consts";
-import { getFrequency, getNoteLabel, isWhiteKey, KeyLabelStyle } from "./utils";
-import { usePlayActiveReeds } from "./hooks";
-import { KeyboardButton } from "../../../components/KeyboardButton";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Typography from "@mui/material/Typography";
+import { useCallback, useEffect, useState } from "react";
+
+import { KEYBOARD_LAYOUT, KEY_MAP } from "./consts";
+import { usePlayActiveReeds } from "./hooks";
+import { getFrequency, getNoteLabel, isWhiteKey } from "./utils";
+import { KeyboardButton } from "../../../components/KeyboardButton";
+
+import type { KeyLabelStyle } from "./utils";
+import type { FC, MouseEvent } from "react";
 
 export const Keyboard: FC = () => {
   const [buttonStates, setButtonStates] = useState<Record<string, boolean>>({});

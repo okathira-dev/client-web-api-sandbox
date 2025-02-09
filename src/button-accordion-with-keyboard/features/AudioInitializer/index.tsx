@@ -1,9 +1,11 @@
-import { FC, ReactNode } from "react";
-import { useState } from "react";
-import { startAudioContext } from "../../audio/audioCore";
-import Button from "@mui/material/Button";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import { useState } from "react";
+
+import { startAudioContext } from "../../audio/audioCore";
+
+import type { FC, ReactNode } from "react";
 
 const disableAltKey = () => {
   document.addEventListener("keydown", (e) => {

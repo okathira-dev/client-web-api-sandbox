@@ -1,6 +1,8 @@
 import { atom, useAtomValue, useSetAtom } from "jotai";
+
 import { createReedHooks } from "../audio/audioProcessor";
-import { ReedName } from "../consts";
+
+import type { ReedName } from "../consts";
 
 // 各リードのhooksを生成と名前付け
 export const {

@@ -1,10 +1,12 @@
-import { FC } from "react";
 import TextField from "@mui/material/TextField";
+
 import {
   useRelativeReedPitches,
   useSetRelativeReedPitches,
 } from "../../atoms/reeds";
-import { ReedName } from "../../consts";
+
+import type { ReedName } from "../../consts";
+import type { FC } from "react";
 
 const reedLabels: Record<ReedName, string> = {
   LOW: "L1",

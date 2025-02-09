@@ -1,4 +1,5 @@
 import { getAnimateCanvasFunc } from "./animateCanvas";
+
 import type { VideoWorkerCommand, VideoWorkerResponse } from "./videoWorker";
 
 const CANVAS_WIDTH = 640;

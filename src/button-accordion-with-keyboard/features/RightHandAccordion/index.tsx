@@ -1,14 +1,16 @@
-import { VolumeControl } from "./VolumeControl";
-import { PitchControl } from "./PitchControl";
-import { ReedSwitch } from "./ReedSwitch";
-import { RegisterSwitch } from "./RegisterSwitch";
-import { Keyboard } from "./Keyboard";
-import VolumeUpIcon from "@mui/icons-material/VolumeUp";
-import TuneIcon from "@mui/icons-material/Tune";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import PianoIcon from "@mui/icons-material/Piano";
 import QueueMusicIcon from "@mui/icons-material/QueueMusic";
-import { CSSProperties, ElementType } from "react";
+import TuneIcon from "@mui/icons-material/Tune";
+import VolumeUpIcon from "@mui/icons-material/VolumeUp";
+
+import { Keyboard } from "./Keyboard";
+import { PitchControl } from "./PitchControl";
+import { ReedSwitch } from "./ReedSwitch";
+import { RegisterSwitch } from "./RegisterSwitch";
+import { VolumeControl } from "./VolumeControl";
+
+import type { CSSProperties, ElementType } from "react";
 
 const containerStyle: CSSProperties = {
   display: "flex",

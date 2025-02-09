@@ -1,5 +1,3 @@
-import { useCallback, useEffect, FC } from "react";
-import Button from "@mui/material/Button";
 import {
   DndContext,
   closestCenter,
@@ -7,7 +5,6 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-  DragEndEvent,
 } from "@dnd-kit/core";
 import {
   arrayMove,
@@ -17,6 +14,10 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
+import Button from "@mui/material/Button";
+import { useCallback, useEffect } from "react";
+
 import {
   useSelectedPreset,
   useSetSelectedPreset,
@@ -26,8 +27,10 @@ import {
   useSetPresetOrder,
   reedActivationPresets,
 } from "../atoms/reeds";
-import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
-import { ReedName } from "../consts";
+
+import type { ReedName } from "../consts";
+import type { DragEndEvent } from "@dnd-kit/core";
+import type { FC } from "react";
 
 const SortablePresetButton = ({
   position,
