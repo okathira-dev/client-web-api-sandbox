@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import { useCallback, useEffect, FC } from "react";
 import Button from "@mui/material/Button";
 import {
   DndContext,
@@ -166,7 +166,7 @@ const SortablePresetButton = ({
   );
 };
 
-export const RegisterSwitch: React.FC = () => {
+export const RegisterSwitch: FC = () => {
   const selectedPreset = useSelectedPreset();
   const setSelectedPreset = useSetSelectedPreset();
   const adaptPreset = useAdoptPreset();

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { FC, ReactNode } from "react";
+import { useState } from "react";
 import { startAudioContext } from "../../audio/audioCore";
 import Button from "@mui/material/Button";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -13,12 +14,10 @@ const disableAltKey = () => {
 };
 
 type AudioInitializerProps = {
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
-export const AudioInitializer: React.FC<AudioInitializerProps> = ({
-  children,
-}) => {
+export const AudioInitializer: FC<AudioInitializerProps> = ({ children }) => {
   const [isAudioInitialized, setIsAudioInitialized] = useState(false);
 
   const handleInitialize = () => {

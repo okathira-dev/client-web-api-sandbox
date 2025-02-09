@@ -1,4 +1,4 @@
-import React from "react";
+import { FC } from "react";
 
 type KeyboardButtonProps = {
   label: string;
@@ -9,7 +9,7 @@ type KeyboardButtonProps = {
   onMouseUp: () => void;
 };
 
-export const KeyboardButton: React.FC<KeyboardButtonProps> = ({
+export const KeyboardButton: FC<KeyboardButtonProps> = ({
   label,
   fontSize,
   isWhite,

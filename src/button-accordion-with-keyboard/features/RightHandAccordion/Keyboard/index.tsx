@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, FC, MouseEvent } from "react";
 import { KEYBOARD_LAYOUT, KEY_MAP } from "./consts";
 import { getFrequency, getNoteLabel, isWhiteKey, KeyLabelStyle } from "./utils";
 import { usePlayActiveReeds } from "./hooks";
@@ -7,7 +7,7 @@ import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Typography from "@mui/material/Typography";
 
-export const Keyboard: React.FC = () => {
+export const Keyboard: FC = () => {
   const [buttonStates, setButtonStates] = useState<Record<string, boolean>>({});
   const [keyLabelStyle, setKeyLabelStyle] = useState<KeyLabelStyle>("en");
 
@@ -55,7 +55,7 @@ export const Keyboard: React.FC = () => {
   }, [buttonDown, buttonUp]);
 
   const handleKeyLabelStyleChange = (
-    _event: React.MouseEvent<HTMLElement>,
+    _event: MouseEvent<HTMLElement>,
     newKeyLabelStyle: KeyLabelStyle | null,
   ) => {
     if (newKeyLabelStyle === null) return; // 常にどれか一つは選択されているようにする

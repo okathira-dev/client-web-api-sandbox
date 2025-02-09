@@ -1,4 +1,4 @@
-import React from "react";
+import { useRef, useEffect } from "react";
 import {
   useReedActivation,
   usePlayReedL1,
@@ -17,12 +17,12 @@ export const usePlayActiveReeds = () => {
   const { playReed: playReedH1, stopReed: stopReedH1 } = usePlayReedH1();
 
   // 現在鳴っている音の周波数を追跡するための参照を作成
-  const activeFrequenciesRef = React.useRef<Set<number>>(new Set());
+  const activeFrequenciesRef = useRef<Set<number>>(new Set());
   // 前回のリードアクティベーション状態を保持
-  const prevReedActivationRef = React.useRef(reedActivation);
+  const prevReedActivationRef = useRef(reedActivation);
 
   // リードアクティベーションが変更されたときに、全ての鳴っている音を適切に処理
-  React.useEffect(() => {
+  useEffect(() => {
     const prevActivation = prevReedActivationRef.current;
     const frequencies = Array.from(activeFrequenciesRef.current);
 

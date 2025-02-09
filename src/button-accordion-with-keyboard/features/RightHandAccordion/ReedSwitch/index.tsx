@@ -1,16 +1,16 @@
-import React from "react";
+import { FC, MouseEvent } from "react";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Typography from "@mui/material/Typography";
 import { useReedActivation, useSetReedActivation } from "../atoms/reeds";
 import { ReedName } from "../consts";
 
-export const ReedSwitch: React.FC = () => {
+export const ReedSwitch: FC = () => {
   const reedActivation = useReedActivation();
   const setReedActivation = useSetReedActivation();
 
   const handleReedChange = (
-    _event: React.MouseEvent<HTMLElement>,
+    _event: MouseEvent<HTMLElement>,
     newReedActivation: ReedName[],
   ) => {
     setReedActivation((prev) => {

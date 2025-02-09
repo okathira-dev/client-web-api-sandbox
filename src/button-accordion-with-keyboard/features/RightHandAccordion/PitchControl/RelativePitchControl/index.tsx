@@ -1,4 +1,4 @@
-import React from "react";
+import { FC } from "react";
 import TextField from "@mui/material/TextField";
 import {
   useRelativeReedPitches,
@@ -14,7 +14,7 @@ const reedLabels: Record<ReedName, string> = {
   HIGH: "H1",
 };
 
-export const RelativePitchControl: React.FC = () => {
+export const RelativePitchControl: FC = () => {
   const relativeReedPitches = useRelativeReedPitches();
   const setRelativeReedPitches = useSetRelativeReedPitches();
 

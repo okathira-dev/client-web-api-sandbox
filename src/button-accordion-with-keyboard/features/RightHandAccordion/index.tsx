@@ -8,7 +8,7 @@ import TuneIcon from "@mui/icons-material/Tune";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import PianoIcon from "@mui/icons-material/Piano";
 import QueueMusicIcon from "@mui/icons-material/QueueMusic";
-import { CSSProperties } from "react";
+import { CSSProperties, ElementType } from "react";
 
 const containerStyle: CSSProperties = {
   display: "flex",
@@ -32,8 +32,8 @@ const componentContainerStyle: CSSProperties = {
 } as const;
 
 type ComponentWithIconProps = {
-  Icon: React.ElementType;
-  Component: React.ElementType;
+  Icon: ElementType;
+  Component: ElementType;
 };
 
 const ComponentWithIcon = ({ Icon, Component }: ComponentWithIconProps) => (

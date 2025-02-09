@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { FC } from "react";
+import { useState } from "react";
 import TextField from "@mui/material/TextField";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
@@ -15,7 +16,7 @@ const getPitchLimits = (unit: PitchUnit) => {
   return unit === "cent" ? { step: 1 } : { step: 0.1 };
 };
 
-export const BasePitchControl: React.FC = () => {
+export const BasePitchControl: FC = () => {
   const basePitchCent = useBaseReedPitch();
   const setBasePitch = useSetBaseReedPitch();
   const [pitchUnit, setPitchUnit] = useState<PitchUnit>("cent");
