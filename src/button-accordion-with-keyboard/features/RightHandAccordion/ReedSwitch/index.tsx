@@ -2,11 +2,8 @@ import React from "react";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Typography from "@mui/material/Typography";
-import {
-  useReedActivation,
-  useSetReedActivation,
-} from "../../atoms/rightHand/state";
-import { ReedName } from "../../config/rightHand/config";
+import { useReedActivation, useSetReedActivation } from "../atoms/reeds";
+import { ReedName } from "../consts";
 
 export const ReedSwitch: React.FC = () => {
   const reedActivation = useReedActivation();

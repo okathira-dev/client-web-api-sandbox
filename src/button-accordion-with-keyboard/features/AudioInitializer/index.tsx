@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { startAudioContext } from "../../audio/shared/audioCore";
+import { startAudioContext } from "../../audio/audioCore";
 import Button from "@mui/material/Button";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import Typography from "@mui/material/Typography";

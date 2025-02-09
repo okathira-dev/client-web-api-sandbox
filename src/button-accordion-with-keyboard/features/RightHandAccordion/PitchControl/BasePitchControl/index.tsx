@@ -3,12 +3,12 @@ import TextField from "@mui/material/TextField";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
-import { PitchUnit, hzToCent, centToHz } from "../../config/shared/audioConfig";
+import { PitchUnit, hzToCent, centToHz } from "../../../../audio/utils";
 import {
   useBaseReedPitch,
   useSetBaseReedPitch,
   useAdaptAllReedPitches,
-} from "../../atoms/rightHand/state";
+} from "../../atoms/reeds";
 
 // ピッチ単位に応じたステップ値を返す
 const getPitchLimits = (unit: PitchUnit) => {

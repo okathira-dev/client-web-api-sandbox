@@ -1,5 +1,5 @@
-import { RightHandAccordion } from "./components/rightHand/Accordion";
-import { AudioInitializer } from "./components/shared/AudioInitializer";
+import { RightHandAccordion } from "./features/RightHandAccordion";
+import { AudioInitializer } from "./features/AudioInitializer";
 
 export function App() {
   return (

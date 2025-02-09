@@ -3,8 +3,8 @@ import TextField from "@mui/material/TextField";
 import {
   useRelativeReedPitches,
   useSetRelativeReedPitches,
-} from "../../atoms/rightHand/state";
-import { ReedName } from "../../config/rightHand/config";
+} from "../../atoms/reeds";
+import { ReedName } from "../../consts";
 
 const reedLabels: Record<ReedName, string> = {
   LOW: "L1",
@@ -14,7 +14,7 @@ const reedLabels: Record<ReedName, string> = {
   HIGH: "H1",
 };
 
-export const RelativePitchControls: React.FC = () => {
+export const RelativePitchControl: React.FC = () => {
   const relativeReedPitches = useRelativeReedPitches();
   const setRelativeReedPitches = useSetRelativeReedPitches();
 

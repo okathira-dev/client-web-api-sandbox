@@ -1,6 +1,6 @@
 import * as Tone from "tone";
-import { ReedName } from "../../config/rightHand/config";
-import { createPolySynth } from "../shared/audioCore";
+import { ReedName } from "../consts";
+import { createPolySynth } from "../../../audio/audioCore";
 
 type Synths = Record<ReedName, Tone.PolySynth>;
 

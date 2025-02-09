@@ -1,12 +1,12 @@
 import React from "react";
-import { useReedActivation } from "../../atoms/rightHand/state";
 import {
+  useReedActivation,
   usePlayReedL1,
   usePlayReedM1,
   usePlayReedM2,
   usePlayReedM3,
   usePlayReedH1,
-} from "../../atoms/rightHand/state";
+} from "../atoms/reeds";
 
 export const usePlayActiveReeds = () => {
   const reedActivation = useReedActivation();

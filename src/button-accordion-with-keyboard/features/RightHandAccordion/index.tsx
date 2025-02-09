@@ -1,5 +1,5 @@
 import { VolumeControl } from "./VolumeControl";
-import { ReedPitchControls } from "./ReedPitchControls";
+import { PitchControl } from "./PitchControl";
 import { ReedSwitch } from "./ReedSwitch";
 import { RegisterSwitch } from "./RegisterSwitch";
 import { Keyboard } from "./Keyboard";
@@ -62,7 +62,7 @@ export const RightHandAccordion = () => {
       }}
     >
       <ComponentWithIcon Icon={VolumeUpIcon} Component={VolumeControl} />
-      <ComponentWithIcon Icon={TuneIcon} Component={ReedPitchControls} />
+      <ComponentWithIcon Icon={TuneIcon} Component={PitchControl} />
       <ComponentWithIcon Icon={MusicNoteIcon} Component={ReedSwitch} />
       <ComponentWithIcon Icon={QueueMusicIcon} Component={RegisterSwitch} />
       <ComponentWithIcon Icon={PianoIcon} Component={Keyboard} />
