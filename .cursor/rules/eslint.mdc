@@ -1,8 +1,4 @@
 ---
-description: 
-globs: 
----
----
 description: ESLintに関するルール
 globs: eslint*
 ---
