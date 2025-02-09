@@ -1,5 +1,5 @@
 // リードとそのラベルの定義
-const _REED_LABEL_MAP = {
+export const REED_LABEL_MAP = {
   LOW: "L1",
   MID_1: "M1",
   MID_2: "M2",
@@ -7,5 +7,5 @@ const _REED_LABEL_MAP = {
   HIGH: "H1",
 } as const;
 
-export type ReedName = keyof typeof _REED_LABEL_MAP;
-export type ReedLabel = (typeof _REED_LABEL_MAP)[ReedName];
+export type ReedName = keyof typeof REED_LABEL_MAP;
+export type ReedLabel = (typeof REED_LABEL_MAP)[ReedName];

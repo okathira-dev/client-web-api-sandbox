@@ -3,6 +3,7 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Typography from "@mui/material/Typography";
 
 import { useReedActivation, useSetReedActivation } from "../atoms/reeds";
+import { REED_LABEL_MAP } from "../consts";
 
 import type { ReedName } from "../consts";
 import type { FC, MouseEvent } from "react";
@@ -33,21 +34,11 @@ export const ReedSwitch: FC = () => {
       onChange={handleReedChange}
       aria-label="reed activation"
     >
-      <ToggleButton value="LOW" aria-label="low reed">
-        <Typography>L1</Typography>
-      </ToggleButton>
-      <ToggleButton value="MID_1" aria-label="mid1 reed">
-        <Typography>M1</Typography>
-      </ToggleButton>
-      <ToggleButton value="MID_2" aria-label="mid2 reed">
-        <Typography>M2</Typography>
-      </ToggleButton>
-      <ToggleButton value="MID_3" aria-label="mid3 reed">
-        <Typography>M3</Typography>
-      </ToggleButton>
-      <ToggleButton value="HIGH" aria-label="high reed">
-        <Typography>H1</Typography>
-      </ToggleButton>
+      {Object.entries(REED_LABEL_MAP).map(([reed, label]) => (
+        <ToggleButton key={reed} value={reed} aria-label={`${reed} reed`}>
+          <Typography>{label}</Typography>
+        </ToggleButton>
+      ))}
     </ToggleButtonGroup>
   );
 };
