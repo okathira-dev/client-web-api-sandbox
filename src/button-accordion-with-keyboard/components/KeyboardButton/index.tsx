@@ -1,6 +1,6 @@
-import React from "react";
+import type { FC } from "react";
 
-type AccordionButtonProps = {
+type KeyboardButtonProps = {
   label: string;
   fontSize: string;
   isWhite: boolean;
@@ -9,7 +9,7 @@ type AccordionButtonProps = {
   onMouseUp: () => void;
 };
 
-export const AccordionButton: React.FC<AccordionButtonProps> = ({
+export const KeyboardButton: FC<KeyboardButtonProps> = ({
   label,
   fontSize,
   isWhite,
@@ -28,7 +28,7 @@ export const AccordionButton: React.FC<AccordionButtonProps> = ({
         backgroundColor: isWhite ? "white" : "black",
         color: isWhite ? "black" : "white",
         border: "1px solid lightgray",
-        fontSize: fontSize, // テキストの長さに応じてフォントサイズを調整
+        fontSize: fontSize,
         textAlign: "center",
         fontWeight: "bold",
         boxShadow: isActive ? "0px 0px 6px 2px green" : "none",
@@ -40,6 +40,7 @@ export const AccordionButton: React.FC<AccordionButtonProps> = ({
       }}
       onMouseDown={onMouseDown}
       onMouseUp={onMouseUp}
+      onMouseLeave={onMouseUp}
     >
       {label}
     </button>

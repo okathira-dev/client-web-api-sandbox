@@ -1,0 +1,92 @@
+---
+description: ESLintに関するルール
+globs: eslint*
+---
+# ESLint設定
+
+このプロジェクトのESLint設定に関するルール集です。
+
+## 基本設定
+
+- TypeScript ESLintを使用
+- React用の設定を含む
+- Prettierと連携
+
+## 主要なプラグイン
+
+- `@typescript-eslint`: TypeScript用のルール
+- `eslint-plugin-react`: React用のルール
+- `eslint-plugin-react-hooks`: React Hooks用のルール
+- `eslint-plugin-import-x`: インポート文の整理用
+- `eslint-plugin-html`: HTML内のスクリプト用
+- `eslint-config-prettier`: Prettierとの競合を防ぐ
+
+## 重要なルール設定
+
+### TypeScript関連
+
+- 関数の戻り値の型注釈は任意（`explicit-function-return-type: off`）
+- 未使用の変数は`_`プレフィックスで警告を抑制可能
+- 型のインポートは`import type`を使用（`consistent-type-imports`）
+
+### インポート文の整理
+
+- インポート順序は以下の順で強制：
+  1. ビルトインモジュール
+  2. 外部モジュール
+  3. 内部モジュール
+  4. 親/兄弟モジュール
+  5. インデックスファイル
+  6. オブジェクト
+  7. 型定義
+
+- グループ間は空行で区切る
+- アルファベット順でソート
+- 同じソースからのインポートは統合（`no-duplicates`）
+- 名前付きインポートをデフォルトとして使用することを禁止（`no-named-as-default-member`）
+- package.jsonに記載されていない依存関係のインポートを禁止（`no-extraneous-dependencies`）
+- 空の名前付きインポートブロックを禁止（`no-empty-named-blocks`）
+- デフォルトインポートに関するルールは無効（`default: off`）
+
+## 特殊な設定
+
+### Node設定ファイル用
+
+以下のファイルには`tsconfig.node.json`の設定が適用：
+- `vite.config.ts`
+- `eslint.config.js`
+
+これらのファイルは、設定ファイルですが型チェックを行いたいものです。これらのファイルには `tsconfig.node.json` の設定が適用されます。
+
+
+### HTML用
+
+HTML内のスクリプトに対して`eslint-plugin-html`を適用
+
+## 優先順位
+
+1. 基本的なESLintの推奨設定
+2. TypeScript ESLintの型チェック付き推奨設定
+3. Reactの推奨設定
+4. import-xの推奨設定とTypeScript設定
+5. カスタムルール
+6. Prettier連携（最後に適用）
+
+## VSCode設定
+
+ESLintの設定をVSCodeで有効にするために、以下の設定を推奨します：
+
+```json
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "eslint.validate": [
+    "javascript",
+    "typescript",
+    "javascriptreact",
+    "typescriptreact",
+    "html"
+  ]
+}
+```

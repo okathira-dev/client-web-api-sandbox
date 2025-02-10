@@ -1,21 +1,26 @@
-import React, { useState } from "react";
-import TextField from "@mui/material/TextField";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
-import { PitchUnit, hzToCent, centToHz } from "../../instrumentConfig";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import { useState } from "react";
+
+import { hzToCent, centToHz } from "../../../../audio/utils";
 import {
   useBaseReedPitch,
   useSetBaseReedPitch,
   useAdaptAllReedPitches,
 } from "../../atoms/reeds";
 
+import type { PitchUnit } from "../../../../audio/utils";
+import type { FC } from "react";
+
 // ピッチ単位に応じたステップ値を返す
 const getPitchLimits = (unit: PitchUnit) => {
   return unit === "cent" ? { step: 1 } : { step: 0.1 };
 };
 
-export const BasePitchControl: React.FC = () => {
+export const BasePitchControl: FC = () => {
   const basePitchCent = useBaseReedPitch();
   const setBasePitch = useSetBaseReedPitch();
   const [pitchUnit, setPitchUnit] = useState<PitchUnit>("cent");
@@ -55,15 +60,15 @@ export const BasePitchControl: React.FC = () => {
   };
 
   return (
-    <div
+    <label
       style={{
         display: "flex",
         alignItems: "center",
         gap: "16px",
       }}
     >
-      <span style={{ flexShrink: 0 }}>基準ピッチ</span>
-      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+      <Typography sx={{ flexShrink: 0 }}>基準ピッチ</Typography>
+      <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
         <TextField
           type="number"
           value={inputValue}
@@ -74,7 +79,6 @@ export const BasePitchControl: React.FC = () => {
               step: limits.step,
             },
           }}
-          aria-label="基準ピッチ"
         />
         <FormControl size="small" style={{ minWidth: 80 }}>
           <Select
@@ -85,7 +89,7 @@ export const BasePitchControl: React.FC = () => {
             <MenuItem value="hz">Hz</MenuItem>
           </Select>
         </FormControl>
-      </div>
-    </div>
+      </span>
+    </label>
   );
 };

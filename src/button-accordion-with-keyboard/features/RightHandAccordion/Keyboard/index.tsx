@@ -1,19 +1,17 @@
-import React, { useCallback, useEffect, useState } from "react";
-import {
-  KEYBOARD_LAYOUT,
-  KEY_MAP,
-  KeyLabelStyle,
-  getFrequency,
-  getNoteLabel,
-  ifWhiteKey,
-} from "../instrumentConfig";
-import { usePlayActiveReeds } from "../hooks/usePlayActiveReeds";
-import { AccordionButton } from "./AccordionButton";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Typography from "@mui/material/Typography";
+import { useCallback, useEffect, useState } from "react";
 
-export const Accordion: React.FC = () => {
+import { KEYBOARD_LAYOUT, KEY_MAP } from "./consts";
+import { usePlayActiveReeds } from "./hooks";
+import { getFrequency, getNoteLabel, isWhiteKey } from "./utils";
+import { KeyboardButton } from "../../../components/KeyboardButton";
+
+import type { KeyLabelStyle } from "./utils";
+import type { FC, MouseEvent } from "react";
+
+export const Keyboard: FC = () => {
   const [buttonStates, setButtonStates] = useState<Record<string, boolean>>({});
   const [keyLabelStyle, setKeyLabelStyle] = useState<KeyLabelStyle>("en");
 
@@ -61,7 +59,7 @@ export const Accordion: React.FC = () => {
   }, [buttonDown, buttonUp]);
 
   const handleKeyLabelStyleChange = (
-    _event: React.MouseEvent<HTMLElement>,
+    _event: MouseEvent<HTMLElement>,
     newKeyLabelStyle: KeyLabelStyle | null,
   ) => {
     if (newKeyLabelStyle === null) return; // 常にどれか一つは選択されているようにする
@@ -75,16 +73,16 @@ export const Accordion: React.FC = () => {
         value={keyLabelStyle}
         exclusive
         onChange={handleKeyLabelStyleChange}
-        aria-label="display label"
+        aria-label="表示ラベルの切り替え"
       >
-        <ToggleButton value="key" aria-label="key">
-          <Typography>Key Labels (QWERTY)</Typography>
+        <ToggleButton value="key">
+          <Typography>キーボード (QWERTY)</Typography>
         </ToggleButton>
-        <ToggleButton value="en" aria-label="note en">
-          <Typography>Note Labels (C4, C#4...)</Typography>
+        <ToggleButton value="en">
+          <Typography>音階 (C4, C#4, D4…)</Typography>
         </ToggleButton>
-        <ToggleButton value="ja" aria-label="note ja">
-          <Typography>Note Labels (ドレミ)</Typography>
+        <ToggleButton value="ja">
+          <Typography>音階 (ドレミ)</Typography>
         </ToggleButton>
       </ToggleButtonGroup>
       <div
@@ -109,11 +107,11 @@ export const Accordion: React.FC = () => {
             }}
           >
             {row.map((key) => {
-              const isWhite = ifWhiteKey(key);
+              const isWhite = isWhiteKey(key);
               const label = getNoteLabel(key, keyLabelStyle);
 
               return (
-                <AccordionButton
+                <KeyboardButton
                   key={key}
                   label={label}
                   fontSize={keyLabelStyle === "ja" ? "18px" : "20px"}

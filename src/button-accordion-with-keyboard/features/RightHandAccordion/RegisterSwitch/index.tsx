@@ -1,5 +1,3 @@
-import React, { useCallback, useEffect } from "react";
-import Button from "@mui/material/Button";
 import {
   DndContext,
   closestCenter,
@@ -7,7 +5,6 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-  DragEndEvent,
 } from "@dnd-kit/core";
 import {
   arrayMove,
@@ -17,16 +14,24 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import { useCallback, useEffect } from "react";
+
 import {
   useSelectedPreset,
   useSetSelectedPreset,
   useAdoptPreset,
   useReedActivation,
-  reedActivationPresets,
   usePresetOrder,
   useSetPresetOrder,
+  reedActivationPresets,
 } from "../atoms/reeds";
-import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
+
+import type { ReedName } from "../consts";
+import type { DragEndEvent } from "@dnd-kit/core";
+import type { FC } from "react";
 
 const SortablePresetButton = ({
   position,
@@ -41,7 +46,7 @@ const SortablePresetButton = ({
   presetIndex: number;
   isActive: boolean;
   isSelected: boolean;
-  preset: (typeof reedActivationPresets)[number];
+  preset: Record<ReedName, boolean>;
   onPresetChange: (index: number) => void;
   buttonPressedMargin: string;
 }) => {
@@ -148,15 +153,15 @@ const SortablePresetButton = ({
           >
             <span>H</span>
             <span></span>
-            <span>{preset.H1 && "1"}</span>
+            <span>{preset.HIGH && "1"}</span>
             <span></span>
             <span>M</span>
-            <span>{preset.M1 && "1"}</span>
-            <span>{preset.M2 && "2"}</span>
-            <span>{preset.M3 && "3"}</span>
+            <span>{preset.MID_1 && "1"}</span>
+            <span>{preset.MID_2 && "2"}</span>
+            <span>{preset.MID_3 && "3"}</span>
             <span>L</span>
             <span></span>
-            <span>{preset.L1 && "1"}</span>
+            <span>{preset.LOW && "1"}</span>
             <span></span>
           </span>
         </div>
@@ -165,8 +170,7 @@ const SortablePresetButton = ({
   );
 };
 
-// 音色切り替えスイッチ
-export const RegisterSwitch: React.FC = () => {
+export const RegisterSwitch: FC = () => {
   const selectedPreset = useSelectedPreset();
   const setSelectedPreset = useSetSelectedPreset();
   const adaptPreset = useAdoptPreset();
@@ -226,41 +230,52 @@ export const RegisterSwitch: React.FC = () => {
     <div
       style={{
         display: "flex",
-        gap: "2px",
-        marginBottom: buttonPressedMargin,
-        userSelect: "none",
-        WebkitUserSelect: "none",
+        flexDirection: "column",
+        gap: "4px",
       }}
     >
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
+      <Typography sx={{ flexShrink: 0 }}>
+        レジスタースイッチ (F1-F12, ドラッグで並び替え可能)
+      </Typography>
+      <div
+        style={{
+          display: "flex",
+          gap: "2px",
+          marginBottom: buttonPressedMargin,
+          userSelect: "none",
+          WebkitUserSelect: "none",
+        }}
       >
-        <SortableContext
-          items={presetOrder}
-          strategy={horizontalListSortingStrategy}
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
         >
-          {presetOrder.map((presetIndex, position) => {
-            const preset = reedActivationPresets[presetIndex]!;
-            const isActive =
-              JSON.stringify(preset) === JSON.stringify(reedActivation);
+          <SortableContext
+            items={presetOrder}
+            strategy={horizontalListSortingStrategy}
+          >
+            {presetOrder.map((presetIndex, position) => {
+              const preset = reedActivationPresets[presetIndex]!;
+              const isActive =
+                JSON.stringify(preset) === JSON.stringify(reedActivation);
 
-            return (
-              <SortablePresetButton
-                key={presetIndex}
-                position={position}
-                presetIndex={presetIndex}
-                isActive={isActive}
-                isSelected={selectedPreset === presetIndex}
-                preset={preset}
-                onPresetChange={handlePresetChange}
-                buttonPressedMargin={buttonPressedMargin}
-              />
-            );
-          })}
-        </SortableContext>
-      </DndContext>
+              return (
+                <SortablePresetButton
+                  key={presetIndex}
+                  position={position}
+                  presetIndex={presetIndex}
+                  isActive={isActive}
+                  isSelected={selectedPreset === presetIndex}
+                  preset={preset}
+                  onPresetChange={handlePresetChange}
+                  buttonPressedMargin={buttonPressedMargin}
+                />
+              );
+            })}
+          </SortableContext>
+        </DndContext>
+      </div>
     </div>
   );
 };
