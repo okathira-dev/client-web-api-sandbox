@@ -26,19 +26,28 @@ export const ReedSwitch: FC = () => {
   };
 
   return (
-    <ToggleButtonGroup
-      color="primary"
-      value={Object.entries(reedActivation)
-        .filter(([_reed, isActive]) => isActive)
-        .map(([reed]) => reed)}
-      onChange={handleReedChange}
-      aria-label="reed activation"
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "16px",
+        width: "100%",
+      }}
     >
-      {Object.entries(REED_LABEL_MAP).map(([reed, label]) => (
-        <ToggleButton key={reed} value={reed} aria-label={`${reed} reed`}>
-          <Typography>{label}</Typography>
-        </ToggleButton>
-      ))}
-    </ToggleButtonGroup>
+      <Typography sx={{ flexShrink: 0 }}>各リードのオンオフ</Typography>
+      <ToggleButtonGroup
+        color="primary"
+        value={Object.entries(reedActivation)
+          .filter(([_reed, isActive]) => isActive)
+          .map(([reed]) => reed)}
+        onChange={handleReedChange}
+      >
+        {Object.entries(REED_LABEL_MAP).map(([reed, label]) => (
+          <ToggleButton key={reed} value={reed}>
+            <Typography>{label}</Typography>
+          </ToggleButton>
+        ))}
+      </ToggleButtonGroup>
+    </div>
   );
 };

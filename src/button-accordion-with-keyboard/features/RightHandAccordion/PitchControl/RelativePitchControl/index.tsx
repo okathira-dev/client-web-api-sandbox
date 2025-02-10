@@ -1,4 +1,5 @@
 import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 
 import {
   useRelativeReedPitches,
@@ -15,7 +16,7 @@ export const RelativePitchControl: FC = () => {
 
   return (
     <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-      <span style={{ flexShrink: 0 }}>相対ピッチ</span>
+      <Typography sx={{ flexShrink: 0 }}>相対ピッチ</Typography>
       <div style={{ display: "flex", gap: "8px" }}>
         {(Object.keys(relativeReedPitches) as ReedName[]).map((reed) => (
           <div
@@ -26,25 +27,32 @@ export const RelativePitchControl: FC = () => {
               alignItems: "center",
             }}
           >
-            <span>{REED_LABEL_MAP[reed]}</span>
-            <TextField
-              type="number"
-              value={relativeReedPitches[reed]}
-              onChange={(e) => {
-                const newValue = parseInt(e.target.value, 10);
-                setRelativeReedPitches((prev) => ({
-                  ...prev,
-                  [reed]: isNaN(newValue) ? prev[reed] : newValue,
-                }));
+            <label
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
               }}
-              size="small"
-              slotProps={{
-                htmlInput: {
-                  step: 1,
-                },
-              }}
-              aria-labelledby={`${reed}-pitch-input`}
-            />
+            >
+              <Typography>{REED_LABEL_MAP[reed]}</Typography>
+              <TextField
+                type="number"
+                value={relativeReedPitches[reed]}
+                onChange={(e) => {
+                  const newValue = parseInt(e.target.value, 10);
+                  setRelativeReedPitches((prev) => ({
+                    ...prev,
+                    [reed]: isNaN(newValue) ? prev[reed] : newValue,
+                  }));
+                }}
+                size="small"
+                slotProps={{
+                  htmlInput: {
+                    step: 1,
+                  },
+                }}
+              />
+            </label>
           </div>
         ))}
       </div>

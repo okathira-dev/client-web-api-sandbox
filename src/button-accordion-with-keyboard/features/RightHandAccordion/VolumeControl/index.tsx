@@ -1,4 +1,5 @@
 import Slider from "@mui/material/Slider";
+import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
 
 import { setVolumes } from "../audio/audioProcessor";
@@ -19,8 +20,15 @@ export const VolumeControl: FC = () => {
   };
 
   return (
-    <label style={{ width: "100%" }}>
-      Volume
+    <label
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "16px",
+        width: "100%",
+      }}
+    >
+      <Typography sx={{ flexShrink: 0 }}>音量</Typography>
       <Slider
         value={volume}
         min={-60}

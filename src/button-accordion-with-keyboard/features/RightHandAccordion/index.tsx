@@ -55,10 +55,10 @@ export const RightHandAccordion = () => {
       style={{
         display: "flex",
         flexDirection: "column",
-        gap: "8px",
+        gap: "16px",
         justifyContent: "center",
         alignItems: "center",
-        height: "100vh",
+        // height: "100%",
         width: "700px",
         margin: "auto",
       }}

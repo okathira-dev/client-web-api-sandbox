@@ -50,7 +50,7 @@ export const AudioInitializer: FC<AudioInitializerProps> = ({ children }) => {
         >
           <Typography
             variant="body1"
-            style={{
+            sx={{
               color: "white",
               backgroundColor: "rgba(0, 0, 0, 0.7)",
               padding: "8px 16px",

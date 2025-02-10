@@ -73,16 +73,16 @@ export const Keyboard: FC = () => {
         value={keyLabelStyle}
         exclusive
         onChange={handleKeyLabelStyleChange}
-        aria-label="display label"
+        aria-label="表示ラベルの切り替え"
       >
-        <ToggleButton value="key" aria-label="key">
-          <Typography>Key Labels (QWERTY)</Typography>
+        <ToggleButton value="key">
+          <Typography>キーボード (QWERTY)</Typography>
         </ToggleButton>
-        <ToggleButton value="en" aria-label="note en">
-          <Typography>Note Labels (C4, C#4...)</Typography>
+        <ToggleButton value="en">
+          <Typography>音階 (C4, C#4, D4…)</Typography>
         </ToggleButton>
-        <ToggleButton value="ja" aria-label="note ja">
-          <Typography>Note Labels (ドレミ)</Typography>
+        <ToggleButton value="ja">
+          <Typography>音階 (ドレミ)</Typography>
         </ToggleButton>
       </ToggleButtonGroup>
       <div
