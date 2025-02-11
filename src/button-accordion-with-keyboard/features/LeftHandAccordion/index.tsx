@@ -49,7 +49,7 @@ const ComponentWithIcon = ({ Icon, Component }: ComponentWithIconProps) => (
   </div>
 );
 
-export const RightHandAccordion = () => {
+export const LeftHandAccordion = () => {
   return (
     <div
       style={{
