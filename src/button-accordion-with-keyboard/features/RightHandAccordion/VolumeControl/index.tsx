@@ -1,17 +1,13 @@
 import Slider from "@mui/material/Slider";
 import Typography from "@mui/material/Typography";
-import { useEffect, useState } from "react";
 
-import { setVolumes } from "../audio/audioProcessor";
+import { useSetVolume, useVolumeValue } from "./atoms";
 
 import type { FC } from "react";
 
 export const VolumeControl: FC = () => {
-  const [volume, setVolume] = useState<number>(-18);
-
-  useEffect(() => {
-    setVolumes(volume);
-  }, [volume]);
+  const volume = useVolumeValue();
+  const setVolume = useSetVolume();
 
   const handleVolumeChange = (_event: Event, value: number | number[]) => {
     if (typeof value === "number") {
