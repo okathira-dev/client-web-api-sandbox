@@ -6,91 +6,199 @@ import type { ReedName } from "../consts";
 
 // 各リードのhooksを生成と名前付け
 export const {
-  useSetReedPitch: useSetReedL1Pitch,
-  usePlayReed: usePlayReedL1,
-} = createReedHooks("LOW");
+  useSetReedPitch: useSetSopranoReedPitch,
+  usePlayReed: usePlaySopranoReed,
+} = createReedHooks("soprano");
 
 export const {
-  useSetReedPitch: useSetReedM1Pitch,
-  usePlayReed: usePlayReedM1,
-} = createReedHooks("MID_1");
+  useSetReedPitch: useSetAltoReedPitch,
+  usePlayReed: usePlayAltoReed,
+} = createReedHooks("alto");
 
 export const {
-  useSetReedPitch: useSetReedM2Pitch,
-  usePlayReed: usePlayReedM2,
-} = createReedHooks("MID_2");
+  useSetReedPitch: useSetTenorReedPitch,
+  usePlayReed: usePlayTenorReed,
+} = createReedHooks("tenor");
 
 export const {
-  useSetReedPitch: useSetReedM3Pitch,
-  usePlayReed: usePlayReedM3,
-} = createReedHooks("MID_3");
-
-export const {
-  useSetReedPitch: useSetReedH1Pitch,
-  usePlayReed: usePlayReedH1,
-} = createReedHooks("HIGH");
-
-// 12個の音色切り替えスイッチに対応する ReedActivation を定義する
-type ReedActivation = Record<ReedName, boolean>;
-export const reedActivationPresets: ReedActivation[] = [
-  { LOW: true, MID_1: false, MID_2: false, MID_3: false, HIGH: false }, // bassoon
-  { LOW: true, MID_1: false, MID_2: true, MID_3: false, HIGH: false }, //  bandoneon
-  { LOW: true, MID_1: false, MID_2: true, MID_3: true, HIGH: false }, //   accordion
-  { LOW: true, MID_1: false, MID_2: true, MID_3: false, HIGH: true }, //   harmonium
-  { LOW: true, MID_1: true, MID_2: false, MID_3: true, HIGH: true }, //    master
-  { LOW: false, MID_1: false, MID_2: true, MID_3: false, HIGH: true }, //  oboe
-  { LOW: false, MID_1: true, MID_2: true, MID_3: true, HIGH: false }, //   musette
-  { LOW: false, MID_1: false, MID_2: true, MID_3: true, HIGH: false }, //  violin
-  { LOW: false, MID_1: false, MID_2: true, MID_3: false, HIGH: false }, // clarinet
-  { LOW: true, MID_1: false, MID_2: false, MID_3: false, HIGH: true }, //  organ
-  { LOW: false, MID_1: true, MID_2: true, MID_3: true, HIGH: true }, //    ???
-  { LOW: false, MID_1: false, MID_2: false, MID_3: false, HIGH: true }, // piccolo
-];
-
-const INITIAL_SELECTED_PRESET = 2;
-
-// 選択中のプリセット
-const selectedPresetAtom = atom<number>(INITIAL_SELECTED_PRESET);
-export const useSelectedPreset = () => useAtomValue(selectedPresetAtom);
-export const useSetSelectedPreset = () => useSetAtom(selectedPresetAtom);
-
-// プリセットの適用
-export const useAdoptPreset = () => {
-  const setReedActivation = useSetReedActivation();
-
-  const adoptPreset = (selectedPreset: number) => {
-    const newReedActivation = reedActivationPresets[selectedPreset];
-    if (newReedActivation) {
-      setReedActivation(newReedActivation);
-    }
-  };
-
-  return adoptPreset;
-};
+  useSetReedPitch: useSetBassReedPitch,
+  usePlayReed: usePlayBassReed,
+} = createReedHooks("bass");
 
 // リードの有効/無効状態
-const reedActivationAtom = atom<ReedActivation>(
-  reedActivationPresets[INITIAL_SELECTED_PRESET]!, // TODO: get関数を作って型安全にしたい
+type ReedStates = Record<ReedName, boolean>;
+// 音の鳴り方
+export type StradellaSoundType = "chord" | "bassNote";
+
+// ストラデラベースのリードの有効/無効状態
+type StradellaReedStates = {
+  [key in StradellaSoundType]: ReedStates;
+};
+
+// レジスタースイッチのプリセット定義
+// ref: https://en.wikipedia.org/wiki/Stradella_bass_system#Register_switches
+export type StradellaRegisterName =
+  | "soprano"
+  | "alto"
+  | "tenor"
+  | "softTenor"
+  | "master"
+  | "softBass"
+  | "bass";
+export const STRADELLA_REGISTER_PRESETS: Record<
+  StradellaRegisterName,
+  StradellaReedStates
+> = {
+  soprano: {
+    bassNote: {
+      soprano: true,
+      alto: false,
+      tenor: false,
+      bass: false,
+    },
+    chord: {
+      soprano: true,
+      alto: false,
+      tenor: false,
+      bass: false,
+    },
+  },
+  alto: {
+    bassNote: {
+      soprano: true,
+      alto: true,
+      tenor: false,
+      bass: false,
+    },
+    chord: {
+      soprano: true,
+      alto: true,
+      tenor: false,
+      bass: false,
+    },
+  },
+  tenor: {
+    bassNote: {
+      soprano: true,
+      alto: true,
+      tenor: true,
+      bass: false,
+    },
+    chord: {
+      soprano: true,
+      alto: true,
+      tenor: false,
+      bass: false,
+    },
+  },
+  softTenor: {
+    bassNote: {
+      soprano: false,
+      alto: true,
+      tenor: true,
+      bass: false,
+    },
+    chord: {
+      soprano: false,
+      alto: true,
+      tenor: false,
+      bass: false,
+    },
+  },
+  master: {
+    bassNote: {
+      soprano: true,
+      alto: true,
+      tenor: true,
+      bass: true,
+    },
+    chord: {
+      soprano: true,
+      alto: true,
+      tenor: false,
+      bass: false,
+    },
+  },
+  softBass: {
+    bassNote: {
+      soprano: false,
+      alto: true,
+      tenor: true,
+      bass: true,
+    },
+    chord: {
+      soprano: false,
+      alto: true,
+      tenor: false,
+      bass: false,
+    },
+  },
+  bass: {
+    bassNote: {
+      soprano: true,
+      alto: true,
+      tenor: false,
+      bass: true,
+    },
+    chord: {
+      soprano: true,
+      alto: true,
+      tenor: false,
+      bass: false,
+    },
+  },
+};
+
+// デフォルトのレジスタープリセット
+const DEFAULT_STRADELLA_REGISTER: StradellaRegisterName = "softTenor";
+
+// 現在選択中のレジスタープリセット
+const stradellaRegisterAtom = atom<StradellaRegisterName>(
+  DEFAULT_STRADELLA_REGISTER,
 );
-export const useReedActivation = () => useAtomValue(reedActivationAtom);
-export const useSetReedActivation = () => useSetAtom(reedActivationAtom);
+export const useStradellaRegisterValue = () =>
+  useAtomValue(stradellaRegisterAtom);
+export const useSetStradellaRegister = () => useSetAtom(stradellaRegisterAtom);
+
+// プリセットの適用
+export const useAdoptStradellaRegister = () => {
+  const setStradellaReedStates = useSetStradellaReedStates();
+
+  const adoptStradellaRegister = (
+    stradellaRegisterName: StradellaRegisterName,
+  ) => {
+    const stradellaReedStates =
+      STRADELLA_REGISTER_PRESETS[stradellaRegisterName];
+    setStradellaReedStates(stradellaReedStates);
+  };
+
+  return adoptStradellaRegister;
+};
+
+// ストラデラベースのリードの有効/無効状態のatom
+const stradellaReedStatesAtom = atom<StradellaReedStates>(
+  STRADELLA_REGISTER_PRESETS[DEFAULT_STRADELLA_REGISTER],
+);
+export const useStradellaReedStatesValue = () =>
+  useAtomValue(stradellaReedStatesAtom);
+export const useSetStradellaReedStates = () =>
+  useSetAtom(stradellaReedStatesAtom);
 
 // リード全体の基準となるピッチ。そのままだとA4=440Hzになる。
-export const baseReedPitchAtom = atom<number>(0);
-export const useBaseReedPitch = () => useAtomValue(baseReedPitchAtom);
+const baseReedPitchAtom = atom<number>(0);
+export const useBaseReedPitchValue = () => useAtomValue(baseReedPitchAtom);
 export const useSetBaseReedPitch = () => useSetAtom(baseReedPitchAtom);
 
 // 基準ピッチに対する各リードの相対値
 type ReedPitches = Record<ReedName, number>;
 const relativeReedPitchesAtom = atom<ReedPitches>({
-  LOW: -1195,
-  MID_1: -7,
-  MID_2: 0,
-  MID_3: 11,
-  HIGH: 1205,
+  soprano: 1200 + 2, // C5-B5
+  alto: 0 + 1, // C4-B4（基準）
+  tenor: -1200, // C3-B3
+  bass: -2400 - 1, // C2-B2
 });
 
-export const useRelativeReedPitches = () =>
+export const useRelativeReedPitchesValue = () =>
   useAtomValue(relativeReedPitchesAtom);
 export const useSetRelativeReedPitches = () =>
   useSetAtom(relativeReedPitchesAtom);
@@ -101,51 +209,29 @@ const reedPitchesAtom = atom<ReedPitches>((get) => {
   const relative = get(relativeReedPitchesAtom);
 
   return {
-    LOW: base + relative.LOW,
-    MID_1: base + relative.MID_1,
-    MID_2: base + relative.MID_2,
-    MID_3: base + relative.MID_3,
-    HIGH: base + relative.HIGH,
+    soprano: base + relative.soprano,
+    alto: base + relative.alto,
+    tenor: base + relative.tenor,
+    bass: base + relative.bass,
   };
 });
 
-export const useReedPitches = () => useAtomValue(reedPitchesAtom);
+export const useReedPitchesValue = () => useAtomValue(reedPitchesAtom);
 
 // 全リードのピッチを適用
 export const useAdaptAllReedPitches = () => {
-  const reedPitches = useReedPitches();
-  const setReedL1Pitch = useSetReedL1Pitch();
-  const setReedM1Pitch = useSetReedM1Pitch();
-  const setReedM2Pitch = useSetReedM2Pitch();
-  const setReedM3Pitch = useSetReedM3Pitch();
-  const setReedH1Pitch = useSetReedH1Pitch();
+  const reedPitches = useReedPitchesValue();
+  const setSopranoReedPitch = useSetSopranoReedPitch();
+  const setAltoReedPitch = useSetAltoReedPitch();
+  const setTenorReedPitch = useSetTenorReedPitch();
+  const setBassReedPitch = useSetBassReedPitch();
 
   const adaptAll = () => {
-    setReedL1Pitch(reedPitches.LOW);
-    setReedM1Pitch(reedPitches.MID_1);
-    setReedM2Pitch(reedPitches.MID_2);
-    setReedM3Pitch(reedPitches.MID_3);
-    setReedH1Pitch(reedPitches.HIGH);
+    setSopranoReedPitch(reedPitches.soprano);
+    setAltoReedPitch(reedPitches.alto);
+    setTenorReedPitch(reedPitches.tenor);
+    setBassReedPitch(reedPitches.bass);
   };
 
   return adaptAll;
 };
-
-// プリセットの順序を管理
-const presetOrderAtom = atom<number[]>(Array.from({ length: 12 }, (_, i) => i));
-
-export const usePresetAtPosition = (position: number) => {
-  const presetOrder = useAtomValue(presetOrderAtom);
-  if (
-    position >= 0 &&
-    position < presetOrder.length &&
-    presetOrder[position] !== undefined &&
-    presetOrder[position] < reedActivationPresets.length
-  ) {
-    return reedActivationPresets[presetOrder[position]];
-  }
-  return reedActivationPresets[0];
-};
-
-export const usePresetOrder = () => useAtomValue(presetOrderAtom);
-export const useSetPresetOrder = () => useSetAtom(presetOrderAtom);

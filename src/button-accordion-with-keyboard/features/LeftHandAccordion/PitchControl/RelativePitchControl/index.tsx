@@ -2,7 +2,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
 import {
-  useRelativeReedPitches,
+  useRelativeReedPitchesValue,
   useSetRelativeReedPitches,
 } from "../../atoms/reeds";
 import { REED_LABEL_MAP } from "../../consts";
@@ -11,7 +11,7 @@ import type { ReedName } from "../../consts";
 import type { FC } from "react";
 
 export const RelativePitchControl: FC = () => {
-  const relativeReedPitches = useRelativeReedPitches();
+  const relativeReedPitches = useRelativeReedPitchesValue();
   const setRelativeReedPitches = useSetRelativeReedPitches();
 
   return (

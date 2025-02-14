@@ -7,7 +7,7 @@ import { useState } from "react";
 
 import { hzToCent, centToHz } from "../../../../audio/utils";
 import {
-  useBaseReedPitch,
+  useBaseReedPitchValue,
   useSetBaseReedPitch,
   useAdaptAllReedPitches,
 } from "../../atoms/reeds";
@@ -21,7 +21,7 @@ const getPitchLimits = (unit: PitchUnit) => {
 };
 
 export const BasePitchControl: FC = () => {
-  const basePitchCent = useBaseReedPitch();
+  const basePitchCent = useBaseReedPitchValue();
   const setBasePitch = useSetBaseReedPitch();
   const [pitchUnit, setPitchUnit] = useState<PitchUnit>("cent");
   const [inputValue, setInputValue] = useState<string>(

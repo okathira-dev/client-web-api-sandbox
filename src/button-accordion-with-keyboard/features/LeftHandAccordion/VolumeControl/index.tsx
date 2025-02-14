@@ -1,5 +1,4 @@
-import Slider from "@mui/material/Slider";
-import Typography from "@mui/material/Typography";
+import { Slider, Typography } from "@mui/material";
 
 import { useSetVolume, useVolumeValue } from "./atoms";
 
@@ -24,7 +23,7 @@ export const VolumeControl: FC = () => {
         width: "100%",
       }}
     >
-      <Typography sx={{ flexShrink: 0 }}>音量</Typography>
+      <Typography gutterBottom>音量</Typography>
       <Slider
         value={volume}
         min={-60}

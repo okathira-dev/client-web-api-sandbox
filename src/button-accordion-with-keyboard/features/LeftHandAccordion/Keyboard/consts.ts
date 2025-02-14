@@ -1,82 +1,45 @@
-// 右手側キーボードのレイアウト
+// キーボードレイアウト（4行12列）
 export const KEYBOARD_LAYOUT = [
   ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "="],
-
-  ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "[", "]", "\\"],
+  ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "[", "]"], // 12x4なので "\\" は不要
   ["a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'"],
   ["z", "x", "c", "v", "b", "n", "m", ",", ".", "/"],
 ] as const;
 
-// 右手側キーボードのキーマッピング
-export const KEY_MAP: Record<string, number> = {
-  // 1列目
-  "1": -18,
-  "2": -15,
-  "3": -12,
-  "4": -9,
-  "5": -6,
-  "6": -3,
-  "7": 0,
-  "8": 3,
-  "9": 6,
-  "0": 9,
-  "-": 12,
-  "=": 15,
-  // 2列目
-  q: -16,
-  w: -13,
-  e: -10,
-  r: -7,
-  t: -4,
-  y: -1,
-  u: 2,
-  i: 5,
-  o: 8,
-  p: 11,
-  "[": 14,
-  "]": 17,
-  "\\": 20,
-  // 3列目
-  a: -14,
-  s: -11,
-  d: -8,
-  f: -5,
-  g: -2,
-  h: 1,
-  j: 4,
-  k: 7,
-  l: 10,
-  ";": 13,
-  "'": 16,
-  // 4列目
-  z: -12,
-  x: -9,
-  c: -6,
-  v: -3,
-  b: 0,
-  n: 3,
-  m: 6,
-  ",": 9,
-  ".": 12,
-  "/": 15,
-};
+// ベース音のタイプ
+export type StradellaType = "counter" | "fundamental" | "major" | "minor";
+
+// Altoの音程の配列（Db, Ab, Eb, Bb, F, C, G, D, A, E, B, F#）
+// A4を基準（0）として半音の差を指定
+export const ROOT_NOTES = [
+  4 - 12, // Db4
+  11 - 12, // Ab4
+  6 - 12, // Eb4
+  13 - 12, // Bb4
+  8 - 12, // F4
+  15 - 12, // C5
+  10 - 12, // G4
+  17 - 12, // D5
+  12 - 12, // A4
+  19 - 12, // E5
+  14 - 12, // B4
+  21 - 12, // F#5
+];
+
+// キーとベースボタンのマッピング
+export const KEY_MAP: Record<string, { row: number; col: number }> = {};
+KEYBOARD_LAYOUT.forEach((row, rowIndex) => {
+  row.forEach((key, colIndex) => {
+    if (key !== null) {
+      KEY_MAP[key] = { row: rowIndex, col: colIndex };
+    }
+  });
+});
 
 // 音階の名前のマッピング
-export type NoteNameStyle = "en" | "ja";
-export const KEY_LABEL_TEXTS: Record<NoteNameStyle, string[]> = {
-  en: ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"],
-  ja: [
-    "ド",
-    "ド#",
-    "レ",
-    "レ#",
-    "ミ",
-    "ファ",
-    "ファ#",
-    "ソ",
-    "ソ#",
-    "ラ",
-    "ラ#",
-    "シ",
-  ],
-};
+export const NOTE_LABELS = {
+  en: {
+    flat: ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"],
+    sharp: ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"],
+  },
+} as const;

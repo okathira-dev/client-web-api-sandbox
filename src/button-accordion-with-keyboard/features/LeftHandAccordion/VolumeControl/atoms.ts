@@ -1,6 +1,6 @@
 import { atom, useAtomValue, useSetAtom } from "jotai";
 
-import { setVolumes } from "../audio/audioProcessor";
+import { setVolume } from "../audio/audioProcessor";
 
 const INITIAL_VOLUME = -20;
 
@@ -8,7 +8,7 @@ const INITIAL_VOLUME = -20;
 const volumeSourceAtom = atom<number>(INITIAL_VOLUME);
 
 // 初期値を設定
-setVolumes(INITIAL_VOLUME);
+setVolume(INITIAL_VOLUME);
 
 // 音量の値を変更する際に、実際に音量を変更するatom.
 const volumeAtom = atom(
@@ -17,7 +17,7 @@ const volumeAtom = atom(
   },
   (_get, set, newValue: number) => {
     set(volumeSourceAtom, newValue);
-    setVolumes(newValue); // 実際に音量を変更する
+    setVolume(newValue); // 実際に音量を変更する
   },
 );
 

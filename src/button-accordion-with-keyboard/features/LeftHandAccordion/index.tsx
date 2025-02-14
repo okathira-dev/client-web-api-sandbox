@@ -1,16 +1,15 @@
-import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import PianoIcon from "@mui/icons-material/Piano";
 import QueueMusicIcon from "@mui/icons-material/QueueMusic";
 import TuneIcon from "@mui/icons-material/Tune";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
+import { Box } from "@mui/material";
 
 import { Keyboard } from "./Keyboard";
 import { PitchControl } from "./PitchControl";
-import { ReedSwitch } from "./ReedSwitch";
 import { RegisterSwitch } from "./RegisterSwitch";
 import { VolumeControl } from "./VolumeControl";
 
-import type { CSSProperties, ElementType } from "react";
+import type { CSSProperties, ElementType, ReactNode } from "react";
 
 const containerStyle: CSSProperties = {
   display: "flex",
@@ -35,24 +34,22 @@ const componentContainerStyle: CSSProperties = {
 
 type ComponentWithIconProps = {
   Icon: ElementType;
-  Component: ElementType;
+  children: ReactNode;
 };
 
-const ComponentWithIcon = ({ Icon, Component }: ComponentWithIconProps) => (
+const ComponentWithIcon = ({ Icon, children }: ComponentWithIconProps) => (
   <div style={containerStyle}>
     <div style={iconContainerStyle}>
       <Icon />
     </div>
-    <div style={componentContainerStyle}>
-      <Component />
-    </div>
+    <div style={componentContainerStyle}>{children}</div>
   </div>
 );
 
 export const LeftHandAccordion = () => {
   return (
-    <div
-      style={{
+    <Box
+      sx={{
         flexGrow: 1,
         display: "flex",
         flexDirection: "column",
@@ -62,11 +59,18 @@ export const LeftHandAccordion = () => {
         width: "700px",
       }}
     >
-      <ComponentWithIcon Icon={VolumeUpIcon} Component={VolumeControl} />
-      <ComponentWithIcon Icon={TuneIcon} Component={PitchControl} />
-      <ComponentWithIcon Icon={MusicNoteIcon} Component={ReedSwitch} />
-      <ComponentWithIcon Icon={QueueMusicIcon} Component={RegisterSwitch} />
-      <ComponentWithIcon Icon={PianoIcon} Component={Keyboard} />
-    </div>
+      <ComponentWithIcon Icon={VolumeUpIcon}>
+        <VolumeControl />
+      </ComponentWithIcon>
+      <ComponentWithIcon Icon={TuneIcon}>
+        <PitchControl />
+      </ComponentWithIcon>
+      <ComponentWithIcon Icon={QueueMusicIcon}>
+        <RegisterSwitch />
+      </ComponentWithIcon>
+      <ComponentWithIcon Icon={PianoIcon}>
+        <Keyboard />
+      </ComponentWithIcon>
+    </Box>
   );
 };

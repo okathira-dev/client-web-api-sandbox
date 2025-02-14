@@ -1,44 +1,61 @@
-import ToggleButton from "@mui/material/ToggleButton";
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import Typography from "@mui/material/Typography";
+import { ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 
 import { KEYBOARD_LAYOUT, KEY_MAP } from "./consts";
 import { usePlayActiveReeds } from "./hooks";
-import { getFrequency, getNoteLabel, isWhiteKey } from "./utils";
-import { KeyboardButton } from "../../../components/KeyboardButton";
+import {
+  getFrequencies,
+  getKeyLabel,
+  getStradellaSoundType,
+  getTypeFromRow,
+} from "./utils";
 
-import type { KeyLabelStyle } from "./utils";
-import type { FC, MouseEvent } from "react";
+import type { StradellaType } from "./consts";
+import type { MouseEvent } from "react";
 
-export const Keyboard: FC = () => {
+type KeyLabelStyle = "key" | "note";
+
+const bassTypeColors: Record<StradellaType, string> = {
+  counter: "#ff9800", // オレンジ
+  fundamental: "#2196f3", // ブルー
+  major: "#4caf50", // グリーン
+  minor: "#f44336", // レッド
+};
+
+export const Keyboard = () => {
   const [buttonStates, setButtonStates] = useState<Record<string, boolean>>({});
-  const [keyLabelStyle, setKeyLabelStyle] = useState<KeyLabelStyle>("en");
+  const [keyLabelStyle, setKeyLabelStyle] = useState<KeyLabelStyle>("key");
 
   const { playActiveReeds, stopActiveReeds } = usePlayActiveReeds();
 
   const buttonDown = useCallback(
     (key: string) => {
-      const semitoneOffset = KEY_MAP[key];
-      if (semitoneOffset !== undefined && !buttonStates[key]) {
-        const frequency = getFrequency(key);
-        playActiveReeds(frequency);
+      const frequencies = getFrequencies(key);
+      const soundType = getStradellaSoundType(key);
+
+      if (!buttonStates[key] && frequencies && soundType) {
+        frequencies.forEach((frequency: number) => {
+          playActiveReeds(frequency, soundType);
+        });
         setButtonStates((prev) => ({ ...prev, [key]: true }));
       }
     },
-    [buttonStates, playActiveReeds, setButtonStates],
+    [buttonStates, playActiveReeds],
   );
 
   const buttonUp = useCallback(
     (key: string) => {
-      const semitoneOffset = KEY_MAP[key];
-      if (semitoneOffset !== undefined) {
-        const frequency = getFrequency(key);
-        stopActiveReeds(frequency);
-        setButtonStates((prev) => ({ ...prev, [key]: false }));
+      const frequencies = getFrequencies(key);
+      const soundType = getStradellaSoundType(key);
+
+      if (frequencies && soundType) {
+        frequencies.forEach((frequency: number) => {
+          stopActiveReeds(frequency, soundType);
+        });
       }
+      setButtonStates((prev) => ({ ...prev, [key]: false }));
     },
-    [setButtonStates, stopActiveReeds],
+    [stopActiveReeds],
   );
 
   useEffect(() => {
@@ -78,11 +95,8 @@ export const Keyboard: FC = () => {
         <ToggleButton value="key">
           <Typography>キーボード (QWERTY)</Typography>
         </ToggleButton>
-        <ToggleButton value="en">
-          <Typography>音階 (C4, C#4, D4…)</Typography>
-        </ToggleButton>
-        <ToggleButton value="ja">
-          <Typography>音階 (ドレミ)</Typography>
+        <ToggleButton value="note">
+          <Typography>音階 (C4, C#4, D4...)</Typography>
         </ToggleButton>
       </ToggleButtonGroup>
       <div
@@ -107,19 +121,45 @@ export const Keyboard: FC = () => {
             }}
           >
             {row.map((key) => {
-              const isWhite = isWhiteKey(key);
-              const label = getNoteLabel(key, keyLabelStyle);
+              if (key === null) return null;
+              if (!(key in KEY_MAP)) return null;
+              const position = KEY_MAP[key];
+              if (position === undefined) return null;
+              const type = getTypeFromRow(position.row);
 
               return (
-                <KeyboardButton
+                <button
                   key={key}
-                  label={label}
-                  fontSize={keyLabelStyle === "ja" ? "18px" : "20px"}
-                  isWhite={isWhite}
-                  isActive={!!buttonStates[key]}
+                  style={{
+                    width: "48px",
+                    height: "48px",
+                    padding: 0,
+                    borderRadius: "50%",
+                    backgroundColor: buttonStates[key]
+                      ? bassTypeColors[type]
+                      : "white",
+                    color: buttonStates[key] ? "white" : "black",
+                    border: "1px solid lightgray",
+                    fontSize: "20px",
+                    textAlign: "center",
+                    lineHeight: "48px",
+                    fontWeight: "bold",
+                    boxShadow: buttonStates[key]
+                      ? "0px 0px 6px 2px rgba(0,0,0,0.3)"
+                      : "none",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
                   onMouseDown={() => buttonDown(key)}
                   onMouseUp={() => buttonUp(key)}
-                />
+                  onMouseLeave={() => buttonStates[key] && buttonUp(key)}
+                >
+                  {keyLabelStyle === "note"
+                    ? getKeyLabel(key)
+                    : key.toUpperCase()}
+                </button>
               );
             })}
           </div>
