@@ -19,56 +19,37 @@ export const usePlayActiveReeds = () => {
     usePlayTenorReed();
   const { playReed: playBassReed, stopReed: stopBassReed } = usePlayBassReed();
 
-  // 現在鳴っている音の周波数を追跡するための参照を作成
-  const activeFrequenciesRef = useRef<Set<number>>(new Set());
+  // 現在鳴っている音の周波数とその音の種類（chord/bassNote）を追跡するための参照を作成
+  const activeNotesRef = useRef<Map<number, StradellaSoundType>>(new Map());
   // 前回のリードアクティベーション状態を保持
   const prevStradellaReedStatesRef = useRef(stradellaReedStates);
 
   // リードアクティベーションが変更されたときに、全ての鳴っている音を適切に処理
   useEffect(() => {
     const prevActivation = prevStradellaReedStatesRef.current;
-    const frequencies = Array.from(activeFrequenciesRef.current);
+    const activeNotes = Array.from(activeNotesRef.current.entries());
 
-    // TODO: bassNote と chord についていい感じに処理する
-    // 各リードについて、状態が変化した場合のみ処理を行う
-    frequencies.forEach((frequency) => {
-      // 先に bassNote をまとめて処理
-      if (
-        prevActivation.bassNote.soprano !== stradellaReedStates.bassNote.soprano
-      ) {
-        if (prevActivation.bassNote.soprano) stopSopranoReed(frequency);
-        if (stradellaReedStates.bassNote.soprano) playSopranoReed(frequency);
+    // 各音について、その音の種類（chord/bassNote）に応じて処理を行う
+    activeNotes.forEach(([frequency, soundType]) => {
+      // リードの状態が変化したかどうかを確認し、変化があった場合のみ処理を行う
+      const currentReedStates = stradellaReedStates[soundType];
+      const prevReedStates = prevActivation[soundType];
+
+      if (prevReedStates.soprano !== currentReedStates.soprano) {
+        if (prevReedStates.soprano) stopSopranoReed(frequency);
+        if (currentReedStates.soprano) playSopranoReed(frequency);
       }
-      if (prevActivation.bassNote.alto !== stradellaReedStates.bassNote.alto) {
-        if (prevActivation.bassNote.alto) stopAltoReed(frequency);
-        if (stradellaReedStates.bassNote.alto) playAltoReed(frequency);
+      if (prevReedStates.alto !== currentReedStates.alto) {
+        if (prevReedStates.alto) stopAltoReed(frequency);
+        if (currentReedStates.alto) playAltoReed(frequency);
       }
-      if (
-        prevActivation.bassNote.tenor !== stradellaReedStates.bassNote.tenor
-      ) {
-        if (prevActivation.bassNote.tenor) stopTenorReed(frequency);
-        if (stradellaReedStates.bassNote.tenor) playTenorReed(frequency);
+      if (prevReedStates.tenor !== currentReedStates.tenor) {
+        if (prevReedStates.tenor) stopTenorReed(frequency);
+        if (currentReedStates.tenor) playTenorReed(frequency);
       }
-      if (prevActivation.bassNote.bass !== stradellaReedStates.bassNote.bass) {
-        if (prevActivation.bassNote.bass) stopBassReed(frequency);
-        if (stradellaReedStates.bassNote.bass) playBassReed(frequency);
-      }
-      // 次に chord をまとめて処理
-      if (prevActivation.chord.soprano !== stradellaReedStates.chord.soprano) {
-        if (prevActivation.chord.soprano) stopSopranoReed(frequency);
-        if (stradellaReedStates.chord.soprano) playSopranoReed(frequency);
-      }
-      if (prevActivation.chord.alto !== stradellaReedStates.chord.alto) {
-        if (prevActivation.chord.alto) stopAltoReed(frequency);
-        if (stradellaReedStates.chord.alto) playAltoReed(frequency);
-      }
-      if (prevActivation.chord.tenor !== stradellaReedStates.chord.tenor) {
-        if (prevActivation.chord.tenor) stopTenorReed(frequency);
-        if (stradellaReedStates.chord.tenor) playTenorReed(frequency);
-      }
-      if (prevActivation.chord.bass !== stradellaReedStates.chord.bass) {
-        if (prevActivation.chord.bass) stopBassReed(frequency);
-        if (stradellaReedStates.chord.bass) playBassReed(frequency);
+      if (prevReedStates.bass !== currentReedStates.bass) {
+        if (prevReedStates.bass) stopBassReed(frequency);
+        if (currentReedStates.bass) playBassReed(frequency);
       }
     });
 
@@ -89,22 +70,26 @@ export const usePlayActiveReeds = () => {
     frequency: number,
     soundType: StradellaSoundType,
   ) => {
-    activeFrequenciesRef.current.add(frequency);
-    if (stradellaReedStates[soundType].soprano) playSopranoReed(frequency);
-    if (stradellaReedStates[soundType].alto) playAltoReed(frequency);
-    if (stradellaReedStates[soundType].tenor) playTenorReed(frequency);
-    if (stradellaReedStates[soundType].bass) playBassReed(frequency);
+    activeNotesRef.current.set(frequency, soundType);
+    const reedStates = stradellaReedStates[soundType];
+
+    if (reedStates.soprano) playSopranoReed(frequency);
+    if (reedStates.alto) playAltoReed(frequency);
+    if (reedStates.tenor) playTenorReed(frequency);
+    if (reedStates.bass) playBassReed(frequency);
   };
 
   const stopActiveReeds = (
     frequency: number,
     soundType: StradellaSoundType,
   ) => {
-    activeFrequenciesRef.current.delete(frequency);
-    if (stradellaReedStates[soundType].soprano) stopSopranoReed(frequency);
-    if (stradellaReedStates[soundType].alto) stopAltoReed(frequency);
-    if (stradellaReedStates[soundType].tenor) stopTenorReed(frequency);
-    if (stradellaReedStates[soundType].bass) stopBassReed(frequency);
+    activeNotesRef.current.delete(frequency);
+    const reedStates = stradellaReedStates[soundType];
+
+    if (reedStates.soprano) stopSopranoReed(frequency);
+    if (reedStates.alto) stopAltoReed(frequency);
+    if (reedStates.tenor) stopTenorReed(frequency);
+    if (reedStates.bass) stopBassReed(frequency);
   };
 
   return { playActiveReeds, stopActiveReeds };
