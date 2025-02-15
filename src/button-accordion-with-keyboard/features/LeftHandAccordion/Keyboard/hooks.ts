@@ -10,6 +10,10 @@ import {
 
 import type { StradellaSoundType } from "../atoms/reeds";
 
+// TODO: 同じ周波数の音が複数なっている場合に、適切に処理できていない。
+// そもそもアコーディオンとしては、そのリードが鳴るか鳴らないかの状態しか無いため、同じリードの同じ音が複数鳴ることはない。
+// そのため、まず同じ周波数の音が複数鳴らないように設計する必要がある。
+
 export const usePlayActiveReeds = () => {
   const stradellaReedStates = useStradellaReedStatesValue();
   const { playReed: playSopranoReed, stopReed: stopSopranoReed } =
