@@ -1,5 +1,4 @@
-import Slider from "@mui/material/Slider";
-import Typography from "@mui/material/Typography";
+import { Slider, Typography } from "@mui/material";
 
 import { useSetVolume, useVolumeValue } from "./atoms";
 

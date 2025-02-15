@@ -53,14 +53,13 @@ export const RightHandAccordion = () => {
   return (
     <div
       style={{
+        flexGrow: 1,
         display: "flex",
         flexDirection: "column",
         gap: "16px",
         justifyContent: "center",
         alignItems: "center",
-        // height: "100%",
         width: "700px",
-        margin: "auto",
       }}
     >
       <ComponentWithIcon Icon={VolumeUpIcon} Component={VolumeControl} />

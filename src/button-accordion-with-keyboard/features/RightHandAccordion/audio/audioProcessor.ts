@@ -5,7 +5,7 @@ import type * as Tone from "tone";
 
 type Synths = Record<ReedName, Tone.PolySynth>;
 
-// 右手側のリード音源を管理
+// リード音源を管理
 export const reeds: Synths = {
   LOW: createPolySynth(),
   MID_1: createPolySynth(),
@@ -14,7 +14,7 @@ export const reeds: Synths = {
   HIGH: createPolySynth(),
 };
 
-// 右手側のリードのフック生成
+// リードのフック生成
 export const createReedHooks = (reedName: ReedName) => {
   const useSetReedPitch = () => {
     return (detune: number) => {
@@ -40,7 +40,7 @@ export const createReedHooks = (reedName: ReedName) => {
   };
 };
 
-// 右手側の音量制御
+// 音量制御
 export const setVolumes = (volume: number) => {
   Object.values(reeds).forEach((reed) => {
     reed.set({ volume });
