@@ -11,7 +11,12 @@ import {
   getKeyboardLayout,
   isWhiteKey,
 } from "./utils";
+import {
+  useAccordionModeValue,
+  useRightHandKeyboardValue,
+} from "../../../atoms/accordionMode";
 import { KeyboardButton } from "../../../components/KeyboardButton";
+import { useKeyboardDevice } from "../../KeyboardDevices/hooks";
 
 import type { KeyboardLayoutType } from "./consts";
 import type { KeyLabelStyle } from "./utils";
@@ -28,6 +33,8 @@ export const Keyboard: FC = () => {
     useState<KeyboardLayoutType>("en");
 
   const { playActiveReeds, stopActiveReeds } = usePlayActiveReeds();
+  const accordionMode = useAccordionModeValue();
+  const rightHandKeyboard = useRightHandKeyboardValue();
 
   const keyboardLayout = getKeyboardLayout(keyboardLayoutType);
 
@@ -51,7 +58,17 @@ export const Keyboard: FC = () => {
     [keyboardLayoutType, stopActiveReeds],
   );
 
+  // HIDデバイスからの入力を処理
+  useKeyboardDevice({
+    device: rightHandKeyboard,
+    onKeyDown: buttonDown,
+    onKeyUp: buttonUp,
+  });
+
+  // 通常のキーボード入力は、dualモードでない場合のみ有効
   useEffect(() => {
+    if (accordionMode === "dual") return;
+
     const handleKeyDown = (e: KeyboardEvent) => {
       buttonDown(e.key);
     };
@@ -66,7 +83,7 @@ export const Keyboard: FC = () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, [buttonDown, buttonUp]);
+  }, [accordionMode, buttonDown, buttonUp]);
 
   const handleKeyboardLayoutChange = (
     event: SelectChangeEvent<KeyboardLayoutType>,

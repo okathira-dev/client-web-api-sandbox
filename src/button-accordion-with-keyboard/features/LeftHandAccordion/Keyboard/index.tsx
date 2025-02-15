@@ -19,10 +19,15 @@ import {
   getKeyMap,
   getStradellaSoundType,
 } from "./utils";
+import {
+  useAccordionModeValue,
+  useLeftHandKeyboardValue,
+} from "../../../atoms/accordionMode";
+import { useKeyboardDevice } from "../../KeyboardDevices/hooks";
 
 import type { KeyboardLayoutType } from "./consts";
 import type { StradellaType } from "../types";
-import type { MouseEvent } from "react";
+import type { FC, MouseEvent } from "react";
 
 type KeyLabelStyle = "key" | "note";
 
@@ -33,13 +38,15 @@ const bassTypeColors: Record<StradellaType, string> = {
   minor: "#f44336", // レッド
 };
 
-export const Keyboard = () => {
+export const Keyboard: FC = () => {
   const [buttonStates, setButtonStates] = useState<Record<string, boolean>>({});
   const [keyLabelStyle, setKeyLabelStyle] = useState<KeyLabelStyle>("note");
   const [keyboardLayoutType, setKeyboardLayoutType] =
     useState<KeyboardLayoutType>("en");
 
   const { playActiveReeds, stopActiveReeds } = usePlayActiveReeds();
+  const accordionMode = useAccordionModeValue();
+  const leftHandKeyboard = useLeftHandKeyboardValue();
 
   const keyMap = getKeyMap(keyboardLayoutType);
   const keyboardLayout = getKeyboardLayout(keyboardLayoutType);
@@ -74,7 +81,17 @@ export const Keyboard = () => {
     [keyboardLayoutType, stopActiveReeds],
   );
 
+  // HIDデバイスからの入力を処理
+  useKeyboardDevice({
+    device: leftHandKeyboard,
+    onKeyDown: buttonDown,
+    onKeyUp: buttonUp,
+  });
+
+  // 通常のキーボード入力は、dualモードでない場合のみ有効
   useEffect(() => {
+    if (accordionMode === "dual") return;
+
     const handleKeyDown = (e: KeyboardEvent) => {
       buttonDown(e.key);
     };
@@ -89,7 +106,7 @@ export const Keyboard = () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, [buttonDown, buttonUp]);
+  }, [accordionMode, buttonDown, buttonUp]);
 
   const handleKeyLabelStyleChange = (
     _event: MouseEvent<HTMLElement>,
@@ -147,6 +164,7 @@ export const Keyboard = () => {
           </Select>
         </FormControl>
       </div>
+
       <div
         style={{
           display: "flex",
