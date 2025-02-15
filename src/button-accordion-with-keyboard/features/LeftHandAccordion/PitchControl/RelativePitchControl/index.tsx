@@ -5,7 +5,6 @@ import {
   useRelativeReedPitchesValue,
   useSetRelativeReedPitches,
 } from "../../atoms/reeds";
-import { REED_LABEL_MAP } from "../../consts";
 
 import type { ReedName } from "../../consts";
 import type { FC } from "react";
@@ -34,7 +33,7 @@ export const RelativePitchControl: FC = () => {
                 alignItems: "center",
               }}
             >
-              <Typography>{REED_LABEL_MAP[reed]}</Typography>
+              <Typography>{reed}</Typography>
               <TextField
                 type="number"
                 value={relativeReedPitches[reed]}

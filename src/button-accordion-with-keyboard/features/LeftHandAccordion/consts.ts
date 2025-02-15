@@ -1,9 +1,9 @@
 // リードとそのラベルの定義
 export const REED_LABEL_MAP = {
-  soprano: "Soprano",
-  alto: "Alto",
-  tenor: "Tenor",
-  bass: "Bass",
+  soprano: "S",
+  alto: "A",
+  tenor: "T",
+  bass: "B",
 } as const;
 
 export type ReedName = keyof typeof REED_LABEL_MAP;

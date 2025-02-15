@@ -1,3 +1,4 @@
+import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import PianoIcon from "@mui/icons-material/Piano";
 import QueueMusicIcon from "@mui/icons-material/QueueMusic";
 import TuneIcon from "@mui/icons-material/Tune";
@@ -6,6 +7,7 @@ import { Box } from "@mui/material";
 
 import { Keyboard } from "./Keyboard";
 import { PitchControl } from "./PitchControl";
+import { ReedSwitch } from "./ReedSwitch";
 import { RegisterSwitch } from "./RegisterSwitch";
 import { VolumeControl } from "./VolumeControl";
 
@@ -64,6 +66,9 @@ export const LeftHandAccordion = () => {
       </ComponentWithIcon>
       <ComponentWithIcon Icon={TuneIcon}>
         <PitchControl />
+      </ComponentWithIcon>
+      <ComponentWithIcon Icon={MusicNoteIcon}>
+        <ReedSwitch />
       </ComponentWithIcon>
       <ComponentWithIcon Icon={QueueMusicIcon}>
         <RegisterSwitch />

@@ -27,6 +27,7 @@ import {
   useAdoptStradellaRegister,
   useStradellaReedStatesValue,
 } from "../atoms/reeds";
+import { REED_LABEL_MAP } from "../consts";
 
 import type { StradellaRegisterName } from "../atoms/reeds";
 import type { DragEndEvent } from "@dnd-kit/core";
@@ -180,15 +181,15 @@ const SortablePresetButton = ({
             }}
           >
             <span>{bassNoteIcon}</span>
-            <span>{preset.bassNote.soprano && "S"}</span>
-            <span>{preset.bassNote.alto && "A"}</span>
-            <span>{preset.bassNote.tenor && "T"}</span>
-            <span>{preset.bassNote.bass && "B"}</span>
+            <span>{preset.bassNote.soprano && REED_LABEL_MAP.soprano}</span>
+            <span>{preset.bassNote.alto && REED_LABEL_MAP.alto}</span>
+            <span>{preset.bassNote.tenor && REED_LABEL_MAP.tenor}</span>
+            <span>{preset.bassNote.bass && REED_LABEL_MAP.bass}</span>
             <span>{chordIcon}</span>
-            <span>{preset.chord.soprano && "S"}</span>
-            <span>{preset.chord.alto && "A"}</span>
-            <span>{preset.chord.tenor && "T"}</span>
-            <span>{preset.chord.bass && "B"}</span>
+            <span>{preset.chord.soprano && REED_LABEL_MAP.soprano}</span>
+            <span>{preset.chord.alto && REED_LABEL_MAP.alto}</span>
+            <span>{preset.chord.tenor && REED_LABEL_MAP.tenor}</span>
+            <span>{preset.chord.bass && REED_LABEL_MAP.bass}</span>
           </span>
         </div>
       </div>
