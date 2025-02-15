@@ -1,0 +1,123 @@
+---
+description: 左手側筐体のストラデラベースシステムの実装について
+globs: src/button-accordion-with-keyboard/features/LeftHandAccordion/**/*
+---
+# ストラデラベースシステム
+
+このアコーディオンの左手側筐体であるストラデラベースシステムの実装について
+
+主に右手側のC-systemとの違いについて記載します。
+
+## 実装の概要
+
+### 1. リード設定の構造
+
+```typescript
+// リードの種類定義
+type ReedName = 'soprano' | 'alto' | 'tenor' | 'bass';
+
+// リードの有効/無効状態
+type ReedStates = Record<ReedName, boolean>;
+
+// 音の鳴り方の種類
+type StradellaSoundType = 'chord' | 'bassNote';
+
+// ストラデラベースのリードの有効/無効状態
+type StradellaReedStates = {
+  [key in StradellaSoundType]: ReedStates;
+};
+```
+
+### 2. レジスタープリセット
+
+```typescript
+// レジスタースイッチのプリセット名
+type StradellaRegisterName =
+  | 'soprano'
+  | 'alto'
+  | 'tenor'
+  | 'softTenor'
+  | 'master'
+  | 'softBass'
+  | 'bass';
+
+// リードのオクターブオフセット（単位: cent）
+const relativeReedPitchesAtom = atom<ReedPitches>({
+  soprano: 1200 + 2,  // C5-B5
+  alto: 0 + 1,        // C4-B4（基準）
+  tenor: -1200,       // C3-B3
+  bass: -2400 - 1,    // C2-B2
+});
+
+// デフォルトのプリセット
+const DEFAULT_STRADELLA_REGISTER: StradellaRegisterName = 'softTenor';
+```
+
+### 3. 状態管理の実装
+- `atoms/stradella.ts`の実装例
+```typescript
+// リードの状態管理
+type ReedStates = Record<ReedName, boolean>;
+type StradellaSoundType = 'chord' | 'bassNote';
+type StradellaReedStates = {
+  [key in StradellaSoundType]: ReedStates;
+};
+
+// レジスター選択の状態管理
+const stradellaRegisterAtom = atom<StradellaRegisterName>(
+  DEFAULT_STRADELLA_REGISTER
+);
+
+// リード状態の管理
+const stradellaReedStatesAtom = atom<StradellaReedStates>(
+  STRADELLA_REGISTER_PRESETS[DEFAULT_STRADELLA_REGISTER]
+);
+
+// ピッチ制御の状態管理
+const baseReedPitchAtom = atom<number>(0);
+const reedPitchesAtom = atom<ReedPitches>((get) => {
+  const base = get(baseReedPitchAtom);
+  const relative = get(relativeReedPitchesAtom);
+
+  return {
+    soprano: base + relative.soprano,
+    alto: base + relative.alto,
+    tenor: base + relative.tenor,
+    bass: base + relative.bass,
+  };
+});
+
+// レジスタープリセットの適用
+export const useAdoptStradellaRegister = () => {
+  const setStradellaReedStates = useSetStradellaReedStates();
+
+  const adoptStradellaRegister = (
+    stradellaRegisterName: StradellaRegisterName,
+  ) => {
+    const stradellaReedStates =
+      STRADELLA_REGISTER_PRESETS[stradellaRegisterName];
+    setStradellaReedStates(stradellaReedStates);
+  };
+
+  return adoptStradellaRegister;
+};
+
+// リードピッチの適用
+export const useAdaptAllReedPitches = () => {
+  const reedPitches = useReedPitchesValue();
+  const setSopranoReedPitch = useSetSopranoReedPitch();
+  const setAltoReedPitch = useSetAltoReedPitch();
+  const setTenorReedPitch = useSetTenorReedPitch();
+  const setBassReedPitch = useSetBassReedPitch();
+
+  const adaptAll = () => {
+    setSopranoReedPitch(reedPitches.soprano);
+    setAltoReedPitch(reedPitches.alto);
+    setTenorReedPitch(reedPitches.tenor);
+    setBassReedPitch(reedPitches.bass);
+  };
+
+  return adaptAll;
+};
+```
+

@@ -1,26 +1,42 @@
+import { Container } from "@mui/material";
 import Typography from "@mui/material/Typography";
 
+import { useAccordionDisplayModeValue } from "./atoms/accordionDisplay";
+import { AccordionDisplaySwitch } from "./features/AccordionDisplaySwitch";
 import { AudioInitializer } from "./features/AudioInitializer";
+import { LeftHandAccordion } from "./features/LeftHandAccordion";
 import { RightHandAccordion } from "./features/RightHandAccordion";
 
 export function App() {
+  const displayMode = useAccordionDisplayModeValue();
+
   return (
     <AudioInitializer>
-      <div
-        style={{ height: "100vh", display: "flex", flexDirection: "column" }}
+      <Container
+        sx={{
+          height: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "16px",
+        }}
       >
         <Typography
           variant="h1"
           sx={{
-            textAlign: "center",
             margin: "1rem",
             fontSize: "1.8rem",
           }}
         >
           キーボードで演奏できるクロマティックボタンアコーディオン
         </Typography>
-        <RightHandAccordion />
-      </div>
+        <AccordionDisplaySwitch />
+        {displayMode === "left" ? (
+          <LeftHandAccordion />
+        ) : (
+          <RightHandAccordion />
+        )}
+      </Container>
     </AudioInitializer>
   );
 }

@@ -45,7 +45,7 @@ export const reedActivationPresets: ReedActivation[] = [
   { LOW: true, MID_1: false, MID_2: false, MID_3: false, HIGH: true }, //  organ
   { LOW: false, MID_1: true, MID_2: true, MID_3: true, HIGH: true }, //    ???
   { LOW: false, MID_1: false, MID_2: false, MID_3: false, HIGH: true }, // piccolo
-];
+] as const;
 
 const INITIAL_SELECTED_PRESET = 2;
 
