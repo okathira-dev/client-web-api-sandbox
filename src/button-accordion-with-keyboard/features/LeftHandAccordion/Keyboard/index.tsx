@@ -24,7 +24,7 @@ const bassTypeColors: Record<StradellaType, string> = {
 
 export const Keyboard = () => {
   const [buttonStates, setButtonStates] = useState<Record<string, boolean>>({});
-  const [keyLabelStyle, setKeyLabelStyle] = useState<KeyLabelStyle>("key");
+  const [keyLabelStyle, setKeyLabelStyle] = useState<KeyLabelStyle>("note");
 
   const { playActiveReeds, stopActiveReeds } = usePlayActiveReeds();
 
