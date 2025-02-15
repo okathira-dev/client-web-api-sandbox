@@ -23,7 +23,7 @@ export const VolumeControl: FC = () => {
         width: "100%",
       }}
     >
-      <Typography gutterBottom>音量</Typography>
+      <Typography sx={{ flexShrink: 0 }}>音量</Typography>
       <Slider
         value={volume}
         min={-60}
