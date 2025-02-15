@@ -6,9 +6,6 @@ export const KEYBOARD_LAYOUT = [
   ["z", "x", "c", "v", "b", "n", "m", ",", ".", "/"],
 ] as const;
 
-// ベース音のタイプ
-export type StradellaType = "counter" | "fundamental" | "major" | "minor";
-
 // Altoの音程の配列（Db, Ab, Eb, Bb, F, C, G, D, A, E, B, F#）
 // A4を基準（0）として半音の差を指定
 export const ROOT_NOTES = [

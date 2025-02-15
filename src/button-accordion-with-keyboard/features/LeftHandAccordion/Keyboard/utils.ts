@@ -1,8 +1,7 @@
 import { NOTE_LABELS, KEY_MAP, ROOT_NOTES } from "./consts";
 import { semitoneToFrequency } from "../../../audio/utils";
 
-import type { StradellaType } from "./consts";
-import type { StradellaSoundType } from "../atoms/reeds";
+import type { StradellaType, StradellaSoundType } from "../types";
 
 // 行番号からベース音のタイプを取得
 export const getTypeFromRow = (row: number): StradellaType => {

@@ -11,41 +11,46 @@ import { ReedSwitch } from "./ReedSwitch";
 import { RegisterSwitch } from "./RegisterSwitch";
 import { VolumeControl } from "./VolumeControl";
 
-import type { CSSProperties, ElementType, ReactNode } from "react";
-
-const containerStyle: CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  gap: "8px",
-  width: "100%",
-  position: "relative",
-} as const;
-
-const iconContainerStyle: CSSProperties = {
-  position: "absolute",
-  left: "-40px",
-  userSelect: "none",
-  WebkitUserSelect: "none",
-} as const;
-
-const componentContainerStyle: CSSProperties = {
-  width: "100%",
-  display: "flex",
-  justifyContent: "center",
-} as const;
+import type { ElementType, ReactNode } from "react";
 
 type ComponentWithIconProps = {
   Icon: ElementType;
   children: ReactNode;
 };
 
-const ComponentWithIcon = ({ Icon, children }: ComponentWithIconProps) => (
-  <div style={containerStyle}>
-    <div style={iconContainerStyle}>
+export const ComponentWithIcon = ({
+  Icon,
+  children,
+}: ComponentWithIconProps) => (
+  <Box
+    sx={{
+      display: "flex",
+      alignItems: "center",
+      gap: "8px",
+      width: "100%",
+      position: "relative",
+    }}
+  >
+    <Box
+      sx={{
+        position: "absolute",
+        left: "-40px",
+        userSelect: "none",
+        WebkitUserSelect: "none",
+      }}
+    >
       <Icon />
-    </div>
-    <div style={componentContainerStyle}>{children}</div>
-  </div>
+    </Box>
+    <Box
+      sx={{
+        width: "100%",
+        display: "flex",
+        justifyContent: "center",
+      }}
+    >
+      {children}
+    </Box>
+  </Box>
 );
 
 export const LeftHandAccordion = () => {

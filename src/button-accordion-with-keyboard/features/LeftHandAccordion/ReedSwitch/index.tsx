@@ -5,11 +5,10 @@ import Typography from "@mui/material/Typography";
 import {
   useStradellaReedStatesValue,
   useSetStradellaReedStates,
-} from "../atoms/reeds";
+} from "../atoms/register";
 import { REED_LABEL_MAP } from "../consts";
 
-import type { StradellaSoundType } from "../atoms/reeds";
-import type { ReedName } from "../consts";
+import type { ReedName, StradellaSoundType } from "../types";
 import type { FC, MouseEvent } from "react";
 
 const SOUND_TYPES: StradellaSoundType[] = ["chord", "bassNote"];

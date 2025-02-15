@@ -10,7 +10,7 @@ import {
   getTypeFromRow,
 } from "./utils";
 
-import type { StradellaType } from "./consts";
+import type { StradellaType } from "../types";
 import type { MouseEvent } from "react";
 
 type KeyLabelStyle = "key" | "note";

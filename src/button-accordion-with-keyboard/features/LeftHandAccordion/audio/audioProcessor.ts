@@ -1,6 +1,6 @@
 import { createPolySynth } from "../../../audio/audioCore";
 
-import type { ReedName } from "../consts";
+import type { ReedName } from "../types";
 import type * as Tone from "tone";
 
 // ストラデラベース用のシンセサイザー設定

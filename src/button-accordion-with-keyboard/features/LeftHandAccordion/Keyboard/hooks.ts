@@ -5,10 +5,10 @@ import {
   usePlayAltoReed,
   usePlaySopranoReed,
   usePlayTenorReed,
-  useStradellaReedStatesValue,
 } from "../atoms/reeds";
+import { useStradellaReedStatesValue } from "../atoms/register";
 
-import type { StradellaSoundType } from "../atoms/reeds";
+import type { StradellaSoundType } from "../types";
 
 // TODO: 同じ周波数の音が複数なっている場合に、適切に処理できていない。
 // そもそもアコーディオンとしては、そのリードが鳴るか鳴らないかの状態しか無いため、同じリードの同じ音が複数鳴ることはない。

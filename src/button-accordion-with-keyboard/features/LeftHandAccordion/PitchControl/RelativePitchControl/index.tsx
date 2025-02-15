@@ -4,9 +4,9 @@ import Typography from "@mui/material/Typography";
 import {
   useRelativeReedPitchesValue,
   useSetRelativeReedPitches,
-} from "../../atoms/reeds";
+} from "../../atoms/pitch";
 
-import type { ReedName } from "../../consts";
+import type { ReedName } from "../../types";
 import type { FC } from "react";
 
 export const RelativePitchControl: FC = () => {

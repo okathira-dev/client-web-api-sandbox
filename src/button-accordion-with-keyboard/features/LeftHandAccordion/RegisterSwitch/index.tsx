@@ -21,15 +21,14 @@ import Typography from "@mui/material/Typography";
 import { useCallback, useEffect, useState } from "react";
 
 import {
-  useStradellaRegisterValue,
-  useSetStradellaRegister,
-  STRADELLA_REGISTER_PRESETS,
-  useAdoptStradellaRegister,
   useStradellaReedStatesValue,
-} from "../atoms/reeds";
-import { REED_LABEL_MAP } from "../consts";
+  useSetStradellaRegister,
+  useStradellaRegisterValue,
+  useAdoptStradellaRegister,
+} from "../atoms/register";
+import { REED_LABEL_MAP, STRADELLA_REGISTER_PRESETS } from "../consts";
 
-import type { StradellaRegisterName } from "../atoms/reeds";
+import type { StradellaRegisterName } from "../types";
 import type { DragEndEvent } from "@dnd-kit/core";
 import type { FC, CSSProperties } from "react";
 

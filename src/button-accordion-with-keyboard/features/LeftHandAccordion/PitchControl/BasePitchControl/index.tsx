@@ -10,7 +10,7 @@ import {
   useBaseReedPitchValue,
   useSetBaseReedPitch,
   useAdaptAllReedPitches,
-} from "../../atoms/reeds";
+} from "../../atoms/pitch";
 
 import type { PitchUnit } from "../../../../audio/utils";
 import type { FC } from "react";
