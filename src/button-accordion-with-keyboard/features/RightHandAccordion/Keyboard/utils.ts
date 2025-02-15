@@ -1,32 +1,60 @@
-import { KEY_LABEL_TEXTS, KEY_MAP } from "./consts";
+import {
+  JA_KEYBOARD_LAYOUT,
+  EN_KEYBOARD_LAYOUT,
+  EN_KEY_MAP,
+  JA_KEY_MAP,
+  KEY_LABEL_TEXTS,
+} from "./consts";
 import { semitoneToFrequency } from "../../../audio/utils";
 
-import type { NoteNameStyle } from "./consts";
+import type { KeyboardLayoutType, NoteNameStyle } from "./consts";
+
+export type KeyLabelStyle = "key" | NoteNameStyle;
+
+// キーボードレイアウトの切り替え
+const getKeyMap = (keyboardLayout: KeyboardLayoutType) => {
+  return keyboardLayout === "en" ? EN_KEY_MAP : JA_KEY_MAP;
+};
+export const getKeyboardLayout = (keyboardLayout: KeyboardLayoutType) => {
+  return keyboardLayout === "en" ? EN_KEYBOARD_LAYOUT : JA_KEYBOARD_LAYOUT;
+};
 
 // 白鍵の判定用オフセット
 const whiteKeyOffsets = [-9, -7, -5, -4, -2, 0, 2].map(
   (offset) => ((offset % 12) + 12) % 12,
 );
 
-export const isWhiteKey = (key: string): boolean => {
-  const semitoneOffset = KEY_MAP[key];
+export const isWhiteKey = (
+  key: string,
+  keyboardLayoutType: KeyboardLayoutType,
+): boolean => {
+  const keyMap = getKeyMap(keyboardLayoutType);
+  const semitoneOffset = keyMap[key];
   if (semitoneOffset === undefined) return false;
   return whiteKeyOffsets.includes(((semitoneOffset % 12) + 12) % 12);
 };
 
-export const getFrequency = (key: string): number => {
-  const semitoneOffset = KEY_MAP[key];
+export const getFrequency = (
+  key: string,
+  keyboardLayoutType: KeyboardLayoutType,
+): number => {
+  const keyMap = getKeyMap(keyboardLayoutType);
+  const semitoneOffset = keyMap[key];
   if (semitoneOffset === undefined) {
     throw new Error("semitone offset not found");
   }
   return semitoneToFrequency(semitoneOffset);
 };
 
-export type KeyLabelStyle = "key" | NoteNameStyle;
-export const getNoteLabel = (key: string, style: KeyLabelStyle): string => {
+export const getNoteLabel = (
+  key: string,
+  style: KeyLabelStyle,
+  keyboardLayoutType: KeyboardLayoutType,
+): string => {
+  const keyMap = getKeyMap(keyboardLayoutType);
   if (style === "key") return key.toUpperCase();
 
-  const semitoneOffset = KEY_MAP[key];
+  const semitoneOffset = keyMap[key];
   if (semitoneOffset === undefined) {
     throw new Error("semitone offset not found");
   }

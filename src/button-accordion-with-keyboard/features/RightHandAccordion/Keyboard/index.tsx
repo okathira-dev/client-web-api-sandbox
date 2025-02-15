@@ -1,44 +1,54 @@
+import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Typography from "@mui/material/Typography";
 import { useCallback, useEffect, useState } from "react";
 
-import { KEYBOARD_LAYOUT, KEY_MAP } from "./consts";
 import { usePlayActiveReeds } from "./hooks";
-import { getFrequency, getNoteLabel, isWhiteKey } from "./utils";
+import {
+  getFrequency,
+  getNoteLabel,
+  getKeyboardLayout,
+  isWhiteKey,
+} from "./utils";
 import { KeyboardButton } from "../../../components/KeyboardButton";
 
+import type { KeyboardLayoutType } from "./consts";
 import type { KeyLabelStyle } from "./utils";
+import type { SelectChangeEvent } from "@mui/material";
 import type { FC, MouseEvent } from "react";
 
 export const Keyboard: FC = () => {
+  // それぞれのキーの押されているかどうか
   const [buttonStates, setButtonStates] = useState<Record<string, boolean>>({});
+  // 表示ラベルの切り替え（キーの印字か音階名か）
   const [keyLabelStyle, setKeyLabelStyle] = useState<KeyLabelStyle>("en");
+  // キーボードレイアウトの切り替え（USかJISか）
+  const [keyboardLayoutType, setKeyboardLayoutType] =
+    useState<KeyboardLayoutType>("en");
 
   const { playActiveReeds, stopActiveReeds } = usePlayActiveReeds();
 
+  const keyboardLayout = getKeyboardLayout(keyboardLayoutType);
+
   const buttonDown = useCallback(
     (key: string) => {
-      const semitoneOffset = KEY_MAP[key];
-      if (semitoneOffset !== undefined && !buttonStates[key]) {
-        const frequency = getFrequency(key);
+      if (!buttonStates[key]) {
+        const frequency = getFrequency(key, keyboardLayoutType);
         playActiveReeds(frequency);
         setButtonStates((prev) => ({ ...prev, [key]: true }));
       }
     },
-    [buttonStates, playActiveReeds, setButtonStates],
+    [buttonStates, keyboardLayoutType, playActiveReeds],
   );
 
   const buttonUp = useCallback(
     (key: string) => {
-      const semitoneOffset = KEY_MAP[key];
-      if (semitoneOffset !== undefined) {
-        const frequency = getFrequency(key);
-        stopActiveReeds(frequency);
-        setButtonStates((prev) => ({ ...prev, [key]: false }));
-      }
+      const frequency = getFrequency(key, keyboardLayoutType);
+      stopActiveReeds(frequency);
+      setButtonStates((prev) => ({ ...prev, [key]: false }));
     },
-    [setButtonStates, stopActiveReeds],
+    [keyboardLayoutType, stopActiveReeds],
   );
 
   useEffect(() => {
@@ -58,6 +68,15 @@ export const Keyboard: FC = () => {
     };
   }, [buttonDown, buttonUp]);
 
+  const handleKeyboardLayoutChange = (
+    event: SelectChangeEvent<KeyboardLayoutType>,
+  ) => {
+    const newKeyboardLayoutType = event.target.value as KeyboardLayoutType;
+    if (newKeyboardLayoutType === null) return;
+    setKeyboardLayoutType(newKeyboardLayoutType);
+    setButtonStates({}); // レイアウト切り替え時にボタンの状態をリセット
+  };
+
   const handleKeyLabelStyleChange = (
     _event: MouseEvent<HTMLElement>,
     newKeyLabelStyle: KeyLabelStyle | null,
@@ -66,25 +85,49 @@ export const Keyboard: FC = () => {
     setKeyLabelStyle(newKeyLabelStyle);
   };
 
+  const keyboardLayoutSelectLabelId = "keyboard-layout-select-label";
+
   return (
     <div>
-      <ToggleButtonGroup
-        color="primary"
-        value={keyLabelStyle}
-        exclusive
-        onChange={handleKeyLabelStyleChange}
-        aria-label="表示ラベルの切り替え"
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+        }}
       >
-        <ToggleButton value="key">
-          <Typography>キーボード (QWERTY)</Typography>
-        </ToggleButton>
-        <ToggleButton value="en">
-          <Typography>音階 (C4, C#4, D4…)</Typography>
-        </ToggleButton>
-        <ToggleButton value="ja">
-          <Typography>音階 (ドレミ)</Typography>
-        </ToggleButton>
-      </ToggleButtonGroup>
+        <ToggleButtonGroup
+          color="primary"
+          value={keyLabelStyle}
+          exclusive
+          onChange={handleKeyLabelStyleChange}
+          aria-label="表示ラベルの切り替え"
+        >
+          <ToggleButton value="key">
+            <Typography>キーボード (QWERTY)</Typography>
+          </ToggleButton>
+          <ToggleButton value="en">
+            <Typography>音階 (C4, C#4, D4…)</Typography>
+          </ToggleButton>
+          <ToggleButton value="ja">
+            <Typography>音階 (ドレミ)</Typography>
+          </ToggleButton>
+        </ToggleButtonGroup>
+        <FormControl>
+          <InputLabel id={keyboardLayoutSelectLabelId}>
+            キーボードレイアウト
+          </InputLabel>
+          <Select
+            labelId={keyboardLayoutSelectLabelId}
+            value={keyboardLayoutType}
+            label="キーボードレイアウト"
+            onChange={handleKeyboardLayoutChange}
+          >
+            <MenuItem value="en">英語キーボード</MenuItem>
+            <MenuItem value="ja">日本語キーボード</MenuItem>
+          </Select>
+        </FormControl>
+      </div>
+
       <div
         style={{
           display: "flex",
@@ -97,7 +140,7 @@ export const Keyboard: FC = () => {
           WebkitUserSelect: "none",
         }}
       >
-        {KEYBOARD_LAYOUT.map((row, rowIndex) => (
+        {keyboardLayout.map((row, rowIndex) => (
           <div
             key={rowIndex}
             style={{
@@ -107,8 +150,12 @@ export const Keyboard: FC = () => {
             }}
           >
             {row.map((key) => {
-              const isWhite = isWhiteKey(key);
-              const label = getNoteLabel(key, keyLabelStyle);
+              const isWhite = isWhiteKey(key, keyboardLayoutType);
+              const label = getNoteLabel(
+                key,
+                keyLabelStyle,
+                keyboardLayoutType,
+              );
 
               return (
                 <KeyboardButton

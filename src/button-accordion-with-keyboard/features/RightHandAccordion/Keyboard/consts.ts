@@ -1,13 +1,15 @@
-// 右手側キーボードのレイアウト
-export const KEYBOARD_LAYOUT = [
-  ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "="],
-  ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "[", "]", "\\"],
-  ["a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'"],
-  ["z", "x", "c", "v", "b", "n", "m", ",", ".", "/"],
-] as const;
+import {
+  EN_KEYBOARD_LAYOUT,
+  JA_KEYBOARD_LAYOUT,
+} from "../../../consts/keyboardLayout";
 
-// 右手側キーボードのキーマッピング
-export const KEY_MAP: Record<string, number> = {
+import type { KeyboardLayoutType } from "../../../consts/keyboardLayout";
+
+export type { KeyboardLayoutType };
+export { EN_KEYBOARD_LAYOUT, JA_KEYBOARD_LAYOUT };
+
+// 右手側キーボードのキーマッピング（英語キーボード）
+export const EN_KEY_MAP: Record<string, number> = {
   // 1列目
   "1": -18,
   "2": -15,
@@ -58,6 +60,61 @@ export const KEY_MAP: Record<string, number> = {
   ",": 9,
   ".": 12,
   "/": 15,
+};
+
+// 右手側キーボードのキーマッピング（日本語キーボード）
+export const JA_KEY_MAP: Record<string, number> = {
+  // 1列目
+  "1": -18,
+  "2": -15,
+  "3": -12,
+  "4": -9,
+  "5": -6,
+  "6": -3,
+  "7": 0,
+  "8": 3,
+  "9": 6,
+  "0": 9,
+  "-": 12,
+  "^": 15,
+  // 2列目
+  q: -16,
+  w: -13,
+  e: -10,
+  r: -7,
+  t: -4,
+  y: -1,
+  u: 2,
+  i: 5,
+  o: 8,
+  p: 11,
+  "@": 14,
+  "[": 17,
+  // 3列目
+  a: -14,
+  s: -11,
+  d: -8,
+  f: -5,
+  g: -2,
+  h: 1,
+  j: 4,
+  k: 7,
+  l: 10,
+  ";": 13,
+  ":": 16,
+  "]": 19,
+  // 4列目
+  z: -12,
+  x: -9,
+  c: -6,
+  v: -3,
+  b: 0,
+  n: 3,
+  m: 6,
+  ",": 9,
+  ".": 12,
+  "/": 15,
+  "\\": 18,
 };
 
 // 音階の名前のマッピング

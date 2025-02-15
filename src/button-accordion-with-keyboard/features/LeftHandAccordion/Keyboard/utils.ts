@@ -1,4 +1,12 @@
-import { NOTE_LABELS, KEY_MAP, ROOT_NOTES } from "./consts";
+import {
+  NOTE_LABELS,
+  ROOT_NOTES,
+  EN_KEYBOARD_LAYOUT,
+  JA_KEYBOARD_LAYOUT,
+  EN_KEY_MAP,
+  JA_KEY_MAP,
+  type KeyboardLayoutType,
+} from "./consts";
 import { semitoneToFrequency } from "../../../audio/utils";
 
 import type { StradellaType, StradellaSoundType } from "../types";
@@ -62,9 +70,22 @@ const getNoteIndex = (semitone: number, offset: number = 9): number => {
   return (((semitone + offset) % 12) + 12) % 12;
 };
 
+// キーボードレイアウトの切り替え
+export const getKeyMap = (keyboardLayout: KeyboardLayoutType) => {
+  return keyboardLayout === "en" ? EN_KEY_MAP : JA_KEY_MAP;
+};
+
+export const getKeyboardLayout = (keyboardLayout: KeyboardLayoutType) => {
+  return keyboardLayout === "en" ? EN_KEYBOARD_LAYOUT : JA_KEYBOARD_LAYOUT;
+};
+
 // keyから周波数の配列を返す
-export const getFrequencies = (key: string): number[] | undefined => {
-  const bassInfo = KEY_MAP[key];
+export const getFrequencies = (
+  key: string,
+  keyboardLayoutType: KeyboardLayoutType,
+): number[] | undefined => {
+  const keyMap = getKeyMap(keyboardLayoutType);
+  const bassInfo = keyMap[key];
   if (!bassInfo) return undefined;
 
   const { row, col } = bassInfo;
@@ -76,8 +97,10 @@ export const getFrequencies = (key: string): number[] | undefined => {
 // keyからそれがベース音かコードかを返す
 export const getStradellaSoundType = (
   key: string,
+  keyboardLayoutType: KeyboardLayoutType,
 ): StradellaSoundType | undefined => {
-  const bassInfo = KEY_MAP[key];
+  const keyMap = getKeyMap(keyboardLayoutType);
+  const bassInfo = keyMap[key];
   if (!bassInfo) return undefined;
 
   const { row } = bassInfo;
@@ -98,8 +121,12 @@ const getNoteLabel = (rootNote: number, shouldUseFlat: boolean): string => {
 };
 
 // キーに対応するラベルを取得する
-export const getKeyLabel = (key: string): string => {
-  const bassInfo = KEY_MAP[key];
+export const getKeyLabel = (
+  key: string,
+  keyboardLayoutType: KeyboardLayoutType,
+): string => {
+  const keyMap = getKeyMap(keyboardLayoutType);
+  const bassInfo = keyMap[key];
   if (!bassInfo) return key.toUpperCase();
 
   const { row, col } = bassInfo;

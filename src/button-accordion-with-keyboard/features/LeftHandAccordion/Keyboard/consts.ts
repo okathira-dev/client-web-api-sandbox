@@ -1,10 +1,12 @@
-// キーボードレイアウト（4行12列）
-export const KEYBOARD_LAYOUT = [
-  ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "="],
-  ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "[", "]"], // 12x4なので "\\" は不要
-  ["a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'"],
-  ["z", "x", "c", "v", "b", "n", "m", ",", ".", "/"],
-] as const;
+import {
+  EN_KEYBOARD_LAYOUT,
+  JA_KEYBOARD_LAYOUT,
+} from "../../../consts/keyboardLayout";
+
+import type { KeyboardLayoutType } from "../../../consts/keyboardLayout";
+
+export type { KeyboardLayoutType };
+export { EN_KEYBOARD_LAYOUT, JA_KEYBOARD_LAYOUT };
 
 // Altoの音程の配列（Db, Ab, Eb, Bb, F, C, G, D, A, E, B, F#）
 // A4を基準（0）として半音の差を指定
@@ -23,12 +25,22 @@ export const ROOT_NOTES = [
   21 - 24, // F#4
 ];
 
-// キーとベースボタンのマッピング
-export const KEY_MAP: Record<string, { row: number; col: number }> = {};
-KEYBOARD_LAYOUT.forEach((row, rowIndex) => {
+// キーとベースボタンのマッピング（英語キーボード）
+export const EN_KEY_MAP: Record<string, { row: number; col: number }> = {};
+EN_KEYBOARD_LAYOUT.forEach((row, rowIndex) => {
   row.forEach((key, colIndex) => {
     if (key !== null) {
-      KEY_MAP[key] = { row: rowIndex, col: colIndex };
+      EN_KEY_MAP[key] = { row: rowIndex, col: colIndex };
+    }
+  });
+});
+
+// キーとベースボタンのマッピング（日本語キーボード）
+export const JA_KEY_MAP: Record<string, { row: number; col: number }> = {};
+JA_KEYBOARD_LAYOUT.forEach((row, rowIndex) => {
+  row.forEach((key, colIndex) => {
+    if (key !== null) {
+      JA_KEY_MAP[key] = { row: rowIndex, col: colIndex };
     }
   });
 });
