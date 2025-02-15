@@ -1,15 +1,26 @@
-import { ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
+import {
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography,
+  type SelectChangeEvent,
+} from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 
-import { KEYBOARD_LAYOUT, KEY_MAP } from "./consts";
 import { usePlayActiveReeds } from "./hooks";
 import {
+  getKeyboardLayout,
   getFrequencies,
   getKeyLabel,
-  getStradellaSoundType,
   getTypeFromRow,
+  getKeyMap,
+  getStradellaSoundType,
 } from "./utils";
 
+import type { KeyboardLayoutType } from "./consts";
 import type { StradellaType } from "../types";
 import type { MouseEvent } from "react";
 
@@ -25,37 +36,42 @@ const bassTypeColors: Record<StradellaType, string> = {
 export const Keyboard = () => {
   const [buttonStates, setButtonStates] = useState<Record<string, boolean>>({});
   const [keyLabelStyle, setKeyLabelStyle] = useState<KeyLabelStyle>("note");
+  const [keyboardLayoutType, setKeyboardLayoutType] =
+    useState<KeyboardLayoutType>("en");
 
   const { playActiveReeds, stopActiveReeds } = usePlayActiveReeds();
 
+  const keyMap = getKeyMap(keyboardLayoutType);
+  const keyboardLayout = getKeyboardLayout(keyboardLayoutType);
+
   const buttonDown = useCallback(
     (key: string) => {
-      const frequencies = getFrequencies(key);
-      const soundType = getStradellaSoundType(key);
+      const frequencies = getFrequencies(key, keyboardLayoutType);
+      const stradellaSoundType = getStradellaSoundType(key, keyboardLayoutType);
 
-      if (!buttonStates[key] && frequencies && soundType) {
+      if (!buttonStates[key] && frequencies && stradellaSoundType) {
         frequencies.forEach((frequency: number) => {
-          playActiveReeds(frequency, soundType);
+          playActiveReeds(frequency, stradellaSoundType);
         });
         setButtonStates((prev) => ({ ...prev, [key]: true }));
       }
     },
-    [buttonStates, playActiveReeds],
+    [buttonStates, keyboardLayoutType, playActiveReeds],
   );
 
   const buttonUp = useCallback(
     (key: string) => {
-      const frequencies = getFrequencies(key);
-      const soundType = getStradellaSoundType(key);
+      const frequencies = getFrequencies(key, keyboardLayoutType);
+      const stradellaSoundType = getStradellaSoundType(key, keyboardLayoutType);
 
-      if (frequencies && soundType) {
+      if (frequencies && stradellaSoundType) {
         frequencies.forEach((frequency: number) => {
-          stopActiveReeds(frequency, soundType);
+          stopActiveReeds(frequency, stradellaSoundType);
         });
       }
       setButtonStates((prev) => ({ ...prev, [key]: false }));
     },
-    [stopActiveReeds],
+    [keyboardLayoutType, stopActiveReeds],
   );
 
   useEffect(() => {
@@ -83,22 +99,54 @@ export const Keyboard = () => {
     setKeyLabelStyle(newKeyLabelStyle);
   };
 
+  const handleKeyboardLayoutChange = (
+    event: SelectChangeEvent<KeyboardLayoutType>,
+  ) => {
+    const newKeyboardLayoutType = event.target.value as KeyboardLayoutType;
+    if (newKeyboardLayoutType === null) return;
+    setKeyboardLayoutType(newKeyboardLayoutType);
+    setButtonStates({}); // レイアウト切り替え時にボタンの状態をリセット
+  };
+
+  const keyboardLayoutSelectLabelId = "keyboard-layout-select-label";
+
   return (
     <div>
-      <ToggleButtonGroup
-        color="primary"
-        value={keyLabelStyle}
-        exclusive
-        onChange={handleKeyLabelStyleChange}
-        aria-label="表示ラベルの切り替え"
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+        }}
       >
-        <ToggleButton value="key">
-          <Typography>キーボード (QWERTY)</Typography>
-        </ToggleButton>
-        <ToggleButton value="note">
-          <Typography>音階 (C4, C#4, D4...)</Typography>
-        </ToggleButton>
-      </ToggleButtonGroup>
+        <ToggleButtonGroup
+          color="primary"
+          value={keyLabelStyle}
+          exclusive
+          onChange={handleKeyLabelStyleChange}
+          aria-label="表示ラベルの切り替え"
+        >
+          <ToggleButton value="key">
+            <Typography>キーボード (QWERTY)</Typography>
+          </ToggleButton>
+          <ToggleButton value="note">
+            <Typography>音階 (C4, C#4, D4...)</Typography>
+          </ToggleButton>
+        </ToggleButtonGroup>
+        <FormControl>
+          <InputLabel id={keyboardLayoutSelectLabelId}>
+            キーボードレイアウト
+          </InputLabel>
+          <Select
+            labelId={keyboardLayoutSelectLabelId}
+            value={keyboardLayoutType}
+            label="キーボードレイアウト"
+            onChange={handleKeyboardLayoutChange}
+          >
+            <MenuItem value="en">英語キーボード</MenuItem>
+            <MenuItem value="ja">日本語キーボード</MenuItem>
+          </Select>
+        </FormControl>
+      </div>
       <div
         style={{
           display: "flex",
@@ -111,7 +159,7 @@ export const Keyboard = () => {
           WebkitUserSelect: "none",
         }}
       >
-        {KEYBOARD_LAYOUT.map((row, rowIndex) => (
+        {keyboardLayout.map((row, rowIndex) => (
           <div
             key={rowIndex}
             style={{
@@ -122,8 +170,7 @@ export const Keyboard = () => {
           >
             {row.map((key) => {
               if (key === null) return null;
-              if (!(key in KEY_MAP)) return null;
-              const position = KEY_MAP[key];
+              const position = keyMap[key];
               if (position === undefined) return null;
               const type = getTypeFromRow(position.row);
 
@@ -157,7 +204,7 @@ export const Keyboard = () => {
                   onMouseLeave={() => buttonStates[key] && buttonUp(key)}
                 >
                   {keyLabelStyle === "note"
-                    ? getKeyLabel(key)
+                    ? getKeyLabel(key, keyboardLayoutType)
                     : key.toUpperCase()}
                 </button>
               );
