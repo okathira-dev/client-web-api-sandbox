@@ -31,6 +31,7 @@ export default defineConfig({
           "button-accordion-with-keyboard",
           "index.html",
         ),
+        "keyboard-hid-poc": resolve(root, "keyboard-hid-poc", "index.html"),
       },
     },
   },
