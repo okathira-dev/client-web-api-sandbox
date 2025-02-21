@@ -5,7 +5,7 @@ Tone.setContext(
   new Tone.Context({
     latencyHint: "interactive",
     lookAhead: 0,
-    updateInterval: 0.01,
+    updateInterval: 0.001,
   }),
 );
 

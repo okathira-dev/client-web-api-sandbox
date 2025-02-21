@@ -9,6 +9,13 @@ type LatencyInfo = {
   updateInterval: number | undefined;
 };
 
+const formatLatency = (seconds: number | undefined): string => {
+  if (seconds === undefined) {
+    return "計測不可";
+  }
+  return `${Math.round(seconds * 1000 * 100) / 100}ms`;
+};
+
 export const LatencyDisplay = () => {
   const [latencyInfo, setLatencyInfo] = useState<LatencyInfo>({
     baseLatency: undefined,
@@ -29,9 +36,7 @@ export const LatencyDisplay = () => {
 
   useEffect(() => {
     const updateLatency = () => {
-      console.log("updateLatency");
       const toneContext = Tone.getContext() as ExtendedToneContext;
-      console.log("toneContext", toneContext);
       const rawContext = toneContext.rawContext as ExtendedToneRawContext;
 
       // OfflineAudioContextの場合は遅延時間を取得できないため、早期リターン
@@ -55,13 +60,6 @@ export const LatencyDisplay = () => {
     const interval = setInterval(updateLatency, 1000);
     return () => clearInterval(interval);
   }, []);
-
-  const formatLatency = (seconds: number | undefined): string => {
-    if (seconds === undefined) {
-      return "計測不可";
-    }
-    return `${Math.round(seconds * 1000 * 100) / 100}ms`;
-  };
 
   // 遅延時間の合計を計算
   // updateIntervalは遅延に影響しないっぽい
