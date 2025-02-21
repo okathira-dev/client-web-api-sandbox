@@ -4,6 +4,7 @@ import Typography from "@mui/material/Typography";
 import { useAccordionDisplayModeValue } from "./atoms/accordionDisplay";
 import { AccordionDisplaySwitch } from "./features/AccordionDisplaySwitch";
 import { AudioInitializer } from "./features/AudioInitializer";
+import { LatencyDisplay } from "./features/LatencyDisplay";
 import { LeftHandAccordion } from "./features/LeftHandAccordion";
 import { RightHandAccordion } from "./features/RightHandAccordion";
 
@@ -30,6 +31,7 @@ export function App() {
         >
           キーボードで演奏できるクロマティックボタンアコーディオン
         </Typography>
+        <LatencyDisplay />
         <AccordionDisplaySwitch />
         {displayMode === "left" ? (
           <LeftHandAccordion />
