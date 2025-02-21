@@ -33,7 +33,7 @@ const getSquarePartials = (partialCount: number) =>
   );
 
 // 波形の生成
-export const createWaveform = (partialCount: number = 64) => {
+const createWaveform = (partialCount: number = 64) => {
   const sawtoothPartials = getSawtoothPartials(partialCount);
   const squarePartials = getSquarePartials(partialCount);
   return sawtoothPartials.map(
