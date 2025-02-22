@@ -97,6 +97,8 @@ globs: src/button-accordion-with-keyboard/**/*
 
 1. アトムの分類と配置
    - 関心に合わせてディレクトリに配置する。
+   - jotaiのimportはアトムのファイルでのみ行う。
+   - そのため、atomそのものはexportしない。
 
 2. オーディオ状態の管理
    - リードセットの状態（有効/無効）

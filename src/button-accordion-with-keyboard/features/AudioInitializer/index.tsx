@@ -4,6 +4,11 @@ import Typography from "@mui/material/Typography";
 import { useState } from "react";
 
 import { startAudioContext } from "../../audio/audioCore";
+import {
+  useSetAudioDeviceError,
+  useSetAudioDevices,
+} from "../AudioDeviceSelector/atoms";
+import { initializeAudioDevices } from "../AudioDeviceSelector/utils";
 
 import type { FC, ReactNode } from "react";
 
@@ -21,12 +26,27 @@ type AudioInitializerProps = {
 
 export const AudioInitializer: FC<AudioInitializerProps> = ({ children }) => {
   const [isAudioInitialized, setIsAudioInitialized] = useState(false);
+  const setAudioDeviceError = useSetAudioDeviceError();
+  const setAudioDevices = useSetAudioDevices();
 
   const handleInitialize = () => {
     disableAltKey();
-    void startAudioContext().then(() => {
-      setIsAudioInitialized(true);
-    });
+    void (async () => {
+      await startAudioContext().then(() => {
+        setIsAudioInitialized(true);
+      });
+
+      try {
+        // 権限の要求 却下されることもある
+        const devices = await initializeAudioDevices();
+        setAudioDevices(devices);
+        setAudioDeviceError(null);
+      } catch (error) {
+        if (error instanceof Error) {
+          setAudioDeviceError(error.message);
+        }
+      }
+    })();
   };
 
   if (!isAudioInitialized) {
@@ -60,6 +80,10 @@ export const AudioInitializer: FC<AudioInitializerProps> = ({ children }) => {
             }}
           >
             ブラウザの制限により、音声の再生には事前にユーザーの操作が必要です。
+            <br />
+            音声出力デバイスの変更を行うには、マイクへのアクセス権限が必要です。
+            <br />
+            音声出力デバイスの変更には対応していないブラウザもあります。
           </Typography>
           <Button
             variant="contained"
