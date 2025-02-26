@@ -15,6 +15,12 @@ X\_{n+1} = (a × X_n + c) mod m
 - c は増分 (increment)
 - m は法 (modulus)
 
+このとき以下を満たします
+
+- a, c, m は整数
+- 0 < a < m
+- 0 ≤ c < m
+
 ## 使い方
 
 Note: [BigInt](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/BigInt) を使用しているため、JavaScriptのNumber型の範囲を超える値を設定できます。（BigIntの範囲はブラウザの実装によって異なるようです。）
