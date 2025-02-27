@@ -31,6 +31,7 @@ export default defineConfig({
           "button-accordion-with-keyboard",
           "index.html",
         ),
+        "lcg-predictor": resolve(root, "lcg-predictor", "index.html"),
       },
     },
   },
