@@ -590,7 +590,8 @@ export function LcgPredictor() {
                     component="span"
                     sx={{ display: "inline-block", mr: 1 }}
                   >
-                    X{i}: {v.toString()}
+                    X{i}:&nbsp;
+                    <span style={{ userSelect: "all" }}>{v.toString()}</span>
                   </Box>
                 ))}
               </Typography>
@@ -609,7 +610,8 @@ export function LcgPredictor() {
                     component="span"
                     sx={{ display: "inline-block", mr: 1 }}
                   >
-                    X{knownValues.length + i}: {v.toString()}
+                    X{knownValues.length + i}:&nbsp;
+                    <span style={{ userSelect: "all" }}>{v.toString()}</span>
                   </Box>
                 ))}
               </Typography>
