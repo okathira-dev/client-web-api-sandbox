@@ -57,7 +57,7 @@ export default config(
   },
   {
     // node コンフィグ系ファイル
-    files: ["vite.config.ts", "eslint.config.js"], // import tsconfigNodeJson from "tsconfig.node.json" with {type: "json"}; tsconfigNodeJson.include
+    files: ["vite.config.ts", "eslint.config.js", "jest.config.js"], // import tsconfigNodeJson from "tsconfig.node.json" with {type: "json"}; tsconfigNodeJson.include
     languageOptions: {
       parser: typescriptEslintParser,
       ecmaVersion: "latest",

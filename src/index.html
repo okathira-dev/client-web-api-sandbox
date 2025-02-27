@@ -3,37 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <title>index</title>
-    <style>
-      .social-links {
-        position: fixed;
-        top: 16px;
-        right: 16px;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        align-items: center;
-      }
-      .social-link {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-decoration: none;
-        color: #333;
-        width: 24px;
-        height: 24px;
-      }
-      .social-link:hover {
-        opacity: 0.8;
-      }
-      .social-link svg {
-        width: 24px;
-        height: 24px;
-      }
-    </style>
+    <link rel="stylesheet" href="./shared/html-components/social-icons.css" />
   </head>
 
   <body>
     <div class="social-links">
+      <!-- 目次アイコン -->
+      <a href="./index.html" class="social-link" aria-label="目次ページへ戻る">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path
+            d="M12 2.1L1 12h3v9h7v-6h2v6h7v-9h3L12 2.1zm0 2.691l6 5.4V19h-3v-6H9v6H6v-8.809l6-5.4z"
+          />
+        </svg>
+      </a>
+
+      <!-- GitHub -->
       <a
         href="https://github.com/okathira-dev/client-web-api-sandbox"
         class="social-link"
@@ -88,6 +72,10 @@
     <br />
     <a href="./button-accordion-with-keyboard/index.html"
       >キーボードによるボタンアコーディオン</a
+    >
+    <br />
+    <a href="./lcg-predictor/index.html"
+      >線形合同法乱数予測ツール (LCG Predictor)</a
     >
   </body>
 </html>

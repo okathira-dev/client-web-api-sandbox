@@ -1,7 +1,8 @@
 {
   "extends": ["markuplint:recommended-react"],
   "rules": {
-    "required-h1": false
+    "required-h1": false,
+    "use-list": false
   },
   "parser": {
     ".[jt]sx$": "@markuplint/jsx-parser"
