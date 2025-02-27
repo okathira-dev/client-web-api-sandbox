@@ -1,3 +1,22 @@
+## HTMLプロジェクト用共有SNSアイコン
+
+このディレクトリには、HTMLプロジェクト用の共有SNSアイコンコンポーネントが含まれています。
+目次ページへのリンクアイコンも同一コンポーネントに統合されています。
+
+### 使用方法
+
+1. HTMLファイルのhead要素内に、以下のようにCSSファイルをリンクします。
+   相対パスは適宜調整してください。例えば、`src/index.html`からリンクする場合：
+
+```html
+<link rel="stylesheet" href="./shared/html-components/social-icons.css" />
+```
+
+### HTMLマークアップ
+
+以下のHTMLマークアップをbody要素内に配置します。GitHub URLは適切なプロジェクトURLに変更してください。
+
+```html
 <div class="social-links">
   <!-- 目次アイコン -->
   <a href="../index.html" class="social-link" aria-label="目次ページへ戻る">
@@ -23,8 +42,6 @@
       ></path>
     </svg>
   </a>
-
-  <!-- X (Twitter) -->
   <a
     href="https://x.com/okathira"
     class="social-link"
@@ -39,8 +56,6 @@
       />
     </svg>
   </a>
-
-  <!-- Bluesky -->
   <a
     href="https://bsky.app/profile/okathira.bsky.social"
     class="social-link"
@@ -56,3 +71,6 @@
     </svg>
   </a>
 </div>
+```
+
+パスの相対参照は各プロジェクトフォルダのネストレベルに応じて調整してください。
