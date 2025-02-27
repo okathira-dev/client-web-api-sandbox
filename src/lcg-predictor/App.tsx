@@ -63,7 +63,8 @@ export function App() {
           fontSize: "1.8rem",
         }}
       >
-        線形合同法ツール (LCG Tool)
+        線形合同法乱数予測ツール / LCG (Linear Congruential Generator) Predictor
+        Tool
       </Typography>
 
       {/* 線形合同法の式 - 常に表示される */}

@@ -249,7 +249,7 @@ export const calculateUnknownParams = (
   // 十分な数の modulusMultiples があるとき、その最大公約数は modulus と一致するという考え。このときの最大公約数を真の最大公約数とする。
   // modulusMultiples が多ければ多いほど、その最大公約数が真の最大公約数 (=modulus) となる確率が高くなる。
   // 言い換えると、得られた modulusMultiples での最大公約数が真の最大公約数ではなくただの公約数の可能性がある。（modulusMultiplesが互いに素ではないとき？）
-  // TODO: 求められない場合の検知・対応
+  // TODO: 求められない場合の検知・対応 https://prng.var.tailcall.net/lcg4_total このパターンとか？
   const modulus = multiGcd(modulusMultiples);
 
   // 乗数と増分を計算
