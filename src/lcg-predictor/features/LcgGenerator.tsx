@@ -5,7 +5,6 @@ import {
   Card,
   CardContent,
   FormControl,
-  FormHelperText,
   Grid,
   InputLabel,
   MenuItem,
@@ -25,8 +24,7 @@ import {
 
 export function LcgGenerator() {
   // 状態管理
-  const [preset, setPreset] = useState<LcgPresetName>("C/C++ (glibc)");
-  const [params, setParams] = useState<LcgParams>(LCG_PRESETS["C/C++ (glibc)"]);
+  const [params, setParams] = useState<LcgParams>(LCG_PRESETS["Custom"]);
   const [customParams, setCustomParams] = useState<LcgParams>({
     a: 0n,
     c: 0n,
@@ -38,13 +36,15 @@ export function LcgGenerator() {
   const [error, setError] = useState<string>("");
 
   // プリセット変更時の処理
-  const handlePresetChange = (newPreset: LcgPresetName) => {
-    setPreset(newPreset);
-    if (newPreset !== "Custom") {
-      setParams(LCG_PRESETS[newPreset]);
-    } else {
-      setParams(customParams);
-    }
+  const handlePresetChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    const presetName = event.target.value as LcgPresetName;
+    const presetValues = LCG_PRESETS[presetName];
+
+    // プリセットの値をカスタムパラメータにセット
+    setCustomParams({ ...presetValues });
+
+    // カスタムパラメータの値をパラメータにセット
+    setParams({ ...presetValues });
   };
 
   // カスタムパラメータ変更時の処理
@@ -54,9 +54,8 @@ export function LcgGenerator() {
       const newCustomParams = { ...customParams, [param]: bigIntValue };
       setCustomParams(newCustomParams);
 
-      if (preset === "Custom") {
-        setParams(newCustomParams);
-      }
+      // 入力値をパラメータにも反映
+      setParams(newCustomParams);
     } catch {
       // 無効な入力の場合は何もしない
     }
@@ -135,67 +134,66 @@ export function LcgGenerator() {
           LCGパラメータ設定
         </Typography>
 
-        <FormControl fullWidth margin="normal">
-          <InputLabel>プリセット</InputLabel>
-          <Select
-            value={preset}
-            label="プリセット"
-            onChange={(e) =>
-              handlePresetChange(e.target.value as LcgPresetName)
-            }
+        <Box sx={{ marginBottom: "16px" }}>
+          <FormControl fullWidth size="small">
+            <InputLabel htmlFor="preset-select">プリセットから選択</InputLabel>
+            <Select
+              labelId="preset-select-label"
+              inputProps={{
+                id: "preset-select",
+              }}
+              label="プリセットから選択"
+              defaultValue=""
+              onChange={(e) =>
+                handlePresetChange(e as React.ChangeEvent<{ value: unknown }>)
+              }
+            >
+              {Object.keys(LCG_PRESETS).map((key) => (
+                <MenuItem key={key} value={key}>
+                  {key}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            sx={{ display: "block", mt: 0.5 }}
           >
-            {Object.keys(LCG_PRESETS).map((key) => (
-              <MenuItem key={key} value={key}>
-                {key}
-              </MenuItem>
-            ))}
-          </Select>
-          <FormHelperText>
-            一般的なプログラミング言語やライブラリで使用されるLCGパラメータ
-          </FormHelperText>
-        </FormControl>
-
-        {preset === "Custom" && (
-          <Box sx={{ marginTop: "16px" }}>
-            <Typography variant="subtitle1">カスタムパラメータ</Typography>
-            <Grid container spacing={2}>
-              <Grid item xs={4}>
-                <TextField
-                  fullWidth
-                  label="乗数 (a)"
-                  value={customParams.a.toString()}
-                  onChange={(e) => handleCustomParamChange("a", e.target.value)}
-                  helperText="X_{n+1} = (a * X_n + c) mod m"
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <TextField
-                  fullWidth
-                  label="増分 (c)"
-                  value={customParams.c.toString()}
-                  onChange={(e) => handleCustomParamChange("c", e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <TextField
-                  fullWidth
-                  label="法 (m)"
-                  value={customParams.m.toString()}
-                  onChange={(e) => handleCustomParamChange("m", e.target.value)}
-                />
-              </Grid>
-            </Grid>
-          </Box>
-        )}
+            ※
+            プリセットの名前と値は例示的なものであり、実際のシステムの正確なパラメータではない場合があります。
+          </Typography>
+        </Box>
 
         <Box sx={{ marginTop: "16px" }}>
-          <Typography variant="subtitle1">現在の設定</Typography>
-          <Typography variant="body2">
-            乗数 (a): {params.a.toString()}
-            <br />
-            増分 (c): {params.c.toString()}
-            <br />法 (m): {params.m.toString()}
-          </Typography>
+          <Typography variant="subtitle1">パラメータ設定</Typography>
+          <Grid container spacing={2}>
+            <Grid item xs={4}>
+              <TextField
+                fullWidth
+                label="乗数 (a)"
+                value={customParams.a.toString()}
+                onChange={(e) => handleCustomParamChange("a", e.target.value)}
+                helperText="X_{n+1} = (a * X_n + c) mod m"
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                fullWidth
+                label="増分 (c)"
+                value={customParams.c.toString()}
+                onChange={(e) => handleCustomParamChange("c", e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                fullWidth
+                label="法 (m)"
+                value={customParams.m.toString()}
+                onChange={(e) => handleCustomParamChange("m", e.target.value)}
+              />
+            </Grid>
+          </Grid>
         </Box>
       </Paper>
 

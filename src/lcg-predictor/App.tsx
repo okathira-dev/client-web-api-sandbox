@@ -9,6 +9,7 @@ import {
 import Box from "@mui/material/Box";
 import { useState } from "react";
 
+import { LcgFormula } from "./components/LcgFormula";
 import { LcgGenerator } from "./features/LcgGenerator";
 import { LcgPredictor } from "./features/LcgPredictor";
 
@@ -92,6 +93,11 @@ export function App() {
       >
         線形合同法ツール (LCG Tool)
       </Typography>
+
+      {/* 線形合同法の式 - 常に表示される */}
+      <Box sx={{ width: "100%", maxWidth: "800px" }}>
+        <LcgFormula />
+      </Box>
 
       {/* タブ */}
       <Box sx={{ width: "100%", maxWidth: "800px" }}>
