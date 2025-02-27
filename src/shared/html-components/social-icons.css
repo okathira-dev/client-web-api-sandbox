@@ -1,0 +1,28 @@
+.social-links {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: #333;
+  width: 24px;
+  height: 24px;
+}
+
+.social-link:hover {
+  opacity: 0.8;
+}
+
+.social-link svg {
+  width: 24px;
+  height: 24px;
+}
