@@ -1,9 +1,9 @@
-## HTMLプロジェクト用共有SNSアイコン
+# HTMLプロジェクト用共有SNSアイコン
 
 このディレクトリには、HTMLプロジェクト用の共有SNSアイコンコンポーネントが含まれています。
 目次ページへのリンクアイコンも同一コンポーネントに統合されています。
 
-### 使用方法
+## 使用方法
 
 1. HTMLファイルのhead要素内に、以下のようにCSSファイルをリンクします。
    相対パスは適宜調整してください。例えば、`src/index.html`からリンクする場合：
@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="./shared/html-components/social-icons.css" />
 ```
 
-### HTMLマークアップ
+## HTMLマークアップ
 
 以下のHTMLマークアップをbody要素内に配置します。GitHub URLは適切なプロジェクトURLに変更してください。
 

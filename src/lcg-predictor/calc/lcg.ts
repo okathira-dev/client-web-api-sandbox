@@ -1,6 +1,6 @@
 // LCG
 
-// ref: https://tailcall.net/blog/cracking-randomness-lcgs/ (archived: https://web.archive.org/web/20190412090429/https://tailcall.net/blog/cracking-randomness-lcgs/)
+// ref: https://msm.lt/posts/cracking-rngs-lcgs
 // ref: https://satto.hatenadiary.com/entry/solve-LCG
 // ref: https://ja.wikipedia.org/wiki/%E7%B7%9A%E5%BD%A2%E5%90%88%E5%90%8C%E6%B3%95
 

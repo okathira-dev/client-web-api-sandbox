@@ -71,6 +71,37 @@ export function App() {
         <LcgFormula />
       </Box>
 
+      {/* 参考文献 */}
+      <Typography
+        variant="caption"
+        sx={{ textAlign: "center", width: "100%", mb: 1, opacity: 0.7 }}
+      >
+        参考文献:
+        <a
+          href="https://msm.lt/posts/cracking-rngs-lcgs"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Cracking Random Number Generators - LCGs
+        </a>
+        /
+        <a
+          href="https://satto.hatenadiary.com/entry/solve-LCG"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          線形合同法による乱数を予測するアルゴリズム
+        </a>
+        /
+        <a
+          href="https://ja.wikipedia.org/wiki/%E7%B7%9A%E5%BD%A2%E5%90%88%E5%90%8C%E6%B3%95"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          線形合同法 - Wikipedia
+        </a>
+      </Typography>
+
       {/* タブ */}
       <Box sx={{ width: "100%", maxWidth: "800px" }}>
         <Tabs

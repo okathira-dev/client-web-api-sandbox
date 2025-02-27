@@ -1,6 +1,6 @@
 // 線形合同法乱数予測
 
-// ref: https://tailcall.net/blog/cracking-randomness-lcgs/ (archived: https://web.archive.org/web/20190412090429/https://tailcall.net/blog/cracking-randomness-lcgs/)
+// ref: https://msm.lt/posts/cracking-rngs-lcgs
 // ref: https://satto.hatenadiary.com/entry/solve-LCG
 
 import { calcNextLCG } from "./lcg";
