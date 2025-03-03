@@ -31,7 +31,7 @@
     "@mui/icons-material": "^6.3.1",
     "@mui/material": "^6.4.5",
     "jotai": "^2.12.1",
-    "react": "^18.2.0",
+    "react": "^19.0.0",
     "react-dom": "^18.2.0",
     "tone": "^15.0.4"
   },
@@ -44,7 +44,7 @@
     "@types/eslint-config-prettier": "^6.11.3",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.13.5",
-    "@types/react": "^18.3.12",
+    "@types/react": "^19.0.10",
     "@types/react-dom": "^18.3.1",
     "@typescript-eslint/parser": "^8.22.0",
     "@vitejs/plugin-react-swc": "^3.8.0",
