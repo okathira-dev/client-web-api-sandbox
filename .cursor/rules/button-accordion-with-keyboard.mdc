@@ -1,6 +1,7 @@
 ---
 description: クロマティックボタンアコーディオンの実装について
 globs: src/button-accordion-with-keyboard/**/*
+alwaysApply: false
 ---
 # button-accordion-with-keyboard
 
