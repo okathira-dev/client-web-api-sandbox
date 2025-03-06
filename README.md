@@ -8,6 +8,10 @@ npm run dev
 
 ## プロジェクトフォルダ
 
+### [./src/shared](./src/shared)
+
+共有コンポーネント
+
 ### [./src/index.html](./src/index.html)
 
 以下のページの目次となるページ
@@ -27,3 +31,7 @@ npm run dev
 ### [./src/lcg-predictor](./src/lcg-predictor)
 
 線形合同法乱数予測ツール
+
+### [./src/projectile-director](./src/projectile-director)
+
+発射体指揮装置シミュレーター
