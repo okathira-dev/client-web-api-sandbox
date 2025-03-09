@@ -5,9 +5,105 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>発射体指揮装置シミュレーター</title>
     <link rel="stylesheet" href="../shared/html-components/social-icons.css" />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: #f5f5f5;
+        font-family: sans-serif;
+      }
+      #info {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        color: white;
+        background-color: rgba(0, 0, 0, 0.5);
+        padding: 10px;
+        border-radius: 5px;
+        z-index: 100;
+      }
+      #settings {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        color: white;
+        background-color: rgba(0, 0, 0, 0.5);
+        padding: 10px;
+        border-radius: 5px;
+        z-index: 100;
+      }
+      h2 {
+        margin-top: 0;
+        margin-bottom: 10px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+      }
+      input {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+      select {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+      canvas {
+        display: block;
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="./main.tsx"></script>
+    <div id="info">
+      <h2>シミュレーション情報</h2>
+      <div>目標位置: <span id="target-position">X: 0, Y: 0</span></div>
+      <div>目標速度: <span id="target-velocity">X: 0, Y: 0</span></div>
+      <div>発射体速度: <span id="projectile-speed">200 px/s</span></div>
+      <div>予測到達時間: <span id="time-to-target">0 秒</span></div>
+      <div>命中率: <span id="hit-rate">0/0 (0%)</span></div>
+    </div>
+
+    <div id="settings">
+      <h2>シミュレーション設定</h2>
+      <label for="projectile-speed-input">発射体速度:</label>
+      <input
+        type="range"
+        id="projectile-speed-input"
+        min="50"
+        max="500"
+        value="200"
+        step="10"
+      />
+
+      <label for="target-size-input">目標サイズ:</label>
+      <input
+        type="range"
+        id="target-size-input"
+        min="5"
+        max="30"
+        value="10"
+        step="1"
+      />
+
+      <label for="filter-type">フィルタータイプ:</label>
+      <select id="filter-type">
+        <option value="none">なし</option>
+        <option value="movingAverage">移動平均</option>
+        <option value="singleExponential">単純指数平滑化</option>
+        <option value="doubleExponential">二重指数平滑化</option>
+        <option value="kalmanFilter">カルマンフィルター</option>
+        <option value="oneEuroFilter">One-Euroフィルター</option>
+      </select>
+
+      <label for="target-motion-type">目標の動き:</label>
+      <select id="target-motion-type">
+        <option value="mouse">マウス追従</option>
+        <option value="linearConstant">等速直線運動</option>
+        <option value="circularConstant">等速円運動</option>
+      </select>
+    </div>
+
+    <script type="module" src="./main.ts"></script>
   </body>
 </html>
