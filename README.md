@@ -8,6 +8,10 @@ npm run dev
 
 ## プロジェクトフォルダ
 
+### [./src/shared](./src/shared)
+
+共有コンポーネント
+
 ### [./src/index.html](./src/index.html)
 
 以下のページの目次となるページ
