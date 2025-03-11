@@ -31,3 +31,7 @@ npm run dev
 ### [./src/lcg-predictor](./src/lcg-predictor)
 
 線形合同法乱数予測ツール
+
+### [./src/tears-of-overflowed-bits](./src/tears-of-overflowed-bits)
+
+Tears of Overflowed Bits

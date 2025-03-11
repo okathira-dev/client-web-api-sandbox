@@ -32,6 +32,11 @@ export default defineConfig({
           "index.html",
         ),
         "lcg-predictor": resolve(root, "lcg-predictor", "index.html"),
+        "tears-of-overflowed-bits": resolve(
+          root,
+          "tears-of-overflowed-bits",
+          "index.html",
+        ),
       },
     },
   },
