@@ -1,0 +1,14 @@
+# 生成されたファイルは除外
+node_modules
+dist
+build
+coverage
+
+# publicディレクトリ内のファイルを除外
+**/public/**/*
+
+# その他の除外ファイル
+.DS_Store
+.env
+.env.*
+*.log 
