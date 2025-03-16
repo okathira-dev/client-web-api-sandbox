@@ -6,11 +6,11 @@ import * as THREE from "three";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 import { FontLoader } from "three/addons/loaders/FontLoader.js";
 
-import { BEAT_TIME, DEFAULT_FONT_SIZE } from "./consts";
+import { BEAT_TIME, DEFAULT_FONT_SIZE } from ".";
 import { textLines } from "./consts/textLines";
 import { easingFuncList } from "./utils/easings";
 
-import type { AnimParam, TextLine } from "./consts";
+import type { AnimParam, TextLine } from ".";
 import type { Font } from "three/addons/loaders/FontLoader.js";
 /**
  * 画面サイズ

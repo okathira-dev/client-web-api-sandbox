@@ -13,114 +13,48 @@ const FONT_PATH = "./public/font/Noto_Serif_JP_Bold.json";
 const CONTAINER_ID = "container";
 const LOG_ID = "log";
 
+// 描画画面サイズ
+const SCREEN_WIDTH = 750;
+const SCREEN_HEIGHT = 500;
+const SCREEN_RATIO = SCREEN_WIDTH / SCREEN_HEIGHT;
+
 /**
- * シンプルにテキストを表示するThree.jsの実装
- * 「tears of overflowed bits」のシンプル版
+ * エラーメッセージを表示する関数
  */
-class SimpleTextRenderer {
-  // Three.jsの基本コンポーネント
-  private renderer: THREE.WebGLRenderer;
-  private scene: THREE.Scene;
-  private camera: THREE.PerspectiveCamera;
+function showError(
+  logElement: HTMLElement | null,
+  message: string,
+  error: unknown,
+): void {
+  if (!logElement) return;
 
-  // フォント情報とメッシュオブジェクト
-  private font?: Font; // THREE.Fontではなく、FontLoaderのFontを使う
-  private textMesh?: THREE.Mesh;
+  logElement.innerHTML = `
+    ${message}<br>
+    <small>${error instanceof Error ? error.message : String(error)}</small>
+  `;
+  logElement.style.color = "#ff4444";
+}
 
-  // アニメーション用の時間管理
-  private clock = new THREE.Clock();
+/**
+ * 表示に使うDOM要素を取得する関数
+ */
+function getDOMElements(id: string): HTMLElement {
+  const element = document.getElementById(id) as HTMLElement;
 
-  // DOM要素
-  private logElement: HTMLElement;
-  private container: HTMLElement;
-
-  /**
-   * コンストラクタ - 初期化処理を行う
-   */
-  constructor() {
-    // DOMエレメントの取得
-    const container = document.getElementById(CONTAINER_ID);
-    const logElement = document.getElementById(LOG_ID);
-
-    if (!container || !logElement) {
-      throw new Error("DOM要素の取得に失敗しました");
-    }
-
-    this.container = container;
-    this.logElement = logElement;
-
-    // レンダラーの初期化
-    this.renderer = new THREE.WebGLRenderer({ antialias: true });
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.renderer.setPixelRatio(window.devicePixelRatio);
-    this.renderer.setClearColor(0x000000); // 黒い背景
-
-    // シーンの初期化
-    this.scene = new THREE.Scene();
-
-    // カメラの初期化 (視野角, アスペクト比, 手前のクリップ面, 奥のクリップ面)
-    this.camera = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000,
-    );
-    this.camera.position.z = 5; // カメラを手前に移動
-
-    // ライトの追加
-    this.addLights();
-
-    // コンテナにレンダラーのcanvas要素を追加
-    if (this.container) {
-      this.container.appendChild(this.renderer.domElement);
-    } else {
-      document.body.appendChild(this.renderer.domElement);
-      console.warn(
-        "コンテナ要素が見つかりませんでした。body直下に追加します。",
-      );
-    }
-
-    // ウィンドウリサイズイベントの登録
-    window.addEventListener("resize", this.onWindowResize.bind(this));
-
-    // フォントのロード
-    this.loadFont();
+  if (!element) {
+    throw new Error("DOM要素の取得に失敗しました");
   }
 
-  /**
-   * エラーメッセージを表示する
-   */
-  private showError(message: string, error: unknown): void {
-    // this.logElement.style.display = "block";
-    this.logElement.innerHTML = `
-        ${message}<br>
-        <small>${error instanceof Error ? error.message : String(error)}</small>
-      `;
-    this.logElement.style.color = "#ff4444";
-  }
+  return element;
+}
 
-  /**
-   * シーンにライトを追加するメソッド
-   */
-  private addLights(): void {
-    // 環境光（全体を均等に照らす）
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-    this.scene.add(ambientLight);
-
-    // 指向性ライト（太陽光のような方向性のある光）
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight.position.set(1, 1, 1); // 右上奥から照らす
-    this.scene.add(directionalLight);
-  }
-
-  /**
-   * フォントローダーを使用してフォントをロードするメソッド
-   */
-  private loadFont(): void {
+/**
+ * フォントローダーを使用してフォントをロードする関数
+ */
+function loadFont(logElement: HTMLElement): Promise<Font> {
+  return new Promise((resolve, reject) => {
     // ローディングテキストの表示
-    if (this.logElement) {
-      this.logElement.innerHTML = "フォントをロード中...";
-    }
+    logElement.innerHTML = "フォントをロード中...";
 
     // FontLoaderの初期化
     const loader = new FontLoader();
@@ -128,141 +62,155 @@ class SimpleTextRenderer {
     loader.load(
       FONT_PATH,
       // ロード成功時のコールバック
-      (font) => {
-        this.font = font;
-
+      (loadedFont) => {
         // ローディング表示を非表示にする
-        if (this.logElement) {
-          this.logElement.style.display = "none";
-        }
+        logElement.style.display = "none";
 
-        console.info("フォントロード成功:", font);
-
-        // テキストの作成
-        this.createText();
-        // アニメーション開始
-        this.animate();
+        console.info("フォントロード成功:", loadedFont);
+        resolve(loadedFont);
       },
       // ロード進捗時のコールバック
       (xhr) => {
         const percentComplete = (xhr.loaded / xhr.total) * 100;
-        if (this.logElement) {
-          this.logElement.innerHTML = `フォントをロード中 (${FONT_PATH}): ${Math.round(percentComplete)}%`;
-        }
+        logElement.innerHTML = `フォントをロード中 (${FONT_PATH}): ${Math.round(percentComplete)}%`;
       },
       // ロードエラー時のコールバック
       (error: unknown) => {
         console.warn(`${FONT_PATH} からのフォントロードに失敗しました:`, error);
-        this.showError("フォントのロードに失敗しました", error);
+        showError(logElement, "フォントのロードに失敗しました", error);
+        // Errorオブジェクトでラップして拒否
+        reject(error instanceof Error ? error : new Error(String(error)));
       },
     );
-  }
+  });
+}
 
-  /**
-   * 3Dテキストを作成してシーンに追加するメソッド
-   */
-  private createText(): void {
-    if (!this.font) {
-      console.error("フォントがロードされていません");
-      return;
-    }
-
-    try {
-      // テキストのジオメトリを作成
-      const textGeometry = new TextGeometry("こんにちは、Three.js!", {
-        font: this.font,
-        size: 1, // テキストのサイズ
-        depth: 0.1, // テキストの厚み（奥行き）
-        curveSegments: 4, // 曲線の品質（値が大きいほど滑らか）
-        bevelEnabled: false, // ベベル（角の丸み）を有効化
-        // bevelThickness: 0.03, // ベベルの厚み
-        // bevelSize: 0.02, // ベベルのサイズ
-        // bevelSegments: 5, // ベベルの品質
-      });
-
-      // テキストのバウンディングボックス（境界箱）を計算
-      textGeometry.computeBoundingBox();
-
-      // テキストを中央に配置
-      if (textGeometry.boundingBox) {
-        const centerOffsetX =
-          -(textGeometry.boundingBox.max.x - textGeometry.boundingBox.min.x) /
-          2;
-        const centerOffsetY =
-          -(textGeometry.boundingBox.max.y - textGeometry.boundingBox.min.y) /
-          2;
-        textGeometry.translate(centerOffsetX, centerOffsetY, 0);
-      }
-
-      // マテリアルを作成（見た目の設定）
-      const material = new THREE.MeshStandardMaterial({ color: 0xffffff });
-
-      // テキストメッシュを作成（ジオメトリ + マテリアル）
-      this.textMesh = new THREE.Mesh(textGeometry, material);
-
-      // シーンにテキストメッシュを追加
-      this.scene.add(this.textMesh);
-
-      // ステータス表示の追加
-      this.addStatusInfo();
-    } catch (error) {
-      console.error("テキスト作成中にエラーが発生しました:", error);
-      this.showError("テキスト作成中にエラーが発生しました", error);
-    }
-  }
-
-  /**
-   * 操作方法などの情報要素を画面に追加
-   */
-  private addStatusInfo(): void {
-    const instructionsDiv = document.createElement("div");
-    instructionsDiv.className = "instructions";
-    instructionsDiv.innerHTML = `
-      <p>【操作方法】</p>
-      <p>回転するテキストをシンプルに表示しています</p>
-      <p>ブラウザをリサイズするとカメラが自動調整されます</p>
-    `;
-    document.body.appendChild(instructionsDiv);
-  }
-
-  /**
-   * ウィンドウリサイズ時のイベントハンドラ
-   */
-  private onWindowResize(): void {
-    // カメラのアスペクト比を更新
-    this.camera.aspect = window.innerWidth / window.innerHeight;
-    this.camera.updateProjectionMatrix();
-
-    // レンダラーのサイズを更新
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
-  }
-
-  /**
-   * アニメーションループ
-   */
-  private animate(): void {
-    // 次のフレームでもanimate関数を呼び出す
-    requestAnimationFrame(this.animate.bind(this));
-
-    // 経過時間を取得
-    const delta = this.clock.getDelta();
-
-    // テキストの回転アニメーション
-    if (this.textMesh) {
-      // Y軸を中心にゆっくり回転
-      this.textMesh.rotation.y += 0.5 * delta;
-      // X軸を中心に少しだけ回転
-      this.textMesh.rotation.x =
-        Math.sin(this.clock.getElapsedTime() * 0.5) * 0.2;
-    }
-
-    // シーンをレンダリング
-    this.renderer.render(this.scene, this.camera);
+/**
+ * レンダラーのサイズを設定する関数
+ */
+function setRendererSize(
+  renderer: THREE.WebGLRenderer,
+  x: number,
+  y: number,
+): void {
+  if (x < y) {
+    renderer.setSize(x, x / SCREEN_RATIO);
+  } else {
+    renderer.setSize(y * SCREEN_RATIO, y);
   }
 }
 
-// アプリケーションの初期化
+/**
+ * アニメーションループを開始する関数
+ */
+function startAnimation(
+  renderer: THREE.WebGLRenderer,
+  scene: THREE.Scene,
+  camera: THREE.OrthographicCamera,
+) {
+  let animationId: number;
+
+  // アニメーションのためのクロック
+  // const clock = new THREE.Clock();
+
+  function animate(): void {
+    // 次のフレームでもanimate関数を呼び出す
+    animationId = requestAnimationFrame(animate);
+
+    // アニメーション処理
+
+    // シーンをレンダリング
+    renderer.render(scene, camera);
+  }
+
+  // アニメーションを開始
+  animationId = requestAnimationFrame(animate);
+
+  return animationId;
+}
+
+/**
+ * アプリケーションの初期化
+ */
+const init = async (): Promise<{ dispose: () => void }> => {
+  // DOM要素の取得
+  const container = getDOMElements(CONTAINER_ID);
+  const logElement = getDOMElements(LOG_ID);
+
+  // レンダリング要素の初期化
+  const scene = new THREE.Scene();
+  const camera = new THREE.OrthographicCamera(
+    -SCREEN_WIDTH / 2,
+    SCREEN_WIDTH / 2,
+    SCREEN_HEIGHT / 2,
+    -SCREEN_HEIGHT / 2,
+    0,
+    2000,
+  );
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+
+  // カメラの位置を設定
+  camera.position.z = 1000;
+
+  // レンダラーのサイズを設定
+  setRendererSize(renderer, window.innerWidth, window.innerHeight);
+  container.appendChild(renderer.domElement);
+
+  // ウィンドウリサイズ時のイベントハンドラ
+  const handleResize = () => {
+    setRendererSize(renderer, window.innerWidth, window.innerHeight);
+  };
+  window.addEventListener("resize", handleResize);
+
+  // フォントのロード
+  const font = await loadFont(logElement);
+
+  // テキストを作成
+  const geometry = new TextGeometry("こんにちは、Three.js!", {
+    font,
+    size: 18, // テキストのサイズ
+    depth: 0.1, // テキストの厚み（奥行き）
+    // curveSegments: 4, // 曲線の品質（値が大きいほど滑らか）
+    // bevelEnabled: false, // ベベル（角の丸み）を無効化
+  });
+  const material = new THREE.MeshBasicMaterial({ color: "#ffffff" });
+  const textMesh = new THREE.Mesh(geometry, material);
+  scene.add(textMesh);
+
+  // アニメーション
+  const animationId = startAnimation(renderer, scene, camera);
+
+  // リソース解放関数を返す
+  return {
+    dispose: (): void => {
+      // アニメーションの停止
+      cancelAnimationFrame(animationId);
+
+      // テキスト表示のリソース解放
+      textMesh.geometry.dispose();
+      textMesh.material.dispose();
+
+      // イベントリスナーの削除
+      window.removeEventListener("resize", handleResize);
+
+      // レンダラーの破棄
+      renderer.dispose();
+    },
+  };
+};
+
+// アプリケーションの開始
 document.addEventListener("DOMContentLoaded", () => {
-  // インスタンス作成（コンストラクタが呼ばれる）
-  new SimpleTextRenderer();
+  init()
+    .then(({ dispose }) => {
+      // クリーンアップ（SPAなどで必要な場合）
+      window.addEventListener("beforeunload", () => {
+        dispose();
+      });
+    })
+    .catch((error) => {
+      console.error("初期化エラー:", error);
+      const logElement = getDOMElements(LOG_ID);
+      showError(logElement, "アプリケーションの初期化に失敗しました", error);
+    });
 });

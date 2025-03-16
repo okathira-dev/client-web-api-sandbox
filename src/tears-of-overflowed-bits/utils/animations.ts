@@ -2,7 +2,7 @@ import * as THREE from "three";
 
 import { easingFuncList } from "./easings";
 
-import type { AnimParam } from "../consts";
+import type { AnimParam } from "../types";
 
 /**
  * Three.jsのオブジェクトにアニメーションを適用する関数

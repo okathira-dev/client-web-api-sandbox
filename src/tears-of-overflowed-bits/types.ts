@@ -1,40 +1,61 @@
-import * as THREE from "three";
-// THREE名前空間にTextGeometryとFontLoaderを追加
+/**
+ * イージング関数名の型定義
+ */
+export type EasingFuncName = "easeOutCubic" | "easeLinear";
 
-declare module "three" {
-  export interface TextGeometryParameters {
-    font: THREE.Font;
-    size?: number;
-    height?: number;
-    curveSegments?: number;
-    bevelEnabled?: boolean;
-    bevelThickness?: number;
-    bevelSize?: number;
-    bevelOffset?: number;
-    bevelSegments?: number;
-  }
+/**
+ * イージング関数を持たない場合の型
+ */
+export type EasingNoneName = "none";
 
-  export class TextGeometry extends THREE.ExtrudeGeometry {
-    constructor(text: string, parameters: TextGeometryParameters);
-  }
+/**
+ * イージング関数の型定義
+ */
+export type EasingFunc = (t: number) => number;
 
-  export class Font {
-    constructor(jsondata: object);
-    generateShapes(text: string, size: number): THREE.Shape[];
-  }
+/**
+ * アニメーションパラメータの型定義
+ */
+export type AnimParam =
+  | {
+      easing: EasingFuncName;
+      x?: number;
+      y?: number;
+      rot?: number;
+      rotX?: number;
+      rotY?: number;
+    }
+  | {
+      easing: EasingNoneName;
+    };
 
-  export interface FontLoaderParameters {
-    manager?: THREE.LoadingManager;
-  }
+/**
+ * 文字の型定義
+ */
+export type Letter = {
+  x?: number;
+  y?: number;
+  rot?: number;
+  size?: number;
+};
 
-  export class FontLoader {
-    constructor(manager?: THREE.LoadingManager);
-    load(
-      url: string,
-      onLoad?: (font: Font) => void,
-      onProgress?: (event: ProgressEvent) => void,
-      onError?: (err: unknown) => void,
-    ): void;
-    parse(json: object): Font;
-  }
-}
+/**
+ * エントリーの型定義
+ */
+export type Entry = {
+  step: number;
+  x: number;
+  y: number;
+  rot: number;
+  chrs?: Letter[];
+};
+
+/**
+ * テキストラインの型定義
+ */
+export type TextLine = {
+  chrs: string;
+  entry: Entry;
+  letterAnimParamsList: AnimParam[][];
+  lineAnimParams: AnimParam[];
+};

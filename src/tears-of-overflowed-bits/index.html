@@ -18,10 +18,10 @@
       // エラーハンドリング
       window.addEventListener("error", function (event) {
         console.error("グローバルエラー:", event.error);
-        const loading = document.getElementById("loading");
-        if (loading) {
-          loading.innerHTML = `エラーが発生しました:<br>${event.message}<br><small>コンソールを確認してください</small>`;
-          loading.style.color = "#ff4444";
+        const log = document.getElementById("log");
+        if (log) {
+          log.innerHTML = `エラーが発生しました:<br>${event.message}<br><small>コンソールを確認してください</small>`;
+          log.style.color = "#ff4444";
         }
       });
     </script>

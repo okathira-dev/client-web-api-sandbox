@@ -1,23 +1,37 @@
-import type { TextLine } from "./index";
+import type { TextLine } from "../types";
 
 /**
  * テキストラインデータ
  */
 export const textLines: TextLine[] = [
   {
-    chrs: "＜私は＞",
-    entry: { step: 0, x: 0, y: 0, rot: 0 },
+    chrs: "＜私は＞", // 表示するテキスト
+    entry: { step: 0, x: 0, y: 0, rot: 0 }, // テキストラインの表示開始ポイント
     letterAnimParamsList: [
-      [{ easing: "none" }],
-      [{ easing: "easeLinear", y: 40 }],
-      [{ easing: "easeLinear", y: 10 }],
-      [{ easing: "none" }],
+      // 各文字のステップごとのアニメーション
+      [
+        // 1文字目
+        { easing: "none" }, // 1ステップ目
+      ],
+      [
+        // 2文字目
+        { easing: "easeLinear", y: 40 }, // 1ステップ目
+      ],
+      [
+        // 3文字目
+        { easing: "easeLinear", y: 10 }, // 1ステップ目
+      ],
+      [
+        // 4文字目
+        { easing: "none" }, // 1ステップ目
+      ],
     ],
     lineAnimParams: [
-      { rot: 10, rotX: -100, easing: "easeOutCubic" },
-      { rot: -35, rotX: -100, rotY: 40, easing: "easeOutCubic" },
-      { rot: 35, rotX: 100, rotY: 40, easing: "easeOutCubic" },
-      { rot: -30, rotX: 30, rotY: 50, easing: "easeOutCubic" },
+      // テキストライン全体のステップごとのアニメーション
+      { rot: 10, rotX: -100, easing: "easeOutCubic" }, // 1ステップ目
+      { rot: -35, rotX: -100, rotY: 40, easing: "easeOutCubic" }, // 2ステップ目
+      { rot: 35, rotX: 100, rotY: 40, easing: "easeOutCubic" }, // 3ステップ目
+      { rot: -30, rotX: 30, rotY: 50, easing: "easeOutCubic" }, // 4ステップ目
     ],
   },
   {
@@ -49,11 +63,12 @@ export const textLines: TextLine[] = [
   {
     chrs: "遊泳する",
     entry: {
+      // テキストラインの表示開始ポイント
       step: 3,
       x: 180,
       y: 110,
       rot: 10,
-      chrs: [{ y: 5, size: 22 }, { y: -5, size: 22 }, {}, {}],
+      chrs: [{ y: 5, size: 22 }, { y: -5, size: 22 }, {}, {}], // テキストライン表示開始時における、各文字の位置・傾き・サイズの調整。
     },
     letterAnimParamsList: [
       [{ easing: "easeLinear", y: -50 }],

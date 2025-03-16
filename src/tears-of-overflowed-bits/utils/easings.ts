@@ -1,4 +1,4 @@
-import type { EasingFunc, EasingFuncName, EasingNoneName } from "../consts";
+import type { EasingFunc, EasingFuncName, EasingNoneName } from "../types";
 
 /**
  * イージング関数: easeOutCubic
