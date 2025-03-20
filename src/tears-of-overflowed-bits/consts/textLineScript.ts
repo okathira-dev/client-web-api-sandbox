@@ -15,11 +15,11 @@ export const textLineScript: TextLine[] = [
       ],
       [
         // 2文字目
-        { easing: "easeLinear", y: -35 }, // 1ステップ目
+        { easing: "easeLinear", moveBy: { y: -35 } }, // 1ステップ目
       ],
       [
         // 3文字目
-        { easing: "easeLinear", y: -5 }, // 1ステップ目
+        { easing: "easeLinear", moveBy: { y: -5 } }, // 1ステップ目
       ],
       [
         // 4文字目
@@ -28,36 +28,36 @@ export const textLineScript: TextLine[] = [
     ],
     lineAnimParams: [
       // テキストライン全体のステップごとのアニメーション
-      { rot: -7, rotX: -100, easing: "easeOutCubic" }, // 1ステップ目
-      { rot: 35, rotX: -100, rotY: -30, easing: "easeOutCubic" }, // 2ステップ目
-      { rot: -40, rotX: 50, rotY: 50, easing: "easeOutCubic" }, // 3ステップ目
-      { rot: 30, rotX: 50, rotY: -30, easing: "easeOutCubic" }, // 4ステップ目
+      { easing: "easeOutCubic", rotationAbs: { deg: -7, x: -100, y: 0 } }, // 1ステップ目
+      { easing: "easeOutCubic", rotationAbs: { deg: 35, x: -100, y: -30 } }, // 2ステップ目
+      { easing: "easeOutCubic", rotationAbs: { deg: -40, x: 50, y: 50 } }, // 3ステップ目
+      { easing: "easeOutCubic", rotationAbs: { deg: 30, x: 50, y: -30 } }, // 4ステップ目
     ],
   },
   {
     chrs: "集積の",
     entry: { step: 1, x: 70, y: -85, rot: 0 },
     letterAnimParamsList: [
-      [{ easing: "easeLinear", y: -30 }],
+      [{ easing: "easeLinear", moveBy: { y: -30 } }],
       [{ easing: "none" }],
       [{ easing: "none" }],
     ],
     lineAnimParams: [
-      { rot: -20, rotX: 200, rotY: -50, easing: "easeOutCubic" },
-      { rot: 25, rotX: -50, rotY: -50, easing: "easeOutCubic" },
-      { rot: -20, rotX: 20, rotY: -10, easing: "easeOutCubic" },
+      { easing: "easeOutCubic", rotationAbs: { deg: -20, x: 200, y: -50 } },
+      { easing: "easeOutCubic", rotationAbs: { deg: 25, x: -50, y: -50 } },
+      { easing: "easeOutCubic", rotationAbs: { deg: -20, x: 20, y: -10 } },
     ],
   },
   {
     chrs: "海を",
     entry: { step: 2, x: 40, y: -125, rot: -10 },
     letterAnimParamsList: [
-      [{ easing: "easeLinear", y: -20 }],
+      [{ easing: "easeLinear", moveBy: { y: -20 } }],
       [{ easing: "none" }],
     ],
     lineAnimParams: [
-      { rot: 20, rotX: -100, rotY: -230, easing: "easeOutCubic" },
-      { rot: 55, rotX: 0, rotY: -150, easing: "easeOutCubic" },
+      { easing: "easeOutCubic", rotationAbs: { deg: 20, x: -100, y: -230 } },
+      { easing: "easeOutCubic", rotationAbs: { deg: 55, x: 0, y: -150 } },
     ],
   },
   {
@@ -71,13 +71,19 @@ export const textLineScript: TextLine[] = [
       chrs: [{ y: -5, size: 16 }, { y: 5, size: 16 }, {}, {}], // テキストライン表示開始時における、各文字の位置・傾き・サイズの調整。
     },
     letterAnimParamsList: [
-      [{ easing: "easeLinear", y: 50 }],
-      [{ easing: "easeLinear", y: -15, rot: -20 }],
+      [{ easing: "easeLinear", moveBy: { y: 50 } }],
+      [
+        {
+          easing: "easeLinear",
+          moveBy: { y: -15 },
+          rotationRel: { deg: -20 },
+        },
+      ],
       [{ easing: "none" }],
       [{ easing: "none" }],
     ],
     lineAnimParams: [
-      { rot: 20, rotX: 130, rotY: -170, easing: "easeOutCubic" },
+      { easing: "easeOutCubic", rotationAbs: { deg: 20, x: 130, y: -170 } },
     ],
   },
 ];
