@@ -1,12 +1,19 @@
 import type {
   ReedName,
-  ReedLabel,
   StradellaRegisterName,
   StradellaReedStates,
 } from "./types";
 
-// リードとそのラベルの定義
-export const REED_LABEL_MAP: Record<ReedName, ReedLabel> = {
+// リードとそのラベルの定義（フルネーム）
+export const REED_LABEL_MAP_FULL: Record<ReedName, string> = {
+  soprano: "Soprano",
+  alto: "Alto",
+  tenor: "Tenor",
+  bass: "Bass",
+} as const;
+
+// リードとそのラベルの定義（略称）
+export const REED_LABEL_MAP_SHORT: Record<ReedName, string> = {
   soprano: "S",
   alto: "A",
   tenor: "T",

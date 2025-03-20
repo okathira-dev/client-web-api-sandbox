@@ -4,6 +4,7 @@ import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { hzToCent, centToHz } from "../../../../audio/utils";
 import {
@@ -21,6 +22,7 @@ const getPitchLimits = (unit: PitchUnit) => {
 };
 
 export const BasePitchControl: FC = () => {
+  const { t } = useTranslation();
   const basePitchCent = useBaseReedPitchValue();
   const setBasePitch = useSetBaseReedPitch();
   const [pitchUnit, setPitchUnit] = useState<PitchUnit>("cent");
@@ -67,7 +69,9 @@ export const BasePitchControl: FC = () => {
         gap: "16px",
       }}
     >
-      <Typography sx={{ flexShrink: 0 }}>基準ピッチ</Typography>
+      <Typography sx={{ flexShrink: 0 }}>
+        {t("accordion.pitch.base")}
+      </Typography>
       <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
         <TextField
           type="number"
@@ -85,8 +89,8 @@ export const BasePitchControl: FC = () => {
             value={pitchUnit}
             onChange={(e) => handleUnitChange(e.target.value as PitchUnit)}
           >
-            <MenuItem value="cent">cent</MenuItem>
-            <MenuItem value="hz">Hz</MenuItem>
+            <MenuItem value="cent">{t("accordion.pitch.units.cent")}</MenuItem>
+            <MenuItem value="hz">{t("accordion.pitch.units.hz")}</MenuItem>
           </Select>
         </FormControl>
       </span>

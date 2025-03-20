@@ -8,6 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import * as Tone from "tone";
 
 import {
@@ -30,6 +31,7 @@ export { initializeAudioDevices } from "./utils";
 const audioDeviceSelectLabelId = "audio-device-select-label";
 
 export function AudioDeviceSelector() {
+  const { t } = useTranslation();
   const devices = useAudioDevices();
   const [selectedDevice, setSelectedDevice] = useState<string>("");
   const audioDeviceError = useAudioDeviceError();
@@ -48,7 +50,7 @@ export function AudioDeviceSelector() {
     void nativeAudioContext.setSinkId(sinkId).catch((error: unknown) => {
       if (error instanceof Error) {
         setAudioDeviceError(
-          `出力デバイスの変更に失敗しました: ${error.message}`,
+          t("accordion.audio.errors.change", { message: error.message }),
         );
       }
     });
@@ -58,7 +60,7 @@ export function AudioDeviceSelector() {
   if (!("setSinkId" in AudioContext.prototype)) {
     return (
       <Alert severity="warning" sx={{ minWidth: 200 }}>
-        このブラウザは出力デバイスの変更をサポートしていません。Chromiumベースの最新ブラウザであれば対応しているはずです。
+        {t("accordion.audio.errors.browser")}
       </Alert>
     );
   }
@@ -67,8 +69,7 @@ export function AudioDeviceSelector() {
     return (
       <Stack spacing={2} sx={{ minWidth: 200 }}>
         <Typography variant="body2" color="text.secondary">
-          出力デバイスの一覧を取得するために、一時的にマイクへのアクセス権限が必要です。
-          このwebアプリは音声を録音することはありません。
+          {t("accordion.audio.errors.permission")}
         </Typography>
         {audioDeviceError && <Alert severity="error">{audioDeviceError}</Alert>}
       </Stack>
@@ -79,11 +80,13 @@ export function AudioDeviceSelector() {
     <Stack spacing={2} sx={{ minWidth: 200 }}>
       {audioDeviceError && <Alert severity="error">{audioDeviceError}</Alert>}
       <FormControl>
-        <InputLabel id={audioDeviceSelectLabelId}>音声出力デバイス</InputLabel>
+        <InputLabel id={audioDeviceSelectLabelId}>
+          {t("accordion.audio.device")}
+        </InputLabel>
         <Select
           labelId={audioDeviceSelectLabelId}
           value={selectedDevice}
-          label="音声出力デバイス"
+          label={t("accordion.audio.device")}
           onChange={handleDeviceChange}
         >
           {devices.map((device) => (

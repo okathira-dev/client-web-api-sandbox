@@ -1,3 +1,4 @@
+import "./i18n";
 import { CssBaseline } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { StrictMode } from "react";

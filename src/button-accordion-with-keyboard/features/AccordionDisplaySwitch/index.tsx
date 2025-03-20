@@ -1,4 +1,5 @@
 import { ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 import { useAccordionDisplayMode } from "../../atoms/accordionDisplay";
 
@@ -6,6 +7,7 @@ import type { AccordionDisplayMode } from "../../atoms/accordionDisplay";
 import type { FC, MouseEvent } from "react";
 
 export const AccordionDisplaySwitch: FC = () => {
+  const { t } = useTranslation();
   const [displayMode, setDisplayMode] = useAccordionDisplayMode();
 
   const handleDisplayModeChange = (
@@ -22,13 +24,13 @@ export const AccordionDisplaySwitch: FC = () => {
       value={displayMode}
       exclusive
       onChange={handleDisplayModeChange}
-      aria-label="アコーディオンの表示切り替え"
+      aria-label={t("accordion.display.label")}
     >
       <ToggleButton value="left">
-        <Typography>左手（伴奏）</Typography>
+        <Typography>{t("accordion.display.left")}</Typography>
       </ToggleButton>
       <ToggleButton value="right">
-        <Typography>右手（メロディー）</Typography>
+        <Typography>{t("accordion.display.right")}</Typography>
       </ToggleButton>
     </ToggleButtonGroup>
   );

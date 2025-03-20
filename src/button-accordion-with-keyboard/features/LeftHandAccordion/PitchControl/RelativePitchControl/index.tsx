@@ -1,5 +1,6 @@
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import { useTranslation } from "react-i18next";
 
 import {
   useRelativeReedPitchesValue,
@@ -10,12 +11,15 @@ import type { ReedName } from "../../types";
 import type { FC } from "react";
 
 export const RelativePitchControl: FC = () => {
+  const { t } = useTranslation();
   const relativeReedPitches = useRelativeReedPitchesValue();
   const setRelativeReedPitches = useSetRelativeReedPitches();
 
   return (
     <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-      <Typography sx={{ flexShrink: 0 }}>相対ピッチ</Typography>
+      <Typography sx={{ flexShrink: 0 }}>
+        {t("accordion.pitch.relative")}
+      </Typography>
       <div style={{ display: "flex", gap: "8px" }}>
         {(Object.keys(relativeReedPitches) as ReedName[]).map((reed) => (
           <div
@@ -33,7 +37,7 @@ export const RelativePitchControl: FC = () => {
                 alignItems: "center",
               }}
             >
-              <Typography>{reed}</Typography>
+              <Typography>{t(`accordion.reeds.left.${reed}`)}</Typography>
               <TextField
                 type="number"
                 value={relativeReedPitches[reed]}

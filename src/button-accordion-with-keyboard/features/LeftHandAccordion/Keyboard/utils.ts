@@ -132,7 +132,7 @@ export const getKeyLabel = (
   const { row, col } = bassInfo;
   const type = getTypeFromRow(row);
   const rootNote = ROOT_NOTES[col];
-  if (rootNote === undefined) return key.toUpperCase();
+  if (rootNote === undefined) return "---";
 
   // 中央（F）より左側はフラット、右側はシャープを使用
   const shouldUseFlat = col <= CENTER_INDEX;
