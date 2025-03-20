@@ -2,6 +2,7 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { startAudioContext } from "../../audio/audioCore";
 import {
@@ -25,6 +26,7 @@ type AudioInitializerProps = {
 };
 
 export const AudioInitializer: FC<AudioInitializerProps> = ({ children }) => {
+  const { t } = useTranslation();
   const [isAudioInitialized, setIsAudioInitialized] = useState(false);
   const setAudioDeviceError = useSetAudioDeviceError();
   const setAudioDevices = useSetAudioDevices();
@@ -79,11 +81,15 @@ export const AudioInitializer: FC<AudioInitializerProps> = ({ children }) => {
               fontWeight: 500,
             }}
           >
-            ブラウザの制限により、音声の再生には事前にユーザーの操作が必要です。
-            <br />
-            音声出力デバイスの変更を行うには、マイクへのアクセス権限が必要です。
-            <br />
-            音声出力デバイスの変更には対応していないブラウザもあります。
+            <p>
+              {t("common.errors.browserLimitations.userInteractionRequired")}
+            </p>
+            <p>{t("common.errors.microphoneAccess.required")}</p>
+            <p>
+              {t(
+                "common.errors.browserLimitations.audioDeviceChangeUnsupported",
+              )}
+            </p>
           </Typography>
           <Button
             variant="contained"
@@ -92,7 +98,7 @@ export const AudioInitializer: FC<AudioInitializerProps> = ({ children }) => {
             startIcon={<PlayArrowIcon />}
             onClick={handleInitialize}
           >
-            音声を有効化
+            {t("common.actions.enable")}
           </Button>
         </div>
         {children}

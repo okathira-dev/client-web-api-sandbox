@@ -3,109 +3,81 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Typography from "@mui/material/Typography";
 import { useTranslation } from "react-i18next";
 
+import { REED_LABEL_MAP_SHORT } from "../../LeftHandAccordion/consts";
 import {
   useStradellaReedStatesValue,
   useSetStradellaReedStates,
 } from "../atoms/register";
-import { REED_LABEL_MAP_SHORT } from "../consts";
 
-import type {
-  ReedName,
-  StradellaReedStates,
-  StradellaSoundType,
-} from "../types";
-import type { FC } from "react";
+import type { ReedName, StradellaSoundType } from "../types";
+import type { FC, MouseEvent } from "react";
 
-// ベース専用のリードとベース・コード共用のリードに分類
-const BASS_ONLY_REEDS: ReedName[] = ["tenor", "bass"];
-const SHARED_REEDS: ReedName[] = ["soprano", "alto"];
+const SOUND_TYPES: StradellaSoundType[] = ["chord", "bassNote"];
 
 export const ReedSwitch: FC = () => {
   const { t } = useTranslation();
-  const reedStates = useStradellaReedStatesValue();
-  const setReedStates = useSetStradellaReedStates();
+  const stradellaReedStates = useStradellaReedStatesValue();
+  const setStradellaReedStates = useSetStradellaReedStates();
 
-  // ベース音用のリードスイッチのハンドラー
-  const handleBassReedsChange = (_: unknown, newReeds: ReedName[]) => {
-    setReedStates((prev: StradellaReedStates) => ({
+  const handleReedChange = (
+    soundType: StradellaSoundType,
+    _event: MouseEvent<HTMLElement>,
+    newReedActivation: readonly ReedName[],
+  ) => {
+    setStradellaReedStates((prev) => ({
       ...prev,
-      bassNote: {
-        ...prev.bassNote,
-        soprano: newReeds.includes("soprano"),
-        alto: newReeds.includes("alto"),
-        tenor: newReeds.includes("tenor"),
-        bass: newReeds.includes("bass"),
+      [soundType]: {
+        ...prev[soundType],
+        soprano: newReedActivation.includes("soprano"),
+        alto: newReedActivation.includes("alto"),
+        tenor: newReedActivation.includes("tenor"),
+        bass: newReedActivation.includes("bass"),
       },
     }));
   };
-
-  // コード用のリードスイッチのハンドラー
-  const handleChordReedsChange = (_: unknown, newReeds: ReedName[]) => {
-    setReedStates((prev: StradellaReedStates) => ({
-      ...prev,
-      chord: {
-        ...prev.chord,
-        soprano: newReeds.includes("soprano"),
-        alto: newReeds.includes("alto"),
-        tenor: newReeds.includes("tenor"),
-        bass: newReeds.includes("bass"),
-      },
-    }));
-  };
-
-  // アクティブなリードを取得
-  const getActiveReeds = (type: StradellaSoundType): ReedName[] => {
-    return Object.entries(reedStates[type])
-      .filter(([_, isActive]) => isActive)
-      .map(([reed]) => reed as ReedName);
-  };
-
-  const activeBassReeds = getActiveReeds("bassNote");
-  const activeChordReeds = getActiveReeds("chord");
 
   return (
     <div
       style={{
         display: "flex",
-        alignItems: "center",
         gap: "16px",
         width: "100%",
       }}
     >
-      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <Typography sx={{ flexShrink: 0, minWidth: "120px" }}>
-            {t("accordion.reeds.bassOnly")}
+      {SOUND_TYPES.map((soundType) => (
+        <div
+          key={soundType}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "16px",
+            width: "100%",
+          }}
+        >
+          <Typography sx={{ flexShrink: 0 }}>
+            {t(`accordion.reeds.${soundType}`)}
           </Typography>
           <ToggleButtonGroup
             color="primary"
-            value={activeBassReeds}
-            onChange={handleBassReedsChange}
+            value={Object.entries(stradellaReedStates[soundType])
+              .filter(([_reed, isActive]) => isActive)
+              .map(([reed]) => reed)}
+            onChange={(_event, newValue) =>
+              handleReedChange(
+                soundType,
+                _event,
+                newValue as readonly ReedName[],
+              )
+            }
           >
-            {[...BASS_ONLY_REEDS, ...SHARED_REEDS].map((reed) => (
+            {Object.entries(REED_LABEL_MAP_SHORT).map(([reed, label]) => (
               <ToggleButton key={reed} value={reed}>
-                <Typography>{REED_LABEL_MAP_SHORT[reed]}</Typography>
+                <Typography>{label}</Typography>
               </ToggleButton>
             ))}
           </ToggleButtonGroup>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <Typography sx={{ flexShrink: 0, minWidth: "120px" }}>
-            {t("accordion.reeds.shared")}
-          </Typography>
-          <ToggleButtonGroup
-            color="primary"
-            value={activeChordReeds}
-            onChange={handleChordReedsChange}
-          >
-            {[...SHARED_REEDS, ...BASS_ONLY_REEDS].map((reed) => (
-              <ToggleButton key={reed} value={reed}>
-                <Typography>{REED_LABEL_MAP_SHORT[reed]}</Typography>
-              </ToggleButton>
-            ))}
-          </ToggleButtonGroup>
-        </div>
-      </div>
+      ))}
     </div>
   );
 };
