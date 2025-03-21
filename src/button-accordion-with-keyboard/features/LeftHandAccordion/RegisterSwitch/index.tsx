@@ -19,6 +19,7 @@ import MusicNoteOutlinedIcon from "@mui/icons-material/MusicNoteOutlined";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   useStradellaReedStatesValue,
@@ -26,7 +27,7 @@ import {
   useStradellaRegisterValue,
   useAdoptStradellaRegister,
 } from "../atoms/register";
-import { REED_LABEL_MAP, STRADELLA_REGISTER_PRESETS } from "../consts";
+import { STRADELLA_REGISTER_PRESETS } from "../consts";
 
 import type { StradellaRegisterName } from "../types";
 import type { DragEndEvent } from "@dnd-kit/core";
@@ -62,15 +63,7 @@ const chordIcon = (
   </div>
 );
 
-const SortablePresetButton = ({
-  position,
-  presetName,
-  isActive,
-  isSelected,
-  preset,
-  onPresetChange,
-  buttonPressedMargin,
-}: {
+const SortablePresetButton: FC<{
   position: number;
   presetName: StradellaRegisterName;
   isActive: boolean;
@@ -78,6 +71,14 @@ const SortablePresetButton = ({
   preset: (typeof STRADELLA_REGISTER_PRESETS)[StradellaRegisterName];
   onPresetChange: (name: StradellaRegisterName) => void;
   buttonPressedMargin: string;
+}> = ({
+  position,
+  presetName,
+  isActive,
+  isSelected,
+  preset,
+  onPresetChange,
+  buttonPressedMargin,
 }) => {
   const {
     attributes,
@@ -108,7 +109,6 @@ const SortablePresetButton = ({
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "96px" }}>
-      {/* 固定部分（ファンクションキー） */}
       <Button
         variant="contained"
         color={isSelected && isActive ? "primary" : "inherit"}
@@ -124,7 +124,6 @@ const SortablePresetButton = ({
         <span>F{position + 1}</span>
       </Button>
 
-      {/* ドラッグ可能部分（リードプリセット） */}
       <div
         ref={setNodeRef}
         style={{
@@ -180,15 +179,15 @@ const SortablePresetButton = ({
             }}
           >
             <span>{bassNoteIcon}</span>
-            <span>{preset.bassNote.soprano && REED_LABEL_MAP.soprano}</span>
-            <span>{preset.bassNote.alto && REED_LABEL_MAP.alto}</span>
-            <span>{preset.bassNote.tenor && REED_LABEL_MAP.tenor}</span>
-            <span>{preset.bassNote.bass && REED_LABEL_MAP.bass}</span>
+            <span>{preset.bassNote.soprano && "S"}</span>
+            <span>{preset.bassNote.alto && "A"}</span>
+            <span>{preset.bassNote.tenor && "T"}</span>
+            <span>{preset.bassNote.bass && "B"}</span>
             <span>{chordIcon}</span>
-            <span>{preset.chord.soprano && REED_LABEL_MAP.soprano}</span>
-            <span>{preset.chord.alto && REED_LABEL_MAP.alto}</span>
-            <span>{preset.chord.tenor && REED_LABEL_MAP.tenor}</span>
-            <span>{preset.chord.bass && REED_LABEL_MAP.bass}</span>
+            <span>{preset.chord.soprano && "S"}</span>
+            <span>{preset.chord.alto && "A"}</span>
+            <span>{preset.chord.tenor && "T"}</span>
+            <span>{preset.chord.bass && "B"}</span>
           </span>
         </div>
       </div>
@@ -197,6 +196,7 @@ const SortablePresetButton = ({
 };
 
 export const RegisterSwitch: FC = () => {
+  const { t } = useTranslation();
   const selectedPreset = useStradellaRegisterValue();
   const setSelectedPreset = useSetStradellaRegister();
   const adoptPreset = useAdoptStradellaRegister();
@@ -262,7 +262,7 @@ export const RegisterSwitch: FC = () => {
       }}
     >
       <Typography sx={{ flexShrink: 0 }}>
-        レジスタースイッチ (F1-F12, ドラッグで並び替え可能)
+        {t("accordion.register.title")} {t("accordion.register.description")}
       </Typography>
       <div
         style={{

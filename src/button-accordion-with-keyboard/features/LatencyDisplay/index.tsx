@@ -1,5 +1,6 @@
 import { Stack, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import * as Tone from "tone";
 
 type LatencyInfo = {
@@ -9,14 +10,18 @@ type LatencyInfo = {
   updateInterval: number | undefined;
 };
 
-const formatLatency = (seconds: number | undefined): string => {
+const formatLatency = (
+  seconds: number | undefined,
+  t: ReturnType<typeof useTranslation>["t"],
+): string => {
   if (seconds === undefined) {
-    return "計測不可";
+    return t("accordion.latency.unavailable");
   }
   return `${Math.round(seconds * 1000 * 100) / 100}ms`;
 };
 
 export const LatencyDisplay = () => {
+  const { t } = useTranslation();
   const [latencyInfo, setLatencyInfo] = useState<LatencyInfo>({
     baseLatency: undefined,
     outputLatency: undefined,
@@ -25,9 +30,7 @@ export const LatencyDisplay = () => {
   });
 
   // Tone.BaseContextにupdateIntervalは無いが、実際にはgetterが用意されているので型を拡張する。
-  type ExtendedToneContext = Tone.BaseContext & {
-    updateInterval: number;
-  };
+  type ExtendedToneContext = Tone.BaseContext & { updateInterval: number };
 
   // Tone.BaseContextのrawContextはAudioContextではなく、AudioContextをラップしたオブジェクトになっている。
   type ExtendedToneRawContext = AudioContext & {
@@ -76,36 +79,39 @@ export const LatencyDisplay = () => {
     <Stack spacing={0.5} alignItems="center">
       <Typography
         variant="body2"
-        sx={{
-          color: "text.secondary",
-          fontSize: "0.9rem",
-        }}
+        sx={{ color: "text.secondary", fontSize: "0.9rem" }}
       >
-        音声出力の遅延時間
+        {t("accordion.latency.label")}
       </Typography>
       <Stack
         direction="row"
         spacing={2}
-        sx={{
-          color: "text.secondary",
-          fontSize: "0.8rem",
-        }}
+        sx={{ color: "text.secondary", fontSize: "0.8rem" }}
       >
         <Typography>
-          更新間隔(updateInterval): {formatLatency(latencyInfo.updateInterval)}
+          {t("accordion.latency.update", {
+            value: formatLatency(latencyInfo.updateInterval, t),
+          })}
         </Typography>
         <Typography>
-          先読み時間(lookAhead): {formatLatency(latencyInfo.lookAhead)}
+          {t("accordion.latency.lookAhead", {
+            value: formatLatency(latencyInfo.lookAhead, t),
+          })}
         </Typography>
         <Typography>
-          基本遅延(baseLatency): {formatLatency(latencyInfo.baseLatency)}
+          {t("accordion.latency.base", {
+            value: formatLatency(latencyInfo.baseLatency, t),
+          })}
         </Typography>
         <Typography>
-          出力遅延(outputLatency): {formatLatency(latencyInfo.outputLatency)}
+          {t("accordion.latency.output", {
+            value: formatLatency(latencyInfo.outputLatency, t),
+          })}
         </Typography>
         <Typography>
-          遅延合計(lookAhead + baseLatency + outputLatency):{" "}
-          {formatLatency(totalLatency)}
+          {t("accordion.latency.total", {
+            value: formatLatency(totalLatency, t),
+          })}
         </Typography>
       </Stack>
     </Stack>

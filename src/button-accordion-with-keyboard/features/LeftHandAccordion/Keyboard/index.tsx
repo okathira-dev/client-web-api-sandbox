@@ -9,6 +9,7 @@ import {
   type SelectChangeEvent,
 } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { usePlayActiveReeds } from "./hooks";
 import {
@@ -39,6 +40,7 @@ export const Keyboard = () => {
   const [keyboardLayoutType, setKeyboardLayoutType] =
     useState<KeyboardLayoutType>("en");
 
+  const { t } = useTranslation();
   const { playActiveReeds, stopActiveReeds } = usePlayActiveReeds();
 
   const keyMap = getKeyMap(keyboardLayoutType);
@@ -123,27 +125,27 @@ export const Keyboard = () => {
           value={keyLabelStyle}
           exclusive
           onChange={handleKeyLabelStyleChange}
-          aria-label="表示ラベルの切り替え"
+          aria-label={t("keyboard.tabs.label")}
         >
           <ToggleButton value="key">
-            <Typography>キーボード (QWERTY)</Typography>
+            <Typography>{t("keyboard.tabs.key")}</Typography>
           </ToggleButton>
           <ToggleButton value="note">
-            <Typography>音階 (C4, C#4, D4...)</Typography>
+            <Typography>{t("keyboard.tabs.note")}</Typography>
           </ToggleButton>
         </ToggleButtonGroup>
         <FormControl>
           <InputLabel id={keyboardLayoutSelectLabelId}>
-            キーボードレイアウト
+            {t("keyboard.layout.label")}
           </InputLabel>
           <Select
             labelId={keyboardLayoutSelectLabelId}
             value={keyboardLayoutType}
-            label="キーボードレイアウト"
+            label={t("keyboard.layout.label")}
             onChange={handleKeyboardLayoutChange}
           >
-            <MenuItem value="en">英語キーボード</MenuItem>
-            <MenuItem value="ja">日本語キーボード</MenuItem>
+            <MenuItem value="en">{t("keyboard.layout.en")}</MenuItem>
+            <MenuItem value="ja">{t("keyboard.layout.ja")}</MenuItem>
           </Select>
         </FormControl>
       </div>

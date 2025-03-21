@@ -1,6 +1,7 @@
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Typography from "@mui/material/Typography";
+import { useTranslation } from "react-i18next";
 
 import { useReedActivation, useSetReedActivation } from "../atoms/reeds";
 import { REED_LABEL_MAP } from "../consts";
@@ -9,6 +10,7 @@ import type { ReedName } from "../consts";
 import type { FC, MouseEvent } from "react";
 
 export const ReedSwitch: FC = () => {
+  const { t } = useTranslation();
   const reedActivation = useReedActivation();
   const setReedActivation = useSetReedActivation();
 
@@ -34,7 +36,9 @@ export const ReedSwitch: FC = () => {
         width: "100%",
       }}
     >
-      <Typography sx={{ flexShrink: 0 }}>各リードのオンオフ</Typography>
+      <Typography sx={{ flexShrink: 0 }}>
+        {t("accordion.reeds.toggle")}
+      </Typography>
       <ToggleButtonGroup
         color="primary"
         value={Object.entries(reedActivation)
@@ -42,9 +46,9 @@ export const ReedSwitch: FC = () => {
           .map(([reed]) => reed)}
         onChange={handleReedChange}
       >
-        {Object.entries(REED_LABEL_MAP).map(([reed, label]) => (
+        {(Object.keys(reedActivation) as ReedName[]).map((reed) => (
           <ToggleButton key={reed} value={reed}>
-            <Typography>{label}</Typography>
+            <Typography>{REED_LABEL_MAP[reed]}</Typography>
           </ToggleButton>
         ))}
       </ToggleButtonGroup>
