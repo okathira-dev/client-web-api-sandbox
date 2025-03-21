@@ -18,6 +18,7 @@ import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { useCallback, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   useSelectedPreset,
@@ -33,15 +34,7 @@ import type { ReedName } from "../consts";
 import type { DragEndEvent } from "@dnd-kit/core";
 import type { FC } from "react";
 
-const SortablePresetButton = ({
-  position,
-  presetIndex,
-  isActive,
-  isSelected,
-  preset,
-  onPresetChange,
-  buttonPressedMargin,
-}: {
+interface SortablePresetButtonProps {
   position: number;
   presetIndex: number;
   isActive: boolean;
@@ -49,6 +42,16 @@ const SortablePresetButton = ({
   preset: Record<ReedName, boolean>;
   onPresetChange: (index: number) => void;
   buttonPressedMargin: string;
+}
+
+const SortablePresetButton: FC<SortablePresetButtonProps> = ({
+  position,
+  presetIndex,
+  isActive,
+  isSelected,
+  preset,
+  onPresetChange,
+  buttonPressedMargin,
 }) => {
   const {
     attributes,
@@ -171,6 +174,7 @@ const SortablePresetButton = ({
 };
 
 export const RegisterSwitch: FC = () => {
+  const { t } = useTranslation();
   const selectedPreset = useSelectedPreset();
   const setSelectedPreset = useSetSelectedPreset();
   const adaptPreset = useAdoptPreset();
@@ -235,7 +239,7 @@ export const RegisterSwitch: FC = () => {
       }}
     >
       <Typography sx={{ flexShrink: 0 }}>
-        レジスタースイッチ (F1-F12, ドラッグで並び替え可能)
+        {t("accordion.register.title")} {t("accordion.register.description")}
       </Typography>
       <div
         style={{

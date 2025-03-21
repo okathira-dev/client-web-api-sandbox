@@ -1,3 +1,5 @@
+import i18n from "../../i18n";
+
 /**
  * メディアデバイスの一覧を取得し、利用可能な音声出力デバイスを返す
  * @throws {Error} 出力デバイスが見つからない場合、または権限が拒否された場合
@@ -15,7 +17,9 @@ export async function initializeAudioDevices() {
       })
       .catch((error: unknown) => {
         if (error instanceof Error) {
-          throw new Error(`マイクへのアクセスが拒否されました: ${error.name}`);
+          throw new Error(
+            `${i18n.t("common.errors.microphoneAccess.denied")}: ${error.name}`,
+          );
         }
         throw error;
       });
@@ -28,7 +32,11 @@ export async function initializeAudioDevices() {
       .enumerateDevices()
       .catch((error: unknown) => {
         if (error instanceof Error) {
-          throw new Error(`デバイス一覧の取得に失敗しました: ${error.message}`);
+          throw new Error(
+            i18n.t("common.errors.devices.enumerationFailed", {
+              message: error.message,
+            }),
+          );
         }
         throw error;
       });
@@ -38,7 +46,7 @@ export async function initializeAudioDevices() {
     );
 
     if (audioOutputDevices.length === 0) {
-      throw new Error("出力デバイスが見つかりませんでした");
+      throw new Error(i18n.t("common.errors.devices.noOutputDevices"));
     }
 
     return audioOutputDevices;
@@ -46,6 +54,6 @@ export async function initializeAudioDevices() {
     if (error instanceof Error) {
       throw error;
     }
-    throw new Error("予期せぬエラーが発生しました");
+    throw new Error(i18n.t("common.errors.devices.unexpectedError"));
   }
 }

@@ -1,12 +1,13 @@
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Typography from "@mui/material/Typography";
+import { useTranslation } from "react-i18next";
 
+import { REED_LABEL_MAP_SHORT } from "../../LeftHandAccordion/consts";
 import {
   useStradellaReedStatesValue,
   useSetStradellaReedStates,
 } from "../atoms/register";
-import { REED_LABEL_MAP } from "../consts";
 
 import type { ReedName, StradellaSoundType } from "../types";
 import type { FC, MouseEvent } from "react";
@@ -14,6 +15,7 @@ import type { FC, MouseEvent } from "react";
 const SOUND_TYPES: StradellaSoundType[] = ["chord", "bassNote"];
 
 export const ReedSwitch: FC = () => {
+  const { t } = useTranslation();
   const stradellaReedStates = useStradellaReedStatesValue();
   const setStradellaReedStates = useSetStradellaReedStates();
 
@@ -53,7 +55,7 @@ export const ReedSwitch: FC = () => {
           }}
         >
           <Typography sx={{ flexShrink: 0 }}>
-            {soundType === "chord" ? "コード" : "ベース音"}のリード
+            {t(`accordion.reeds.${soundType}`)}
           </Typography>
           <ToggleButtonGroup
             color="primary"
@@ -68,7 +70,7 @@ export const ReedSwitch: FC = () => {
               )
             }
           >
-            {Object.entries(REED_LABEL_MAP).map(([reed, label]) => (
+            {Object.entries(REED_LABEL_MAP_SHORT).map(([reed, label]) => (
               <ToggleButton key={reed} value={reed}>
                 <Typography>{label}</Typography>
               </ToggleButton>
