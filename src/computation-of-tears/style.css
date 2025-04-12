@@ -30,17 +30,46 @@ canvas {
   border-radius: 10px;
 }
 
+/* 説明パネル */
+
 .instructions {
   position: absolute;
   bottom: 20px;
   left: 20px;
   color: white;
-  font-size: x-large;
   background-color: rgba(0, 0, 0, 0.5);
-  padding: 10px;
-  border-radius: 5px;
+  padding: 12px;
+  border-radius: 12px;
   z-index: 10;
+  max-width: 400px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
+
+.instructions dt {
+  font-size: 16px;
+  font-weight: bold;
+  color: #ffcc00;
+}
+
+.toggle-button {
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #ffcc00;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 2;
+}
+
+/* 説明パネルの折りたたみ状態 */
+
+.instructions.collapsed .instructions-content {
+  display: none;
+}
+
+/* ログ */
 
 .status-info {
   font-weight: bold;
@@ -50,6 +79,8 @@ canvas {
   padding-bottom: 5px;
 }
 
+/* エラーメッセージ */
+
 .error-message {
   color: #ff4444;
   background-color: rgba(0, 0, 0, 0.7);
@@ -58,13 +89,4 @@ canvas {
   font-size: 18px;
   text-align: center;
   max-width: 80%;
-}
-
-/* モバイル対応 */
-@media (max-width: 768px) {
-  .instructions {
-    font-size: small;
-    bottom: 10px;
-    left: 10px;
-  }
 }

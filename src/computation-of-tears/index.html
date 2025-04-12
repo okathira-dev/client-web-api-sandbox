@@ -69,7 +69,47 @@
       </div>
     </div>
 
+    <div class="instructions" id="instructions">
+      <button class="toggle-button" onclick="toggleInstructions()">×</button>
+      <dl class="instructions-content">
+        <dt>操作方法</dt>
+        <dd>
+          <ul>
+            <li><strong>Space</strong>: 一時停止</li>
+            <li><strong>Enter</strong>: 最初から再生</li>
+            <li><strong>←→</strong>: 逆・倍速再生</li>
+            <li><strong>↑↓</strong>: 10倍の逆・倍速再生</li>
+            <li><strong>Shift</strong>: 時の進みを4倍速</li>
+            <li><strong>Ctrl</strong>: 時の進みを4分の1に減速</li>
+          </ul>
+        </dd>
+        <dt>原作</dt>
+        <dd>
+          tears of overflowed bits - eau. / La Mer ArtWorks
+          <a
+            href="https://www.youtube.com/watch?v=LRXLwrTHqmY"
+            target="_blank"
+            rel="noopener noreferrer"
+            style="color: #88ccff"
+            >YouTube</a
+          >
+        </dd>
+      </dl>
+    </div>
+
     <script>
+      // 説明パネルの展開・折りたたみ
+      function toggleInstructions() {
+        const instructionsEl = document.getElementById("instructions");
+        instructionsEl.classList.toggle("collapsed");
+        const toggleButtonEl = document.querySelector(".toggle-button");
+        toggleButtonEl.textContent = instructionsEl.classList.contains(
+          "collapsed",
+        )
+          ? "?"
+          : "×";
+      }
+
       // エラーハンドリング
       window.addEventListener("error", function (event) {
         console.error("グローバルエラー:", event.error);
