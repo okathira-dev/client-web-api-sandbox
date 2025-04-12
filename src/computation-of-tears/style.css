@@ -1,0 +1,92 @@
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: grey;
+  font-family: sans-serif;
+}
+
+canvas {
+  display: block;
+}
+
+#container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#loading {
+  position: absolute;
+  color: white;
+  font-size: 24px;
+  text-align: center;
+  z-index: 100;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 20px;
+  border-radius: 10px;
+}
+
+/* 説明パネル */
+
+.instructions {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 12px;
+  border-radius: 12px;
+  z-index: 10;
+  max-width: 400px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.instructions dt {
+  font-size: 16px;
+  font-weight: bold;
+  color: #ffcc00;
+}
+
+.toggle-button {
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #ffcc00;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 2;
+}
+
+/* 説明パネルの折りたたみ状態 */
+
+.instructions.collapsed .instructions-content {
+  display: none;
+}
+
+/* ログ */
+
+.status-info {
+  font-weight: bold;
+  color: #ffcc00;
+  margin-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  padding-bottom: 5px;
+}
+
+/* エラーメッセージ */
+
+.error-message {
+  color: #ff4444;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 20px;
+  border-radius: 5px;
+  font-size: 18px;
+  text-align: center;
+  max-width: 80%;
+}

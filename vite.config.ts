@@ -32,6 +32,11 @@ export default defineConfig({
           "index.html",
         ),
         "lcg-predictor": resolve(root, "lcg-predictor", "index.html"),
+        "computation-of-tears": resolve(
+          root,
+          "computation-of-tears",
+          "index.html",
+        ),
       },
     },
   },

@@ -1,6 +1,7 @@
 ---
 description: ESLintに関するルール
 globs: eslint*
+alwaysApply: false
 ---
 # ESLint設定
 

@@ -1,6 +1,7 @@
 ---
 description: 左手側筐体のストラデラベースシステムの実装について
 globs: src/button-accordion-with-keyboard/features/LeftHandAccordion/**/*
+alwaysApply: false
 ---
 # ストラデラベースシステム
 
