@@ -1,10 +1,10 @@
-# Tears of Overflowed Bits
+# Computation of Tears
 
-「tears of overflowed bits」という映像作品を模倣したジェネラティブアート実装です。
+「tears of overflowed bits」(by eau. / La Mer ArtWorks)という映像作品([YouTube](https://www.youtube.com/watch?v=LRXLwrTHqmY))を模倣したジェネラティブアート実装です。
 
 ## 概要
 
-このプロジェクトはThree.jsを使用して3D空間内で日本語のテキストをアニメーションさせます。P5.jsの実装からThree.jsに移植したものです。Reactを使わず、純粋なThree.jsで実装しています。
+このプロジェクトはThree.jsを使用して3D空間内で日本語のテキストをアニメーションさせます。Reactを使わず、純粋なThree.jsで実装しています。
 
 2Dアニメーションに適した等角図法（Orthographic Projection）を使用しているため、奥行きによる遠近感がなく、平面的な表現になっています。
 
@@ -28,7 +28,8 @@
 
 ### 必要なフォント
 
-このプロジェクトには以下のフォントが必要です：
+このプロジェクトには以下のフォントが使われています：
+
 - Noto Serif JP_Bold.json（Three.js用のJSONフォーマット）
 
 ### フォントの準備
@@ -43,22 +44,22 @@
 2. TextGeometryで3Dテキストメッシュを生成
 3. MeshStandardMaterialでマテリアルを適用
 4. 3Dテキストメッシュを3D空間に配置
-
-また、遠近感のない2D的な表現を実現するために：
-
 5. PerspectiveCameraではなくOrthographicCameraを使用
-6. 等角図法（Orthographic Projection）により、距離による大きさの変化を排除
+   - 遠近感のない2D的な表現を実現するため
+   - 等角図法（Orthographic Projection）により、距離による大きさの変化を排除
 
 ## トラブルシューティング
 
 ### よくある問題
 
 1. **フォントが読み込めない**
+
    - フォントファイルのパスが正しいか確認
    - フォントファイル名に空白が含まれている場合は注意が必要
    - ブラウザのCORSポリシーを確認（ローカルファイルへのアクセスには制限がある場合があります）
 
 2. **画面に何も表示されない**
+
    - コンソールでエラーを確認
    - WebGLがサポートされているか確認
 
@@ -74,8 +75,8 @@
 
 ## ディレクトリ構造
 
-```
-/tears-of-overflowed-bits
+```plaintext
+/computation-of-tears
   /public
     /font - Three.js用JSONフォントファイル
   /consts - 定数とテキストデータ

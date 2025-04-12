@@ -26,12 +26,12 @@ npm run dev
 
 ### [./src/webcodecs-data-moshing-react](./src/webcodecs-data-moshing-react)
 
-データモッシング React App
+**WIP** データモッシング React App
 
 ### [./src/lcg-predictor](./src/lcg-predictor)
 
 線形合同法乱数予測ツール
 
-### [./src/tears-of-overflowed-bits](./src/tears-of-overflowed-bits)
+### [./src/computation-of-tears](./src/computation-of-tears)
 
-Tears of Overflowed Bits
+**WIP** [Tears of Overflowed Bits (by eau. / La Mer ArtWorks)](https://www.youtube.com/watch?v=LRXLwrTHqmY)の再現
