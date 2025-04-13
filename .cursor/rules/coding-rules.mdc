@@ -1,7 +1,7 @@
 ---
 description: すべてのプロジェクトの基本となるコーディングルール
-globs: *
-alwaysApply: true
+globs: 
+alwaysApply: false
 ---
 
 # 定義したコーディングルール
