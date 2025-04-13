@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import asyncio
 from playwright.async_api import async_playwright
