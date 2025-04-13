@@ -72,7 +72,7 @@ Note: When you first use the screenshot verification feature, Playwright browser
 ## AI Assistant Configuration
 
 
-This project uses `.cursor/rules/global.mdc` to configure the AI assistant. The assistant can:
+This project uses `.cursorrules` to configure the AI assistant. The assistant can:
 - Help with coding tasks
 - Verify screenshots
 - Perform web searches
