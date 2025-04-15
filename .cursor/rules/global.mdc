@@ -1,0 +1,140 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# 指示事項
+
+ユーザーとの対話中に、このプロジェクトで再利用可能なもの（ライブラリのバージョン、モデル名など）、特にあなたが犯した間違いや受けた修正について発見した場合は、同じ間違いを繰り返さないように[Lessons.md](mdc:Lessons.md)ファイルにメモしてください。
+
+## Scratchpad使用ルール
+
+プロジェクトのルートディレクトリに配置された [Scratchpad.md](mdc:Scratchpad.md) ファイルは、タスクの計画と進捗状況を追跡するために使用します。
+
+1. **ファイル位置**: Scratchpad.mdはリポジトリのルートディレクトリに配置します
+2. **基本構造**:
+   - タイトル（# Scratchpad）
+   - 説明文
+   - 現在のタスク（## 現在のタスク）
+   - 進捗状況（## 進捗状況）
+   - 分析結果や詳細（必要に応じて）
+   - メモと反省（## メモと反省）
+
+3. **使用方法**:
+   - 新規タスクを受け取ったら、まずScratchpadの内容を確認し、必要に応じて古いタスク情報をクリアする
+   - タスクの説明と計画をScratchpadに記録する
+   - ToDo形式（[X] 完了タスク、[ ] 未完了タスク）で進捗を管理する
+   - サブタスクを完了したら進捗を更新する
+   - マイルストーン達成時には振り返りと今後の計画を行う
+   - 次のステップを計画する際は常にScratchpadを参照する
+
+4. **他のルールファイルとの連携**:
+   - プロジェクト全体に関わるルールファイルとの関連性:
+     - [coding-rules.mdc](mdc:.cursor/rules/coding-rules.mdc): コード構造、コンポーネント設計、状態管理などの基本的なコーディングルールを提供します。Scratchpadでタスクを計画する際には、これらのルールに従ってください。
+     - [eslint.mdc](mdc:.cursor/rules/eslint.mdc): ESLint設定に関するルールを提供します。コード品質を確保するために参照してください。
+     - [repository.mdc](mdc:.cursor/rules/repository.mdc): リポジトリ全体の構造とプロジェクト概要を提供します。Scratchpadでプロジェクト関連のタスクを記録する際には、この情報を参照してください。
+   - 各プロジェクト固有のタスクでは、関連するプロジェクトのルールファイル（例: button-accordion-with-keyboard.mdc, stradella-bass-system.mdc）も参照してください。
+   - Scratchpadでの作業はこれらのルールに従って行われるべきです。
+
+## Lessons使用ルール
+
+プロジェクトのルートディレクトリに配置された[Lessons.md](mdc:Lessons.md)ファイルは、プロジェクト内で学んだ教訓や再利用可能な知識を記録するために使用します。
+
+1. **ファイル位置**: Lessons.mdはリポジトリのルートディレクトリに配置します
+2. **基本構造**:
+   - タイトル（# Lessons）
+   - 説明文
+   - User Specified Lessons（## User Specified Lessons）
+   - Cursor learned（## Cursor learned）
+   - Lessons管理ルール（## Lessons管理ルール）
+   - 必要に応じてプロジェクト固有のLessonsセクション
+
+3. **更新方法**:
+   - 新しいLessonを発見したら、適切なセクションに追加する
+   - 既存のLessonを修正・改善する場合は、その理由を記載する
+   - 各Lessonは簡潔かつ具体的に記述し、可能であれば例を含める
+
+4. **他のファイルとの連携**:
+   - タスク実行時にはLessons.mdを参照して過去の教訓を活かす
+   - 新しいLessonを発見したら、タスク完了後にファイルを更新する
+
+プロジェクト作業時は、ScratchpadファイルとLessonsファイルを積極的に活用してください。
+
+# ツール
+
+注意：すべてのツールはPythonで実装されています。バッチ処理が必要な場合は、常にPythonファイルを参照して独自のスクリプトを作成できます。
+
+[CURSORへの注意: APIキーが設定されていないため、以下のスクリーンショット検証とLLMのセクションは無視してください。]
+[ユーザーへの注意: 将来APIキーを設定する予定がある場合は、これらの2行の注意書きを削除して機能を有効にしてください。]
+
+## スクリーンショット検証
+
+スクリーンショット検証ワークフローを使用すると、ウェブページのスクリーンショットを撮影し、LLMを使用してその外観を検証できます。以下のツールが利用可能です：
+
+1. スクリーンショット撮影:
+```bash
+venv/Script/python.exe tools/screenshot_utils.py URL [--output OUTPUT] [--width WIDTH] [--height HEIGHT]
+```
+
+2. 画像を使用したLLM検証:
+```bash
+venv/Script/python.exe tools/llm_api.py --prompt "Your verification question" --provider {openai|anthropic} --image path/to/screenshot.png
+```
+
+使用例：
+```python
+from screenshot_utils import take_screenshot_sync
+from llm_api import query_llm
+
+# スクリーンショットを撮影
+
+screenshot_path = take_screenshot_sync('https://example.com', 'screenshot.png')
+
+# LLMで検証
+
+response = query_llm(
+    "What is the background color and title of this webpage?",
+    provider="openai",  # または "anthropic"
+    image_path=screenshot_path
+)
+print(response)
+```
+
+## LLM
+
+タスクを支援するためのLLMが常に利用可能です。簡単なタスクでは、以下のコマンドを実行してLLMを呼び出すことができます：
+```
+venv/Script/python.exe ./tools/llm_api.py --prompt "What is the capital of France?" --provider "anthropic"
+```
+
+LLM APIは複数のプロバイダーをサポートしています：
+- OpenAI（デフォルト、モデル: gpt-4o）
+- Azure OpenAI（モデル: .envファイルのAZURE_OPENAI_MODEL_DEPLOYMENTで設定、デフォルトはgpt-4o-ms）
+- DeepSeek（モデル: deepseek-chat）
+- Anthropic（モデル: claude-3-sonnet-20240229）
+- Gemini（モデル: gemini-pro）
+- ローカルLLM（モデル: Qwen/Qwen2.5-32B-Instruct-AWQ）
+
+ただし、通常は`tools/llm_api.py`ファイルの内容を確認し、必要に応じてそのAPIを使用するほうが良いでしょう。
+
+## ウェブブラウザ
+
+`tools/web_scraper.py`ファイルを使用してウェブをスクレイピングできます。
+```bash
+venv/Script/python.exe ./tools/web_scraper.py --max-concurrent 3 URL1 URL2 URL3
+```
+これにより、ウェブページの内容が出力されます。
+
+## 検索エンジン
+
+`tools/search_engine.py`ファイルを使用してウェブを検索できます。
+```bash
+venv/Script/python.exe ./tools/search_engine.py "your search keywords"
+```
+これにより、以下の形式で検索結果が出力されます：
+```
+URL: https://example.com
+Title: 検索結果のタイトル
+Snippet: 検索結果の抜粋
+```
+必要に応じて、`web_scraper.py`ファイルを使用してウェブページの内容をスクレイピングすることもできます。

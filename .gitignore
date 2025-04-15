@@ -24,3 +24,6 @@ dist-ssr
 *.sln
 *.sw?
 .specstory
+
+.env*
+!.env.example
