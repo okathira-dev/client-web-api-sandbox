@@ -22,3 +22,12 @@ alwaysApply: false
 ## プロジェクト
 
 それぞれのプロジェクトについては [README.md](mdc:README.md) に記載しています。
+
+## ルールとサポートファイル
+
+[global.mdc](mdc:.cursor/rules/global.mdc) には、AIエージェントへの指示事項（Scratchpad・Lessonsの使用方法など）やリポジトリ全体に適用されるルールなどが記載されています。
+
+プロジェクト開発をサポートするために以下のファイルを使用します：
+
+- [Scratchpad.md](mdc:Scratchpad.md): タスクの計画と進捗状況を追跡するためのスクラッチパッド
+- [Lessons.md](mdc:Lessons.md): プロジェクト内で学んだ教訓や再利用可能な知識を記録するためのファイル

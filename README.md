@@ -35,3 +35,22 @@ npm run dev
 ### [./src/computation-of-tears](./src/computation-of-tears)
 
 **WIP** [Tears of Overflowed Bits (by eau. / La Mer ArtWorks)](https://www.youtube.com/watch?v=LRXLwrTHqmY)の再現
+
+## 開発サポートファイル
+
+### [./Scratchpad.md](./Scratchpad.md)
+
+タスクの計画と進捗状況を追跡するためのスクラッチパッド
+
+### [./Lessons.md](./Lessons.md)
+
+プロジェクト内で学んだ教訓や再利用可能な知識を記録するためのファイル
+
+## ルールファイル
+
+.cursor/rulesディレクトリには以下のルールファイルがあります。ここではすべてのプロジェクトに関するもののみを記載しています。
+
+- **global.mdc**: リポジトリ全体に適用されるルール（Scratchpad・Lessonsの使用方法など）
+- **repository.mdc**: リポジトリ構造とプロジェクト概要
+- **coding-rules.mdc**: コーディングルールとディレクトリ構造
+- **eslint.mdc**: ESLint設定に関するルール
