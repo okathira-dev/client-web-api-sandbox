@@ -37,6 +37,7 @@ export default defineConfig({
           "computation-of-tears",
           "index.html",
         ),
+        "heart-rate-monitor": resolve(root, "heart-rate-monitor", "index.html"),
       },
     },
   },

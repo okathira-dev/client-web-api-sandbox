@@ -17,6 +17,7 @@
 - seabornスタイル: matplotlibでseabornスタイルを使用する場合、最近のseabornバージョン変更により、'seaborn'ではなく'seaborn-v0_8'をスタイル名として使用してください。
 - OpenAIモデル名: OpenAIのGPT-4（ビジョン機能付き）には'gpt-4o'をモデル名として使用してください。
 - 最新情報の検索: 最新ニュースを検索する場合は、前年ではなく現在の年（2025）を使用するか、単に「recent」キーワードを使用して最新情報を取得してください。
+- ESLintのimportルール: `import-x/no-named-as-default-member`ルールに従い、デフォルトインポートしたモジュールの名前付きメンバーを直接参照するのではなく、名前付きインポートを使用してください。例：`React.createElement`ではなく`import { createElement } from "react"`、`ReactDOM.createRoot`ではなく`import { createRoot } from "react-dom/client"`を使用。
 
 ## Lessons管理ルール
 

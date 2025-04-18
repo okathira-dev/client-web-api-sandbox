@@ -2,8 +2,60 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <title>index</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web API を使った遊び場</title>
     <link rel="stylesheet" href="./shared/html-components/social-icons.css" />
+    <style>
+      body {
+        font-family: sans-serif;
+        margin: 0;
+        padding: 20px;
+        line-height: 1.6;
+      }
+      h1 {
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 0.5em;
+      }
+      h2 {
+        margin-top: 1.5em;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 0.3em;
+      }
+      ul {
+        padding-left: 2em;
+      }
+      li {
+        margin-bottom: 0.5em;
+      }
+      a {
+        color: #0366d6;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      .content {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      .banner {
+        padding: 1em;
+        margin-bottom: 1em;
+        background-color: #f8f9fa;
+        border-left: 4px solid #6c757d;
+        border-radius: 3px;
+      }
+      .wip-badge {
+        display: inline-block;
+        background-color: #ffc107;
+        color: #212529;
+        font-size: 0.75em;
+        padding: 0.2em 0.5em;
+        border-radius: 0.25em;
+        margin-left: 0.5em;
+        font-weight: bold;
+      }
+    </style>
   </head>
 
   <body>
@@ -61,26 +113,83 @@
         </svg>
       </a>
     </div>
-    <h1>リンクまとめページ</h1>
-    <a href="./webcodecs-data-moshing/index.html"
-      >WebCodecs API を用いたデータモッシュ PoC</a
-    >
-    <br />
-    <a href="./webcodecs-data-moshing-react/index.html"
-      >[WIP]WebCodecs API を用いたデータモッシュ App</a
-    >
-    <br />
-    <a href="./button-accordion-with-keyboard/index.html"
-      >キーボードによるボタンアコーディオン</a
-    >
-    <br />
-    <a href="./lcg-predictor/index.html"
-      >線形合同法乱数予測ツール (LCG Predictor)</a
-    >
-    <br />
-    <a href="./computation-of-tears/index.html"
-      >[WIP]tears of overflowed bitsの模倣</a
-    >
-    <br />
+    <div class="content">
+      <h1>Web API を使った遊び場</h1>
+
+      <div class="banner">
+        これはWeb APIを使ったサンドボックスプロジェクトです。<br />
+        様々なWeb APIを試すための実験的な実装が含まれています。
+      </div>
+
+      <h2>プロジェクト一覧</h2>
+      <ul>
+        <li>
+          <a href="/button-accordion-with-keyboard/">
+            クロマティックボタンアコーディオン
+          </a>
+          - 鍵盤でクロマティックボタンアコーディオンを演奏できるウェブアプリ
+        </li>
+        <li>
+          <a href="/webcodecs-data-moshing/">データモッシング PoC</a> -
+          WebCodecsを使ったデータモッシング実験
+        </li>
+        <li>
+          <a href="/webcodecs-data-moshing-react/">
+            データモッシング React App <span class="wip-badge">WIP</span>
+          </a>
+          - WebCodecsを使ったデータモッシングのReact実装
+        </li>
+        <li>
+          <a href="/lcg-predictor/">線形合同法乱数予測ツール</a> -
+          線形合同法による乱数を予測するツール
+        </li>
+        <li>
+          <a href="/computation-of-tears/">
+            Computation of Tears <span class="wip-badge">WIP</span>
+          </a>
+          -
+          <a
+            href="https://www.youtube.com/watch?v=LRXLwrTHqmY"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Tears of Overflowed Bits (by eau. / La Mer ArtWorks)</a
+          >の再現
+        </li>
+        <li>
+          <a href="/heart-rate-monitor/"> 心拍モニター </a>
+          - スマートフォンのカメラを使用して心拍数を測定するアプリ
+        </li>
+      </ul>
+
+      <h2>ソースコード</h2>
+      <p>
+        各プロジェクトのソースコードはGitHubリポジトリで確認できます：
+        <a
+          href="https://github.com/yourusername/web-api-sandbox"
+          target="_blank"
+          rel="noopener noreferrer"
+          >GitHub</a
+        >
+      </p>
+
+      <h2>共通コンポーネント</h2>
+      <p>
+        このプロジェクトでは、複数のアプリケーションで共有されるコンポーネントを提供しています：
+      </p>
+      <ul>
+        <li>
+          <a href="/shared/components/">共有コンポーネント</a> -
+          再利用可能なUIコンポーネント
+        </li>
+      </ul>
+
+      <footer
+        style="margin-top: 3em; border-top: 1px solid #eee; padding-top: 1em"
+      >
+        <p>
+          &copy; 2023 Web API Sandbox Project - これは実験的なプロジェクトです
+        </p>
+      </footer>
+    </div>
   </body>
 </html>
