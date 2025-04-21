@@ -41,7 +41,7 @@
     "tone": "^15.0.4"
   },
   "devDependencies": {
-    "@eslint/js": "^9.20.0",
+    "@eslint/js": "^9.25.0",
     "@markuplint/jsx-parser": "^4.7.16",
     "@markuplint/react-spec": "^4.5.14",
     "@types/dom-mediacapture-transform": "^0.1.9",
