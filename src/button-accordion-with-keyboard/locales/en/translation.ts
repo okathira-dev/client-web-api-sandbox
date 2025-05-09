@@ -58,6 +58,11 @@ const translation: TranslationResource = {
       en: "US layout",
       ja: "Japanese layout",
     },
+    system: {
+      label: "Keyboard System",
+      c: "C-system",
+      b: "B-system",
+    },
   },
   common: {
     errors: {

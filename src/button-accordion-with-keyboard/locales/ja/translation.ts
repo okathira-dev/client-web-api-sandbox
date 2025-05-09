@@ -59,6 +59,11 @@ const translation: TranslationResource = {
       en: "US（英字配列）",
       ja: "JIS（日本語配列）",
     },
+    system: {
+      label: "キーボードシステム",
+      c: "C-system",
+      b: "B-system",
+    },
   },
   common: {
     errors: {

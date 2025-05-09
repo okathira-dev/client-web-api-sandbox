@@ -80,10 +80,18 @@ export type KeyboardLayoutTranslations = {
   ja: string;
 };
 
+// キーボードシステム関連の型
+export type KeyboardSystemTranslations = {
+  label: string;
+  c: string;
+  b: string;
+};
+
 // キーボード全体の型
 export type KeyboardTranslations = {
   tabs: KeyboardTabsTranslations;
   layout: KeyboardLayoutTranslations;
+  system: KeyboardSystemTranslations;
 };
 
 // 共通エラーメッセージの型

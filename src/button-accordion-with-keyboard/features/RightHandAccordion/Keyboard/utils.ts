@@ -1,19 +1,32 @@
 import {
   JA_KEYBOARD_LAYOUT,
   EN_KEYBOARD_LAYOUT,
-  EN_KEY_MAP,
-  JA_KEY_MAP,
+  EN_KEY_MAP_C_SYSTEM,
+  EN_KEY_MAP_B_SYSTEM,
+  JA_KEY_MAP_C_SYSTEM,
+  JA_KEY_MAP_B_SYSTEM,
   KEY_LABEL_TEXTS,
 } from "./consts";
 import { semitoneToFrequency } from "../../../audio/utils";
 
-import type { KeyboardLayoutType, NoteNameStyle } from "./consts";
+import type {
+  KeyboardLayoutType,
+  NoteNameStyle,
+  KeyboardSystemType,
+} from "./consts";
 
 export type KeyLabelStyle = "key" | NoteNameStyle;
 
 // キーボードレイアウトの切り替え
-const getKeyMap = (keyboardLayout: KeyboardLayoutType) => {
-  return keyboardLayout === "en" ? EN_KEY_MAP : JA_KEY_MAP;
+const getKeyMap = (
+  keyboardLayout: KeyboardLayoutType,
+  systemType: KeyboardSystemType,
+) => {
+  if (systemType === "c-system") {
+    return keyboardLayout === "en" ? EN_KEY_MAP_C_SYSTEM : JA_KEY_MAP_C_SYSTEM;
+  } else {
+    return keyboardLayout === "en" ? EN_KEY_MAP_B_SYSTEM : JA_KEY_MAP_B_SYSTEM;
+  }
 };
 export const getKeyboardLayout = (keyboardLayout: KeyboardLayoutType) => {
   return keyboardLayout === "en" ? EN_KEYBOARD_LAYOUT : JA_KEYBOARD_LAYOUT;
@@ -27,8 +40,9 @@ const whiteKeyOffsets = [-9, -7, -5, -4, -2, 0, 2].map(
 export const isWhiteKey = (
   key: string,
   keyboardLayoutType: KeyboardLayoutType,
+  systemType: KeyboardSystemType,
 ): boolean => {
-  const keyMap = getKeyMap(keyboardLayoutType);
+  const keyMap = getKeyMap(keyboardLayoutType, systemType);
   const semitoneOffset = keyMap[key];
   if (semitoneOffset === undefined) return false;
   return whiteKeyOffsets.includes(((semitoneOffset % 12) + 12) % 12);
@@ -37,8 +51,9 @@ export const isWhiteKey = (
 export const getFrequency = (
   key: string,
   keyboardLayoutType: KeyboardLayoutType,
+  systemType: KeyboardSystemType,
 ): number => {
-  const keyMap = getKeyMap(keyboardLayoutType);
+  const keyMap = getKeyMap(keyboardLayoutType, systemType);
   const semitoneOffset = keyMap[key];
   if (semitoneOffset === undefined) {
     throw new Error("semitone offset not found");
@@ -50,8 +65,9 @@ export const getNoteLabel = (
   key: string,
   style: KeyLabelStyle,
   keyboardLayoutType: KeyboardLayoutType,
+  systemType: KeyboardSystemType,
 ): string => {
-  const keyMap = getKeyMap(keyboardLayoutType);
+  const keyMap = getKeyMap(keyboardLayoutType, systemType);
   if (style === "key") return key.toUpperCase();
 
   const semitoneOffset = keyMap[key];
