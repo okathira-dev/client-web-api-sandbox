@@ -5,6 +5,7 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 
 import { BEAT_TIME } from "./consts/animation";
 import { textLineScript } from "./consts/textLineScript";
+import NotoSerifJPBold from "./public/font/Noto_Serif_JP_Bold.json?url";
 import { TextLine } from "./TextLine";
 
 import type { Font } from "three/addons/loaders/FontLoader.js";
@@ -19,7 +20,7 @@ const DEBUG_MODE: boolean = true;
 const DEBUG_STOP_STEP: number = 4;
 
 // フォントのパス
-const FONT_PATH = "./public/font/Noto_Serif_JP_Bold.json";
+const FONT_PATH = NotoSerifJPBold;
 
 // 要素のID
 const CONTAINER_ID = "container";
