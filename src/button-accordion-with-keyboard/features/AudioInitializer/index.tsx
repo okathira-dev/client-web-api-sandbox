@@ -72,6 +72,7 @@ export const AudioInitializer: FC<AudioInitializerProps> = ({ children }) => {
         >
           <Typography
             variant="body1"
+            component="div"
             sx={{
               color: "white",
               backgroundColor: "rgba(0, 0, 0, 0.7)",
