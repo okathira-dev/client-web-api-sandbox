@@ -234,21 +234,21 @@ export const EN_KEY_MAP = EN_KEY_MAP_C_SYSTEM;
 export const JA_KEY_MAP = JA_KEY_MAP_C_SYSTEM;
 
 // 音階の名前のマッピング
-export type NoteNameStyle = "en" | "ja";
+export type NoteNameStyle = "en" | "doremi";
 export const KEY_LABEL_TEXTS: Record<NoteNameStyle, string[]> = {
   en: ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"],
-  ja: [
-    "ド",
-    "ド#",
-    "レ",
-    "レ#",
-    "ミ",
-    "ファ",
-    "ファ#",
-    "ソ",
-    "ソ#",
-    "ラ",
-    "ラ#",
-    "シ",
+  doremi: [
+    "c",
+    "cSharp",
+    "d",
+    "dSharp",
+    "e",
+    "f",
+    "fSharp",
+    "g",
+    "gSharp",
+    "a",
+    "aSharp",
+    "b",
   ],
 };

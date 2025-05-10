@@ -1,3 +1,6 @@
+import { useCallback } from "react";
+import { useTranslation } from "react-i18next";
+
 import {
   JA_KEYBOARD_LAYOUT,
   EN_KEYBOARD_LAYOUT,
@@ -15,7 +18,7 @@ import type {
   KeyboardSystemType,
 } from "./consts";
 
-export type KeyLabelStyle = "key" | NoteNameStyle;
+export type KeyLabelStyle = "keytop" | NoteNameStyle;
 
 // キーボードレイアウトの切り替え
 const getKeyMap = (
@@ -61,28 +64,38 @@ export const getFrequency = (
   return semitoneToFrequency(semitoneOffset);
 };
 
-export const getNoteLabel = (
-  key: string,
-  style: KeyLabelStyle,
-  keyboardLayoutType: KeyboardLayoutType,
-  systemType: KeyboardSystemType,
-): string => {
-  const keyMap = getKeyMap(keyboardLayoutType, systemType);
-  if (style === "key") return key.toUpperCase();
+// 翻訳のhooksが入るので、ここだけ「ノートラベルを返す関数」を返すhookにしておく
+export const useGetNoteLabel = () => {
+  const { t } = useTranslation();
 
-  const semitoneOffset = keyMap[key];
-  if (semitoneOffset === undefined) {
-    throw new Error("semitone offset not found");
-  }
+  const getNoteLabel = useCallback(
+    (
+      key: string,
+      style: KeyLabelStyle,
+      keyboardLayoutType: KeyboardLayoutType,
+      systemType: KeyboardSystemType,
+    ) => {
+      const keyMap = getKeyMap(keyboardLayoutType, systemType);
+      if (style === "keytop") return key.toUpperCase();
 
-  const adjustedOffset = semitoneOffset + 9;
-  const noteIndex = ((adjustedOffset % 12) + 12) % 12;
-  const octave = Math.floor(adjustedOffset / 12) + 4;
+      const semitoneOffset = keyMap[key];
+      if (semitoneOffset === undefined) {
+        throw new Error("semitone offset not found");
+      }
 
-  switch (style) {
-    case "en":
-      return `${KEY_LABEL_TEXTS[style][noteIndex]}${octave}`;
-    case "ja":
-      return `${KEY_LABEL_TEXTS[style][noteIndex]}`;
-  }
+      const adjustedOffset = semitoneOffset + 9;
+      const noteIndex = ((adjustedOffset % 12) + 12) % 12;
+      const octave = Math.floor(adjustedOffset / 12) + 4;
+
+      switch (style) {
+        case "en":
+          return `${KEY_LABEL_TEXTS[style][noteIndex]}${octave}`;
+        case "doremi":
+          return t(`keyboard.doremi.${KEY_LABEL_TEXTS[style][noteIndex]}`);
+      }
+    },
+    [t],
+  );
+
+  return getNoteLabel;
 };

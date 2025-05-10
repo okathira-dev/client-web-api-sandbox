@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { usePlayActiveReeds } from "./hooks";
 import {
   getFrequency,
-  getNoteLabel,
+  useGetNoteLabel,
   getKeyboardLayout,
   isWhiteKey,
 } from "./utils";
@@ -29,6 +29,7 @@ export const Keyboard: FC = () => {
     useState<KeyboardSystemType>("c-system");
 
   const { t } = useTranslation();
+  const getNoteLabel = useGetNoteLabel();
   const { playActiveReeds, stopActiveReeds } = usePlayActiveReeds();
 
   const keyboardLayout = getKeyboardLayout(keyboardLayoutType);
@@ -119,17 +120,17 @@ export const Keyboard: FC = () => {
       >
         <FormControl>
           <InputLabel id={keyLabelStyleSelectLabelId}>
-            {t("keyboard.tabs.label")}
+            {t("keyboard.view.label")}
           </InputLabel>
           <Select
             labelId={keyLabelStyleSelectLabelId}
             value={keyLabelStyle}
-            label={t("keyboard.tabs.label")}
+            label={t("keyboard.view.label")}
             onChange={handleKeyLabelStyleChange}
           >
-            <MenuItem value="key">{t("keyboard.tabs.key")}</MenuItem>
-            <MenuItem value="en">{t("keyboard.tabs.en")}</MenuItem>
-            <MenuItem value="ja">{t("keyboard.tabs.ja")}</MenuItem>
+            <MenuItem value="keytop">{t("keyboard.view.keytop")}</MenuItem>
+            <MenuItem value="en">{t("keyboard.view.en")}</MenuItem>
+            <MenuItem value="doremi">{t("keyboard.view.doremi")}</MenuItem>
           </Select>
         </FormControl>
         <FormControl>
@@ -200,7 +201,7 @@ export const Keyboard: FC = () => {
                 <KeyboardButton
                   key={key}
                   label={label}
-                  fontSize={keyLabelStyle === "ja" ? "18px" : "20px"}
+                  fontSize={keyLabelStyle === "doremi" ? "18px" : "20px"}
                   isWhite={isWhite}
                   isActive={!!buttonStates[key]}
                   onMouseDown={() => buttonDown(key)}

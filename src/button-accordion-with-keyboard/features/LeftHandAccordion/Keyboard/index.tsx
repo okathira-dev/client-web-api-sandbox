@@ -3,9 +3,6 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  ToggleButton,
-  ToggleButtonGroup,
-  Typography,
   type SelectChangeEvent,
 } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
@@ -23,9 +20,8 @@ import {
 
 import type { KeyboardLayoutType } from "./consts";
 import type { StradellaType } from "../types";
-import type { MouseEvent } from "react";
 
-type KeyLabelStyle = "key" | "note";
+type KeyLabelStyle = "keytop" | "note";
 
 const bassTypeColors: Record<StradellaType, string> = {
   counter: "#ff9800", // オレンジ
@@ -94,10 +90,10 @@ export const Keyboard = () => {
   }, [buttonDown, buttonUp]);
 
   const handleKeyLabelStyleChange = (
-    _event: MouseEvent<HTMLElement>,
-    newKeyLabelStyle: KeyLabelStyle | null,
+    event: SelectChangeEvent<KeyLabelStyle>,
   ) => {
-    if (newKeyLabelStyle === null) return; // 常にどれか一つは選択されているようにする
+    const newKeyLabelStyle = event.target.value as KeyLabelStyle;
+    if (newKeyLabelStyle === null) return;
     setKeyLabelStyle(newKeyLabelStyle);
   };
 
@@ -111,29 +107,31 @@ export const Keyboard = () => {
   };
 
   const keyboardLayoutSelectLabelId = "keyboard-layout-select-label";
+  const keyLabelStyleSelectLabelId = "key-label-style-select-label";
 
   return (
     <div>
       <div
         style={{
-          display: "flex",
-          justifyContent: "space-between",
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: "16px",
         }}
       >
-        <ToggleButtonGroup
-          color="primary"
-          value={keyLabelStyle}
-          exclusive
-          onChange={handleKeyLabelStyleChange}
-          aria-label={t("keyboard.tabs.label")}
-        >
-          <ToggleButton value="key">
-            <Typography>{t("keyboard.tabs.key")}</Typography>
-          </ToggleButton>
-          <ToggleButton value="note">
-            <Typography>{t("keyboard.tabs.note")}</Typography>
-          </ToggleButton>
-        </ToggleButtonGroup>
+        <FormControl>
+          <InputLabel id={keyLabelStyleSelectLabelId}>
+            {t("keyboard.view.label")}
+          </InputLabel>
+          <Select
+            labelId={keyLabelStyleSelectLabelId}
+            value={keyLabelStyle}
+            label={t("keyboard.view.label")}
+            onChange={handleKeyLabelStyleChange}
+          >
+            <MenuItem value="keytop">{t("keyboard.view.keytop")}</MenuItem>
+            <MenuItem value="note">{t("keyboard.view.note")}</MenuItem>
+          </Select>
+        </FormControl>
         <FormControl>
           <InputLabel id={keyboardLayoutSelectLabelId}>
             {t("keyboard.layout.label")}
