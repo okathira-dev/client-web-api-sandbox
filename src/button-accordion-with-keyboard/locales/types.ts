@@ -64,13 +64,13 @@ export type AccordionTranslations = {
   display: DisplayTranslations;
 };
 
-// キーボードタブ関連の型
-export type KeyboardTabsTranslations = {
+// キーボードの表示方法の型
+export type KeyboardViewTranslations = {
   label: string;
-  key: string;
+  keytop: string;
   note: string;
   en: string;
-  ja: string;
+  doremi: string;
 };
 
 // キーボードレイアウト関連の型
@@ -80,10 +80,35 @@ export type KeyboardLayoutTranslations = {
   ja: string;
 };
 
+// キーボードシステム関連の型
+export type KeyboardSystemTranslations = {
+  label: string;
+  c: string;
+  b: string;
+};
+
+// キーボードノート関連の型
+export type KeyboardDoremiNotesTranslations = {
+  c: string;
+  cSharp: string;
+  d: string;
+  dSharp: string;
+  e: string;
+  f: string;
+  fSharp: string;
+  g: string;
+  gSharp: string;
+  a: string;
+  aSharp: string;
+  b: string;
+};
+
 // キーボード全体の型
 export type KeyboardTranslations = {
-  tabs: KeyboardTabsTranslations;
+  view: KeyboardViewTranslations;
   layout: KeyboardLayoutTranslations;
+  system: KeyboardSystemTranslations;
+  doremi: KeyboardDoremiNotesTranslations;
 };
 
 // 共通エラーメッセージの型

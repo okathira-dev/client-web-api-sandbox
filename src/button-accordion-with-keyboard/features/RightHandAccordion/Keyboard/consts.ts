@@ -8,8 +8,11 @@ import type { KeyboardLayoutType } from "../../../consts/keyboardLayout";
 export type { KeyboardLayoutType };
 export { EN_KEYBOARD_LAYOUT, JA_KEYBOARD_LAYOUT };
 
-// 右手側キーボードのキーマッピング（英語キーボード）
-export const EN_KEY_MAP: Record<string, number> = {
+// キーボードシステムタイプ（B-systemとC-system）
+export type KeyboardSystemType = "b-system" | "c-system";
+
+// 右手側キーボードのキーマッピング（C-system, 英語キーボード）
+export const EN_KEY_MAP_C_SYSTEM: Record<string, number> = {
   // 1列目
   "1": -18,
   "2": -15,
@@ -62,8 +65,62 @@ export const EN_KEY_MAP: Record<string, number> = {
   "/": 15,
 };
 
-// 右手側キーボードのキーマッピング（日本語キーボード）
-export const JA_KEY_MAP: Record<string, number> = {
+// 右手側キーボードのキーマッピング（B-system, 英語キーボード）
+export const EN_KEY_MAP_B_SYSTEM: Record<string, number> = {
+  // 1列目
+  "1": -13,
+  "2": -10,
+  "3": -7,
+  "4": -4,
+  "5": -1,
+  "6": 2,
+  "7": 5,
+  "8": 8,
+  "9": 11,
+  "0": 14,
+  "-": 17,
+  "=": 20,
+  // 2列目
+  q: -12,
+  w: -9,
+  e: -6,
+  r: -3,
+  t: 0,
+  y: 3,
+  u: 6,
+  i: 9,
+  o: 12,
+  p: 15,
+  "[": 18,
+  "]": 21,
+  "\\": 24,
+  // 3列目
+  a: -11,
+  s: -8,
+  d: -5,
+  f: -2,
+  g: 1,
+  h: 4,
+  j: 7,
+  k: 10,
+  l: 13,
+  ";": 16,
+  "'": 19,
+  // 4列目
+  z: -10,
+  x: -7,
+  c: -4,
+  v: -1,
+  b: 2,
+  n: 5,
+  m: 8,
+  ",": 11,
+  ".": 14,
+  "/": 17,
+};
+
+// 右手側キーボードのキーマッピング（C-system, 日本語キーボード）
+export const JA_KEY_MAP_C_SYSTEM: Record<string, number> = {
   // 1列目
   "1": -18,
   "2": -15,
@@ -117,22 +174,81 @@ export const JA_KEY_MAP: Record<string, number> = {
   "\\": 18,
 };
 
+// 右手側キーボードのキーマッピング（B-system, 日本語キーボード）
+export const JA_KEY_MAP_B_SYSTEM: Record<string, number> = {
+  // 1列目
+  "1": -13,
+  "2": -10,
+  "3": -7,
+  "4": -4,
+  "5": -1,
+  "6": 2,
+  "7": 5,
+  "8": 8,
+  "9": 11,
+  "0": 14,
+  "-": 17,
+  "^": 20,
+  // 2列目
+  q: -12,
+  w: -9,
+  e: -6,
+  r: -3,
+  t: 0,
+  y: 3,
+  u: 6,
+  i: 9,
+  o: 12,
+  p: 15,
+  "@": 18,
+  "[": 21,
+  // 3列目
+  a: -11,
+  s: -8,
+  d: -5,
+  f: -2,
+  g: 1,
+  h: 4,
+  j: 7,
+  k: 10,
+  l: 13,
+  ";": 16,
+  ":": 19,
+  "]": 22,
+  // 4列目
+  z: -10,
+  x: -7,
+  c: -4,
+  v: -1,
+  b: 2,
+  n: 5,
+  m: 8,
+  ",": 11,
+  ".": 14,
+  "/": 17,
+  "\\": 20,
+};
+
+// 後方互換性のために元の変数名を維持
+export const EN_KEY_MAP = EN_KEY_MAP_C_SYSTEM;
+export const JA_KEY_MAP = JA_KEY_MAP_C_SYSTEM;
+
 // 音階の名前のマッピング
-export type NoteNameStyle = "en" | "ja";
+export type NoteNameStyle = "en" | "doremi";
 export const KEY_LABEL_TEXTS: Record<NoteNameStyle, string[]> = {
   en: ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"],
-  ja: [
-    "ド",
-    "ド#",
-    "レ",
-    "レ#",
-    "ミ",
-    "ファ",
-    "ファ#",
-    "ソ",
-    "ソ#",
-    "ラ",
-    "ラ#",
-    "シ",
+  doremi: [
+    "c",
+    "cSharp",
+    "d",
+    "dSharp",
+    "e",
+    "f",
+    "fSharp",
+    "g",
+    "gSharp",
+    "a",
+    "aSharp",
+    "b",
   ],
 };

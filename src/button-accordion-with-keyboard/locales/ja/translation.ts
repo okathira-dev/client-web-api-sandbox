@@ -47,17 +47,36 @@ const translation: TranslationResource = {
     },
   },
   keyboard: {
-    tabs: {
+    view: {
       label: "キーボード表示",
-      key: "キー（QWERTY）",
+      keytop: "キートップ",
       note: "音階（C4, C#4, D4…）",
       en: "音階（C4, C#4, D4…）",
-      ja: "音階（ドレミ）",
+      doremi: "音階（ドレミ）",
     },
     layout: {
-      label: "キーボードレイアウト",
+      label: "キーボードレイアウト（QWERTY）",
       en: "US（英字配列）",
       ja: "JIS（日本語配列）",
+    },
+    system: {
+      label: "キーボードシステム",
+      c: "C-system",
+      b: "B-system",
+    },
+    doremi: {
+      c: "ド",
+      cSharp: "ド#",
+      d: "レ",
+      dSharp: "レ#",
+      e: "ミ",
+      f: "ファ",
+      fSharp: "ファ#",
+      g: "ソ",
+      gSharp: "ソ#",
+      a: "ラ",
+      aSharp: "ラ#",
+      b: "シ",
     },
   },
   common: {

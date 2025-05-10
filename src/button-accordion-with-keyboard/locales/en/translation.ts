@@ -46,17 +46,36 @@ const translation: TranslationResource = {
     },
   },
   keyboard: {
-    tabs: {
+    view: {
       label: "Keyboard View",
-      key: "Key (QWERTY)",
+      keytop: "Key Top",
       note: "Note (C4, C#4, D4...)",
       en: "Note (C4, C#4, D4...)",
-      ja: "Note (Do-Re-Mi)",
+      doremi: "Note (Do-Re-Mi)",
     },
     layout: {
-      label: "Keyboard Layout",
+      label: "Keyboard Layout (QWERTY)",
       en: "US layout",
       ja: "Japanese layout",
+    },
+    system: {
+      label: "Keyboard System",
+      c: "C-system",
+      b: "B-system",
+    },
+    doremi: {
+      c: "Do",
+      cSharp: "Do#",
+      d: "Re",
+      dSharp: "Re#",
+      e: "Mi",
+      f: "Fa",
+      fSharp: "Fa#",
+      g: "Sol",
+      gSharp: "Sol#",
+      a: "La",
+      aSharp: "La#",
+      b: "Si",
     },
   },
   common: {
