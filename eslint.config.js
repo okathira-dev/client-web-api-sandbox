@@ -4,7 +4,7 @@ import typescriptEslintParser from "@typescript-eslint/parser";
 import eslintConfigPrettier from "eslint-config-prettier";
 // @ts-expect-error 型定義がない
 import html from "eslint-plugin-html";
-import importX from "eslint-plugin-import-x";
+import { flatConfigs } from "eslint-plugin-import-x";
 // reactPlugin.configs.flatの型定義が曖昧 ref: https://github.com/jsx-eslint/eslint-plugin-react/issues/3878
 import reactPlugin from "eslint-plugin-react";
 // @ts-expect-error 型定義がない ref: https://github.com/facebook/react/issues/30119
@@ -39,10 +39,10 @@ export default config(
   tsEslintConfigs.recommendedTypeChecked,
   // @ts-expect-error 型定義が曖昧
   reactPlugin.configs.flat.recommended,
-  // @ts-expect-error型定義が曖昧
+  // @ts-expect-error 型定義が曖昧
   reactPlugin.configs.flat["jsx-runtime"],
-  importX.flatConfigs.recommended,
-  importX.flatConfigs.typescript,
+  flatConfigs.recommended,
+  flatConfigs.typescript,
   {
     // eslint-plugin-react-hooks
     plugins: {
