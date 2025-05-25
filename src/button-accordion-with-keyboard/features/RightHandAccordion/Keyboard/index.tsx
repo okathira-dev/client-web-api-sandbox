@@ -144,6 +144,7 @@ export const Keyboard: FC = () => {
             onChange={handleKeyboardLayoutChange}
           >
             <MenuItem value="en">{t("keyboard.layout.en")}</MenuItem>
+            <MenuItem value="iso">{t("keyboard.layout.iso")}</MenuItem>
             <MenuItem value="ja">{t("keyboard.layout.ja")}</MenuItem>
           </Select>
         </FormControl>
@@ -157,8 +158,8 @@ export const Keyboard: FC = () => {
             label={t("keyboard.system.label")}
             onChange={handleKeyboardSystemChange}
           >
-            <MenuItem value="c-system">{t("keyboard.system.c")}</MenuItem>
             <MenuItem value="b-system">{t("keyboard.system.b")}</MenuItem>
+            <MenuItem value="c-system">{t("keyboard.system.c")}</MenuItem>
           </Select>
         </FormControl>
       </div>
@@ -180,7 +181,7 @@ export const Keyboard: FC = () => {
             key={rowIndex}
             style={{
               display: "flex",
-              marginLeft: `${rowIndex * (24 + 2)}px`, // 行が下がるごとに右にずらす
+              marginLeft: `${(keyboardLayoutType === "iso" && rowIndex === 3 ? 1 : rowIndex) * (24 + 2)}px`, // 行が下がるごとに右にずらす
               gap: "4px",
             }}
           >

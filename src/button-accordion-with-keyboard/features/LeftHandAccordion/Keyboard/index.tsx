@@ -34,7 +34,7 @@ export const Keyboard = () => {
   const [buttonStates, setButtonStates] = useState<Record<string, boolean>>({});
   const [keyLabelStyle, setKeyLabelStyle] = useState<KeyLabelStyle>("note");
   const [keyboardLayoutType, setKeyboardLayoutType] =
-    useState<KeyboardLayoutType>("en");
+    useState<KeyboardLayoutType>("iso");
 
   const { t } = useTranslation();
   const { playActiveReeds, stopActiveReeds } = usePlayActiveReeds();
@@ -143,6 +143,7 @@ export const Keyboard = () => {
             onChange={handleKeyboardLayoutChange}
           >
             <MenuItem value="en">{t("keyboard.layout.en")}</MenuItem>
+            <MenuItem value="iso">{t("keyboard.layout.iso")}</MenuItem>
             <MenuItem value="ja">{t("keyboard.layout.ja")}</MenuItem>
           </Select>
         </FormControl>
@@ -164,7 +165,7 @@ export const Keyboard = () => {
             key={rowIndex}
             style={{
               display: "flex",
-              marginLeft: `${rowIndex * (24 + 2)}px`, // 行が下がるごとに右にずらす
+              marginLeft: `${(keyboardLayoutType === "iso" && rowIndex === 3 ? 1 : rowIndex) * (24 + 2)}px`, // 行が下がるごとに右にずらす
               gap: "4px",
             }}
           >

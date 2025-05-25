@@ -2,10 +2,13 @@ import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
 import {
-  JA_KEYBOARD_LAYOUT,
   EN_KEYBOARD_LAYOUT,
+  ISO_KEYBOARD_LAYOUT,
+  JA_KEYBOARD_LAYOUT,
   EN_KEY_MAP_C_SYSTEM,
   EN_KEY_MAP_B_SYSTEM,
+  ISO_KEY_MAP_C_SYSTEM,
+  ISO_KEY_MAP_B_SYSTEM,
   JA_KEY_MAP_C_SYSTEM,
   JA_KEY_MAP_B_SYSTEM,
   KEY_LABEL_TEXTS,
@@ -26,13 +29,34 @@ const getKeyMap = (
   systemType: KeyboardSystemType,
 ) => {
   if (systemType === "c-system") {
-    return keyboardLayout === "en" ? EN_KEY_MAP_C_SYSTEM : JA_KEY_MAP_C_SYSTEM;
+    switch (keyboardLayout) {
+      case "en":
+        return EN_KEY_MAP_C_SYSTEM;
+      case "iso":
+        return ISO_KEY_MAP_C_SYSTEM;
+      case "ja":
+        return JA_KEY_MAP_C_SYSTEM;
+    }
   } else {
-    return keyboardLayout === "en" ? EN_KEY_MAP_B_SYSTEM : JA_KEY_MAP_B_SYSTEM;
+    switch (keyboardLayout) {
+      case "en":
+        return EN_KEY_MAP_B_SYSTEM;
+      case "iso":
+          return ISO_KEY_MAP_B_SYSTEM;
+      case "ja":
+        return JA_KEY_MAP_B_SYSTEM;
+    }
   }
 };
 export const getKeyboardLayout = (keyboardLayout: KeyboardLayoutType) => {
-  return keyboardLayout === "en" ? EN_KEYBOARD_LAYOUT : JA_KEYBOARD_LAYOUT;
+  switch (keyboardLayout) {
+    case "en":
+      return EN_KEYBOARD_LAYOUT;
+    case "iso":
+      return ISO_KEYBOARD_LAYOUT;
+    case "ja":
+      return JA_KEYBOARD_LAYOUT;
+  }
 };
 
 // 白鍵の判定用オフセット

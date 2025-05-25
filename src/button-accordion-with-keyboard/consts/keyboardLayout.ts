@@ -1,5 +1,5 @@
 // キーボードレイアウトの種類
-export type KeyboardLayoutType = "en" | "ja";
+export type KeyboardLayoutType = "en" | "iso" | "ja";
 
 // キーボードレイアウト（英語キーボード）
 export const EN_KEYBOARD_LAYOUT = [
@@ -7,6 +7,14 @@ export const EN_KEYBOARD_LAYOUT = [
   ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "[", "]", "\\"],
   ["a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'"],
   ["z", "x", "c", "v", "b", "n", "m", ",", ".", "/"],
+] as const;
+
+// キーボードレイアウト（ISOキーボード）
+export const ISO_KEYBOARD_LAYOUT = [
+  ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "="],
+  ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "[", "]"],
+  ["a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'", "\\"],
+  ["`", "z", "x", "c", "v", "b", "n", "m", ",", ".", "/"],
 ] as const;
 
 // キーボードレイアウト（日本語キーボード）
