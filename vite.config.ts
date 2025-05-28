@@ -37,6 +37,7 @@ export default defineConfig({
           "computation-of-tears",
           "index.html",
         ),
+        "audio-multi-output": resolve(root, "audio-multi-output", "index.html"),
       },
     },
   },
