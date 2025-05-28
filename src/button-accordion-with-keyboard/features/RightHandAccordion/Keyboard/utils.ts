@@ -42,7 +42,7 @@ const getKeyMap = (
       case "en":
         return EN_KEY_MAP_B_SYSTEM;
       case "iso":
-          return ISO_KEY_MAP_B_SYSTEM;
+        return ISO_KEY_MAP_B_SYSTEM;
       case "ja":
         return JA_KEY_MAP_B_SYSTEM;
     }

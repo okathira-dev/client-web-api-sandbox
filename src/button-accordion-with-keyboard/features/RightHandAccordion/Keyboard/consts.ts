@@ -162,7 +162,7 @@ export const ISO_KEY_MAP_C_SYSTEM: Record<string, number> = {
   "'": 16,
   "\\": 19,
   // 4列目
-  "`":-15,
+  "`": -15,
   z: -12,
   x: -9,
   c: -6,
@@ -217,7 +217,7 @@ export const ISO_KEY_MAP_B_SYSTEM: Record<string, number> = {
   "'": 19,
   "\\": 22,
   // 4列目
-  "`":-13,
+  "`": -13,
   z: -10,
   x: -7,
   c: -4,
