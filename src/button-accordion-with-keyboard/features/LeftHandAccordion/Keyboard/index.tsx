@@ -34,7 +34,7 @@ export const Keyboard = () => {
   const [buttonStates, setButtonStates] = useState<Record<string, boolean>>({});
   const [keyLabelStyle, setKeyLabelStyle] = useState<KeyLabelStyle>("note");
   const [keyboardLayoutType, setKeyboardLayoutType] =
-    useState<KeyboardLayoutType>("iso");
+    useState<KeyboardLayoutType>("en");
 
   const { t } = useTranslation();
   const { playActiveReeds, stopActiveReeds } = usePlayActiveReeds();
