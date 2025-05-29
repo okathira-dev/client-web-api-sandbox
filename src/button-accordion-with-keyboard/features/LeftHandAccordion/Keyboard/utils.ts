@@ -2,8 +2,10 @@ import {
   NOTE_LABELS,
   ROOT_NOTES,
   EN_KEYBOARD_LAYOUT,
+  ISO_KEYBOARD_LAYOUT,
   JA_KEYBOARD_LAYOUT,
   EN_KEY_MAP,
+  ISO_KEY_MAP,
   JA_KEY_MAP,
   type KeyboardLayoutType,
 } from "./consts";
@@ -72,11 +74,25 @@ const getNoteIndex = (semitone: number, offset: number = 9): number => {
 
 // キーボードレイアウトの切り替え
 export const getKeyMap = (keyboardLayout: KeyboardLayoutType) => {
-  return keyboardLayout === "en" ? EN_KEY_MAP : JA_KEY_MAP;
+  switch (keyboardLayout) {
+    case "en":
+      return EN_KEY_MAP;
+    case "iso":
+      return ISO_KEY_MAP;
+    case "ja":
+      return JA_KEY_MAP;
+  }
 };
 
 export const getKeyboardLayout = (keyboardLayout: KeyboardLayoutType) => {
-  return keyboardLayout === "en" ? EN_KEYBOARD_LAYOUT : JA_KEYBOARD_LAYOUT;
+  switch (keyboardLayout) {
+    case "en":
+      return EN_KEYBOARD_LAYOUT;
+    case "iso":
+      return ISO_KEYBOARD_LAYOUT;
+    case "ja":
+      return JA_KEYBOARD_LAYOUT;
+  }
 };
 
 // keyから周波数の配列を返す

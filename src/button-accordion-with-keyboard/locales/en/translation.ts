@@ -55,8 +55,9 @@ const translation: TranslationResource = {
     },
     layout: {
       label: "Keyboard Layout (QWERTY)",
-      en: "US layout",
-      ja: "Japanese layout",
+      en: "US (ANSI)",
+      iso: "International (ISO)",
+      ja: "Japanese (JIS)",
     },
     system: {
       label: "Keyboard System",

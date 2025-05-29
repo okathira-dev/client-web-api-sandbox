@@ -77,14 +77,15 @@ export type KeyboardViewTranslations = {
 export type KeyboardLayoutTranslations = {
   label: string;
   en: string;
+  iso: string;
   ja: string;
 };
 
 // キーボードシステム関連の型
 export type KeyboardSystemTranslations = {
   label: string;
-  c: string;
   b: string;
+  c: string;
 };
 
 // キーボードノート関連の型

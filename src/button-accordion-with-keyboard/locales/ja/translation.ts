@@ -56,13 +56,14 @@ const translation: TranslationResource = {
     },
     layout: {
       label: "キーボードレイアウト（QWERTY）",
-      en: "US（英字配列）",
-      ja: "JIS（日本語配列）",
+      en: "英字配列（ANSI）",
+      iso: "英字配列（ISO）",
+      ja: "日本語配列（JIS）",
     },
     system: {
       label: "キーボードシステム",
-      c: "C-system",
       b: "B-system",
+      c: "C-system",
     },
     doremi: {
       c: "ド",
