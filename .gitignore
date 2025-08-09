@@ -27,3 +27,6 @@ dist-ssr
 
 .env*
 !.env.example
+
+# Serena cache
+.serena/cache/
