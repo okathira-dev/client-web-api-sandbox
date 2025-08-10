@@ -42,15 +42,15 @@ npm run dev
 
 タスクの計画と進捗状況を追跡するためのスクラッチパッド
 
-### [./Lessons.md](./Lessons.md)
+### Serena memories（.serena/memories/*.md）
 
-プロジェクト内で学んだ教訓や再利用可能な知識を記録するためのファイル
+プロジェクト内で学んだ教訓や再利用可能な知識は Serena のメモリとして管理します。
 
 ## ルールファイル
 
 .cursor/rulesディレクトリには以下のルールファイルがあります。ここではすべてのプロジェクトに関するもののみを記載しています。
 
-- **global.mdc**: リポジトリ全体に適用されるルール（Scratchpad・Lessonsの使用方法など）
+- **global.mdc**: リポジトリ全体に適用されるルール（Scratchpadの使用方法など）
 - **repository.mdc**: リポジトリ構造とプロジェクト概要
 - **coding-rules.mdc**: コーディングルールとディレクトリ構造
 - **eslint.mdc**: ESLint設定に関するルール

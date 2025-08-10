@@ -27,5 +27,4 @@ Vite の `rollupOptions.input` で複数 HTML を指定。
 
 - `README.md`: 目次・各プロジェクト説明
 - `Scratchpad.md`: タスク・進捗の管理
-- `Lessons.md`: 再利用可能な知見・教訓の蓄積
 - `.cursor/rules/*.mdc`: ルール（repository/coding-rules/eslint 等）

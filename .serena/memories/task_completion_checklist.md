@@ -12,7 +12,6 @@
 4. ドキュメント
    - 該当プロジェクトの `README.md` 更新
    - `Scratchpad.md` のタスク/進捗を更新
-   - 新しい知見は `Lessons.md` に追加
 5. Git/PR
    - 必要に応じて `[Cursor]` 等のラベルを説明文の先頭に付与
    - 適切なブランチ運用（`git switch -c <topic>` → PR）

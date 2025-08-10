@@ -5,7 +5,7 @@
   - `tsconfig.json`: strict, bundler 解決, JSX は `react-jsx`
   - `eslint.config.js`: flat config, type-aware, react/react-hooks/import-x/html, prettier 連携
   - `jest.config.js`: ts-jest 設定
-  - `README.md`, `Scratchpad.md`, `Lessons.md`
+  - `README.md`, `Scratchpad.md`
 - `src/`
   - 各サブプロジェクトごとにディレクトリ（`button-accordion-with-keyboard`, `lcg-predictor`, `computation-of-tears` など）
   - `shared/` 共有 UI/HTML

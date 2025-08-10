@@ -1,7 +1,7 @@
 # Scratchpad
 
 このファイルは、タスクの計画と進捗状況を追跡するためのスクラッチパッドとして使用されます。
-（`.cursor/rules/global.mdc`のルールに従って管理されています）
+（`.cursor/rules/global.mdc`のルールに従って管理されています。長期的な教訓・方針はserenaメモリに保存します）
 
 ## 現在のタスク
 
@@ -36,7 +36,6 @@
 - 基本的に整合性は保たれています
 - 最近の変更：
   - `global.mdc`とScratchpad.mdの関係を明確化
-  - Lessons.mdファイルを作成し、Lessonsに関する情報をglobal.mdcから分離
   - global.mdcに他のルールファイルとの関連性を明示的に記載
   - global.mdcを日本語化し、内容の一貫性を向上（コマンド例の文字列は技術的な正確性のため原文のまま）
   - README.mdとrepository.mdcを更新して新しいサポートファイルとルールファイルの情報を追加
