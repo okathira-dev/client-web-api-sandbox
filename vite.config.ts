@@ -37,6 +37,11 @@ export default defineConfig({
           "computation-of-tears",
           "index.html",
         ),
+        "pdf-compressor-wasm": resolve(
+          root,
+          "pdf-compressor-wasm",
+          "index.html",
+        ),
       },
     },
   },

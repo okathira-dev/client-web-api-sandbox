@@ -1,4 +1,4 @@
-# 技術スタック
+# Tech stack
 
 - ビルド/開発: Vite 6, SWC React プラグイン
 - 言語/型: TypeScript 5（strict）, ES Modules（`type: module`）

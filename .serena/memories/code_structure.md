@@ -1,4 +1,4 @@
-# コード構造
+# Code structure
 
 - ルート
   - `vite.config.ts`: `src` を root とし、複数 HTML を `rollupOptions.input` で指定

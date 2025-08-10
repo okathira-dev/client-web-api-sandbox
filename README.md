@@ -36,6 +36,10 @@ npm run dev
 
 **WIP** [Tears of Overflowed Bits (by eau. / La Mer ArtWorks)](https://www.youtube.com/watch?v=LRXLwrTHqmY)の再現
 
+### [./src/pdf-compressor-wasm](./src/pdf-compressor-wasm)
+
+PDF圧縮 (Ghostscript WASM) — 設計・技術調査
+
 ## 開発サポートファイル
 
 ### [./Scratchpad.md](./Scratchpad.md)

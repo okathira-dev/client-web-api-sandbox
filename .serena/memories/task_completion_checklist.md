@@ -1,4 +1,4 @@
-# タスク完了時のチェックリスト
+# Task completion checklist
 
 1. ルール遵守（AIエージェント必須）
    - `coding-rules.mdc` と `eslint.mdc` に沿って構造・命名・import を整理

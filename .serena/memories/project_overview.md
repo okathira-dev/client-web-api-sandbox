@@ -1,9 +1,9 @@
-# プロジェクト概要
+# Project overview
 
 このリポジトリは、さまざまな Web API を試すマルチページのサンドボックスです。Vite のマルチエントリで `src/index.html` から各プロジェクトに遷移できます。
 
 - 主要目的: Web API・オーディオ・WebCodecs・数理系などの PoC/小アプリの集合
-- 実行方法: `npm run dev` で開発サーバ、`npm run build` でビルド、`npm run preview` でビルド成果物をローカル確認
+- 実行方法: `npm run dev`（開発サーバ）、`npm run build`（ビルド）、`npm run preview`（ビルド成果物をローカル確認）
 - 必要環境: Node >= 22.12.0、Windows（PowerShell 7）
 
 ## サブプロジェクト一覧（抜粋）

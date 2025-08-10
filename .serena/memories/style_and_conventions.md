@@ -1,4 +1,4 @@
-# スタイルと規約
+# Style and conventions
 
 - コロケーション原則（coding-rules）
   - 機能単位で `/features/${機能名}` に集約
@@ -6,7 +6,7 @@
   - `atoms/consts/hooks/utils` は必要に応じて機能配下に配置
 - インポート方針
   - 可能な限り named import を使用（default import は極力避ける）
-  - 型は `import type`（`@typescript-eslint/consistent-type-imports`）
+  - 型は `import type` を使用
   - import-x による並び順・グルーピング・アルファベット順・重複禁止
 - TypeScript
   - strict 有効、`noUncheckedIndexedAccess` 有効

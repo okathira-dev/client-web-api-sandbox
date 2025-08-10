@@ -5,20 +5,31 @@
 
 ## 現在のタスク
 
-リポジトリの全体像とルールの整合性確認
+PDF圧縮Webアプリ（Ghostscript WASM）設計・技術調査
+
+- [X] 参考資料確認（ps-wasm, ブログ事例）
+- [X] 共通ルール確認（coding-rules / eslint / repository）
+- [X] 要件整理（機能/非機能）
+- [~] アーキテクチャ設計（WASMローダー/Worker/FS/コマンド組み立て）
+- [X] GUI設計（プリセット/詳細設定/カスタムコマンド）
+- [X] ライセンス整理（AGPL対応方針）
+- [ ] 技術検証計画（メモリ/速度/サンプルPDF）
+- [X] 初期プロジェクト構成の雛形作成（index.html/App.tsx/main.tsx/worker stub）
 
 ## 進捗状況
 
-[X] リポジトリ構造の確認
-[X] 各ルールファイルの内容確認
-[X] ルール間の整合性分析
-[X] Scratchpad情報の更新
-[X] global.mdcとScratchpad.mdの関係明確化
-[X] Lessons.mdファイルの作成と関連ルールの整備
-[X] global.mdcファイルの日本語化
-[X] global.mdcのコマンド例の文字列を原文に修正
-[X] README.mdの更新（開発サポートファイルとルールファイルの情報追加）
-[X] repository.mdcの更新（ルールとサポートファイルの情報追加）
+- [X] リポジトリ構造の確認
+- [X] 各ルールファイルの内容確認
+- [X] ルール間の整合性分析
+- [X] Scratchpad情報の更新
+- [X] global.mdcとScratchpad.mdの関係明確化
+- [X] global.mdcファイルの日本語化
+- [X] global.mdcのコマンド例の文字列を原文に修正
+- [X] README.mdの更新（開発サポートファイルとルールファイルの情報追加）
+- [X] repository.mdcの更新（ルールとサポートファイルの情報追加）
+- [X] ps-wasm/ブログ事例の一次調査メモ作成
+- [X] `src/pdf-compressor-wasm/` 追加（MVP UI・Workerスタブ・リンク追記）
+- [X] Serenaメモリに要件・設計を保存（PDF Compressor – Requirements & Design）
 
 ## リポジトリ構造分析結果
 
