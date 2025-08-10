@@ -41,6 +41,8 @@
     "tone": "^15.0.4"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
     "@eslint/js": "^9.25.0",
     "@markuplint/jsx-parser": "^4.7.19",
     "@markuplint/react-spec": "^4.5.14",

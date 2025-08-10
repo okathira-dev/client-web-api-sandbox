@@ -10,6 +10,18 @@
 - ファイル編集の前提: ファイルを編集する前に必ずその内容を確認してください。
 - Cursorの制限に関して: `git`や`gh`を使用する際に複数行のコミットメッセージが必要な場合は、まずメッセージをファイルに書き、`git commit -F <filename>`などのコマンドを使用してコミットしてください。その後ファイルを削除します。コミットメッセージとPRタイトルには「[Cursor] 」を含めてください。
 
+- コミットメッセージ方針（Conventional Commits + ラベルを説明前に付与）:
+  - 基本形式: `type[optional scope]!: [Label] description`
+  - 先頭は Conventional Commits（`type(scope)!:`）。その後の説明の先頭に任意のラベル（例: `[Cursor]`, `[WIP]`）を置きます。
+  - 許可タイプ: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`
+  - 例:
+    - `feat(ui): [Cursor] ボタンのアクセシビリティ改善`
+    - `fix(audio)!: [Cursor] レイテンシ計測の閾値を変更`
+    - `chore: [WIP] 依存関係の更新`
+  - Body/Footers は任意。破壊的変更は `type!:` またはフッター `BREAKING CHANGE:` を使用。
+  - 本規約は commitlint により検証されます。
+  - AIエージェントは必ず本形式を遵守し、PRタイトルも同様の形式を利用します。
+
 ## Cursor learned
 
 - 検索結果: 国際的なクエリに対して異なる文字エンコーディング（UTF-8）を適切に処理することを確保してください。
