@@ -58,7 +58,7 @@ function buildArgs(opts: OptionsState) {
     `-dCompatibilityLevel=${opts.compatibilityLevel}`,
     `-dPDFSETTINGS=${opts.preset}`,
     "-dNOPAUSE",
-    "-dQUIET",
+    // "-dQUIET",
     "-dBATCH",
   ];
 
@@ -89,6 +89,19 @@ function buildArgs(opts: OptionsState) {
   return args;
 }
 
+function normalizeArgsForRun(tokens: string[]): string[] {
+  if (!tokens.length) return tokens;
+  const first = tokens[0] ?? "";
+  if (
+    first === "gs" ||
+    first === "./this.program" ||
+    /\bthis\.program$/.test(first)
+  ) {
+    return tokens.slice(1);
+  }
+  return tokens;
+}
+
 function formatTimestamp(d = new Date()) {
   const pad = (n: number) => String(n).padStart(2, "0");
   const yyyy = d.getFullYear();
@@ -117,12 +130,16 @@ export function App() {
   const [downloadBlobUrl, setDownloadBlobUrl] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement | null>(null);
 
-  const args = useMemo(
-    () =>
-      useCustom && customArgs.trim()
-        ? customArgs.trim().split(/\s+/)
-        : buildArgs(options),
-    [useCustom, customArgs, options],
+  const argsForRun = useMemo(() => {
+    if (useCustom && customArgs.trim()) {
+      return normalizeArgsForRun(customArgs.trim().split(/\s+/));
+    }
+    return buildArgs(options);
+  }, [useCustom, customArgs, options]);
+
+  const displayCommand = useMemo(
+    () => ["gs", ...argsForRun].join(" "),
+    [argsForRun],
   );
 
   const handlePresetChange = (e: SelectChangeEvent) => {
@@ -140,8 +157,7 @@ export function App() {
   };
 
   const onCopyCommand = async () => {
-    const cmd = ["gs", ...args].join(" ");
-    await navigator.clipboard.writeText(cmd);
+    await navigator.clipboard.writeText(displayCommand);
   };
 
   const onRun = async () => {
@@ -154,8 +170,9 @@ export function App() {
     try {
       // Worker を動的 import（今はダミー実装）。本実装で置換予定。
       const { runGhostscriptWasm } = await import("./workers/gsRunner");
-      const { output, logs } = await runGhostscriptWasm(file, args);
-      setLog(logs);
+      const { output } = await runGhostscriptWasm(file, argsForRun, (line) =>
+        setLog((prev) => (prev ? `${prev}\n${line}` : line)),
+      );
       setOutputSize(output.size);
       const url = URL.createObjectURL(output);
       setDownloadBlobUrl(url);
@@ -163,6 +180,15 @@ export function App() {
       setLog(String(err));
     } finally {
       setBusy(false);
+    }
+  };
+
+  const onToggleCustom = (_: unknown, v: boolean) => {
+    setUseCustom(v);
+    if (v) {
+      // 現在のGUI設定から生成されたコマンドで初期化（normalize済み）
+      const current = ["gs", ...argsForRun].join(" ");
+      setCustomArgs(current);
     }
   };
 
@@ -199,7 +225,7 @@ export function App() {
           <Typography variant="body2" sx={{ mt: 1 }}>
             {inputName
               ? `${inputName} (${((inputSize ?? 0) / 1024 / 1024).toFixed(2)} MB)`
-              : "ファイル未選択（最大20MBを推奨）"}
+              : "ファイル未選択"}
           </Typography>
         </Box>
 
@@ -388,7 +414,7 @@ export function App() {
 
         <Stack direction="row" spacing={2} alignItems="center">
           <Typography variant="subtitle1">カスタムコマンド</Typography>
-          <Switch checked={useCustom} onChange={(_, v) => setUseCustom(v)} />
+          <Switch checked={useCustom} onChange={onToggleCustom} />
           <Button onClick={() => void onCopyCommand()} disabled={busy}>
             コマンドをコピー
           </Button>
@@ -397,9 +423,15 @@ export function App() {
           multiline
           minRows={3}
           placeholder="gs の引数をスペース区切りで入力"
-          value={customArgs}
+          value={useCustom ? customArgs : displayCommand}
           onChange={(e) => setCustomArgs(e.target.value)}
+          slotProps={{
+            input: {
+              readOnly: !useCustom,
+            },
+          }}
           disabled={!useCustom}
+          fullWidth
         />
 
         <Divider />

@@ -10,6 +10,10 @@ export default defineConfig({
   base: "./", // JSのimportが相対パスになる。ビルドしたフォルダ単体で動くので便利。
   root,
   plugins: [react()],
+  worker: {
+    // ビルド時にワーカーを ES モジュール形式で出力（コードスプリット互換）
+    format: "es",
+  },
   build: {
     outDir,
     emptyOutDir: true,
