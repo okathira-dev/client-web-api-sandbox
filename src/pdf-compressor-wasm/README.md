@@ -1,52 +1,106 @@
 # PDF Compressor (Ghostscript WASM)
 
-クライアントサイドのみでPDFを圧縮するWebアプリの設計・技術調査メモ。
+完全クライアントサイドでPDFを圧縮するWebアプリケーションです。Ghostscript WASMを使用して、ブラウザ内でPDF圧縮を行います。
 
-参照:
+## 概要
 
-- ps-wasm (Ghostscript WASM ラッパー) — <https://github.com/ochachacha/ps-wasm>
-- Blog: Playing around with Webassembly: Ghostscript — <https://meyer-laurent.com/playing-around-webassembly-and-ghostscript>
+このプロジェクトは、WebAssemblyにコンパイルされたGhostscriptを使用して、クライアントサイドのみでPDF圧縮を実現します。ファイルはサーバーにアップロードされないため、プライバシーを保護しながらPDFを圧縮できます。
 
-## 目的
+## 機能
 
-- 完全クライアントサイドでPDF圧縮（プライバシー保護）
-- GUIで代表的なオプション設定（品質/解像度/互換性 等）
-- 上級者向けのカスタムコマンド入力モード
+- **完全クライアントサイド処理**: ファイルはブラウザ内でのみ処理され、サーバーにアップロードされません
+- **プリセットモード**: `/screen`, `/ebook`, `/printer`, `/prepress` などの一般的なプリセットから選択可能
+- **詳細設定**: 画像解像度、ダウンサンプリング方式、フォント埋め込みなど、細かい設定が可能
+- **カスタムコマンドモード**: 上級者向けに、Ghostscriptのコマンドライン引数を直接編集可能
+- **リアルタイムログ**: 圧縮処理のログをリアルタイムで表示
+- **圧縮率表示**: 元のファイルサイズと圧縮後のファイルサイズを比較表示
 
-## 想定UI
+## 使い方
 
-- 基本モード: `/screen`, `/ebook`, `/printer`, `/prepress` などのプリセット + 互換性(1.3/1.4/1.5)
-- 詳細モード: 画像ダウンサンプル(`-dDownsample*`, `*ImageResolution`), DownsampleType, フォント埋め込み 等
-- カスタムモード: 自由入力（安全のため `-sDEVICE=pdfwrite` は固定）
+1. **PDFファイルを選択**: 「PDFを選択」ボタンをクリックして、圧縮したいPDFファイルを選択します
+2. **圧縮設定を選択**:
+   - プリセットを選択（推奨: `/ebook` - バランスの取れた圧縮）
+   - 互換性レベルを選択（1.3, 1.4, 1.5）
+   - 必要に応じて、画像解像度やその他の詳細設定を調整
+3. **実行**: 「実行」ボタンをクリックして圧縮を開始します
+4. **ダウンロード**: 圧縮が完了したら、「ダウンロード」ボタンをクリックして圧縮されたPDFをダウンロードします
 
-## 実行フロー（概略）
+### プリセットについて
 
-1. `<input type="file">` でPDF選択 → `URL.createObjectURL`
-2. XHR(ArrayBuffer) → Emscripten FS に `input.pdf`
-3. `gs` 引数を組み立てて実行（例: `-sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/ebook -dNOPAUSE -dQUIET -dBATCH -sOutputFile=/working/output.pdf /working/input.pdf`）
-4. `output.pdf` をFSから読み出しBlob化 → ダウンロード
-5. `Module.setStatus` をパースして進捗表示
+- `/screen`: 画面表示用（最小サイズ、72dpi）
+- `/ebook`: 電子書籍用（バランス重視、150dpi）- 推奨
+- `/printer`: 印刷用（高品質、300dpi）
+- `/prepress`: 印刷入稿用（最高品質、300dpi、CMYK対応）
 
-## 技術選定/構成
+### カスタムコマンドモード
 
-- React + Vite（本リポジトリ標準） / 状態: Jotai / UI: MUI
-- WASMはWeb Workerで実行（UIスレッドをブロックしない）
-- `gs.js`/`.wasm` は動的import（必要時のみ読込）
-- メモリ対策: `ALLOW_MEMORY_GROWTH=1`、進捗/キャンセル導線
+上級者向けに、Ghostscriptのコマンドライン引数を直接編集できます：
 
-## リスク/注意
+1. 「カスタムコマンド」トグルをオンにします
+2. 現在のGUI設定から生成されたコマンドが表示されます
+3. コマンドを自由に編集できます
+4. 「コマンドをコピー」ボタンでクリップボードにコピーできます
 
-- 大きいPDFでメモリ/CPU負荷が高い可能性
-- Chromium優先対応（Firefox/Safariは別途検証）
-- ライセンス: ps-wasm/GhostscriptはAGPL-3.0 → ソース開示・表記・改変点明記
+## 技術スタック
 
-## MVP
+- **React + TypeScript**: UIフレームワーク
+- **Material-UI (MUI)**: UIコンポーネントライブラリ
+- **Ghostscript WASM**: PDF圧縮エンジン
+- **Web Worker**: UIスレッドをブロックせずにWASMを実行
+- **Vite**: ビルドツール
 
-- `/ebook` プリセットで圧縮→DLまで
-- 進捗表示・エラーハンドリング
+## アーキテクチャ
 
-## 次フェーズ
+```plaintext
+1. ユーザーがPDFファイルを選択
+2. ファイルをArrayBufferとして読み込み
+3. Web WorkerでGhostscript WASMを実行
+4. Emscripten FSにinput.pdfとして書き込み
+5. Ghostscriptコマンドを実行
+6. output.pdfを読み出してBlobに変換
+7. ダウンロードリンクを生成
+```
 
-- 代表オプションのGUI化
-- カスタムコマンドモード
-- キャンセル/複数ファイル/ドラッグ&ドロップ、PWA化
+## 参考資料
+
+このプロジェクトは以下のリソースを参考にしています：
+
+- [ps-wasm (Ghostscript WASM ラッパー)](https://github.com/ochachacha/ps-wasm)
+- [Playing around with Webassembly: Ghostscript](https://meyer-laurent.com/playing-around-webassembly-and-ghostscript)
+
+## 注意事項
+
+- **大きいPDFファイル**: 大きいPDFファイル（数十MB以上）を処理する場合、ブラウザのメモリやCPUに負荷がかかる可能性があります
+- **ブラウザ互換性**: 主にChromium系ブラウザでテストされています。Firefox、Safariでも動作しますが、パフォーマンスが異なる場合があります
+
+## トラブルシューティング
+
+### よくある問題
+
+1. **圧縮が失敗する**
+
+   - コンソールログを確認してエラーメッセージを確認してください
+   - PDFファイルが破損していないか確認してください
+   - ブラウザのメモリが不足していないか確認してください
+
+2. **圧縮後のファイルサイズが大きくなる**
+
+   - 元のPDFが既に最適化されている場合、圧縮してもサイズが減少しないことがあります
+   - プリセットを `/screen` に変更すると、より積極的に圧縮されます
+
+3. **圧縮に時間がかかる**
+   - 大きいPDFファイルや多くの画像を含むPDFの処理には時間がかかります
+
+## ディレクトリ構造
+
+```plaintext
+/pdf-compressor-wasm
+  /workers - Web Workerファイル
+    gsRunner.ts - Workerとのインターフェース
+    gsWorker.ts - Ghostscript WASM実行
+  /build - ビルドスクリプト（WASMファイル生成用）
+  App.tsx - メインアプリケーションコンポーネント
+  main.tsx - エントリポイント
+  index.html - HTMLエントリポイント
+  README.md - このファイル
+```

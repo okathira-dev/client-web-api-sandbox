@@ -14,6 +14,8 @@ import {
 } from "@mui/material";
 import { useMemo, useRef, useState } from "react";
 
+import { SocialIcons } from "../shared/components/SocialIcons";
+
 import type { SelectChangeEvent } from "@mui/material";
 
 type PdfSettingsPreset = "/screen" | "/ebook" | "/printer" | "/prepress";
@@ -205,7 +207,9 @@ export function App() {
   const ratio = inputSize && outputSize ? outputSize / inputSize : null;
 
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
+    <Container maxWidth="md" sx={{ py: 4, position: "relative" }}>
+      <SocialIcons githubURL="https://github.com/okathira/client-web-api-sandbox/tree/main/src/pdf-compressor-wasm" />
+
       <Typography variant="h4" gutterBottom>
         PDF Compressor (Ghostscript WASM)
       </Typography>

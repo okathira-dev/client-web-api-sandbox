@@ -38,7 +38,7 @@ npm run dev
 
 ### [./src/pdf-compressor-wasm](./src/pdf-compressor-wasm)
 
-PDF圧縮 (Ghostscript WASM) — 設計・技術調査
+完全クライアントサイドでPDFを圧縮するWebアプリケーション（Ghostscript WASM使用）
 
 ## 開発サポートファイル
 
