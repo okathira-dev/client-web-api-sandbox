@@ -18,7 +18,7 @@ export default config(
   { ignores: ["dist", "**/*.d.ts"] },
   {
     languageOptions: {
-      globals: { ...globals.browser, ...globals.es2021, ...globals.node },
+      globals: { ...globals.browser, ...globals.es2020, ...globals.node },
       parserOptions: {
         // projectService: true, // vscode-eslintが非対応？ ref: https://github.com/microsoft/vscode-eslint/issues/1911
         project: "./tsconfig.json",

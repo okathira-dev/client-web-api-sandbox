@@ -8,8 +8,7 @@
     "lib": [
       "ES2020",
       "DOM",
-      "DOM.Iterable",
-      "WebWorker"
+      "DOM.Iterable"
     ],
     "skipLibCheck": true,
     "moduleDetection": "force",
@@ -24,6 +23,7 @@
     "strict": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
+    "noImplicitAny": true,
     /* jest */
     "esModuleInterop": true
   },

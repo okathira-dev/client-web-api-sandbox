@@ -4,6 +4,11 @@
 import gsFactory from "@okathira/ghostpdl-wasm/gs.js";
 import wasmUrl from "@okathira/ghostpdl-wasm/gs.wasm?url";
 
+// 本来であれば compilerOptions.lib に "WebWorker" を入れれば自動的に型が適応されるのではないかと思うが、
+// "@types/dom-mediacapture-transform" が効かなくなってしまうため、ここで宣言する。
+// このファイルは Worker として呼ばれる
+declare const self: Worker;
+
 // ワーカーメッセージの型（In/Out）をワーカー側で宣言
 type RunMessage = {
   type: "run";
