@@ -93,11 +93,12 @@ function buildArgs(opts: OptionsState) {
 
 function normalizeArgsForRun(tokens: string[]): string[] {
   if (!tokens.length) return tokens;
-  const first = tokens[0] ?? "";
+  const first = tokens[0];
   if (
-    first === "gs" ||
-    first === "./this.program" ||
-    /\bthis\.program$/.test(first)
+    first &&
+    (first === "gs" ||
+      first === "./this.program" ||
+      /\bthis\.program$/.test(first))
   ) {
     return tokens.slice(1);
   }
@@ -167,6 +168,10 @@ export function App() {
     const file = fileRef.current.files[0];
     setBusy(true);
     setOutputSize(null);
+    // 古いBlobのURLを解放
+    if (downloadBlobUrl) {
+      URL.revokeObjectURL(downloadBlobUrl);
+    }
     setDownloadBlobUrl(null);
     setLog("");
     try {
@@ -208,7 +213,7 @@ export function App() {
 
   return (
     <Container maxWidth="md" sx={{ py: 4, position: "relative" }}>
-      <SocialIcons githubURL="https://github.com/okathira/client-web-api-sandbox/tree/main/src/pdf-compressor-wasm" />
+      <SocialIcons githubURL="https://github.com/okathira-dev/client-web-api-sandbox/tree/main/src/pdf-compressor-wasm" />
 
       <Typography variant="h4" gutterBottom>
         PDF Compressor (Ghostscript WASM)
@@ -474,7 +479,11 @@ export function App() {
             multiline
             minRows={6}
             value={log}
-            onChange={() => {}}
+            slotProps={{
+              input: {
+                readOnly: true,
+              },
+            }}
             fullWidth
           />
         </Box>
