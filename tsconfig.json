@@ -23,6 +23,7 @@
     "strict": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
+    "noImplicitAny": true,
     /* jest */
     "esModuleInterop": true
   },

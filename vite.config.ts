@@ -10,6 +10,10 @@ export default defineConfig({
   base: "./", // JSのimportが相対パスになる。ビルドしたフォルダ単体で動くので便利。
   root,
   plugins: [react()],
+  worker: {
+    // ビルド時にワーカーを ES モジュール形式で出力（コードスプリット互換）
+    format: "es",
+  },
   build: {
     outDir,
     emptyOutDir: true,
@@ -35,6 +39,11 @@ export default defineConfig({
         "computation-of-tears": resolve(
           root,
           "computation-of-tears",
+          "index.html",
+        ),
+        "pdf-compressor-wasm": resolve(
+          root,
+          "pdf-compressor-wasm",
           "index.html",
         ),
       },

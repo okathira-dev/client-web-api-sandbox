@@ -54,11 +54,13 @@ alwaysApply: false
 ### Node設定ファイル用
 
 以下のファイルには`tsconfig.node.json`の設定が適用：
+
 - `vite.config.ts`
 - `eslint.config.js`
+- `jest.config.js`
+- `commitlint.config.ts`
 
 これらのファイルは、設定ファイルですが型チェックを行いたいものです。これらのファイルには `tsconfig.node.json` の設定が適用されます。
-
 
 ### HTML用
 

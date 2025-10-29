@@ -1,0 +1,21 @@
+# Style and conventions
+
+- コロケーション原則（coding-rules）
+  - 機能単位で `/features/${機能名}` に集約
+  - 子機能は親機能ディレクトリ内へ
+  - `atoms/consts/hooks/utils` は必要に応じて機能配下に配置
+- インポート方針
+  - 可能な限り named import を使用（default import は極力避ける）
+  - 型は `import type` を使用
+  - import-x による並び順・グルーピング・アルファベット順・重複禁止
+- TypeScript
+  - strict 有効、`noUncheckedIndexedAccess` 有効
+  - コンポーネントから状態管理ライブラリを直接 import しない（jotai は atom ファイルのみ）
+  - 未使用変数は `_` プレフィックスで無視可能
+- ESLint/Prettier/HTML
+  - ESLint flat + type-aware 推奨設定（react/react-hooks/import-x/html）
+  - 最後に `eslint-config-prettier` を適用
+  - markuplint を JSX/TSX/HTML に適用
+- 命名/構成
+  - 機能ディレクトリのメインは `${機能名}.tsx` とし `index.ts` で必要最小限を re-export
+  - UI ロジックと状態管理・ドメインロジックはファイル分離

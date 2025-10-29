@@ -11,6 +11,7 @@
   "include": [
     "vite.config.ts",
     "eslint.config.js",
-    "jest.config.js"
+    "jest.config.js",
+    "commitlint.config.ts"
   ]
 }

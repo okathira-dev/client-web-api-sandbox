@@ -4,7 +4,7 @@ import typescriptEslintParser from "@typescript-eslint/parser";
 import eslintConfigPrettier from "eslint-config-prettier";
 // @ts-expect-error 型定義がない
 import html from "eslint-plugin-html";
-import importX from "eslint-plugin-import-x";
+import { flatConfigs } from "eslint-plugin-import-x";
 // reactPlugin.configs.flatの型定義が曖昧 ref: https://github.com/jsx-eslint/eslint-plugin-react/issues/3878
 import reactPlugin from "eslint-plugin-react";
 // @ts-expect-error 型定義がない ref: https://github.com/facebook/react/issues/30119
@@ -18,7 +18,7 @@ export default config(
   { ignores: ["dist", "**/*.d.ts"] },
   {
     languageOptions: {
-      globals: { ...globals.browser, ...globals.es2021, ...globals.node },
+      globals: { ...globals.browser, ...globals.es2020, ...globals.node },
       parserOptions: {
         // projectService: true, // vscode-eslintが非対応？ ref: https://github.com/microsoft/vscode-eslint/issues/1911
         project: "./tsconfig.json",
@@ -41,8 +41,8 @@ export default config(
   reactPlugin.configs.flat.recommended,
   // @ts-expect-error型定義が曖昧
   reactPlugin.configs.flat["jsx-runtime"],
-  importX.flatConfigs.recommended,
-  importX.flatConfigs.typescript,
+  flatConfigs.recommended,
+  flatConfigs.typescript,
   {
     // eslint-plugin-react-hooks
     plugins: {
@@ -57,7 +57,12 @@ export default config(
   },
   {
     // node コンフィグ系ファイル
-    files: ["vite.config.ts", "eslint.config.js", "jest.config.js"], // import tsconfigNodeJson from "tsconfig.node.json" with {type: "json"}; tsconfigNodeJson.include
+    files: [
+      "vite.config.ts",
+      "eslint.config.js",
+      "jest.config.js",
+      "commitlint.config.ts",
+    ], // import tsconfigNodeJson from "tsconfig.node.json" with {type: "json"}; tsconfigNodeJson.include
     languageOptions: {
       parser: typescriptEslintParser,
       ecmaVersion: "latest",

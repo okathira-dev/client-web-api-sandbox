@@ -1,0 +1,11 @@
+import type { UserConfig } from "@commitlint/types";
+
+const Configuration: UserConfig = {
+  extends: ["@commitlint/config-conventional"],
+  rules: {
+    // 日本語のコミットメッセージに対応
+    "subject-case": [0],
+  },
+};
+
+export default Configuration;
