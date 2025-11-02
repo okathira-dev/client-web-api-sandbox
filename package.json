@@ -30,7 +30,7 @@
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^6.3.1",
     "@mui/material": "^6.4.5",
-    "@okathira/ghostpdl-wasm": "^0.0.7",
+    "@okathira/ghostpdl-wasm": "^1.1.0",
     "i18next": "^24.2.3",
     "i18next-browser-languagedetector": "^8.1.0",
     "jotai": "^2.15.0",
