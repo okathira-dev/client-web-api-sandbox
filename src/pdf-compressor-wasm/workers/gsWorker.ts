@@ -1,8 +1,9 @@
 // Ghostscript を Web Worker 内で実行し、print/printErr をリアルタイムに転送するワーカー。
 
-// Vite に wasm アセットを認識させるため URL import を使う
-import gsFactory from "@okathira/ghostpdl-wasm/gs.js";
-import wasmUrl from "@okathira/ghostpdl-wasm/gs.wasm?url";
+import gsFactory from "@okathira/ghostpdl-wasm";
+import wasmUrl from "@okathira/ghostpdl-wasm/gs.wasm?url"; // Vite に wasm アセットを認識させるため URL import を使う
+
+import type { GhostscriptModule } from "@okathira/ghostpdl-wasm";
 
 // 本来であれば compilerOptions.lib に "WebWorker" を入れれば自動的に型が適応されるのではないかと思うが、
 // "@types/dom-mediacapture-transform" が効かなくなってしまうため、ここで宣言する。
@@ -25,7 +26,7 @@ export type WorkerMessageOut =
 let modulePromise: Promise<GhostscriptModule> | null = null;
 let cachedModule: GhostscriptModule | null = null;
 
-async function loadModule(): Promise<GhostscriptModule> {
+async function loadModule() {
   if (cachedModule) return cachedModule;
   if (!modulePromise) {
     modulePromise = (async () => {
