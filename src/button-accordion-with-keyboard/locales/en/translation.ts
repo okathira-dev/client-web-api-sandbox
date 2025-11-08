@@ -50,14 +50,12 @@ const translation: TranslationResource = {
       label: "Keyboard View",
       keytop: "Key Top",
       note: "Note (C4, C#4, D4...)",
-      en: "Note (C4, C#4, D4...)",
       doremi: "Note (Do-Re-Mi)",
     },
-    layout: {
-      label: "Keyboard Layout (QWERTY)",
-      en: "US (ANSI)",
-      iso: "International (ISO)",
-      ja: "Japanese (JIS)",
+    backslashPosition: {
+      label: "Backslash Position",
+      secondRow: "2nd Row (US / ANSI)",
+      thirdRow: "3rd Row (ISO / JIS)",
     },
     system: {
       label: "Keyboard System",

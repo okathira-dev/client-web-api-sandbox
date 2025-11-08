@@ -5,36 +5,65 @@
 
 ## 現在のタスク
 
-pdf-compressor-wasm プロジェクトのドキュメント整備とUIの最終仕上げ
+タスクなし（待機中）
 
-- [X] 他プロジェクトのREADMEフォーマット確認
-- [X] SocialIconsコンポーネントの確認
-- [X] pdf-compressor-wasmのREADME更新
-- [X] App.tsxにSocialIconsコンポーネント追加
-- [X] Scratchpad更新
+## 最近完了したタスク
+
+### button-accordion-with-keyboard: キーボードレイアウトシステムの大規模リファクタリング
+
+#### 実施内容
+
+1. **README.mdの修正**
+   - 102/106キーボードレイアウトの説明を正確に修正
+   - 「物理的なキーボードレイアウト対応」セクションを共通化し重複を削除
+
+2. **キーボードレイアウトシステムの完全書き換え**
+   - `PhysicalKeyboardLayoutType` (`"101" | "102" | "106"`) から `BackslashPosition` (`"row1" | "row2"`) への統一
+   - 国際化キー（`IntlBackslash`, `IntlYen`, `IntlRo`）を常に表示
+   - 共通の`PHYSICAL_KEYBOARD_MAP: Record<string, { row: number; col: number }>`を導入
+   - `col: -1`など負の値も許容し、`1/Q/A/Z`を`col: 0`で揃える
+   - 動的レイアウト生成（`getKeyboardLayout`関数）の実装
+
+3. **右手側（C-system/B-system）のリファクタリング**
+   - ハードコードされたキーマップを削除
+   - `getSemitoneOffsetCSystem(row, col)` / `getSemitoneOffsetBSystem(row, col)` 関数を実装
+   - `row/col`から機械的に音程を計算
+
+4. **左手側（Stradella）のリファクタリング**
+   - ハードコードされた`ROOT_NOTES`配列を削除
+   - `getRootNote(col)` 関数を実装（`col: 0`のオフセット`4 - 12`、奇数/偶数で+7/-5の計算）
+   - `Uncaught Error: Invalid root semitone` エラーを修正
+
+5. **コードの整理と統合**
+   - 重複していた`getCodeLabel`関数を`consts/keyboardLayout.ts`に統合
+   - 不要な`getLayout`ラッパー関数を削除
+   - 古いレイアウト定数（`KEYBOARD_LAYOUT_101/102/106`など）の削除を確認
+
+6. **翻訳キーの整理**
+   - `keyboard.view.code` → `keyboard.view.keytop` に変更
+   - `note` と `en` を `note` に統一
+   - `keyboard.layout` → `keyboard.backslashPosition` に変更（`secondRow`, `thirdRow`）
+
+7. **Jotaiインポートルールへの準拠**
+   - コンポーネントから`jotai`の直接インポートを削除
+   - `atoms/keyboardLayout.ts`でカスタムフック（`useXxxValue`, `useSetXxx`）を提供
+   - `BackslashPosition`型を`atoms/keyboardLayout.ts`から再エクスポート
+
+#### 主な成果
+
+- **コードの簡潔性**: ハードコードされた定数が大幅に減少し、計算ベースのシステムに移行
+- **保守性の向上**: 単一のキーマップと計算関数により、変更が容易に
+- **ルール準拠**: コーディングルール（特にJotaiの使用方法）に完全準拠
+- **拡張性**: 新しいキー配列や音階システムの追加が容易
+- **UI改善**: ユーザーにわかりやすい「バックスラッシュの位置」選択
+
+#### 技術的な学び
+
+- Serenaツールを使ったTypeScriptコード分析が効果的
+- 型推論の問題は再エクスポートで解決できる
+- 過度な型アノテーションより、シンプルな実装の方が型エラーを避けやすい
 
 ## 進捗状況
-
-### PDF Compressor WASM プロジェクト
-
-- [X] リポジトリ構造の確認
-- [X] 各ルールファイルの内容確認
-- [X] ルール間の整合性分析
-- [X] Scratchpad情報の更新
-- [X] global.mdcとScratchpad.mdの関係明確化
-- [X] global.mdcファイルの日本語化
-- [X] global.mdcのコマンド例の文字列を原文に修正
-- [X] README.mdの更新（開発サポートファイルとルールファイルの情報追加）
-- [X] repository.mdcの更新（ルールとサポートファイルの情報追加）
-- [X] ps-wasm/ブログ事例の一次調査メモ作成
-- [X] `src/pdf-compressor-wasm/` 追加（MVP UI・Workerスタブ・リンク追記）
-- [X] Serenaメモリに要件・設計を保存（PDF Compressor – Requirements & Design）
-- [X] Ghostscript WASMビルドスクリプト作成と実装
-- [X] Worker実装（gsWorker.ts / gsRunner.ts）
-- [X] 完全な機能実装（GUI、詳細設定、カスタムコマンドモード）
-- [X] README.mdの充実（使い方、技術スタック、トラブルシューティング等）
-- [X] SocialIconsコンポーネントの追加
-- [X] プロジェクト完成とドキュメント整備
 
 ## リポジトリ構造分析結果
 

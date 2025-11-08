@@ -51,14 +51,12 @@ const translation: TranslationResource = {
       label: "キーボード表示",
       keytop: "キートップ",
       note: "音階（C4, C#4, D4…）",
-      en: "音階（C4, C#4, D4…）",
       doremi: "音階（ドレミ）",
     },
-    layout: {
-      label: "キーボードレイアウト（QWERTY）",
-      en: "英字配列（ANSI）",
-      iso: "英字配列（ISO）",
-      ja: "日本語配列（JIS）",
+    backslashPosition: {
+      label: "バックスラッシュの位置",
+      secondRow: "2列目（US / ANSI）",
+      thirdRow: "3列目（ISO / JIS）",
     },
     system: {
       label: "キーボードシステム",

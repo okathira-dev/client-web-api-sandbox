@@ -2,61 +2,46 @@ import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
 import {
-  EN_KEYBOARD_LAYOUT,
-  ISO_KEYBOARD_LAYOUT,
-  JA_KEYBOARD_LAYOUT,
-  EN_KEY_MAP_C_SYSTEM,
-  EN_KEY_MAP_B_SYSTEM,
-  ISO_KEY_MAP_C_SYSTEM,
-  ISO_KEY_MAP_B_SYSTEM,
-  JA_KEY_MAP_C_SYSTEM,
-  JA_KEY_MAP_B_SYSTEM,
+  getSemitoneOffsetCSystem,
+  getSemitoneOffsetBSystem,
   KEY_LABEL_TEXTS,
 } from "./consts";
 import { semitoneToFrequency } from "../../../audio/utils";
+import {
+  PHYSICAL_KEYBOARD_MAP,
+  BACKSLASH_POSITIONS,
+  getCodeLabel,
+} from "../../../consts/keyboardLayout";
 
-import type {
-  KeyboardLayoutType,
-  NoteNameStyle,
-  KeyboardSystemType,
-} from "./consts";
+import type { NoteNameStyle, KeyboardSystemType } from "./consts";
+import type { BackslashPosition } from "../../../consts/keyboardLayout";
 
 export type KeyLabelStyle = "keytop" | NoteNameStyle;
 
-// キーボードレイアウトの切り替え
-const getKeyMap = (
-  keyboardLayout: KeyboardLayoutType,
-  systemType: KeyboardSystemType,
-) => {
-  if (systemType === "c-system") {
-    switch (keyboardLayout) {
-      case "en":
-        return EN_KEY_MAP_C_SYSTEM;
-      case "iso":
-        return ISO_KEY_MAP_C_SYSTEM;
-      case "ja":
-        return JA_KEY_MAP_C_SYSTEM;
-    }
-  } else {
-    switch (keyboardLayout) {
-      case "en":
-        return EN_KEY_MAP_B_SYSTEM;
-      case "iso":
-        return ISO_KEY_MAP_B_SYSTEM;
-      case "ja":
-        return JA_KEY_MAP_B_SYSTEM;
-    }
+/**
+ * コードから row/col を取得
+ */
+const getPosition = (
+  code: string,
+  backslashPosition: BackslashPosition,
+): { row: number; col: number } | undefined => {
+  if (code === "Backslash") {
+    return BACKSLASH_POSITIONS[backslashPosition];
   }
+  return PHYSICAL_KEYBOARD_MAP[code];
 };
-export const getKeyboardLayout = (keyboardLayout: KeyboardLayoutType) => {
-  switch (keyboardLayout) {
-    case "en":
-      return EN_KEYBOARD_LAYOUT;
-    case "iso":
-      return ISO_KEYBOARD_LAYOUT;
-    case "ja":
-      return JA_KEYBOARD_LAYOUT;
-  }
+
+/**
+ * row/col から半音オフセットを取得
+ */
+const getSemitoneOffset = (
+  row: number,
+  col: number,
+  systemType: KeyboardSystemType,
+): number => {
+  return systemType === "c-system"
+    ? getSemitoneOffsetCSystem(row, col)
+    : getSemitoneOffsetBSystem(row, col);
 };
 
 // 白鍵の判定用オフセット
@@ -65,54 +50,71 @@ const whiteKeyOffsets = [-9, -7, -5, -4, -2, 0, 2].map(
 );
 
 export const isWhiteKey = (
-  key: string,
-  keyboardLayoutType: KeyboardLayoutType,
+  code: string,
+  backslashPosition: BackslashPosition,
   systemType: KeyboardSystemType,
 ): boolean => {
-  const keyMap = getKeyMap(keyboardLayoutType, systemType);
-  const semitoneOffset = keyMap[key];
-  if (semitoneOffset === undefined) return false;
+  const position = getPosition(code, backslashPosition);
+  if (!position) return false;
+
+  const semitoneOffset = getSemitoneOffset(
+    position.row,
+    position.col,
+    systemType,
+  );
   return whiteKeyOffsets.includes(((semitoneOffset % 12) + 12) % 12);
 };
 
 export const getFrequency = (
-  key: string,
-  keyboardLayoutType: KeyboardLayoutType,
+  code: string,
+  backslashPosition: BackslashPosition,
   systemType: KeyboardSystemType,
 ): number => {
-  const keyMap = getKeyMap(keyboardLayoutType, systemType);
-  const semitoneOffset = keyMap[key];
-  if (semitoneOffset === undefined) {
-    throw new Error("semitone offset not found");
+  const position = getPosition(code, backslashPosition);
+  if (!position) {
+    throw new Error("position not found");
   }
+
+  const semitoneOffset = getSemitoneOffset(
+    position.row,
+    position.col,
+    systemType,
+  );
   return semitoneToFrequency(semitoneOffset);
 };
 
-// 翻訳のhooksが入るので、ここだけ「ノートラベルを返す関数」を返すhookにしておく
+/**
+ * 翻訳のhooksが入るので、ここだけ「ノートラベルを返す関数」を返すhookにしておく
+ */
 export const useGetNoteLabel = () => {
   const { t } = useTranslation();
 
   const getNoteLabel = useCallback(
     (
-      key: string,
+      code: string,
       style: KeyLabelStyle,
-      keyboardLayoutType: KeyboardLayoutType,
+      backslashPosition: BackslashPosition,
       systemType: KeyboardSystemType,
     ) => {
-      const keyMap = getKeyMap(keyboardLayoutType, systemType);
-      if (style === "keytop") return key.toUpperCase();
+      if (style === "keytop") return getCodeLabel(code);
 
-      const semitoneOffset = keyMap[key];
-      if (semitoneOffset === undefined) {
-        throw new Error("semitone offset not found");
+      const position = getPosition(code, backslashPosition);
+      if (!position) {
+        throw new Error("position not found");
       }
+
+      const semitoneOffset = getSemitoneOffset(
+        position.row,
+        position.col,
+        systemType,
+      );
 
       const adjustedOffset = semitoneOffset + 9;
       const noteIndex = ((adjustedOffset % 12) + 12) % 12;
       const octave = Math.floor(adjustedOffset / 12) + 4;
 
       switch (style) {
-        case "en":
+        case "note":
           return `${KEY_LABEL_TEXTS[style][noteIndex]}${octave}`;
         case "doremi":
           return t(`keyboard.doremi.${KEY_LABEL_TEXTS[style][noteIndex]}`);

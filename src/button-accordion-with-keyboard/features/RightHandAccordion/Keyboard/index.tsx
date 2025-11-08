@@ -3,72 +3,76 @@ import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { usePlayActiveReeds } from "./hooks";
+import { getFrequency, useGetNoteLabel, isWhiteKey } from "./utils";
 import {
-  getFrequency,
-  useGetNoteLabel,
-  getKeyboardLayout,
-  isWhiteKey,
-} from "./utils";
+  useRightHandBackslashPositionValue,
+  useSetRightHandBackslashPosition,
+  type BackslashPosition,
+} from "../../../atoms/keyboardLayout";
 import { KeyboardButton } from "../../../components/KeyboardButton";
+import { getKeyboardLayout } from "../../../consts/keyboardLayout";
 
-import type { KeyboardLayoutType, KeyboardSystemType } from "./consts";
+import type { KeyboardSystemType } from "./consts";
 import type { KeyLabelStyle } from "./utils";
 import type { SelectChangeEvent } from "@mui/material";
 import type { FC } from "react";
 
 export const Keyboard: FC = () => {
-  // それぞれのキーの押されているかどうか
+  // それぞれのキーの押されているかどうか（codeベース）
   const [buttonStates, setButtonStates] = useState<Record<string, boolean>>({});
   // 表示ラベルの切り替え（キーの印字か音階名か）
-  const [keyLabelStyle, setKeyLabelStyle] = useState<KeyLabelStyle>("en");
-  // キーボードレイアウトの切り替え（USかJISか）
-  const [keyboardLayoutType, setKeyboardLayoutType] =
-    useState<KeyboardLayoutType>("en");
+  const [keyLabelStyle, setKeyLabelStyle] = useState<KeyLabelStyle>("note");
   // キーボードシステムの切り替え（B-systemかC-systemか）
   const [keyboardSystemType, setKeyboardSystemType] =
     useState<KeyboardSystemType>("c-system");
+
+  // バックスラッシュキーの位置設定
+  const backslashPosition = useRightHandBackslashPositionValue();
+  const setBackslashPosition = useSetRightHandBackslashPosition();
 
   const { t } = useTranslation();
   const getNoteLabel = useGetNoteLabel();
   const { playActiveReeds, stopActiveReeds } = usePlayActiveReeds();
 
-  const keyboardLayout = getKeyboardLayout(keyboardLayoutType);
+  const keyboardLayout = getKeyboardLayout(backslashPosition);
 
   const buttonDown = useCallback(
-    (key: string) => {
-      if (!buttonStates[key]) {
+    (code: string) => {
+      if (!buttonStates[code]) {
         const frequency = getFrequency(
-          key,
-          keyboardLayoutType,
+          code,
+          backslashPosition,
           keyboardSystemType,
         );
         playActiveReeds(frequency);
-        setButtonStates((prev) => ({ ...prev, [key]: true }));
+        setButtonStates((prev) => ({ ...prev, [code]: true }));
       }
     },
-    [buttonStates, keyboardLayoutType, keyboardSystemType, playActiveReeds],
+    [buttonStates, backslashPosition, keyboardSystemType, playActiveReeds],
   );
 
   const buttonUp = useCallback(
-    (key: string) => {
+    (code: string) => {
       const frequency = getFrequency(
-        key,
-        keyboardLayoutType,
+        code,
+        backslashPosition,
         keyboardSystemType,
       );
       stopActiveReeds(frequency);
-      setButtonStates((prev) => ({ ...prev, [key]: false }));
+      setButtonStates((prev) => ({ ...prev, [code]: false }));
     },
-    [keyboardLayoutType, keyboardSystemType, stopActiveReeds],
+    [backslashPosition, keyboardSystemType, stopActiveReeds],
   );
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      buttonDown(e.key);
+      // KeyboardEvent.codeを使用して物理的なキー位置を取得
+      buttonDown(e.code);
     };
 
     const handleKeyUp = (e: KeyboardEvent) => {
-      buttonUp(e.key);
+      // KeyboardEvent.codeを使用して物理的なキー位置を取得
+      buttonUp(e.code);
     };
 
     window.addEventListener("keydown", handleKeyDown);
@@ -78,15 +82,6 @@ export const Keyboard: FC = () => {
       window.removeEventListener("keyup", handleKeyUp);
     };
   }, [buttonDown, buttonUp]);
-
-  const handleKeyboardLayoutChange = (
-    event: SelectChangeEvent<KeyboardLayoutType>,
-  ) => {
-    const newKeyboardLayoutType = event.target.value as KeyboardLayoutType;
-    if (newKeyboardLayoutType === null) return;
-    setKeyboardLayoutType(newKeyboardLayoutType);
-    setButtonStates({}); // レイアウト切り替え時にボタンの状態をリセット
-  };
 
   const handleKeyboardSystemChange = (
     event: SelectChangeEvent<KeyboardSystemType>,
@@ -105,9 +100,18 @@ export const Keyboard: FC = () => {
     setKeyLabelStyle(newKeyLabelStyle);
   };
 
-  const keyboardLayoutSelectLabelId = "keyboard-layout-select-label";
+  const handleBackslashPositionChange = (
+    event: SelectChangeEvent<BackslashPosition>,
+  ) => {
+    const newPosition = event.target.value as BackslashPosition;
+    if (newPosition === null) return;
+    setBackslashPosition(newPosition);
+    setButtonStates({}); // レイアウト切り替え時にボタンの状態をリセット
+  };
+
   const keyboardSystemSelectLabelId = "keyboard-system-select-label";
   const keyLabelStyleSelectLabelId = "key-label-style-select-label";
+  const backslashPositionSelectLabelId = "backslash-position-select-label";
 
   return (
     <div>
@@ -129,23 +133,8 @@ export const Keyboard: FC = () => {
             onChange={handleKeyLabelStyleChange}
           >
             <MenuItem value="keytop">{t("keyboard.view.keytop")}</MenuItem>
-            <MenuItem value="en">{t("keyboard.view.en")}</MenuItem>
+            <MenuItem value="note">{t("keyboard.view.note")}</MenuItem>
             <MenuItem value="doremi">{t("keyboard.view.doremi")}</MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl>
-          <InputLabel id={keyboardLayoutSelectLabelId}>
-            {t("keyboard.layout.label")}
-          </InputLabel>
-          <Select
-            labelId={keyboardLayoutSelectLabelId}
-            value={keyboardLayoutType}
-            label={t("keyboard.layout.label")}
-            onChange={handleKeyboardLayoutChange}
-          >
-            <MenuItem value="en">{t("keyboard.layout.en")}</MenuItem>
-            <MenuItem value="iso">{t("keyboard.layout.iso")}</MenuItem>
-            <MenuItem value="ja">{t("keyboard.layout.ja")}</MenuItem>
           </Select>
         </FormControl>
         <FormControl>
@@ -162,6 +151,24 @@ export const Keyboard: FC = () => {
             <MenuItem value="c-system">{t("keyboard.system.c")}</MenuItem>
           </Select>
         </FormControl>
+        <FormControl>
+          <InputLabel id={backslashPositionSelectLabelId}>
+            {t("keyboard.backslashPosition.label")}
+          </InputLabel>
+          <Select
+            labelId={backslashPositionSelectLabelId}
+            value={backslashPosition}
+            label={t("keyboard.backslashPosition.label")}
+            onChange={handleBackslashPositionChange}
+          >
+            <MenuItem value="row1">
+              {t("keyboard.backslashPosition.secondRow")}
+            </MenuItem>
+            <MenuItem value="row2">
+              {t("keyboard.backslashPosition.thirdRow")}
+            </MenuItem>
+          </Select>
+        </FormControl>
       </div>
 
       <div
@@ -176,42 +183,49 @@ export const Keyboard: FC = () => {
           WebkitUserSelect: "none",
         }}
       >
-        {keyboardLayout.map((row, rowIndex) => (
-          <div
-            key={rowIndex}
-            style={{
-              display: "flex",
-              marginLeft: `${(keyboardLayoutType === "iso" && rowIndex === 3 ? 1 : rowIndex) * (24 + 2)}px`, // 行が下がるごとに右にずらす
-              gap: "4px",
-            }}
-          >
-            {row.map((key) => {
-              const isWhite = isWhiteKey(
-                key,
-                keyboardLayoutType,
-                keyboardSystemType,
-              );
-              const label = getNoteLabel(
-                key,
-                keyLabelStyle,
-                keyboardLayoutType,
-                keyboardSystemType,
-              );
+        {keyboardLayout.map((row, rowIndex) => {
+          // 4列目（rowIndex === 3）は IntlBackslash があるので左にキー1個分ずらす
+          const baseMargin = rowIndex * (24 + 2);
+          const marginLeft =
+            rowIndex === 3 ? baseMargin - (24 + 2) * 2 : baseMargin;
 
-              return (
-                <KeyboardButton
-                  key={key}
-                  label={label}
-                  fontSize={keyLabelStyle === "doremi" ? "18px" : "20px"}
-                  isWhite={isWhite}
-                  isActive={!!buttonStates[key]}
-                  onMouseDown={() => buttonDown(key)}
-                  onMouseUp={() => buttonUp(key)}
-                />
-              );
-            })}
-          </div>
-        ))}
+          return (
+            <div
+              key={rowIndex}
+              style={{
+                display: "flex",
+                marginLeft: `${marginLeft}px`, // 行が下がるごとに右にずらす
+                gap: "4px",
+              }}
+            >
+              {row.map((code) => {
+                const isWhite = isWhiteKey(
+                  code,
+                  backslashPosition,
+                  keyboardSystemType,
+                );
+                const label = getNoteLabel(
+                  code,
+                  keyLabelStyle,
+                  backslashPosition,
+                  keyboardSystemType,
+                );
+
+                return (
+                  <KeyboardButton
+                    key={code}
+                    label={label}
+                    fontSize={keyLabelStyle === "doremi" ? "18px" : "20px"}
+                    isWhite={isWhite}
+                    isActive={!!buttonStates[code]}
+                    onMouseDown={() => buttonDown(code)}
+                    onMouseUp={() => buttonUp(code)}
+                  />
+                );
+              })}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
