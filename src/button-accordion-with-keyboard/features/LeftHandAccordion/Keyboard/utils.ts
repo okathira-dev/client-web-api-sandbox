@@ -1,17 +1,48 @@
-import {
-  NOTE_LABELS,
-  ROOT_NOTES,
-  EN_KEYBOARD_LAYOUT,
-  ISO_KEYBOARD_LAYOUT,
-  JA_KEYBOARD_LAYOUT,
-  EN_KEY_MAP,
-  ISO_KEY_MAP,
-  JA_KEY_MAP,
-  type KeyboardLayoutType,
-} from "./consts";
+import { NOTE_LABELS, EVEN_COL_OFFSET, ODD_COL_OFFSET } from "./consts";
 import { semitoneToFrequency } from "../../../audio/utils";
+import {
+  PHYSICAL_KEYBOARD_MAP,
+  BACKSLASH_POSITIONS,
+  getCodeLabel,
+} from "../../../consts/keyboardLayout";
 
+import type { BackslashPosition } from "../../../consts/keyboardLayout";
 import type { StradellaType, StradellaSoundType } from "../types";
+
+/**
+ * col から ROOT_NOTE を計算する関数
+ *
+ * ストラデラベースシステムの列番号から、A4を基準とした半音オフセットを計算する
+ *
+ * 計算の考え方: 偶数列と奇数列は独立した系列で、それぞれ2半音ずつ上昇する。
+ *
+ * Math.floor(col / 2) で各系列内のインデックスを取得し、
+ * それを2倍することで「系列内で何番目か × 2半音」を得る
+ *
+ * @param col 列番号 (0-11 またはそれ以上)
+ * @returns A4を基準とした半音の差
+ */
+const getRootNote = (col: number): number => {
+  const index = Math.floor(col / 2); // 各系列内でのインデックス
+  const baseOffset = index * 2; // 系列内での増分（2半音ずつ）
+
+  return col % 2 === 0
+    ? EVEN_COL_OFFSET + baseOffset
+    : ODD_COL_OFFSET + baseOffset;
+};
+
+/**
+ * コードから row/col を取得
+ */
+const getPosition = (
+  code: string,
+  backslashPosition: BackslashPosition,
+): { row: number; col: number } | undefined => {
+  if (code === "Backslash") {
+    return BACKSLASH_POSITIONS[backslashPosition];
+  }
+  return PHYSICAL_KEYBOARD_MAP[code];
+};
 
 // 行番号からベース音のタイプを取得
 export const getTypeFromRow = (row: number): StradellaType => {
@@ -61,8 +92,7 @@ const calculateSemitones = (
 // セミトーン（半音）の配列を返す関数
 const getSemitones = (row: number, col: number): number[] => {
   const type = getTypeFromRow(row);
-  const rootSemitone = ROOT_NOTES[col];
-  if (rootSemitone === undefined) throw new Error("Invalid root semitone");
+  const rootSemitone = getRootNote(col);
   const semitones = calculateSemitones(type, rootSemitone);
   return semitones;
 };
@@ -72,54 +102,29 @@ const getNoteIndex = (semitone: number, offset: number = 9): number => {
   return (((semitone + offset) % 12) + 12) % 12;
 };
 
-// キーボードレイアウトの切り替え
-export const getKeyMap = (keyboardLayout: KeyboardLayoutType) => {
-  switch (keyboardLayout) {
-    case "en":
-      return EN_KEY_MAP;
-    case "iso":
-      return ISO_KEY_MAP;
-    case "ja":
-      return JA_KEY_MAP;
-  }
-};
-
-export const getKeyboardLayout = (keyboardLayout: KeyboardLayoutType) => {
-  switch (keyboardLayout) {
-    case "en":
-      return EN_KEYBOARD_LAYOUT;
-    case "iso":
-      return ISO_KEYBOARD_LAYOUT;
-    case "ja":
-      return JA_KEYBOARD_LAYOUT;
-  }
-};
-
-// keyから周波数の配列を返す
+// codeから周波数の配列を返す
 export const getFrequencies = (
-  key: string,
-  keyboardLayoutType: KeyboardLayoutType,
+  code: string,
+  backslashPosition: BackslashPosition,
 ): number[] | undefined => {
-  const keyMap = getKeyMap(keyboardLayoutType);
-  const bassInfo = keyMap[key];
-  if (!bassInfo) return undefined;
+  const position = getPosition(code, backslashPosition);
+  if (!position) return undefined;
 
-  const { row, col } = bassInfo;
+  const { row, col } = position;
   const semitones = getSemitones(row, col);
   const frequencies = semitones.map(semitoneToFrequency);
   return frequencies;
 };
 
-// keyからそれがベース音かコードかを返す
+// codeからそれがベース音かコードかを返す
 export const getStradellaSoundType = (
-  key: string,
-  keyboardLayoutType: KeyboardLayoutType,
+  code: string,
+  backslashPosition: BackslashPosition,
 ): StradellaSoundType | undefined => {
-  const keyMap = getKeyMap(keyboardLayoutType);
-  const bassInfo = keyMap[key];
-  if (!bassInfo) return undefined;
+  const position = getPosition(code, backslashPosition);
+  if (!position) return undefined;
 
-  const { row } = bassInfo;
+  const { row } = position;
   const type = getTypeFromRow(row);
   return type === "counter" || type === "fundamental" ? "bassNote" : "chord";
 };
@@ -136,19 +141,24 @@ const getNoteLabel = (rootNote: number, shouldUseFlat: boolean): string => {
   return noteLabel;
 };
 
-// キーに対応するラベルを取得する
+/**
+ * キーコードに対応するラベルを取得する
+ */
 export const getKeyLabel = (
-  key: string,
-  keyboardLayoutType: KeyboardLayoutType,
+  code: string,
+  labelStyle: "keytop" | "note",
+  backslashPosition: BackslashPosition,
 ): string => {
-  const keyMap = getKeyMap(keyboardLayoutType);
-  const bassInfo = keyMap[key];
-  if (!bassInfo) return key.toUpperCase();
+  if (labelStyle === "keytop") {
+    return getCodeLabel(code);
+  }
 
-  const { row, col } = bassInfo;
+  const position = getPosition(code, backslashPosition);
+  if (!position) return getCodeLabel(code);
+
+  const { row, col } = position;
   const type = getTypeFromRow(row);
-  const rootNote = ROOT_NOTES[col];
-  if (rootNote === undefined) return "---";
+  const rootNote = getRootNote(col);
 
   // 中央（F）より左側はフラット、右側はシャープを使用
   const shouldUseFlat = col <= CENTER_INDEX;

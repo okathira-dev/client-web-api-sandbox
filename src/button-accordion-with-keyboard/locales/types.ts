@@ -69,16 +69,14 @@ export type KeyboardViewTranslations = {
   label: string;
   keytop: string;
   note: string;
-  en: string;
   doremi: string;
 };
 
-// キーボードレイアウト関連の型
-export type KeyboardLayoutTranslations = {
+// バックスラッシュの位置関連の型
+export type BackslashPositionTranslations = {
   label: string;
-  en: string;
-  iso: string;
-  ja: string;
+  secondRow: string;
+  thirdRow: string;
 };
 
 // キーボードシステム関連の型
@@ -107,7 +105,7 @@ export type KeyboardDoremiNotesTranslations = {
 // キーボード全体の型
 export type KeyboardTranslations = {
   view: KeyboardViewTranslations;
-  layout: KeyboardLayoutTranslations;
+  backslashPosition: BackslashPositionTranslations;
   system: KeyboardSystemTranslations;
   doremi: KeyboardDoremiNotesTranslations;
 };

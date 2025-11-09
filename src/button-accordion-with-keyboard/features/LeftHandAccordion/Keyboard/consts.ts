@@ -1,63 +1,15 @@
-import {
-  EN_KEYBOARD_LAYOUT,
-  ISO_KEYBOARD_LAYOUT,
-  JA_KEYBOARD_LAYOUT,
-} from "../../../consts/keyboardLayout";
-
-import type { KeyboardLayoutType } from "../../../consts/keyboardLayout";
-
-export type { KeyboardLayoutType };
-export { EN_KEYBOARD_LAYOUT, ISO_KEYBOARD_LAYOUT, JA_KEYBOARD_LAYOUT };
-
-// Altoの音程の配列（Db, Ab, Eb, Bb, F, C, G, D, A, E, B, F#）
-// A4を基準（0）として半音の差を指定
-export const ROOT_NOTES = [
-  4 - 12, // Db4
-  11 - 24, // Ab3
-  6 - 12, // Eb4
-  13 - 24, // Bb3
-  8 - 12, // F4
-  15 - 24, // C4
-  10 - 12, // G4
-  17 - 24, // D4
-  12 - 12, // A4 (0)
-  19 - 24, // E4
-  14 - 12, // B4
-  21 - 24, // F#4
-];
-
-// キーとベースボタンのマッピング（英語キーボード）
-export const EN_KEY_MAP: Record<string, { row: number; col: number }> = {};
-EN_KEYBOARD_LAYOUT.forEach((row, rowIndex) => {
-  row.forEach((key, colIndex) => {
-    if (key !== null) {
-      EN_KEY_MAP[key] = { row: rowIndex, col: colIndex };
-    }
-  });
-});
-
-// キーとベースボタンのマッピング（ISOキーボード）
-export const ISO_KEY_MAP: Record<string, { row: number; col: number }> = {};
-ISO_KEYBOARD_LAYOUT.forEach((row, rowIndex) => {
-  row.forEach((key, colIndex) => {
-    if (key !== null) {
-      ISO_KEY_MAP[key] = {
-        row: rowIndex,
-        col: rowIndex === 3 ? colIndex - 1 : colIndex,
-      };
-    }
-  });
-});
-
-// キーとベースボタンのマッピング（日本語キーボード）
-export const JA_KEY_MAP: Record<string, { row: number; col: number }> = {};
-JA_KEYBOARD_LAYOUT.forEach((row, rowIndex) => {
-  row.forEach((key, colIndex) => {
-    if (key !== null) {
-      JA_KEY_MAP[key] = { row: rowIndex, col: colIndex };
-    }
-  });
-});
+/**
+ * ストラデラベースシステムの列配置に基づく音高オフセット定数
+ *
+ * - A4（440Hz）を基準（0半音）として、各列の音高オフセットを定義する。
+ * - 列が1つ右にずれるごとに、五度圏上で完全五度上がる。
+ * - 右に2列ずれるごとに、実際の音高は2半音上がる。
+ * - ここでは、奇数列を偶数列より低い音域に配置する。すなわち、
+ *  - 偶数列では、その1つ左の列から7半音上がる。
+ *  - 奇数列では、その1つ左の列から5半音下がる。数値的にはmod12で+7と-5が同じイメージ。
+ */
+export const EVEN_COL_OFFSET = 4 - 12; // Db4 - 1オクターブ
+export const ODD_COL_OFFSET = EVEN_COL_OFFSET + 7 - 12; // 偶数列の基準から+7半音（完全五度上）、そこから-12半音（1オクターブ下）。
 
 // 音階の名前のマッピング
 export const NOTE_LABELS = {

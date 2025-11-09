@@ -5,80 +5,139 @@ import {
   MenuItem,
   type SelectChangeEvent,
 } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { usePlayActiveReeds } from "./hooks";
 import {
-  getKeyboardLayout,
   getFrequencies,
   getKeyLabel,
   getTypeFromRow,
-  getKeyMap,
   getStradellaSoundType,
 } from "./utils";
+import {
+  useLeftHandBackslashPositionValue,
+  useSetLeftHandBackslashPosition,
+  type BackslashPosition,
+} from "../../../atoms/keyboardLayout";
+import {
+  PHYSICAL_KEYBOARD_MAP,
+  BACKSLASH_POSITIONS,
+  getKeyboardLayout,
+} from "../../../consts/keyboardLayout";
 
-import type { KeyboardLayoutType } from "./consts";
 import type { StradellaType } from "../types";
+import type { CSSProperties } from "react";
 
 type KeyLabelStyle = "keytop" | "note";
 
-const bassTypeColors: Record<StradellaType, string> = {
+// コンポーネント外に定数を移動
+const KEY_LABEL_STYLE_SELECT_LABEL_ID = "key-label-style-select-label";
+const BACKSLASH_POSITION_SELECT_LABEL_ID = "backslash-position-select-label";
+
+// キーボードレイアウトの定数
+// ボタンの実際の幅は48px、1列下がるごとにボタン幅の半分ずつオフセット
+const BUTTON_HALF_WIDTH = 24; // ボタン幅の半分（px）
+const BUTTON_GAP = 2; // ボタン間のギャップ（px）
+const ROW_OFFSET = BUTTON_HALF_WIDTH + BUTTON_GAP; // 1列下がるごとのオフセット（26px）
+const ROW_4_OFFSET_ADJUSTMENT = -2; // 4列目（IntlBackslash用）の追加オフセット調整
+
+const BASS_TYPE_COLORS = {
   counter: "#ff9800", // オレンジ
   fundamental: "#2196f3", // ブルー
   major: "#4caf50", // グリーン
   minor: "#f44336", // レッド
+} as const satisfies Record<StradellaType, string>;
+
+// スタイル定数
+const FORM_CONTAINER_STYLE: CSSProperties = {
+  display: "grid",
+  gridTemplateColumns: "1fr 1fr",
+  gap: "16px",
+};
+
+const KEYBOARD_CONTAINER_STYLE: CSSProperties = {
+  display: "flex",
+  flexDirection: "column",
+  gap: "4px",
+  padding: "16px",
+  backgroundColor: "lightgray",
+  borderRadius: "16px",
+  userSelect: "none",
+  WebkitUserSelect: "none",
+};
+
+const BUTTON_BASE_STYLE: CSSProperties = {
+  width: "48px",
+  height: "48px",
+  padding: 0,
+  borderRadius: "50%",
+  border: "1px solid lightgray",
+  fontSize: "20px",
+  textAlign: "center",
+  lineHeight: "48px",
+  fontWeight: "bold",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
 };
 
 export const Keyboard = () => {
   const [buttonStates, setButtonStates] = useState<Record<string, boolean>>({});
   const [keyLabelStyle, setKeyLabelStyle] = useState<KeyLabelStyle>("note");
-  const [keyboardLayoutType, setKeyboardLayoutType] =
-    useState<KeyboardLayoutType>("en");
+
+  // バックスラッシュキーの位置設定
+  const backslashPosition = useLeftHandBackslashPositionValue();
+  const setBackslashPosition = useSetLeftHandBackslashPosition();
 
   const { t } = useTranslation();
   const { playActiveReeds, stopActiveReeds } = usePlayActiveReeds();
 
-  const keyMap = getKeyMap(keyboardLayoutType);
-  const keyboardLayout = getKeyboardLayout(keyboardLayoutType);
+  const keyboardLayout = useMemo(
+    () => getKeyboardLayout(backslashPosition),
+    [backslashPosition],
+  );
 
   const buttonDown = useCallback(
-    (key: string) => {
-      const frequencies = getFrequencies(key, keyboardLayoutType);
-      const stradellaSoundType = getStradellaSoundType(key, keyboardLayoutType);
+    (code: string) => {
+      const frequencies = getFrequencies(code, backslashPosition);
+      const stradellaSoundType = getStradellaSoundType(code, backslashPosition);
 
-      if (!buttonStates[key] && frequencies && stradellaSoundType) {
+      if (!buttonStates[code] && frequencies && stradellaSoundType) {
         frequencies.forEach((frequency: number) => {
           playActiveReeds(frequency, stradellaSoundType);
         });
-        setButtonStates((prev) => ({ ...prev, [key]: true }));
+        setButtonStates((prev) => ({ ...prev, [code]: true }));
       }
     },
-    [buttonStates, keyboardLayoutType, playActiveReeds],
+    [buttonStates, backslashPosition, playActiveReeds],
   );
 
   const buttonUp = useCallback(
-    (key: string) => {
-      const frequencies = getFrequencies(key, keyboardLayoutType);
-      const stradellaSoundType = getStradellaSoundType(key, keyboardLayoutType);
+    (code: string) => {
+      const frequencies = getFrequencies(code, backslashPosition);
+      const stradellaSoundType = getStradellaSoundType(code, backslashPosition);
 
       if (frequencies && stradellaSoundType) {
         frequencies.forEach((frequency: number) => {
           stopActiveReeds(frequency, stradellaSoundType);
         });
       }
-      setButtonStates((prev) => ({ ...prev, [key]: false }));
+      setButtonStates((prev) => ({ ...prev, [code]: false }));
     },
-    [keyboardLayoutType, stopActiveReeds],
+    [backslashPosition, stopActiveReeds],
   );
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      buttonDown(e.key);
+      // KeyboardEvent.codeを使用して物理的なキー位置を取得
+      buttonDown(e.code);
     };
 
     const handleKeyUp = (e: KeyboardEvent) => {
-      buttonUp(e.key);
+      // KeyboardEvent.codeを使用して物理的なキー位置を取得
+      buttonUp(e.code);
     };
 
     window.addEventListener("keydown", handleKeyDown);
@@ -97,33 +156,24 @@ export const Keyboard = () => {
     setKeyLabelStyle(newKeyLabelStyle);
   };
 
-  const handleKeyboardLayoutChange = (
-    event: SelectChangeEvent<KeyboardLayoutType>,
+  const handleBackslashPositionChange = (
+    event: SelectChangeEvent<BackslashPosition>,
   ) => {
-    const newKeyboardLayoutType = event.target.value as KeyboardLayoutType;
-    if (newKeyboardLayoutType === null) return;
-    setKeyboardLayoutType(newKeyboardLayoutType);
+    const newPosition = event.target.value as BackslashPosition;
+    if (newPosition === null) return;
+    setBackslashPosition(newPosition);
     setButtonStates({}); // レイアウト切り替え時にボタンの状態をリセット
   };
 
-  const keyboardLayoutSelectLabelId = "keyboard-layout-select-label";
-  const keyLabelStyleSelectLabelId = "key-label-style-select-label";
-
   return (
     <div>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "16px",
-        }}
-      >
+      <div style={FORM_CONTAINER_STYLE}>
         <FormControl>
-          <InputLabel id={keyLabelStyleSelectLabelId}>
+          <InputLabel id={KEY_LABEL_STYLE_SELECT_LABEL_ID}>
             {t("keyboard.view.label")}
           </InputLabel>
           <Select
-            labelId={keyLabelStyleSelectLabelId}
+            labelId={KEY_LABEL_STYLE_SELECT_LABEL_ID}
             value={keyLabelStyle}
             label={t("keyboard.view.label")}
             onChange={handleKeyLabelStyleChange}
@@ -133,85 +183,90 @@ export const Keyboard = () => {
           </Select>
         </FormControl>
         <FormControl>
-          <InputLabel id={keyboardLayoutSelectLabelId}>
-            {t("keyboard.layout.label")}
+          <InputLabel id={BACKSLASH_POSITION_SELECT_LABEL_ID}>
+            {t("keyboard.backslashPosition.label")}
           </InputLabel>
           <Select
-            labelId={keyboardLayoutSelectLabelId}
-            value={keyboardLayoutType}
-            label={t("keyboard.layout.label")}
-            onChange={handleKeyboardLayoutChange}
+            labelId={BACKSLASH_POSITION_SELECT_LABEL_ID}
+            value={backslashPosition}
+            label={t("keyboard.backslashPosition.label")}
+            onChange={handleBackslashPositionChange}
           >
-            <MenuItem value="en">{t("keyboard.layout.en")}</MenuItem>
-            <MenuItem value="iso">{t("keyboard.layout.iso")}</MenuItem>
-            <MenuItem value="ja">{t("keyboard.layout.ja")}</MenuItem>
+            <MenuItem value="row1">
+              {t("keyboard.backslashPosition.secondRow")}
+            </MenuItem>
+            <MenuItem value="row2">
+              {t("keyboard.backslashPosition.thirdRow")}
+            </MenuItem>
           </Select>
         </FormControl>
       </div>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "4px",
-          padding: "16px",
-          backgroundColor: "lightgray",
-          borderRadius: "16px",
-          userSelect: "none",
-          WebkitUserSelect: "none",
-        }}
-      >
-        {keyboardLayout.map((row, rowIndex) => (
-          <div
-            key={rowIndex}
-            style={{
-              display: "flex",
-              marginLeft: `${(keyboardLayoutType === "iso" && rowIndex === 3 ? 1 : rowIndex) * (24 + 2)}px`, // 行が下がるごとに右にずらす
-              gap: "4px",
-            }}
-          >
-            {row.map((key) => {
-              if (key === null) return null;
-              const position = keyMap[key];
-              if (position === undefined) return null;
-              const type = getTypeFromRow(position.row);
+      <div style={KEYBOARD_CONTAINER_STYLE}>
+        {keyboardLayout.map((row, rowIndex) => {
+          // 4列目（rowIndex === 3）は IntlBackslash があるので左にキー1個分ずらす
+          const baseMargin = rowIndex * ROW_OFFSET;
+          const marginLeft =
+            rowIndex === 3
+              ? baseMargin + ROW_4_OFFSET_ADJUSTMENT * ROW_OFFSET
+              : baseMargin;
 
-              return (
-                <button
-                  key={key}
-                  style={{
-                    width: "48px",
-                    height: "48px",
-                    padding: 0,
-                    borderRadius: "50%",
-                    backgroundColor: buttonStates[key]
-                      ? bassTypeColors[type]
-                      : "white",
-                    color: buttonStates[key] ? "white" : "black",
-                    border: "1px solid lightgray",
-                    fontSize: "20px",
-                    textAlign: "center",
-                    lineHeight: "48px",
-                    fontWeight: "bold",
-                    boxShadow: buttonStates[key]
-                      ? "0px 0px 6px 2px rgba(0,0,0,0.3)"
-                      : "none",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                  onMouseDown={() => buttonDown(key)}
-                  onMouseUp={() => buttonUp(key)}
-                  onMouseLeave={() => buttonStates[key] && buttonUp(key)}
-                >
-                  {keyLabelStyle === "note"
-                    ? getKeyLabel(key, keyboardLayoutType)
-                    : key.toUpperCase()}
-                </button>
-              );
-            })}
-          </div>
-        ))}
+          return (
+            <div
+              key={rowIndex}
+              style={{
+                display: "flex",
+                marginLeft: `${marginLeft}px`, // 行が下がるごとに右にずらす
+                gap: "4px",
+              }}
+            >
+              {row.map((code) => {
+                const label = getKeyLabel(
+                  code,
+                  keyLabelStyle,
+                  backslashPosition,
+                );
+                const frequencies = getFrequencies(code, backslashPosition);
+                if (!frequencies) return null;
+
+                const stradellaSoundType = getStradellaSoundType(
+                  code,
+                  backslashPosition,
+                );
+                if (!stradellaSoundType) return null;
+
+                // row情報を取得してタイプを判定
+                const codePosition =
+                  code === "Backslash"
+                    ? BACKSLASH_POSITIONS[backslashPosition]
+                    : PHYSICAL_KEYBOARD_MAP[code];
+                if (!codePosition) return null;
+                const type = getTypeFromRow(codePosition.row);
+
+                const isActive = buttonStates[code];
+                const buttonStyle = {
+                  ...BUTTON_BASE_STYLE,
+                  backgroundColor: isActive ? BASS_TYPE_COLORS[type] : "white",
+                  color: isActive ? "white" : "black",
+                  boxShadow: isActive
+                    ? "0px 0px 6px 2px rgba(0,0,0,0.3)"
+                    : "none",
+                };
+
+                return (
+                  <button
+                    key={code}
+                    style={buttonStyle}
+                    onMouseDown={() => buttonDown(code)}
+                    onMouseUp={() => buttonUp(code)}
+                    onMouseLeave={() => isActive && buttonUp(code)}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
