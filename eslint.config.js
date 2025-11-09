@@ -94,6 +94,8 @@ export default config(
           destructuredArrayIgnorePattern: "^_",
         },
       ],
+      // TypeScriptを使用しているため、PropTypesは不要
+      "react/prop-types": "off",
     },
   },
   {
