@@ -22,6 +22,13 @@ const KEYBOARD_SYSTEM_SELECT_LABEL_ID = "keyboard-system-select-label";
 const KEY_LABEL_STYLE_SELECT_LABEL_ID = "key-label-style-select-label";
 const BACKSLASH_POSITION_SELECT_LABEL_ID = "backslash-position-select-label";
 
+// キーボードレイアウトの定数
+// ボタンの実際の幅は48px、1列下がるごとにボタン幅の半分ずつオフセット
+const BUTTON_HALF_WIDTH = 24; // ボタン幅の半分（px）
+const BUTTON_GAP = 2; // ボタン間のギャップ（px）
+const ROW_OFFSET = BUTTON_HALF_WIDTH + BUTTON_GAP; // 1列下がるごとのオフセット（26px）
+const ROW_4_OFFSET_ADJUSTMENT = -2; // 4列目（IntlBackslash用）の追加オフセット調整
+
 // スタイル定数
 const FORM_CONTAINER_STYLE: CSSProperties = {
   display: "grid",
@@ -190,9 +197,11 @@ export const Keyboard: FC = () => {
       <div style={KEYBOARD_CONTAINER_STYLE}>
         {keyboardLayout.map((row, rowIndex) => {
           // 4列目（rowIndex === 3）は IntlBackslash があるので左にキー1個分ずらす
-          const baseMargin = rowIndex * (24 + 2);
+          const baseMargin = rowIndex * ROW_OFFSET;
           const marginLeft =
-            rowIndex === 3 ? baseMargin - (24 + 2) * 2 : baseMargin;
+            rowIndex === 3
+              ? baseMargin + ROW_4_OFFSET_ADJUSTMENT * ROW_OFFSET
+              : baseMargin;
 
           return (
             <div

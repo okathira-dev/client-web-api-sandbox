@@ -93,14 +93,24 @@ export const BACKSLASH_POSITIONS: Record<
 
 /**
  * キーのcol位置を取得するヘルパー関数
+ * @throws {Error} マップに存在しないキーコードが指定された場合
  */
 const getKeyCol = (
   code: string,
   backslashPos: { row: number; col: number },
 ): number => {
-  return code === "Backslash"
-    ? backslashPos.col
-    : (PHYSICAL_KEYBOARD_MAP[code]?.col ?? 0);
+  if (code === "Backslash") {
+    return backslashPos.col;
+  }
+
+  const position = PHYSICAL_KEYBOARD_MAP[code];
+  if (position === undefined) {
+    throw new Error(
+      `[getKeyCol] Unknown key code: "${code}". Please add it to PHYSICAL_KEYBOARD_MAP.`,
+    );
+  }
+
+  return position.col;
 };
 
 /**

@@ -1,4 +1,4 @@
-import { NOTE_LABELS, getRootNote } from "./consts";
+import { NOTE_LABELS, EVEN_COL_OFFSET, ODD_COL_OFFSET } from "./consts";
 import { semitoneToFrequency } from "../../../audio/utils";
 import {
   PHYSICAL_KEYBOARD_MAP,
@@ -8,6 +8,28 @@ import {
 
 import type { BackslashPosition } from "../../../consts/keyboardLayout";
 import type { StradellaType, StradellaSoundType } from "../types";
+
+/**
+ * col から ROOT_NOTE を計算する関数
+ *
+ * ストラデラベースシステムの列番号から、A4を基準とした半音オフセットを計算する
+ *
+ * 計算の考え方: 偶数列と奇数列は独立した系列で、それぞれ2半音ずつ上昇する。
+ *
+ * Math.floor(col / 2) で各系列内のインデックスを取得し、
+ * それを2倍することで「系列内で何番目か × 2半音」を得る
+ *
+ * @param col 列番号 (0-11 またはそれ以上)
+ * @returns A4を基準とした半音の差
+ */
+const getRootNote = (col: number): number => {
+  const index = Math.floor(col / 2); // 各系列内でのインデックス
+  const baseOffset = index * 2; // 系列内での増分（2半音ずつ）
+
+  return col % 2 === 0
+    ? EVEN_COL_OFFSET + baseOffset
+    : ODD_COL_OFFSET + baseOffset;
+};
 
 /**
  * コードから row/col を取得

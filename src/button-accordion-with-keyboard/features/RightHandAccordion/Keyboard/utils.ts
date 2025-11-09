@@ -2,8 +2,8 @@ import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
 import {
-  getSemitoneOffsetCSystem,
-  getSemitoneOffsetBSystem,
+  C_SYSTEM_ROW_OFFSETS,
+  B_SYSTEM_ROW_OFFSETS,
   KEY_LABEL_TEXTS,
 } from "./consts";
 import { semitoneToFrequency } from "../../../audio/utils";
@@ -17,6 +17,34 @@ import type { NoteNameStyle, KeyboardSystemType } from "./consts";
 import type { BackslashPosition } from "../../../consts/keyboardLayout";
 
 export type KeyLabelStyle = "keytop" | NoteNameStyle;
+
+/**
+ * row/col から半音オフセットを計算する関数（C-system）
+ * @param row 行番号 (0-3)
+ * @param col 列番号
+ * @returns 半音オフセット
+ */
+const getSemitoneOffsetCSystem = (row: number, col: number): number => {
+  const offset = C_SYSTEM_ROW_OFFSETS[row];
+  if (offset === undefined) {
+    throw new Error(`Invalid row number: ${row}`);
+  }
+  return offset + col * 3;
+};
+
+/**
+ * row/col から半音オフセットを計算する関数（B-system）
+ * @param row 行番号 (0-3)
+ * @param col 列番号
+ * @returns 半音オフセット
+ */
+const getSemitoneOffsetBSystem = (row: number, col: number): number => {
+  const offset = B_SYSTEM_ROW_OFFSETS[row];
+  if (offset === undefined) {
+    throw new Error(`Invalid row number: ${row}`);
+  }
+  return offset + col * 3;
+};
 
 /**
  * コードから row/col を取得
