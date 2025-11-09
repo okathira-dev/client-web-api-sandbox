@@ -92,53 +92,62 @@ export const BACKSLASH_POSITIONS: Record<
 };
 
 /**
+ * キーのcol位置を取得するヘルパー関数
+ */
+const getKeyCol = (
+  code: string,
+  backslashPos: { row: number; col: number },
+): number => {
+  return code === "Backslash"
+    ? backslashPos.col
+    : (PHYSICAL_KEYBOARD_MAP[code]?.col ?? 0);
+};
+
+/**
  * 表示用のキーボードレイアウトを生成
  * @param backslashPosition Backslashキーの位置
  * @returns キーボードレイアウト（行ごとのキーコード配列）
  */
-export const getKeyboardLayout = (backslashPosition: BackslashPosition) => {
+export const getKeyboardLayout = (
+  backslashPosition: BackslashPosition,
+): string[][] => {
   const backslashPos = BACKSLASH_POSITIONS[backslashPosition];
 
-  // 各行のキーを収集
-  const layout: string[][] = [[], [], [], []];
+  // 各行にBackslashキーを含むすべてのキーを収集
+  const keysWithBackslash = [
+    ...Object.entries(PHYSICAL_KEYBOARD_MAP),
+    ["Backslash", backslashPos] as const,
+  ];
 
-  // PHYSICAL_KEYBOARD_MAPから各行にキーを追加
-  for (const [code, pos] of Object.entries(PHYSICAL_KEYBOARD_MAP)) {
-    const rowLayout = layout[pos.row];
-    if (rowLayout) {
-      rowLayout.push(code);
-    }
-  }
-
-  // Backslashキーを追加
-  if (backslashPos.row === 1) {
-    const row1 = layout[1];
-    if (row1) row1.push("Backslash");
-  } else {
-    const row2 = layout[2];
-    if (row2) row2.push("Backslash");
-  }
-
-  // 各行をcol順にソート
-  for (let row = 0; row < 4; row++) {
-    const rowLayout = layout[row];
-    if (rowLayout) {
-      rowLayout.sort((a, b) => {
-        const colA =
-          a === "Backslash"
-            ? backslashPos.col
-            : (PHYSICAL_KEYBOARD_MAP[a]?.col ?? 0);
-        const colB =
-          b === "Backslash"
-            ? backslashPos.col
-            : (PHYSICAL_KEYBOARD_MAP[b]?.col ?? 0);
-        return colA - colB;
-      });
-    }
-  }
-
-  return layout;
+  // 行ごとにグループ化してソート
+  return [0, 1, 2, 3].map((rowIndex) =>
+    keysWithBackslash
+      .filter(([, pos]) => pos.row === rowIndex)
+      .map(([code]) => code)
+      .sort((a, b) => getKeyCol(a, backslashPos) - getKeyCol(b, backslashPos)),
+  );
 };
+
+/**
+ * 記号キーのマッピング（定数）
+ */
+const SYMBOL_MAP: Record<string, string> = {
+  Minus: "-",
+  Equal: "=",
+  BracketLeft: "[",
+  BracketRight: "]",
+  Backslash: "\\",
+  Semicolon: ";",
+  Quote: "'",
+  Comma: ",",
+  Period: ".",
+  Slash: "/",
+  // 国際化キー
+  IntlBackslash: "\\",
+  IntlYen: "¥",
+  IntlRo: "ろ",
+  Backquote: "`",
+} as const;
 
 /**
  * KeyboardEvent.codeから表示用のラベルを取得
@@ -152,24 +161,5 @@ export const getCodeLabel = (code: string): string => {
     return code.slice(5); // "Digit1" -> "1"
   }
 
-  // 記号キーのマッピング
-  const symbolMap: Record<string, string> = {
-    Minus: "-",
-    Equal: "=",
-    BracketLeft: "[",
-    BracketRight: "]",
-    Backslash: "\\",
-    Semicolon: ";",
-    Quote: "'",
-    Comma: ",",
-    Period: ".",
-    Slash: "/",
-    // 国際化キー
-    IntlBackslash: "\\",
-    IntlYen: "¥",
-    IntlRo: "ろ",
-    Backquote: "`",
-  };
-
-  return symbolMap[code] || code;
+  return SYMBOL_MAP[code] || code;
 };

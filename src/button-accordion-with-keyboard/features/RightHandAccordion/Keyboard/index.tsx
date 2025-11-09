@@ -1,5 +1,5 @@
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { usePlayActiveReeds } from "./hooks";
@@ -15,7 +15,30 @@ import { getKeyboardLayout } from "../../../consts/keyboardLayout";
 import type { KeyboardSystemType } from "./consts";
 import type { KeyLabelStyle } from "./utils";
 import type { SelectChangeEvent } from "@mui/material";
-import type { FC } from "react";
+import type { FC, CSSProperties } from "react";
+
+// コンポーネント外に定数を移動
+const KEYBOARD_SYSTEM_SELECT_LABEL_ID = "keyboard-system-select-label";
+const KEY_LABEL_STYLE_SELECT_LABEL_ID = "key-label-style-select-label";
+const BACKSLASH_POSITION_SELECT_LABEL_ID = "backslash-position-select-label";
+
+// スタイル定数
+const FORM_CONTAINER_STYLE: CSSProperties = {
+  display: "grid",
+  gridTemplateColumns: "1fr 1fr 1fr",
+  gap: "16px",
+};
+
+const KEYBOARD_CONTAINER_STYLE: CSSProperties = {
+  display: "flex",
+  flexDirection: "column",
+  gap: "4px",
+  padding: "16px",
+  backgroundColor: "lightgray",
+  borderRadius: "16px",
+  userSelect: "none",
+  WebkitUserSelect: "none",
+};
 
 export const Keyboard: FC = () => {
   // それぞれのキーの押されているかどうか（codeベース）
@@ -34,7 +57,10 @@ export const Keyboard: FC = () => {
   const getNoteLabel = useGetNoteLabel();
   const { playActiveReeds, stopActiveReeds } = usePlayActiveReeds();
 
-  const keyboardLayout = getKeyboardLayout(backslashPosition);
+  const keyboardLayout = useMemo(
+    () => getKeyboardLayout(backslashPosition),
+    [backslashPosition],
+  );
 
   const buttonDown = useCallback(
     (code: string) => {
@@ -109,25 +135,15 @@ export const Keyboard: FC = () => {
     setButtonStates({}); // レイアウト切り替え時にボタンの状態をリセット
   };
 
-  const keyboardSystemSelectLabelId = "keyboard-system-select-label";
-  const keyLabelStyleSelectLabelId = "key-label-style-select-label";
-  const backslashPositionSelectLabelId = "backslash-position-select-label";
-
   return (
     <div>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr",
-          gap: "16px",
-        }}
-      >
+      <div style={FORM_CONTAINER_STYLE}>
         <FormControl>
-          <InputLabel id={keyLabelStyleSelectLabelId}>
+          <InputLabel id={KEY_LABEL_STYLE_SELECT_LABEL_ID}>
             {t("keyboard.view.label")}
           </InputLabel>
           <Select
-            labelId={keyLabelStyleSelectLabelId}
+            labelId={KEY_LABEL_STYLE_SELECT_LABEL_ID}
             value={keyLabelStyle}
             label={t("keyboard.view.label")}
             onChange={handleKeyLabelStyleChange}
@@ -138,11 +154,11 @@ export const Keyboard: FC = () => {
           </Select>
         </FormControl>
         <FormControl>
-          <InputLabel id={keyboardSystemSelectLabelId}>
+          <InputLabel id={KEYBOARD_SYSTEM_SELECT_LABEL_ID}>
             {t("keyboard.system.label")}
           </InputLabel>
           <Select
-            labelId={keyboardSystemSelectLabelId}
+            labelId={KEYBOARD_SYSTEM_SELECT_LABEL_ID}
             value={keyboardSystemType}
             label={t("keyboard.system.label")}
             onChange={handleKeyboardSystemChange}
@@ -152,11 +168,11 @@ export const Keyboard: FC = () => {
           </Select>
         </FormControl>
         <FormControl>
-          <InputLabel id={backslashPositionSelectLabelId}>
+          <InputLabel id={BACKSLASH_POSITION_SELECT_LABEL_ID}>
             {t("keyboard.backslashPosition.label")}
           </InputLabel>
           <Select
-            labelId={backslashPositionSelectLabelId}
+            labelId={BACKSLASH_POSITION_SELECT_LABEL_ID}
             value={backslashPosition}
             label={t("keyboard.backslashPosition.label")}
             onChange={handleBackslashPositionChange}
@@ -171,18 +187,7 @@ export const Keyboard: FC = () => {
         </FormControl>
       </div>
 
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "4px",
-          padding: "16px",
-          backgroundColor: "lightgray",
-          borderRadius: "16px",
-          userSelect: "none",
-          WebkitUserSelect: "none",
-        }}
-      >
+      <div style={KEYBOARD_CONTAINER_STYLE}>
         {keyboardLayout.map((row, rowIndex) => {
           // 4列目（rowIndex === 3）は IntlBackslash があるので左にキー1個分ずらす
           const baseMargin = rowIndex * (24 + 2);

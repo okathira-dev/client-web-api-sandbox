@@ -5,7 +5,7 @@ import {
   MenuItem,
   type SelectChangeEvent,
 } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { usePlayActiveReeds } from "./hooks";
@@ -27,14 +27,53 @@ import {
 } from "../../../consts/keyboardLayout";
 
 import type { StradellaType } from "../types";
+import type { CSSProperties } from "react";
 
 type KeyLabelStyle = "keytop" | "note";
 
-const bassTypeColors: Record<StradellaType, string> = {
+// コンポーネント外に定数を移動
+const KEY_LABEL_STYLE_SELECT_LABEL_ID = "key-label-style-select-label";
+const BACKSLASH_POSITION_SELECT_LABEL_ID = "backslash-position-select-label";
+
+const BASS_TYPE_COLORS = {
   counter: "#ff9800", // オレンジ
   fundamental: "#2196f3", // ブルー
   major: "#4caf50", // グリーン
   minor: "#f44336", // レッド
+} as const satisfies Record<StradellaType, string>;
+
+// スタイル定数
+const FORM_CONTAINER_STYLE: CSSProperties = {
+  display: "grid",
+  gridTemplateColumns: "1fr 1fr",
+  gap: "16px",
+};
+
+const KEYBOARD_CONTAINER_STYLE: CSSProperties = {
+  display: "flex",
+  flexDirection: "column",
+  gap: "4px",
+  padding: "16px",
+  backgroundColor: "lightgray",
+  borderRadius: "16px",
+  userSelect: "none",
+  WebkitUserSelect: "none",
+};
+
+const BUTTON_BASE_STYLE: CSSProperties = {
+  width: "48px",
+  height: "48px",
+  padding: 0,
+  borderRadius: "50%",
+  border: "1px solid lightgray",
+  fontSize: "20px",
+  textAlign: "center",
+  lineHeight: "48px",
+  fontWeight: "bold",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
 };
 
 export const Keyboard = () => {
@@ -48,7 +87,10 @@ export const Keyboard = () => {
   const { t } = useTranslation();
   const { playActiveReeds, stopActiveReeds } = usePlayActiveReeds();
 
-  const keyboardLayout = getKeyboardLayout(backslashPosition);
+  const keyboardLayout = useMemo(
+    () => getKeyboardLayout(backslashPosition),
+    [backslashPosition],
+  );
 
   const buttonDown = useCallback(
     (code: string) => {
@@ -116,24 +158,15 @@ export const Keyboard = () => {
     setButtonStates({}); // レイアウト切り替え時にボタンの状態をリセット
   };
 
-  const keyLabelStyleSelectLabelId = "key-label-style-select-label";
-  const backslashPositionSelectLabelId = "backslash-position-select-label";
-
   return (
     <div>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "16px",
-        }}
-      >
+      <div style={FORM_CONTAINER_STYLE}>
         <FormControl>
-          <InputLabel id={keyLabelStyleSelectLabelId}>
+          <InputLabel id={KEY_LABEL_STYLE_SELECT_LABEL_ID}>
             {t("keyboard.view.label")}
           </InputLabel>
           <Select
-            labelId={keyLabelStyleSelectLabelId}
+            labelId={KEY_LABEL_STYLE_SELECT_LABEL_ID}
             value={keyLabelStyle}
             label={t("keyboard.view.label")}
             onChange={handleKeyLabelStyleChange}
@@ -143,11 +176,11 @@ export const Keyboard = () => {
           </Select>
         </FormControl>
         <FormControl>
-          <InputLabel id={backslashPositionSelectLabelId}>
+          <InputLabel id={BACKSLASH_POSITION_SELECT_LABEL_ID}>
             {t("keyboard.backslashPosition.label")}
           </InputLabel>
           <Select
-            labelId={backslashPositionSelectLabelId}
+            labelId={BACKSLASH_POSITION_SELECT_LABEL_ID}
             value={backslashPosition}
             label={t("keyboard.backslashPosition.label")}
             onChange={handleBackslashPositionChange}
@@ -161,18 +194,7 @@ export const Keyboard = () => {
           </Select>
         </FormControl>
       </div>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "4px",
-          padding: "16px",
-          backgroundColor: "lightgray",
-          borderRadius: "16px",
-          userSelect: "none",
-          WebkitUserSelect: "none",
-        }}
-      >
+      <div style={KEYBOARD_CONTAINER_STYLE}>
         {keyboardLayout.map((row, rowIndex) => {
           // 4列目（rowIndex === 3）は IntlBackslash があるので左にキー1個分ずらす
           const baseMargin = rowIndex * (24 + 2);
@@ -211,34 +233,23 @@ export const Keyboard = () => {
                 if (!codePosition) return null;
                 const type = getTypeFromRow(codePosition.row);
 
+                const isActive = buttonStates[code];
+                const buttonStyle = {
+                  ...BUTTON_BASE_STYLE,
+                  backgroundColor: isActive ? BASS_TYPE_COLORS[type] : "white",
+                  color: isActive ? "white" : "black",
+                  boxShadow: isActive
+                    ? "0px 0px 6px 2px rgba(0,0,0,0.3)"
+                    : "none",
+                };
+
                 return (
                   <button
                     key={code}
-                    style={{
-                      width: "48px",
-                      height: "48px",
-                      padding: 0,
-                      borderRadius: "50%",
-                      backgroundColor: buttonStates[code]
-                        ? bassTypeColors[type]
-                        : "white",
-                      color: buttonStates[code] ? "white" : "black",
-                      border: "1px solid lightgray",
-                      fontSize: "20px",
-                      textAlign: "center",
-                      lineHeight: "48px",
-                      fontWeight: "bold",
-                      boxShadow: buttonStates[code]
-                        ? "0px 0px 6px 2px rgba(0,0,0,0.3)"
-                        : "none",
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
+                    style={buttonStyle}
                     onMouseDown={() => buttonDown(code)}
                     onMouseUp={() => buttonUp(code)}
-                    onMouseLeave={() => buttonStates[code] && buttonUp(code)}
+                    onMouseLeave={() => isActive && buttonUp(code)}
                   >
                     {label}
                   </button>
