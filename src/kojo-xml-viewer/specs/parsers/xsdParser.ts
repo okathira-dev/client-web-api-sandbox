@@ -154,6 +154,51 @@ function getJapaneseName(element: Element): string | undefined {
 }
 
 /**
+ * XSD要素から値のマッピングを取得（xsd:documentationから）
+ * 例: "1：明治\n2：大正" → Map("1" => "明治", "2" => "大正")
+ */
+function getValueMapping(element: Element): Map<string, string> | undefined {
+  const xsdNs = "http://www.w3.org/2001/XMLSchema";
+  const annotation = element.getElementsByTagNameNS(xsdNs, "annotation")[0];
+  if (!annotation) {
+    return undefined;
+  }
+
+  const documentation = annotation.getElementsByTagNameNS(
+    xsdNs,
+    "documentation",
+  )[0];
+  if (!documentation) {
+    return undefined;
+  }
+
+  const text = documentation.textContent || "";
+  const lines = text
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0);
+
+  if (lines.length === 0) {
+    return undefined;
+  }
+
+  const mapping = new Map<string, string>();
+  for (const line of lines) {
+    // "1：明治" または "1:明治" の形式をパース
+    const match = line.match(/^(\d+)[：:]\s*(.+)$/);
+    if (match && match[1] && match[2]) {
+      const key = match[1].trim();
+      const value = match[2].trim();
+      if (key && value) {
+        mapping.set(key, value);
+      }
+    }
+  }
+
+  return mapping.size > 0 ? mapping : undefined;
+}
+
+/**
  * XSD要素から型情報を取得
  */
 function getType(element: Element, _doc?: Document): string {
@@ -408,109 +453,242 @@ export async function parseXsdToElementMappings(tegCode: string): Promise<
 }
 
 /**
+ * General.xsdからgen:要素のラベルマッピングと値のマッピングを生成
+ */
+export interface GeneralElementInfo {
+  label: string;
+  valueMapping?: Map<string, string>;
+}
+
+/**
  * General.xsdからgen:要素のラベルマッピングを生成
  * 要素名（プレフィックスなし）をキー、日本語ラベルを値とするMapを返す
  */
 export async function loadGeneralElementLabels(): Promise<Map<string, string>> {
-  const doc = await loadGeneralXsd();
-  const xsdNs = "http://www.w3.org/2001/XMLSchema";
-  // const generalNs = "http://xml.e-tax.nta.go.jp/XSD/general";
+  const info = await loadGeneralElementInfo();
   const labelMap = new Map<string, string>();
-
-  // simpleTypeからラベルを取得
-  const simpleTypes = doc.getElementsByTagNameNS(xsdNs, "simpleType");
-  for (let i = 0; i < simpleTypes.length; i++) {
-    const simpleType = simpleTypes[i];
-    if (!simpleType) {
-      continue;
-    }
-    const name = simpleType.getAttribute("name");
-    if (!name) {
-      continue;
-    }
-    const japaneseName = getJapaneseName(simpleType);
-    if (japaneseName) {
-      labelMap.set(name, japaneseName);
-    }
+  for (const [key, value] of info.entries()) {
+    labelMap.set(key, value.label);
   }
-
-  // complexTypeからラベルを取得
-  const complexTypes = doc.getElementsByTagNameNS(xsdNs, "complexType");
-  for (let i = 0; i < complexTypes.length; i++) {
-    const complexType = complexTypes[i];
-    if (!complexType) {
-      continue;
-    }
-    const name = complexType.getAttribute("name");
-    if (!name) {
-      continue;
-    }
-    const japaneseName = getJapaneseName(complexType);
-    if (japaneseName) {
-      labelMap.set(name, japaneseName);
-    }
-  }
-
-  // group内のelementからラベルを取得
-  const groups = doc.getElementsByTagNameNS(xsdNs, "group");
-  for (let i = 0; i < groups.length; i++) {
-    const group = groups[i];
-    if (!group) {
-      continue;
-    }
-    // group自体のラベル
-    const groupName = group.getAttribute("name");
-    const groupLabel = getJapaneseName(group);
-    if (groupName && groupLabel) {
-      labelMap.set(groupName, groupLabel);
-    }
-
-    // group内のelementのラベル
-    const sequence = group.getElementsByTagNameNS(xsdNs, "sequence")[0];
-    if (sequence) {
-      const elements = sequence.getElementsByTagNameNS(xsdNs, "element");
-      for (let j = 0; j < elements.length; j++) {
-        const element = elements[j];
-        if (!element) {
-          continue;
-        }
-        const elementName = element.getAttribute("name");
-        if (!elementName) {
-          continue;
-        }
-        const elementLabel = getJapaneseName(element);
-        if (elementLabel) {
-          labelMap.set(elementName, elementLabel);
-        }
-      }
-    }
-  }
-
-  // complexType内のelementからラベルを取得
-  for (let i = 0; i < complexTypes.length; i++) {
-    const complexType = complexTypes[i];
-    if (!complexType) {
-      continue;
-    }
-    const sequence = complexType.getElementsByTagNameNS(xsdNs, "sequence")[0];
-    if (sequence) {
-      const elements = sequence.getElementsByTagNameNS(xsdNs, "element");
-      for (let j = 0; j < elements.length; j++) {
-        const element = elements[j];
-        if (!element) {
-          continue;
-        }
-        const elementName = element.getAttribute("name");
-        if (!elementName) {
-          continue;
-        }
-        const elementLabel = getJapaneseName(element);
-        if (elementLabel) {
-          labelMap.set(elementName, elementLabel);
-        }
-      }
-    }
-  }
-
   return labelMap;
+}
+
+/**
+ * xsd:includeで参照されているファイルを読み込む
+ */
+async function loadIncludedXsd(
+  _basePath: string,
+  schemaLocation: string,
+): Promise<Document> {
+  // schemaLocationは相対パス（例: "../general/zeimoku.xsd"）
+  // General.xsdと同じディレクトリにあるので、直接パスを構築
+  // "../general/zeimoku.xsd" -> "zeimoku.xsd"
+  const fileName = schemaLocation.replace(/^\.\.\/general\//, "");
+
+  const xsdPath = new URL(
+    `../../kojoall/04XMLスキーマ/general/${fileName}`,
+    import.meta.url,
+  );
+  const xsdUrl = xsdPath.href;
+
+  let xmlText: string;
+
+  if (xsdPath.protocol === "file:") {
+    const { fileURLToPath } = await import("node:url");
+    const { readFileSync } = await import("node:fs");
+    const filePath = fileURLToPath(xsdPath);
+    xmlText = readFileSync(filePath, "utf-8");
+  } else {
+    const response = await fetch(xsdUrl);
+    if (!response.ok) {
+      throw new Error(`Failed to load included XSD: ${xsdUrl}`);
+    }
+    xmlText = await response.text();
+  }
+
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(xmlText, "text/xml");
+
+  const parseError = doc.getElementsByTagName("parsererror")[0];
+  if (parseError) {
+    throw new Error(`Failed to parse included XSD: ${xsdUrl}`);
+  }
+
+  return doc;
+}
+
+/**
+ * General.xsdからgen:要素の情報（ラベルと値のマッピング）を生成
+ * xsd:includeで参照されているファイルも読み込む
+ */
+export async function loadGeneralElementInfo(): Promise<
+  Map<string, GeneralElementInfo>
+> {
+  const baseDoc = await loadGeneralXsd();
+  const xsdNs = "http://www.w3.org/2001/XMLSchema";
+  const infoMap = new Map<string, GeneralElementInfo>();
+
+  // xsd:includeで参照されているファイルも読み込む
+  const includes = baseDoc.getElementsByTagNameNS(xsdNs, "include");
+  const includedDocs: Document[] = [];
+
+  for (let i = 0; i < includes.length; i++) {
+    const include = includes[i];
+    if (!include) {
+      continue;
+    }
+    const schemaLocation = include.getAttribute("schemaLocation");
+    if (schemaLocation) {
+      try {
+        const includedDoc = await loadIncludedXsd("", schemaLocation);
+        includedDocs.push(includedDoc);
+      } catch (err) {
+        // includeの読み込みエラーは警告のみ（必須ではない）
+        console.warn(`Failed to load included XSD: ${schemaLocation}`, err);
+      }
+    }
+  }
+
+  // すべてのドキュメント（baseDoc + includedDocs）から要素情報を取得
+  const allDocs = [baseDoc, ...includedDocs];
+
+  for (const doc of allDocs) {
+    // simpleTypeからラベルと値のマッピングを取得
+    const simpleTypes = doc.getElementsByTagNameNS(xsdNs, "simpleType");
+    for (let i = 0; i < simpleTypes.length; i++) {
+      const simpleType = simpleTypes[i];
+      if (!simpleType) {
+        continue;
+      }
+      const name = simpleType.getAttribute("name");
+      if (!name) {
+        continue;
+      }
+      const japaneseName = getJapaneseName(simpleType);
+      const valueMapping = getValueMapping(simpleType);
+      if (japaneseName) {
+        infoMap.set(name, {
+          label: japaneseName,
+          valueMapping,
+        });
+      }
+    }
+  }
+
+  for (const doc of allDocs) {
+    // complexTypeからラベルを取得
+    const complexTypes = doc.getElementsByTagNameNS(xsdNs, "complexType");
+    for (let i = 0; i < complexTypes.length; i++) {
+      const complexType = complexTypes[i];
+      if (!complexType) {
+        continue;
+      }
+      const name = complexType.getAttribute("name");
+      if (!name) {
+        continue;
+      }
+      const japaneseName = getJapaneseName(complexType);
+      if (japaneseName) {
+        infoMap.set(name, {
+          label: japaneseName,
+        });
+      }
+    }
+
+    // group内のelementからラベルと値のマッピングを取得
+    const groups = doc.getElementsByTagNameNS(xsdNs, "group");
+    for (let i = 0; i < groups.length; i++) {
+      const group = groups[i];
+      if (!group) {
+        continue;
+      }
+      // group自体のラベル
+      const groupName = group.getAttribute("name");
+      const groupLabel = getJapaneseName(group);
+      if (groupName && groupLabel) {
+        infoMap.set(groupName, {
+          label: groupLabel,
+        });
+      }
+
+      // group内のelementのラベルと値のマッピング
+      const sequence = group.getElementsByTagNameNS(xsdNs, "sequence")[0];
+      if (sequence) {
+        const elements = sequence.getElementsByTagNameNS(xsdNs, "element");
+        for (let j = 0; j < elements.length; j++) {
+          const element = elements[j];
+          if (!element) {
+            continue;
+          }
+          const elementName = element.getAttribute("name");
+          if (!elementName) {
+            continue;
+          }
+          const elementLabel = getJapaneseName(element);
+          const valueMapping = getValueMapping(element);
+          if (elementLabel) {
+            infoMap.set(elementName, {
+              label: elementLabel,
+              valueMapping,
+            });
+          }
+        }
+      }
+    }
+
+    // complexType内のelementからラベルと値のマッピングを取得
+    const complexTypesForElements = doc.getElementsByTagNameNS(
+      xsdNs,
+      "complexType",
+    );
+    for (let i = 0; i < complexTypesForElements.length; i++) {
+      const complexType = complexTypesForElements[i];
+      if (!complexType) {
+        continue;
+      }
+      const sequence = complexType.getElementsByTagNameNS(xsdNs, "sequence")[0];
+      if (sequence) {
+        const elements = sequence.getElementsByTagNameNS(xsdNs, "element");
+        for (let j = 0; j < elements.length; j++) {
+          const element = elements[j];
+          if (!element) {
+            continue;
+          }
+          const elementName = element.getAttribute("name");
+          if (!elementName) {
+            continue;
+          }
+          // elementのannotationからラベルを取得
+          let elementLabel = getJapaneseName(element);
+          let valueMapping = getValueMapping(element);
+
+          // element内にsimpleTypeがある場合、そのsimpleTypeのannotationも確認
+          const simpleType = element.getElementsByTagNameNS(
+            xsdNs,
+            "simpleType",
+          )[0];
+          if (simpleType) {
+            // simpleTypeのannotationからラベルを取得（elementにラベルがない場合）
+            if (!elementLabel) {
+              elementLabel = getJapaneseName(simpleType);
+            }
+            // simpleTypeのannotationから値のマッピングを取得（elementにマッピングがない場合）
+            if (!valueMapping) {
+              valueMapping = getValueMapping(simpleType);
+            }
+          }
+
+          // ラベルまたは値のマッピングがある場合は登録
+          if (elementLabel || valueMapping) {
+            infoMap.set(elementName, {
+              label: elementLabel || elementName,
+              valueMapping,
+            });
+          }
+        }
+      }
+    }
+  }
+
+  return infoMap;
 }

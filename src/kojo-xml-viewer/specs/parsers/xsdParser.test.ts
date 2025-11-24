@@ -3,6 +3,8 @@
  */
 
 import {
+  loadGeneralElementInfo,
+  loadGeneralXsd,
   loadXsdFile,
   parseXsdElement,
   parseXsdToElementMappings,
@@ -214,6 +216,101 @@ describe("xsdParser", () => {
       const mappings = await parseXsdToElementMappings("TEG800");
       const wceMapping = mappings.find((m) => m.elementCode === "WCE00000");
       expect(wceMapping?.repeatCount).toBe(100);
+    });
+  });
+
+  describe("loadGeneralXsd", () => {
+    it("General.xsdファイルを読み込んでDOMに変換できること", async () => {
+      const doc = await loadGeneralXsd();
+      expect(doc).toBeDefined();
+      expect(doc.documentElement).toBeDefined();
+      expect(doc.documentElement.nodeName).toBe("xsd:schema");
+    });
+
+    it("名前空間が正しく処理されること", async () => {
+      const doc = await loadGeneralXsd();
+      const schema = doc.documentElement;
+      expect(schema.getAttribute("targetNamespace")).toBe(
+        "http://xml.e-tax.nta.go.jp/XSD/general",
+      );
+    });
+  });
+
+  describe("loadGeneralElementInfo", () => {
+    it("General.xsdから要素情報を取得できること", async () => {
+      const info = await loadGeneralElementInfo();
+      expect(info.size).toBeGreaterThan(0);
+    });
+
+    it("General.xsdの要素（era）のラベルと値のマッピングを取得できること", async () => {
+      const info = await loadGeneralElementInfo();
+      const eraInfo = info.get("era");
+      expect(eraInfo).toBeDefined();
+      expect(eraInfo?.label).toBe("年号");
+      expect(eraInfo?.valueMapping).toBeDefined();
+      expect(eraInfo?.valueMapping?.get("1")).toBe("明治");
+      expect(eraInfo?.valueMapping?.get("2")).toBe("大正");
+      expect(eraInfo?.valueMapping?.get("3")).toBe("昭和");
+      expect(eraInfo?.valueMapping?.get("4")).toBe("平成");
+      expect(eraInfo?.valueMapping?.get("5")).toBe("令和");
+    });
+
+    it("zeimoku.xsdの要素（zeimoku_CD）のラベルと値のマッピングを取得できること", async () => {
+      const info = await loadGeneralElementInfo();
+      const zeimokuCdInfo = info.get("zeimoku_CD");
+      expect(zeimokuCdInfo).toBeDefined();
+      expect(zeimokuCdInfo?.label).toBe("税目番号");
+      expect(zeimokuCdInfo?.valueMapping).toBeDefined();
+      expect(zeimokuCdInfo?.valueMapping?.get("010")).toBe("源泉所得税");
+      expect(zeimokuCdInfo?.valueMapping?.get("020")).toBe("申告所得税");
+      expect(zeimokuCdInfo?.valueMapping?.get("030")).toBe("法人税");
+      expect(zeimokuCdInfo?.valueMapping?.get("240")).toBe("消費税");
+      expect(zeimokuCdInfo?.valueMapping?.get("300")).toBe(
+        "消費税及地方消費税",
+      );
+    });
+
+    it("zeimusho.xsdの要素（zeimusho_CD）のラベルと値のマッピングを取得できること", async () => {
+      const info = await loadGeneralElementInfo();
+      const zeimushoCdInfo = info.get("zeimusho_CD");
+      expect(zeimushoCdInfo).toBeDefined();
+      expect(zeimushoCdInfo?.label).toBe("税務署番号");
+      expect(zeimushoCdInfo?.valueMapping).toBeDefined();
+      expect(zeimushoCdInfo?.valueMapping?.get("00001")).toBe("国税庁");
+      expect(zeimushoCdInfo?.valueMapping?.get("01001")).toBe("東京");
+      expect(zeimushoCdInfo?.valueMapping?.get("01101")).toBe("麹町");
+      expect(zeimushoCdInfo?.valueMapping?.get("01201")).toBe("横浜中");
+    });
+
+    it("zeimoku.xsdの要素（zeimoku_NM）のラベルを取得できること", async () => {
+      const info = await loadGeneralElementInfo();
+      const zeimokuNmInfo = info.get("zeimoku_NM");
+      expect(zeimokuNmInfo).toBeDefined();
+      expect(zeimokuNmInfo?.label).toBe("税目名");
+    });
+
+    it("zeimusho.xsdの要素（zeimusho_NM）のラベルを取得できること", async () => {
+      const info = await loadGeneralElementInfo();
+      const zeimushoNmInfo = info.get("zeimusho_NM");
+      expect(zeimushoNmInfo).toBeDefined();
+      expect(zeimushoNmInfo?.label).toBe("税務署名");
+    });
+
+    it("General.xsdの他の要素（yyyy, mm, dd）のラベルを取得できること", async () => {
+      const info = await loadGeneralElementInfo();
+      expect(info.get("yyyy")?.label).toBe("年");
+      expect(info.get("mm")?.label).toBe("月");
+      expect(info.get("dd")?.label).toBe("日");
+    });
+
+    it("xsd:includeで参照されているファイルも読み込まれていること", async () => {
+      const info = await loadGeneralElementInfo();
+      // zeimoku.xsdの要素が含まれていることを確認
+      expect(info.has("zeimoku_CD")).toBe(true);
+      expect(info.has("zeimoku_NM")).toBe(true);
+      // zeimusho.xsdの要素が含まれていることを確認
+      expect(info.has("zeimusho_CD")).toBe(true);
+      expect(info.has("zeimusho_NM")).toBe(true);
     });
   });
 });

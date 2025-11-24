@@ -22,9 +22,10 @@ import { buildFormData, buildFormTree } from "./formDataBuilder";
 import { getMappingsByTeg } from "../../../mappings/elementMapping";
 import { generateElementMappingsFromXsd } from "../../../mappings/elementMappingFromXsd";
 import { AVAILABLE_TEG_CODES } from "../../../specs/getAvailableTegCodes";
-import { loadGeneralElementLabels } from "../../../specs/parsers/xsdParser";
+import { loadGeneralElementInfo } from "../../../specs/parsers/xsdParser";
 
 import type { FormTreeNode } from "./formDataBuilder";
+import type { GeneralElementInfo } from "../../../specs/parsers/xsdParser";
 import type { ElementMapping } from "../../../specs/types";
 import type { XmlNode, ParsedXml } from "../../../types/xml";
 import type { ReactNode, SyntheticEvent } from "react";
@@ -173,6 +174,9 @@ export function FormRenderer({
   const [generalLabels, setGeneralLabels] = useState<Map<string, string>>(
     new Map(),
   );
+  const [generalInfo, setGeneralInfo] = useState<
+    Map<string, GeneralElementInfo>
+  >(new Map());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -181,30 +185,36 @@ export function FormRenderer({
     return propTegCode || extractTegCode(xmlNode);
   }, [propTegCode, xmlNode]);
 
-  // General.xsdのラベルマッピングを読み込む
+  // General.xsdのラベルマッピングと値のマッピングを読み込む
   useEffect(() => {
     let cancelled = false;
 
-    async function loadGeneralLabels(): Promise<void> {
+    async function loadGeneralInfo(): Promise<void> {
       try {
-        const loadFn = loadGeneralElementLabels as () => Promise<
-          Map<string, string>
+        const loadFn = loadGeneralElementInfo as () => Promise<
+          Map<string, GeneralElementInfo>
         >;
-        const labels = await loadFn();
+        const info = await loadFn();
         if (!cancelled) {
+          setGeneralInfo(info);
+          // ラベルマッピングも生成
+          const labels = new Map<string, string>();
+          for (const [key, value] of info.entries()) {
+            labels.set(key, value.label);
+          }
           setGeneralLabels(labels);
         }
       } catch (err: unknown) {
         // General.xsdの読み込みエラーは無視（gen:要素のラベルが表示されないだけ）
         if (err instanceof Error) {
-          console.warn("Failed to load General.xsd labels:", err.message);
+          console.warn("Failed to load General.xsd info:", err.message);
         } else {
-          console.warn("Failed to load General.xsd labels:", String(err));
+          console.warn("Failed to load General.xsd info:", String(err));
         }
       }
     }
 
-    void loadGeneralLabels();
+    void loadGeneralInfo();
 
     return () => {
       cancelled = true;
@@ -289,8 +299,8 @@ export function FormRenderer({
     const tegMappings = tegCode
       ? getMappingsByTeg(mappings, tegCode)
       : mappings;
-    return buildFormData(xmlNode, tegMappings, generalLabels);
-  }, [xmlNode, mappings, tegCode, generalLabels]);
+    return buildFormData(xmlNode, tegMappings, generalLabels, generalInfo);
+  }, [xmlNode, mappings, tegCode, generalLabels, generalInfo]);
 
   const treeNodes = useMemo(() => {
     return buildFormTree(formDataItems);

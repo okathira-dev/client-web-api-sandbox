@@ -1,3 +1,4 @@
+import type { GeneralElementInfo } from "../../../specs/parsers/xsdParser";
 import type { ElementMapping } from "../../../specs/types";
 import type { XmlNode } from "../../../types/xml";
 
@@ -95,6 +96,7 @@ export function buildFormData(
   xmlNode: XmlNode,
   mappings: ElementMapping[],
   generalLabels?: Map<string, string>,
+  generalInfo?: Map<string, GeneralElementInfo>,
 ): FormDataItem[] {
   const mappingByCode = new Map<string, ElementMapping>();
   mappings.forEach((mapping) => {
@@ -121,6 +123,29 @@ export function buildFormData(
   }
 
   /**
+   * gen:要素の値をマッピングに基づいて変換
+   */
+  function mapGenValue(elementName: string, value: string): string {
+    if (!generalInfo || !value) {
+      return value;
+    }
+    // gen:プレフィックスを除去
+    if (elementName.includes(":")) {
+      const nameWithoutPrefix = elementName.split(":").pop();
+      if (nameWithoutPrefix) {
+        const info = generalInfo.get(nameWithoutPrefix);
+        if (info?.valueMapping) {
+          const mappedValue = info.valueMapping.get(value.trim());
+          if (mappedValue) {
+            return mappedValue;
+          }
+        }
+      }
+    }
+    return value;
+  }
+
+  /**
    * XMLノードを再帰的に走査し、すべての要素を収集する
    */
   function traverseNode(node: XmlNode, xmlPath: string[] = []): void {
@@ -142,7 +167,14 @@ export function buildFormData(
 
     // すべての要素を表示（値がない要素も含む）
     const mapping = mappingByCode.get(node.name);
-    const value = trimmedText || "";
+    let rawValue = trimmedText || "";
+
+    // gen:要素の値のマッピングを適用
+    if (rawValue && node.name.includes(":")) {
+      rawValue = mapGenValue(node.name, rawValue);
+    }
+
+    const value = rawValue;
 
     // ラベルの決定: マッピング → gen:ラベル → 要素コード
     let label: string;
