@@ -1,0 +1,1792 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<DatDefine VR="1.0">
+<!--国民年金保険料等控除証明書 TEG840-->
+	<report reportVR="1.0" reportId="TEG840" columnNum="226">
+		<!--種別１-->
+		<item  id="WOA00000" parent="TEG840" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOA00000" column="2" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOA00000" refcol="2" refval="1" rejectEmpty="1" value="国民年金保険料" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOA00000" refcol="2" refval="2" rejectEmpty="1" value="国民年金基金掛金" type="Normal">
+		</item>
+		<!--前納分-->
+		<item  id="WOB00000" parent="TEG840" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOB00000" column="3" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOB00000" refcol="3" refval="1" rejectEmpty="1" value="無" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOB00000" refcol="3" refval="2" rejectEmpty="1" value="有" type="Normal">
+		</item>
+		<!--証明年分１-->
+		<item  id="WOC00000" parent="TEG840" type="Normal" >
+		</item>
+		<!--証明年分１　元号-->
+		<item  id="gen:era" parent="WOC00000" column="4" type="Normal" >
+		</item>
+		<!--証明年分１　年-->
+		<item  id="gen:yy" parent="WOC00000" column="5" zeroSuppress="1" type="Normal" >
+		</item>
+		<!--基礎年金番号等-->
+		<item  id="WOD00000" parent="TEG840" column="6" type="Normal" >
+		</item>
+		<!--被保険者氏名-->
+		<item  id="WOE00000" parent="TEG840" column="7" type="Normal" >
+		</item>
+		<!--被保険者住所-->
+		<item  id="WOF00000" parent="TEG840" column="8" type="Normal" >
+		</item>
+		<!--証明年分２-->
+		<item  id="WOG00000" parent="TEG840" type="Normal" >
+		</item>
+		<!--証明年分２　元号-->
+		<item  id="gen:era" parent="WOG00000" column="4" type="Normal" >
+		</item>
+		<!--証明年分２　年-->
+		<item  id="gen:yy" parent="WOG00000" column="5" zeroSuppress="1" type="Normal" >
+		</item>
+		<!--証明期間（自）-->
+		<item id="WOH00000" parent="TEG840" rejectEmpty="1" type="Normal">
+		</item>
+		<!--証明期間（自）　月-->
+		<item id="gen:mm" parent="WOH00000" column="9" rejectEmpty="1" zeroSuppress="1" type="Normal">
+		</item>
+		<!--証明期間（自）　日-->
+		<item id="gen:dd" parent="WOH00000" column="10" rejectEmpty="1" zeroSuppress="1" type="Normal">
+		</item>
+		<!--証明期間（至））-->
+		<item id="WOI00000" parent="TEG840" rejectEmpty="1" type="Normal">
+		</item>
+		<!--証明期間（至））　月-->
+		<item id="gen:mm" parent="WOI00000" column="11" rejectEmpty="1" zeroSuppress="1" type="Normal">
+		</item>
+		<!--証明期間（至）　日-->
+		<item id="gen:dd" parent="WOI00000" column="12" rejectEmpty="1" zeroSuppress="1" type="Normal">
+		</item>
+		<!--種別２-->
+		<item  id="WOJ00000" parent="TEG840" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOJ00000" column="2" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOJ00000" refcol="2" refval="1" rejectEmpty="1" value="国民年金保険料" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOJ00000" refcol="2" refval="2" rejectEmpty="1" value="国民年金基金掛金" type="Normal">
+		</item>
+		<!--納付済額-->
+		<item  id="WOK00000" parent="TEG840" column="13" rejectEmpty="1" removeLeadingPlusSign="1" type="Normal" >
+		</item>
+		<!--見込額-->
+		<item  id="WOL00000" parent="TEG840" column="14" rejectEmpty="1" removeLeadingPlusSign="1" type="Normal" >
+		</item>
+		<!--合計額-->
+		<item  id="WOM00000" parent="TEG840" column="15" rejectEmpty="1" removeLeadingPlusSign="1" type="Normal" >
+		</item>
+		<!--各年に申告する場合の証明額 -->
+		<item  id="WON00000" parent="TEG840" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--各年に申告する場合の証明額（当年分）-->
+		<item  id="WON00010" parent="WON00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--各年に申告する場合の証明額（当年分）納付済額-->
+		<item  id="WON00020" parent="WON00010" column="16" rejectEmpty="1" removeLeadingPlusSign="1" type="Normal" >
+		</item>
+		<!--各年に申告する場合の証明額（当年分）見込額-->
+		<item  id="WON00030" parent="WON00010" column="17" rejectEmpty="1" removeLeadingPlusSign="1" type="Normal" >
+		</item>
+		<!--各年に申告する場合の証明額（当年分）合計額-->
+		<item  id="WON00040" parent="WON00010" column="18" rejectEmpty="1" removeLeadingPlusSign="1" type="Normal" >
+		</item>
+		<!--各年に申告する場合の証明額（当年分）　申告年分-->
+		<item  id="WON00050" parent="WON00010" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--各年に申告する場合の証明額（当年分）　申告年分 元号-->
+		<item  id="gen:era" parent="WON00050" column="19" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--各年に申告する場合の証明額（当年分）　申告年分 年-->
+		<item  id="gen:yy" parent="WON00050" column="20" rejectEmpty="1" zeroSuppress="1" type="Normal" >
+		</item>
+		<!--各年に申告する場合の証明額（当年分）証明額-->
+		<item  id="WON00060" parent="WON00010" column="21" rejectEmpty="1" removeLeadingPlusSign="1" type="Normal" >
+		</item>
+		<!--各年に申告する場合の証明額（翌年分）-->
+		<item  id="WON00070" parent="WON00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--各年に申告する場合の証明額（翌年分）納付済額-->
+		<item  id="WON00080" parent="WON00070" column="22" rejectEmpty="1" removeLeadingPlusSign="1" type="Normal" >
+		</item>
+		<!--各年に申告する場合の証明額（翌年分）見込額-->
+		<item  id="WON00090" parent="WON00070" column="23" rejectEmpty="1" removeLeadingPlusSign="1" type="Normal" >
+		</item>
+		<!--各年に申告する場合の証明額（翌年分）合計額-->
+		<item  id="WON00100" parent="WON00070" column="24" rejectEmpty="1" removeLeadingPlusSign="1" type="Normal" >
+		</item>
+		<!--各年に申告する場合の証明額（翌年分）　申告年分-->
+		<item  id="WON00110" parent="WON00070" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--各年に申告する場合の証明額（翌年分）　申告年分 元号-->
+		<item  id="gen:era" parent="WON00110" column="25" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--各年に申告する場合の証明額（翌年分）　申告年分 年-->
+		<item  id="gen:yy" parent="WON00110" column="26" rejectEmpty="1" zeroSuppress="1" type="Normal" >
+		</item>
+		<!--各年に申告する場合の証明額（翌年分）証明額-->
+		<item  id="WON00120" parent="WON00070" column="27" rejectEmpty="1" removeLeadingPlusSign="1" type="Normal" >
+		</item>
+		<!--各年に申告する場合の証明額（翌々年分）-->
+		<item  id="WON00130" parent="WON00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--各年に申告する場合の証明額（翌々年分）納付済額-->
+		<item  id="WON00140" parent="WON00130" column="28" rejectEmpty="1" removeLeadingPlusSign="1" type="Normal" >
+		</item>
+		<!--各年に申告する場合の証明額（翌々年分）見込額-->
+		<item  id="WON00150" parent="WON00130" column="29" rejectEmpty="1" removeLeadingPlusSign="1" type="Normal" >
+		</item>
+		<!--各年に申告する場合の証明額（翌々年分）合計額-->
+		<item  id="WON00160" parent="WON00130" column="30" rejectEmpty="1" removeLeadingPlusSign="1" type="Normal" >
+		</item>
+		<!--各年に申告する場合の証明額（翌々年分）　申告年分-->
+		<item  id="WON00170" parent="WON00130" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--各年に申告する場合の証明額（翌々年分）　申告年分 元号-->
+		<item  id="gen:era" parent="WON00170" column="31" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--各年に申告する場合の証明額（翌々年分）　申告年分 年-->
+		<item  id="gen:yy" parent="WON00170" column="32" rejectEmpty="1" zeroSuppress="1" type="Normal" >
+		</item>
+		<!--各年に申告する場合の証明額（翌々年分）証明額-->
+		<item  id="WON00180" parent="WON00130" column="33" rejectEmpty="1" removeLeadingPlusSign="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳１-->
+		<item  id="WOO00000" parent="TEG840" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳１　納付対象年-->
+		<item  id="WOO00010" parent="WOO00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳１　納付対象年 元号-->
+		<item  id="gen:era" parent="WOO00010" column="34" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳１　納付対象年 年-->
+		<item  id="gen:yy" parent="WOO00010" column="35" rejectEmpty="1" zeroSuppress="1" type="Normal" >
+		</item>
+		<item  id="WOO00020" parent="WOO00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳１　１月-->
+		<item  id="WOO00030" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00030" column="36" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00030" refcol="36" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00030" refcol="36" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１　２月-->
+		<item  id="WOO00040" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00040" column="37" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00040" refcol="37" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00040" refcol="37" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１　３月-->
+		<item  id="WOO00050" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00050" column="38" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00050" refcol="38" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00050" refcol="38" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１　４月-->
+		<item  id="WOO00060" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00060" column="39" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00060" refcol="39" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00060" refcol="39" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１　５月-->
+		<item  id="WOO00070" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00070" column="40" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00070" refcol="40" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00070" refcol="40" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１　６月-->
+		<item  id="WOO00080" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00080" column="41" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00080" refcol="41" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00080" refcol="41" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１　７月-->
+		<item  id="WOO00090" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00090" column="42" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00090" refcol="42" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00090" refcol="42" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１　８月-->
+		<item  id="WOO00100" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00100" column="43" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00100" refcol="43" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00100" refcol="43" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１　９月-->
+		<item  id="WOO00110" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00110" column="44" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00110" refcol="44" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00110" refcol="44" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１　１０月-->
+		<item  id="WOO00120" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00120" column="45" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00120" refcol="45" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00120" refcol="45" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１　１１月-->
+		<item  id="WOO00130" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00130" column="46" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00130" refcol="46" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00130" refcol="46" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１　１２月-->
+		<item  id="WOO00140" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00140" column="47" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00140" refcol="47" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00140" refcol="47" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳２-->
+		<item  id="WOO00000" parent="TEG840" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳２　納付対象年-->
+		<item  id="WOO00010" parent="WOO00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳２　納付対象年 元号-->
+		<item  id="gen:era" parent="WOO00010" column="48" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳２　納付対象年 年-->
+		<item  id="gen:yy" parent="WOO00010" column="49" rejectEmpty="1" zeroSuppress="1" type="Normal" >
+		</item>
+		<item  id="WOO00020" parent="WOO00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳２　１月-->
+		<item  id="WOO00030" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00030" column="50" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00030" refcol="50" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00030" refcol="50" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳２　２月-->
+		<item  id="WOO00040" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00040" column="51" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00040" refcol="51" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00040" refcol="51" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳２　３月-->
+		<item  id="WOO00050" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00050" column="52" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00050" refcol="52" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00050" refcol="52" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳２　４月-->
+		<item  id="WOO00060" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00060" column="53" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00060" refcol="53" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00060" refcol="53" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳２　５月-->
+		<item  id="WOO00070" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00070" column="54" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00070" refcol="54" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00070" refcol="54" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳２　６月-->
+		<item  id="WOO00080" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00080" column="55" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00080" refcol="55" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00080" refcol="55" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳２　７月-->
+		<item  id="WOO00090" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00090" column="56" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00090" refcol="56" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00090" refcol="56" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳２　８月-->
+		<item  id="WOO00100" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00100" column="57" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00100" refcol="57" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00100" refcol="57" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳２　９月-->
+		<item  id="WOO00110" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00110" column="58" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00110" refcol="58" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00110" refcol="58" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳２　１０月-->
+		<item  id="WOO00120" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00120" column="59" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00120" refcol="59" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00120" refcol="59" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳２　１１月-->
+		<item  id="WOO00130" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00130" column="60" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00130" refcol="60" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00130" refcol="60" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳２　１２月-->
+		<item  id="WOO00140" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00140" column="61" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00140" refcol="61" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00140" refcol="61" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳３-->
+		<item  id="WOO00000" parent="TEG840" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳３　納付対象年-->
+		<item  id="WOO00010" parent="WOO00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳３　納付対象年 元号-->
+		<item  id="gen:era" parent="WOO00010" column="62" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳３　納付対象年 年-->
+		<item  id="gen:yy" parent="WOO00010" column="63" rejectEmpty="1" zeroSuppress="1" type="Normal" >
+		</item>
+		<item  id="WOO00020" parent="WOO00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳３　１月-->
+		<item  id="WOO00030" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00030" column="64" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00030" refcol="64" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00030" refcol="64" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳３　２月-->
+		<item  id="WOO00040" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00040" column="65" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00040" refcol="65" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00040" refcol="65" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳３　３月-->
+		<item  id="WOO00050" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00050" column="66" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00050" refcol="66" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00050" refcol="66" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳３　４月-->
+		<item  id="WOO00060" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00060" column="67" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00060" refcol="67" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00060" refcol="67" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳３　５月-->
+		<item  id="WOO00070" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00070" column="68" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00070" refcol="68" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00070" refcol="68" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳３　６月-->
+		<item  id="WOO00080" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00080" column="69" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00080" refcol="69" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00080" refcol="69" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳３　７月-->
+		<item  id="WOO00090" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00090" column="70" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00090" refcol="70" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00090" refcol="70" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳３　８月-->
+		<item  id="WOO00100" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00100" column="71" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00100" refcol="71" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00100" refcol="71" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳３　９月-->
+		<item  id="WOO00110" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00110" column="72" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00110" refcol="72" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00110" refcol="72" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳３　１０月-->
+		<item  id="WOO00120" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00120" column="73" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00120" refcol="73" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00120" refcol="73" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳３　１１月-->
+		<item  id="WOO00130" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00130" column="74" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00130" refcol="74" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00130" refcol="74" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳３　１２月-->
+		<item  id="WOO00140" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00140" column="75" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00140" refcol="75" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00140" refcol="75" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳４-->
+		<item  id="WOO00000" parent="TEG840" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳４　納付対象年-->
+		<item  id="WOO00010" parent="WOO00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳４　納付対象年 元号-->
+		<item  id="gen:era" parent="WOO00010" column="76" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳４　納付対象年 年-->
+		<item  id="gen:yy" parent="WOO00010" column="77" rejectEmpty="1" zeroSuppress="1" type="Normal" >
+		</item>
+		<item  id="WOO00020" parent="WOO00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="WOO00030" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳４　１月-->
+		<item  id="kubun_CD" parent="WOO00030" column="78" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00030" refcol="78" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00030" refcol="78" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳４　２月-->
+		<item  id="WOO00040" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00040" column="79" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00040" refcol="79" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00040" refcol="79" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳４　３月-->
+		<item  id="WOO00050" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00050" column="80" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00050" refcol="80" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00050" refcol="80" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳４　４月-->
+		<item  id="WOO00060" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00060" column="81" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00060" refcol="81" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00060" refcol="81" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳４　５月-->
+		<item  id="WOO00070" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00070" column="82" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00070" refcol="82" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00070" refcol="82" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳４　６月-->
+		<item  id="WOO00080" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00080" column="83" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00080" refcol="83" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00080" refcol="83" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳４　７月-->
+		<item  id="WOO00090" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00090" column="84" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00090" refcol="84" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00090" refcol="84" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳４　８月-->
+		<item  id="WOO00100" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00100" column="85" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00100" refcol="85" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00100" refcol="85" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳４　９月-->
+		<item  id="WOO00110" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00110" column="86" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00110" refcol="86" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00110" refcol="86" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳４　１０月-->
+		<item  id="WOO00120" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00120" column="87" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00120" refcol="87" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00120" refcol="87" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳４　１１月-->
+		<item  id="WOO00130" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00130" column="88" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00130" refcol="88" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00130" refcol="88" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳４　１２月-->
+		<item  id="WOO00140" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00140" column="89" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00140" refcol="89" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00140" refcol="89" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳５-->
+		<item  id="WOO00000" parent="TEG840" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳５　納付対象年-->
+		<item  id="WOO00010" parent="WOO00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳５　納付対象年 元号-->
+		<item  id="gen:era" parent="WOO00010" column="90" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳５　納付対象年 年-->
+		<item  id="gen:yy" parent="WOO00010" column="91" rejectEmpty="1" zeroSuppress="1" type="Normal" >
+		</item>
+		<item  id="WOO00020" parent="WOO00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳５　１月-->
+		<item  id="WOO00030" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00030" column="92" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00030" refcol="92" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00030" refcol="92" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳５　２月-->
+		<item  id="WOO00040" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00040" column="93" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00040" refcol="93" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00040" refcol="93" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳５　３月-->
+		<item  id="WOO00050" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00050" column="94" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00050" refcol="94" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00050" refcol="94" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳５　４月-->
+		<item  id="WOO00060" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00060" column="95" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00060" refcol="95" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00060" refcol="95" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳５　５月-->
+		<item  id="WOO00070" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00070" column="96" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00070" refcol="96" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00070" refcol="96" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳５　６月-->
+		<item  id="WOO00080" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00080" column="97" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00080" refcol="97" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00080" refcol="97" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳５　７月-->
+		<item  id="WOO00090" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00090" column="98" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00090" refcol="98" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00090" refcol="98" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳５　８月-->
+		<item  id="WOO00100" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00100" column="99" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00100" refcol="99" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00100" refcol="99" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳５　９月-->
+		<item  id="WOO00110" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00110" column="100" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00110" refcol="100" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00110" refcol="100" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳５　１０月-->
+		<item  id="WOO00120" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00120" column="101" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00120" refcol="101" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00120" refcol="101" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳５　１１月-->
+		<item  id="WOO00130" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00130" column="102" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00130" refcol="102" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00130" refcol="102" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳５　１２月-->
+		<item  id="WOO00140" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00140" column="103" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00140" refcol="103" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00140" refcol="103" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳６-->
+		<item  id="WOO00000" parent="TEG840" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳６　納付対象年-->
+		<item  id="WOO00010" parent="WOO00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳６　納付対象年 元号-->
+		<item  id="gen:era" parent="WOO00010" column="104" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳６　納付対象年 年-->
+		<item  id="gen:yy" parent="WOO00010" column="105" rejectEmpty="1" zeroSuppress="1" type="Normal" >
+		</item>
+		<item  id="WOO00020" parent="WOO00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳６　１月-->
+		<item  id="WOO00030" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00030" column="106" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00030" refcol="106" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00030" refcol="106" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳６　２月-->
+		<item  id="WOO00040" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00040" column="107" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00040" refcol="107" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00040" refcol="107" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳６　３月-->
+		<item  id="WOO00050" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00050" column="108" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00050" refcol="108" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00050" refcol="108" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳６　４月-->
+		<item  id="WOO00060" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00060" column="109" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00060" refcol="109" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00060" refcol="109" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳６　５月-->
+		<item  id="WOO00070" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00070" column="110" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00070" refcol="110" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00070" refcol="110" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳６　６月-->
+		<item  id="WOO00080" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00080" column="111" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00080" refcol="111" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00080" refcol="111" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳６　７月-->
+		<item  id="WOO00090" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00090" column="112" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00090" refcol="112" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00090" refcol="112" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳６　８月-->
+		<item  id="WOO00100" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00100" column="113" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00100" refcol="113" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00100" refcol="113" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳６　９月-->
+		<item  id="WOO00110" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00110" column="114" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00110" refcol="114" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00110" refcol="114" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳６　１０月-->
+		<item  id="WOO00120" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00120" column="115" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00120" refcol="115" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00120" refcol="115" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳６　１１月-->
+		<item  id="WOO00130" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00130" column="116" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00130" refcol="116" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00130" refcol="116" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳６　１２月-->
+		<item  id="WOO00140" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00140" column="117" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00140" refcol="117" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00140" refcol="117" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳７-->
+		<item  id="WOO00000" parent="TEG840" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳７　納付対象年-->
+		<item  id="WOO00010" parent="WOO00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳７　納付対象年 元号-->
+		<item  id="gen:era" parent="WOO00010" column="118" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳７　納付対象年 年-->
+		<item  id="gen:yy" parent="WOO00010" column="119" rejectEmpty="1" zeroSuppress="1" type="Normal" >
+		</item>
+		<item  id="WOO00020" parent="WOO00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳７　１月-->
+		<item  id="WOO00030" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00030" column="120" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00030" refcol="120" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00030" refcol="120" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳７　２月-->
+		<item  id="WOO00040" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00040" column="121" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00040" refcol="121" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00040" refcol="121" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳７　３月-->
+		<item  id="WOO00050" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00050" column="122" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00050" refcol="122" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00050" refcol="122" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳７　４月-->
+		<item  id="WOO00060" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00060" column="123" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00060" refcol="123" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00060" refcol="123" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳７　５月-->
+		<item  id="WOO00070" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00070" column="124" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00070" refcol="124" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00070" refcol="124" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳７　６月-->
+		<item  id="WOO00080" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00080" column="125" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00080" refcol="125" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00080" refcol="125" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳７　７月-->
+		<item  id="WOO00090" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00090" column="126" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00090" refcol="126" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00090" refcol="126" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳７　８月-->
+		<item  id="WOO00100" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00100" column="127" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00100" refcol="127" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00100" refcol="127" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳７　９月-->
+		<item  id="WOO00110" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00110" column="128" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00110" refcol="128" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00110" refcol="128" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳７　１０月-->
+		<item  id="WOO00120" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00120" column="129" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00120" refcol="129" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00120" refcol="129" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳７　１１月-->
+		<item  id="WOO00130" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00130" column="130" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00130" refcol="130" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00130" refcol="130" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳７　１２月-->
+		<item  id="WOO00140" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00140" column="131" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00140" refcol="131" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00140" refcol="131" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳８-->
+		<item  id="WOO00000" parent="TEG840" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳８　納付対象年-->
+		<item  id="WOO00010" parent="WOO00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳８　納付対象年 元号-->
+		<item  id="gen:era" parent="WOO00010" column="132" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳８　納付対象年 年-->
+		<item  id="gen:yy" parent="WOO00010" column="133" rejectEmpty="1" zeroSuppress="1" type="Normal" >
+		</item>
+		<item  id="WOO00020" parent="WOO00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳８　１月-->
+		<item  id="WOO00030" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00030" column="134" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00030" refcol="134" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00030" refcol="134" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳８　２月-->
+		<item  id="WOO00040" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00040" column="135" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00040" refcol="135" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00040" refcol="135" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳８　３月-->
+		<item  id="WOO00050" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00050" column="136" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00050" refcol="136" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00050" refcol="136" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳８　４月-->
+		<item  id="WOO00060" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00060" column="137" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00060" refcol="137" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00060" refcol="137" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳８　５月-->
+		<item  id="WOO00070" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00070" column="138" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00070" refcol="138" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00070" refcol="138" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳８　６月-->
+		<item  id="WOO00080" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00080" column="139" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00080" refcol="139" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00080" refcol="139" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳８　７月-->
+		<item  id="WOO00090" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00090" column="140" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00090" refcol="140" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00090" refcol="140" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳８　８月-->
+		<item  id="WOO00100" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00100" column="141" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00100" refcol="141" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00100" refcol="141" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳８　９月-->
+		<item  id="WOO00110" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00110" column="142" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00110" refcol="142" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00110" refcol="142" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳８　１０月-->
+		<item  id="WOO00120" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00120" column="143" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00120" refcol="143" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00120" refcol="143" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳８　１１月-->
+		<item  id="WOO00130" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00130" column="144" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00130" refcol="144" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00130" refcol="144" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳８　１２月-->
+		<item  id="WOO00140" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00140" column="145" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00140" refcol="145" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00140" refcol="145" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳９-->
+		<item  id="WOO00000" parent="TEG840" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳９　納付対象年-->
+		<item  id="WOO00010" parent="WOO00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳９　納付対象年 元号-->
+		<item  id="gen:era" parent="WOO00010" column="146" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳９　納付対象年 年-->
+		<item  id="gen:yy" parent="WOO00010" column="147" rejectEmpty="1" zeroSuppress="1" type="Normal" >
+		</item>
+		<item  id="WOO00020" parent="WOO00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳９　１月-->
+		<item  id="WOO00030" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00030" column="148" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00030" refcol="148" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00030" refcol="148" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳９　２月-->
+		<item  id="WOO00040" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00040" column="149" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00040" refcol="149" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00040" refcol="149" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳９　３月-->
+		<item  id="WOO00050" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00050" column="150" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00050" refcol="150" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00050" refcol="150" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳９　４月-->
+		<item  id="WOO00060" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00060" column="151" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00060" refcol="151" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00060" refcol="151" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳９　５月-->
+		<item  id="WOO00070" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00070" column="152" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00070" refcol="152" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00070" refcol="152" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳９　６月-->
+		<item  id="WOO00080" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00080" column="153" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00080" refcol="153" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00080" refcol="153" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳９　７月-->
+		<item  id="WOO00090" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00090" column="154" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00090" refcol="154" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00090" refcol="154" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳９　８月-->
+		<item  id="WOO00100" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00100" column="155" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00100" refcol="155" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00100" refcol="155" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳９　９月-->
+		<item  id="WOO00110" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00110" column="156" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00110" refcol="156" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00110" refcol="156" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳９　１０月-->
+		<item  id="WOO00120" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00120" column="157" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00120" refcol="157" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00120" refcol="157" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳９　１１月-->
+		<item  id="WOO00130" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00130" column="158" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00130" refcol="158" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00130" refcol="158" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳９　１２月-->
+		<item  id="WOO00140" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00140" column="159" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00140" refcol="159" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00140" refcol="159" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１０-->
+		<item  id="WOO00000" parent="TEG840" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳１０　納付対象年-->
+		<item  id="WOO00010" parent="WOO00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳１０　納付対象年 元号-->
+		<item  id="gen:era" parent="WOO00010" column="160" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳１０　納付対象年 年-->
+		<item  id="gen:yy" parent="WOO00010" column="161" rejectEmpty="1" zeroSuppress="1" type="Normal" >
+		</item>
+		<item  id="WOO00020" parent="WOO00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳１０　１月-->
+		<item  id="WOO00030" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00030" column="162" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00030" refcol="162" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00030" refcol="162" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１０　２月-->
+		<item  id="WOO00040" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00040" column="163" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00040" refcol="163" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00040" refcol="163" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１０　３月-->
+		<item  id="WOO00050" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00050" column="164" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00050" refcol="164" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00050" refcol="164" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１０　４月-->
+		<item  id="WOO00060" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00060" column="165" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00060" refcol="165" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00060" refcol="165" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１０　５月-->
+		<item  id="WOO00070" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00070" column="166" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00070" refcol="166" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00070" refcol="166" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１０　６月-->
+		<item  id="WOO00080" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00080" column="167" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00080" refcol="167" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00080" refcol="167" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１０　７月-->
+		<item  id="WOO00090" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00090" column="168" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00090" refcol="168" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00090" refcol="168" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１０　８月-->
+		<item  id="WOO00100" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00100" column="169" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00100" refcol="169" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00100" refcol="169" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１０　９月-->
+		<item  id="WOO00110" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00110" column="170" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00110" refcol="170" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00110" refcol="170" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１０　１０月-->
+		<item  id="WOO00120" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00120" column="171" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00120" refcol="171" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00120" refcol="171" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１０　１１月-->
+		<item  id="WOO00130" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00130" column="172" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00130" refcol="172" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00130" refcol="172" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１０　１２月-->
+		<item  id="WOO00140" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00140" column="173" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00140" refcol="173" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00140" refcol="173" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１１-->
+		<item  id="WOO00000" parent="TEG840" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳１１　納付対象年-->
+		<item  id="WOO00010" parent="WOO00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳１１　納付対象年 元号-->
+		<item  id="gen:era" parent="WOO00010" column="174" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳１１　納付対象年 年-->
+		<item  id="gen:yy" parent="WOO00010" column="175" rejectEmpty="1" zeroSuppress="1" type="Normal" >
+		</item>
+		<item  id="WOO00020" parent="WOO00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳１１　１月-->
+		<item  id="WOO00030" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00030" column="176" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00030" refcol="176" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00030" refcol="176" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１１　２月-->
+		<item  id="WOO00040" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00040" column="177" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00040" refcol="177" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00040" refcol="177" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１１　３月-->
+		<item  id="WOO00050" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00050" column="178" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00050" refcol="178" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00050" refcol="178" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１１　４月-->
+		<item  id="WOO00060" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00060" column="179" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00060" refcol="179" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00060" refcol="179" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１１　５月-->
+		<item  id="WOO00070" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00070" column="180" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00070" refcol="180" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00070" refcol="180" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１１　６月-->
+		<item  id="WOO00080" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00080" column="181" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00080" refcol="181" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00080" refcol="181" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１１　７月-->
+		<item  id="WOO00090" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00090" column="182" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00090" refcol="182" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00090" refcol="182" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１１　８月-->
+		<item  id="WOO00100" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00100" column="183" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00100" refcol="183" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00100" refcol="183" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１１　９月-->
+		<item  id="WOO00110" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00110" column="184" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00110" refcol="184" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00110" refcol="184" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１１　１０月-->
+		<item  id="WOO00120" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00120" column="185" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00120" refcol="185" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00120" refcol="185" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１１　１１月-->
+		<item  id="WOO00130" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00130" column="186" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00130" refcol="186" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00130" refcol="186" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１１　１２月-->
+		<item  id="WOO00140" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00140" column="187" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00140" refcol="187" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00140" refcol="187" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１２-->
+		<item  id="WOO00000" parent="TEG840" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳１２　納付対象年-->
+		<item  id="WOO00010" parent="WOO00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳１２　納付対象年 元号-->
+		<item  id="gen:era" parent="WOO00010" column="188" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳１２　納付対象年 年-->
+		<item  id="gen:yy" parent="WOO00010" column="189" rejectEmpty="1" zeroSuppress="1" type="Normal" >
+		</item>
+		<item  id="WOO00020" parent="WOO00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳１２　１月-->
+		<item  id="WOO00030" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00030" column="190" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00030" refcol="190" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00030" refcol="190" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１２　２月-->
+		<item  id="WOO00040" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00040" column="191" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00040" refcol="191" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00040" refcol="191" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１２　３月-->
+		<item  id="WOO00050" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00050" column="192" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00050" refcol="192" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00050" refcol="192" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１２　４月-->
+		<item  id="WOO00060" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00060" column="193" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00060" refcol="193" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00060" refcol="193" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１２　５月-->
+		<item  id="WOO00070" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00070" column="194" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00070" refcol="194" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00070" refcol="194" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１２　６月-->
+		<item  id="WOO00080" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00080" column="195" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00080" refcol="195" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00080" refcol="195" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１２　７月-->
+		<item  id="WOO00090" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00090" column="196" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00090" refcol="196" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00090" refcol="196" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１２　８月-->
+		<item  id="WOO00100" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00100" column="197" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00100" refcol="197" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00100" refcol="197" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１２　９月-->
+		<item  id="WOO00110" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00110" column="198" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00110" refcol="198" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00110" refcol="198" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１２　１０月-->
+		<item  id="WOO00120" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00120" column="199" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00120" refcol="199" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00120" refcol="199" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１２　１１月-->
+		<item  id="WOO00130" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00130" column="200" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00130" refcol="200" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00130" refcol="200" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１２　１２月-->
+		<item  id="WOO00140" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00140" column="201" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00140" refcol="201" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00140" refcol="201" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１３-->
+		<item  id="WOO00000" parent="TEG840" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳１３　納付対象年-->
+		<item  id="WOO00010" parent="WOO00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳１３　納付対象年 元号-->
+		<item  id="gen:era" parent="WOO00010" column="202" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳１３　納付対象年 年-->
+		<item  id="gen:yy" parent="WOO00010" column="203" rejectEmpty="1" zeroSuppress="1" type="Normal" >
+		</item>
+		<item  id="WOO00020" parent="WOO00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--納付状況の内訳１３　１月-->
+		<item  id="WOO00030" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00030" column="204" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00030" refcol="204" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00030" refcol="204" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１３　２月-->
+		<item  id="WOO00040" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00040" column="205" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00040" refcol="205" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00040" refcol="205" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１３　３月-->
+		<item  id="WOO00050" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00050" column="206" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00050" refcol="206" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00050" refcol="206" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１３　４月-->
+		<item  id="WOO00060" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00060" column="207" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00060" refcol="207" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00060" refcol="207" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１３　５月-->
+		<item  id="WOO00070" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00070" column="208" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00070" refcol="208" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00070" refcol="208" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１３　６月-->
+		<item  id="WOO00080" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00080" column="209" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00080" refcol="209" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00080" refcol="209" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１３　７月-->
+		<item  id="WOO00090" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00090" column="210" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00090" refcol="210" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00090" refcol="210" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１３　８月-->
+		<item  id="WOO00100" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00100" column="211" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00100" refcol="211" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00100" refcol="211" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１３　９月-->
+		<item  id="WOO00110" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00110" column="212" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00110" refcol="212" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00110" refcol="212" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１３　１０月-->
+		<item  id="WOO00120" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00120" column="213" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00120" refcol="213" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00120" refcol="213" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１３　１１月-->
+		<item  id="WOO00130" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00130" column="214" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00130" refcol="214" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00130" refcol="214" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--納付状況の内訳１３　１２月-->
+		<item  id="WOO00140" parent="WOO00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOO00140" column="215" rejectEmpty="1" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WOO00140" refcol="215" refval="1" rejectEmpty="1" value="済" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WOO00140" refcol="215" refval="2" rejectEmpty="1" value="見" type="Normal">
+		</item>
+		<!--その他特記事項-->
+		<item  id="WOP00000" parent="TEG840" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--期間外納付保有メッセージ-->
+		<item  id="WOP00010" parent="WOP00000" column="216" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--特例事由申出メッセージ-->
+		<item  id="WOP00020" parent="WOP00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--特例事由申出メッセージ　特例事由申出表示-->
+		<item  id="WOP00030" parent="WOP00020" rejectEmpty="1" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WOP00030" column="217" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--特例事由申出メッセージ　特定事由申出（再掲）-->
+		<item  id="WOP00040" parent="WOP00020" column="218" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--特例事由申出メッセージ　特例保険料額-->
+		<item  id="WOP00050" parent="WOP00020" column="219" rejectEmpty="1" removeLeadingPlusSign="1" type="Normal" >
+		</item>
+		<!--証明日-->
+		<item  id="WOQ00000" parent="TEG840" type="Normal" >
+		</item>
+		<!--証明日　元号-->
+		<item  id="gen:era" parent="WOQ00000" column="220" type="Normal" >
+		</item>
+		<!--証明日　年-->
+		<item  id="gen:yy" parent="WOQ00000" column="221" zeroSuppress="1" type="Normal" >
+		</item>
+		<!--証明日　月-->
+		<item  id="gen:mm" parent="WOQ00000" column="222" zeroSuppress="1" type="Normal" >
+		</item>
+		<!--証明日　日-->
+		<item  id="gen:dd" parent="WOQ00000" column="223" zeroSuppress="1" type="Normal" >
+		</item>
+		<!--発行者-->
+		<item  id="WOR00000" parent="TEG840" column="224" type="Normal" >
+		</item>
+		<!--発行団体-->
+		<item  id="WOS00000" parent="TEG840" column="225" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--ユニークコード-->
+		<item  id="WOT00000" parent="TEG840" column="226" type="Normal" >
+		</item>
+	</report>
+</DatDefine>

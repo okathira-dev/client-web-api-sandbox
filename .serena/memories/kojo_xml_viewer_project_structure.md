@@ -74,11 +74,26 @@ kojo-xml-viewer/
 │   └── elementMapping.ts     # 要素マッピング生成ロジック（XSDから生成）
 ├── consts/
 │   └── elementMapping.ts     # 要素マッピング定数（未使用？）
-├── sample/
-│   └── 生命保険料控除証明書_202511月.xml  # サンプルXMLファイル
+├── sample/                   # サンプルXMLファイル
+│   ├── TEG800_生命保険料控除証明書_202511月.xml
+│   └── TEG840関連のサンプルデータ（[マイナポータル連携APIについて](https://www.nta.go.jp/taxes/tetsuzuki/mynumberinfo/mnp_question/kaikei_question/api/about.htm)で公開）
+│       ├── サンプルデータ①_TEG840_パターン１（前納&一括）.xml
+│       ├── サンプルデータ②_TEG840_パターン２（前納&分割(R4データ)）.xml
+│       ├── サンプルデータ③_TEG840_パターン２（前納&分割(R5データ)）.xml
+│       ├── サンプルデータ④_TEG840_パターン２（前納&分割(R6データ)）.xml
+│       ├── サンプルデータ⑤_TEG840_パターン3（一括（前納なし）(R6データ)）.xml
+│       └── サンプルデータ⑥_パターン4（一括＆半年前納&見込額有）.xml
 └── kojoall/                  # 仕様書ファイル群
     ├── 01電子的控除証明書等/              # 仕様書ドキュメント（参考用）
     │   └── 源泉徴収票等オンライン化に関する仕様書.docx
+    ├── 03CSV変換モジュールインターフェイス仕様書【電子的控除証明書等】/  # CSV変換モジュールインターフェイス仕様書
+    │   └── property/                     # 各TEGコードのテンプレートとバリデーションファイル
+    │       ├── TEG800_1.1_tpl.xml, TEG800_1.1_vld.xml
+    │       ├── TEG810_1.1_tpl.xml, TEG810_1.1_vld.xml
+    │       ├── TEG822_1.0_tpl.xml, TEG822_1.0_vld.xml
+    │       ├── TEG830_1.0_tpl.xml, TEG830_1.0_vld.xml
+    │       ├── TEG840_1.0_tpl.xml, TEG840_1.0_vld.xml
+    │       └── TEG850_1.0_tpl.xml, TEG850_1.0_vld.xml
     └── 04XMLスキーマ/                    # XSDファイル（実装に使用）
         ├── general/                      # 共通ボキャブラリ
         │   ├── General.xsd
@@ -152,8 +167,16 @@ kojo-xml-viewer/
 
 ### サンプルファイル
 
-- `sample/生命保険料控除証明書_202511月.xml`：テスト用のサンプルXMLファイル
-- すべてのテストはこのサンプルファイルを使用して実装されています
+`sample`フォルダには以下のサンプルXMLファイルが含まれています：
+
+- **TEG800**: `TEG800_生命保険料控除証明書_202511月.xml` - テスト用のサンプルXMLファイル
+- **TEG840**: [マイナポータル連携APIについて](https://www.nta.go.jp/taxes/tetsuzuki/mynumberinfo/mnp_question/kaikei_question/api/about.htm)で公開されている社会保険料控除証明書データ（TEG840）のサンプルデータ
+  - サンプルデータ①_TEG840_パターン１（前納&一括）.xml
+  - サンプルデータ②_TEG840_パターン２（前納&分割(R4データ)）.xml
+  - サンプルデータ③_TEG840_パターン２（前納&分割(R5データ)）.xml
+  - サンプルデータ④_TEG840_パターン２（前納&分割(R6データ)）.xml
+  - サンプルデータ⑤_TEG840_パターン3（一括（前納なし）(R6データ)）.xml
+  - サンプルデータ⑥_パターン4（一括＆半年前納&見込額有）.xml
 
 ## XML構造の特徴
 

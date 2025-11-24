@@ -25,7 +25,7 @@ export interface XsdElementInfo {
  * XSDファイルを読み込んでDOMに変換
  */
 export async function loadXsdFile(tegCode: string): Promise<Document> {
-  // Viteの静的アセットとして扱うため、new URL()を使用
+  // viteの静的アセットとして扱うため、new URL(url, import.meta.url)を使用。引数に直接書く必要がある。
   const xsdPath = new URL(
     `../../kojoall/04XMLスキーマ/kyotsu/${tegCode}-001.xsd`,
     import.meta.url,
@@ -84,7 +84,7 @@ export async function loadXsdFile(tegCode: string): Promise<Document> {
  * General.xsdファイルを読み込んでDOMに変換
  */
 export async function loadGeneralXsd(): Promise<Document> {
-  // Viteの静的アセットとして扱うため、new URL()を使用
+  // viteの静的アセットとして扱うため、new URL(url, import.meta.url)を使用。引数に直接書く必要がある。
   const xsdPath = new URL(
     `../../kojoall/04XMLスキーマ/general/General.xsd`,
     import.meta.url,
@@ -484,7 +484,7 @@ async function loadIncludedXsd(
   // General.xsdと同じディレクトリにあるので、直接パスを構築
   // "../general/zeimoku.xsd" -> "zeimoku.xsd"
   const fileName = schemaLocation.replace(/^\.\.\/general\//, "");
-
+  // viteの静的アセットとして扱うため、new URL(url, import.meta.url)を使用。引数に直接書く必要がある。
   const xsdPath = new URL(
     `../../kojoall/04XMLスキーマ/general/${fileName}`,
     import.meta.url,

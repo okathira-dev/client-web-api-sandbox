@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="CMTEG840-001.xsl"?><TEG840 xmlns="http://xml.e-tax.nta.go.jp/XSD/kyotsu" xmlns:gen="http://xml.e-tax.nta.go.jp/XSD/general" xmlns:kyo="http://xml.e-tax.nta.go.jp/XSD/kyotsu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" VR="1.0" id="TEG84020241019165401395020" page="1" sakuseiDay="2024-10-19" sakuseiNM="sakuseiNM" softNM="softNM">
+	<WOA00000>
+		<kubun_CD>1</kubun_CD>
+	</WOA00000>
+	<WOB00000>
+		<kubun_CD>1</kubun_CD>
+	</WOB00000>
+	<WOC00000>
+		<gen:era>5</gen:era>
+		<gen:yy>6</gen:yy>
+	</WOC00000>
+	<WOD00000>0150001012</WOD00000>
+	<WOE00000>国年　二郎二郎二郎二郎二81</WOE00000>
+	<WOF00000>札幌市　東区　旭町</WOF00000>
+	<WOG00000>
+		<gen:era>5</gen:era>
+		<gen:yy>6</gen:yy>
+	</WOG00000>
+	<WOH00000>
+		<gen:mm>1</gen:mm>
+		<gen:dd>1</gen:dd>
+	</WOH00000>
+	<WOI00000>
+		<gen:mm>9</gen:mm>
+		<gen:dd>30</gen:dd>
+	</WOI00000>
+	<WOJ00000>
+		<kubun_CD>1</kubun_CD>
+	</WOJ00000>
+	<WOK00000>160000</WOK00000>
+	<WOL00000>12000</WOL00000>
+	<WOM00000>172000</WOM00000>
+	<WOO00000>
+		<WOO00010>
+			<gen:era>5</gen:era>
+			<gen:yy>6
+			</gen:yy>
+		</WOO00010>
+		<WOO00020>
+			<WOO00060>
+				<kubun_CD>1</kubun_CD>
+			</WOO00060>
+			<WOO00070>
+				<kubun_CD>1</kubun_CD>
+			</WOO00070>
+			<WOO00080>
+				<kubun_CD>1</kubun_CD>
+			</WOO00080>
+			<WOO00090>
+				<kubun_CD>1</kubun_CD>
+			</WOO00090>
+			<WOO00100>
+				<kubun_CD>1</kubun_CD>
+			</WOO00100>
+			<WOO00110>
+				<kubun_CD>2</kubun_CD>
+			</WOO00110>
+			<WOO00120>
+				<kubun_CD>2</kubun_CD>
+			</WOO00120>
+		</WOO00020>
+	</WOO00000>
+	<WOP00000>
+		<WOP00020>
+			<WOP00030>
+				<kubun_CD>2</kubun_CD>
+			</WOP00030>
+		</WOP00020>
+	</WOP00000>
+	<WOQ00000>
+		<gen:era>5</gen:era>
+		<gen:yy>6</gen:yy>
+		<gen:mm>10</gen:mm>
+		<gen:dd>1</gen:dd>
+	</WOQ00000>
+	<WOR00000>歳入徴収官　厚生労働省年金局事業管理課長</WOR00000>
+	<WOS00000>差出人　日本年金機構</WOS00000>
+	<WOT00000>NA20240150001012</WOT00000>
+<dsig:Signature xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" Id="0320221012000000002A"><dsig:SignedInfo><dsig:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/><dsig:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><dsig:Reference URI="#TEG84020241019165401395020"><dsig:Transforms><dsig:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><dsig:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/></dsig:Transforms><dsig:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><dsig:DigestValue>RlrRYDoJebok3tV2+CRJGR56zASrq0HFBetkcYFhZOs=</dsig:DigestValue></dsig:Reference></dsig:SignedInfo><dsig:SignatureValue>cd6frVyWSE9ae2Othl8o8WS9sRJZ+RLWiGSgkGutRoXZfdOoi62rdkuWyvxK73QhLvnJrylQjEMh&#13;
+IG69U95NxzrC6Zad6vkZkTeEkQ5boDQQnMtXXe646qEcXcG0XKnSH125ElYOtIbU/BRFgH7UlKS0&#13;
+QwZPG/ec9B1ffUnk/0iRBDHHRtFqjHCRv42maBP9MlP+eRR4VQiU9OUdqlfEtebkiMEkln4+8ayy&#13;
+ZRF9kNFPRo52hKIELyZc0Yx56RgJYHifcrFJj0sxZNGpdPrzH2o98yv+XtHDSdHgd+ht/zE5JHbo&#13;
+N5pv3bkyIJO0yotrCzXSH9WXCDOZeES6lzoy+w==</dsig:SignatureValue><dsig:KeyInfo><dsig:X509Data><dsig:X509Certificate>MIIEKTCCAxGgAwIBAgIBADANBgkqhkiG9w0BAQsFADBHMQswCQYDVQQGEwJKUDEcMBoGA1UECgwT&#13;
+SmFwYW5lc2UgR292ZXJubWVudDEaMBgGA1UECwwRVGVzdEVudmlyb25tZW50Q0EwHhcNMjIwNzAx&#13;
+MTAxMTM5WhcNMzIwNjI4MTAxMTM5WjCBpzELMAkGA1UEBhMCSlAxHDAaBgNVBAoME0phcGFuZXNl&#13;
+IEdvdmVybm1lbnQxNDAyBgNVBAsMK1Rlc3QgTWluaXN0cnkgb2YgSGVhbHRoLCBMYWJvdXIgYW5k&#13;
+IFdlbGZhcmUxRDBCBgNVBAMMO1Rlc3QgUGVuc2lvbiBCdXJlYXUgQnVzaW5lc3MgQWRtaW5pc3Ry&#13;
+YXRpb24gU2VjdGlvbiBNYW5hZ2VyMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAn/pN&#13;
+TwPJjQzJtgt6YsJK5xmrOq+jnMf6aEayRkpluLykhODsXwtt8mkO5uEWryv5iRnpqDQ9jMo3LUuF&#13;
+yiqGA8glkgQKqQRGO3Ytd653fAQPk/tfHbqOZzSVJUoxc7vw7UL8oizK1oF4sXRwJH4pNa95TrnE&#13;
+MsuCVnsHEf0Oqu9SsiRuCrM5JaMyN6+9owYsiRflLvZ61aE3AWYQzrmqwxCElTCZaeBp/qljOgdv&#13;
+y3zuNTVa3WgNfmUaX5ecOhp4IPVWauMNIuSi8H8ZWUMEAw3DQOXqGilqAA5YEbBFQzNz4V+Xy+HF&#13;
+zkn4KizO6n8Gn1eGRG+MCNj6d3NR635cBQIDAQABo4G+MIG7MAkGA1UdEwQCMAAwLAYJYIZIAYb4&#13;
+QgENBB8WHU9wZW5TU0wgR2VuZXJhdGVkIENlcnRpZmljYXRlMB0GA1UdDgQWBBQvKo9RoUoN201C&#13;
+L66dBzM1AOAwYTBhBgNVHSMEWjBYoUukSTBHMQswCQYDVQQGEwJKUDEcMBoGA1UECgwTSmFwYW5l&#13;
+c2UgR292ZXJubWVudDEaMBgGA1UECwwRVGVzdEVudmlyb25tZW50Q0GCCQD/Xvd8mLgHgzANBgkq&#13;
+hkiG9w0BAQsFAAOCAQEAPdM9BTFQ/rCfbGu42Obx8ut6+EAb4LhJ6yBZ8eA21UruzDMUQSi3D7W1&#13;
+KccnRmqKisR72z572TGu7FznKaY+zEw3a1cad2tycjXJYG5IFfHqKgTx7cbsV+8QMj98hdbni09I&#13;
+5NHskONsIoKC8Ylbbmx0BccBdA5RlJ0+6ePERqWSSHG6RAa1Zxijb1iKpLDJL5/VgtQwoGSL+L1H&#13;
+C72MyBPUwR1bfRJ7BMPtXC67BXn/DoQKtFRcoyMYSuCYg0vQ4A4E+O7jWf0phvXtNNtkTjGvoVN6&#13;
+oaUevR+rbg6HJW7KMf0JL65nYOplbGH1pF64cS4BUouWhUAiD36XDNxe2A==</dsig:X509Certificate></dsig:X509Data></dsig:KeyInfo></dsig:Signature></TEG840>

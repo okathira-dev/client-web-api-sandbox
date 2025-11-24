@@ -22,9 +22,11 @@ import { buildFormData, buildFormTree } from "./formDataBuilder";
 import { getMappingsByTeg } from "../../../mappings/elementMapping";
 import { generateElementMappingsFromXsd } from "../../../mappings/elementMappingFromXsd";
 import { AVAILABLE_TEG_CODES } from "../../../specs/getAvailableTegCodes";
+import { loadKubunMappingsFromProperty } from "../../../specs/parsers/propertyParser";
 import { loadGeneralElementInfo } from "../../../specs/parsers/xsdParser";
 
 import type { FormTreeNode } from "./formDataBuilder";
+import type { KubunMapping } from "../../../specs/parsers/propertyParser";
 import type { GeneralElementInfo } from "../../../specs/parsers/xsdParser";
 import type { ElementMapping } from "../../../specs/types";
 import type { XmlNode, ParsedXml } from "../../../types/xml";
@@ -177,6 +179,7 @@ export function FormRenderer({
   const [generalInfo, setGeneralInfo] = useState<
     Map<string, GeneralElementInfo>
   >(new Map());
+  const [kubunMappings, setKubunMappings] = useState<KubunMapping>(new Map());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -220,6 +223,55 @@ export function FormRenderer({
       cancelled = true;
     };
   }, []);
+
+  // Propertyファイルからkubun_CDのマッピングを読み込む
+  useEffect(() => {
+    if (!tegCode) {
+      return;
+    }
+
+    const activeTegCode = tegCode;
+    let cancelled = false;
+
+    async function loadKubunMappings(): Promise<void> {
+      try {
+        if (process.env.NODE_ENV === "development") {
+          console.debug(`[kubun_CD] Loading mappings for ${activeTegCode}...`);
+        }
+        const mappings = await loadKubunMappingsFromProperty(activeTegCode);
+        if (!cancelled) {
+          if (process.env.NODE_ENV === "development") {
+            console.debug(
+              `[kubun_CD] Loaded ${mappings.size} mappings for ${activeTegCode}`,
+              mappings.size > 0
+                ? Array.from(mappings.entries()).slice(0, 10)
+                : "No mappings found",
+            );
+          }
+          setKubunMappings(mappings);
+        }
+      } catch (err: unknown) {
+        // Propertyファイルの読み込みエラーは無視（kubun_CDのマッピングが表示されないだけ）
+        if (err instanceof Error) {
+          console.warn(
+            `[kubun_CD] Failed to load property file for ${activeTegCode}:`,
+            err.message,
+          );
+        } else {
+          console.warn(
+            `[kubun_CD] Failed to load property file for ${activeTegCode}:`,
+            String(err),
+          );
+        }
+      }
+    }
+
+    void loadKubunMappings();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [tegCode]);
 
   // 仕様書を読み込んで要素マッピングを生成
   useEffect(() => {
@@ -299,8 +351,15 @@ export function FormRenderer({
     const tegMappings = tegCode
       ? getMappingsByTeg(mappings, tegCode)
       : mappings;
-    return buildFormData(xmlNode, tegMappings, generalLabels, generalInfo);
-  }, [xmlNode, mappings, tegCode, generalLabels, generalInfo]);
+    return buildFormData(
+      xmlNode,
+      tegMappings,
+      generalLabels,
+      generalInfo,
+      kubunMappings,
+      tegCode,
+    );
+  }, [xmlNode, mappings, tegCode, generalLabels, generalInfo, kubunMappings]);
 
   const treeNodes = useMemo(() => {
     return buildFormTree(formDataItems);

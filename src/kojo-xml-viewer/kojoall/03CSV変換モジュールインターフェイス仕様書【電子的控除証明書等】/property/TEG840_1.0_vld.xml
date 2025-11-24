@@ -1,0 +1,1307 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<DatDefine VR="1.0">
+<!--国民年金保険料等控除証明書 TEG840-->
+	<report reportVR="1.0" reportId="TEG840" columnNum="226">
+		<!--種別-->
+		<item type="Normal" column="2">
+			<valid id="exist"/>
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--前納分-->
+		<item type="Normal" column="3">
+			<valid id="exist"/>
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--証明年分１　元号-->
+		<item type="Normal" column="4">
+			<valid id="exist"/>
+			<valid id="charSet" value="numeral"/>
+			<valid id="contain" value="4 5" messageId="HCD6143E"/>
+		</item>
+		<!--証明年分１　年-->
+		<item type="Normal" column="5">
+			<valid id="exist"/>
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="99" messageId="HCD6085E"/>
+		</item>
+		<!--基礎年金番号等-->
+		<item type="Normal" column="6">
+			<valid id="exist"/>
+			<valid id="length" max="15" messageId="HCD6045E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--被保険者氏名-->
+		<item type="Normal" column="7">
+			<valid id="exist"/>
+			<valid id="length" max="100" messageId="HCD6039E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--被保険者住所-->
+		<item type="Normal" column="8">
+			<valid id="exist"/>
+			<valid id="length" max="200" messageId="HCD6162E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--証明期間（自）　月-->
+		<item type="Normal" column="9">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="12" messageId="HCD6043E"/>
+		</item>
+		<!--証明期間（自）　日-->
+		<item type="Normal" column="10">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="31" messageId="HCD6044E"/>
+		</item>
+		<!--証明期間（至））　月-->
+		<item type="Normal" column="11">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="12" messageId="HCD6043E"/>
+		</item>
+		<!--証明期間（至）　日-->
+		<item type="Normal" column="12">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="31" messageId="HCD6044E"/>
+		</item>
+		<!--納付済額-->
+		<item type="Normal" column="13">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--見込額-->
+		<item type="Normal" column="14">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--合計額-->
+		<item type="Normal" column="15">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--各年に申告する場合の証明額（当年分）納付済額-->
+		<item type="Normal" column="16">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--各年に申告する場合の証明額（当年分）見込額-->
+		<item type="Normal" column="17">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--各年に申告する場合の証明額（当年分）合計額-->
+		<item type="Normal" column="18">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--各年に申告する場合の証明額（当年分）　申告年分 元号-->
+		<item type="Normal" column="19">
+			<valid id="charSet" value="numeral"/>
+			<valid id="contain" value="4 5" messageId="HCD6143E"/>
+		</item>
+		<!--各年に申告する場合の証明額（当年分）　申告年分 年-->
+		<item type="Normal" column="20">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="99" messageId="HCD6085E"/>
+		</item>
+		<!--各年に申告する場合の証明額（当年分）証明額-->
+		<item type="Normal" column="21">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--各年に申告する場合の証明額（翌年分）納付済額-->
+		<item type="Normal" column="22">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--各年に申告する場合の証明額（翌年分）見込額-->
+		<item type="Normal" column="23">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--各年に申告する場合の証明額（翌年分）合計額-->
+		<item type="Normal" column="24">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--各年に申告する場合の証明額（翌年分）　申告年分 元号-->
+		<item type="Normal" column="25">
+			<valid id="charSet" value="numeral"/>
+			<valid id="contain" value="4 5" messageId="HCD6143E"/>
+		</item>
+		<!--各年に申告する場合の証明額（翌年分）　申告年分 年-->
+		<item type="Normal" column="26">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="99" messageId="HCD6085E"/>
+		</item>
+		<!--各年に申告する場合の証明額（翌年分）証明額-->
+		<item type="Normal" column="27">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--各年に申告する場合の証明額（翌々年分）納付済額-->
+		<item type="Normal" column="28">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--各年に申告する場合の証明額（翌々年分）見込額-->
+		<item type="Normal" column="29">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--各年に申告する場合の証明額（翌々年分）合計額-->
+		<item type="Normal" column="30">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--各年に申告する場合の証明額（翌々年分）　申告年分 元号-->
+		<item type="Normal" column="31">
+			<valid id="charSet" value="numeral"/>
+			<valid id="contain" value="4 5" messageId="HCD6143E"/>
+		</item>
+		<!--各年に申告する場合の証明額（翌々年分）　申告年分 年-->
+		<item type="Normal" column="32">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="99" messageId="HCD6085E"/>
+		</item>
+		<!--各年に申告する場合の証明額（翌々年分）証明額-->
+		<item type="Normal" column="33">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--納付状況の内訳１　納付対象年 元号-->
+		<item type="Normal" column="34">
+			<valid id="charSet" value="numeral"/>
+			<valid id="contain" value="4 5" messageId="HCD6143E"/>
+		</item>
+		<!--納付状況の内訳１　納付対象年 年-->
+		<item type="Normal" column="35">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="99" messageId="HCD6085E"/>
+		</item>
+		<!--納付状況の内訳１　１月-->
+		<item type="Normal" column="36">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１　２月-->
+		<item type="Normal" column="37">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１　３月-->
+		<item type="Normal" column="38">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１　４月-->
+		<item type="Normal" column="39">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１　５月-->
+		<item type="Normal" column="40">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１　６月-->
+		<item type="Normal" column="41">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１　７月-->
+		<item type="Normal" column="42">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１　８月-->
+		<item type="Normal" column="43">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１　９月-->
+		<item type="Normal" column="44">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１　１０月-->
+		<item type="Normal" column="45">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１　１１月-->
+		<item type="Normal" column="46">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１　１２月-->
+		<item type="Normal" column="47">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳２　納付対象年 元号-->
+		<item type="Normal" column="48">
+			<valid id="charSet" value="numeral"/>
+			<valid id="contain" value="4 5" messageId="HCD6143E"/>
+		</item>
+		<!--納付状況の内訳２　納付対象年 年-->
+		<item type="Normal" column="49">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="99" messageId="HCD6085E"/>
+		</item>
+		<!--納付状況の内訳２　１月-->
+		<item type="Normal" column="50">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳２　２月-->
+		<item type="Normal" column="51">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳２　３月-->
+		<item type="Normal" column="52">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳２　４月-->
+		<item type="Normal" column="53">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳２　５月-->
+		<item type="Normal" column="54">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳２　６月-->
+		<item type="Normal" column="55">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳２　７月-->
+		<item type="Normal" column="56">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳２　８月-->
+		<item type="Normal" column="57">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳２　９月-->
+		<item type="Normal" column="58">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳２　１０月-->
+		<item type="Normal" column="59">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳２　１１月-->
+		<item type="Normal" column="60">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳２　１２月-->
+		<item type="Normal" column="61">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳３　納付対象年 元号-->
+		<item type="Normal" column="62">
+			<valid id="charSet" value="numeral"/>
+			<valid id="contain" value="4 5" messageId="HCD6143E"/>
+		</item>
+		<!--納付状況の内訳３　納付対象年 年-->
+		<item type="Normal" column="63">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="99" messageId="HCD6085E"/>
+		</item>
+		<!--納付状況の内訳３　１月-->
+		<item type="Normal" column="64">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳３　２月-->
+		<item type="Normal" column="65">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳３　３月-->
+		<item type="Normal" column="66">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳３　４月-->
+		<item type="Normal" column="67">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳３　５月-->
+		<item type="Normal" column="68">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳３　６月-->
+		<item type="Normal" column="69">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳３　７月-->
+		<item type="Normal" column="70">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳３　８月-->
+		<item type="Normal" column="71">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳３　９月-->
+		<item type="Normal" column="72">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳３　１０月-->
+		<item type="Normal" column="73">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳３　１１月-->
+		<item type="Normal" column="74">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳３　１２月-->
+		<item type="Normal" column="75">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳４　納付対象年 元号-->
+		<item type="Normal" column="76">
+			<valid id="charSet" value="numeral"/>
+			<valid id="contain" value="4 5" messageId="HCD6143E"/>
+		</item>
+		<!--納付状況の内訳４　納付対象年 年-->
+		<item type="Normal" column="77">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="99" messageId="HCD6085E"/>
+		</item>
+		<!--納付状況の内訳４　１月-->
+		<item type="Normal" column="78">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳４　２月-->
+		<item type="Normal" column="79">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳４　３月-->
+		<item type="Normal" column="80">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳４　４月-->
+		<item type="Normal" column="81">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳４　５月-->
+		<item type="Normal" column="82">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳４　６月-->
+		<item type="Normal" column="83">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳４　７月-->
+		<item type="Normal" column="84">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳４　８月-->
+		<item type="Normal" column="85">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳４　９月-->
+		<item type="Normal" column="86">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳４　１０月-->
+		<item type="Normal" column="87">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳４　１１月-->
+		<item type="Normal" column="88">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳４　１２月-->
+		<item type="Normal" column="89">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳５　納付対象年 元号-->
+		<item type="Normal" column="90">
+			<valid id="charSet" value="numeral"/>
+			<valid id="contain" value="4 5" messageId="HCD6143E"/>
+		</item>
+		<!--納付状況の内訳５　納付対象年 年-->
+		<item type="Normal" column="91">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="99" messageId="HCD6085E"/>
+		</item>
+		<!--納付状況の内訳５　１月-->
+		<item type="Normal" column="92">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳５　２月-->
+		<item type="Normal" column="93">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳５　３月-->
+		<item type="Normal" column="94">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳５　４月-->
+		<item type="Normal" column="95">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳５　５月-->
+		<item type="Normal" column="96">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳５　６月-->
+		<item type="Normal" column="97">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳５　７月-->
+		<item type="Normal" column="98">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳５　８月-->
+		<item type="Normal" column="99">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳５　９月-->
+		<item type="Normal" column="100">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳５　１０月-->
+		<item type="Normal" column="101">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳５　１１月-->
+		<item type="Normal" column="102">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳５　１２月-->
+		<item type="Normal" column="103">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳６　納付対象年 元号-->
+		<item type="Normal" column="104">
+			<valid id="charSet" value="numeral"/>
+			<valid id="contain" value="4 5" messageId="HCD6143E"/>
+		</item>
+		<!--納付状況の内訳６　納付対象年 年-->
+		<item type="Normal" column="105">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="99" messageId="HCD6085E"/>
+		</item>
+		<!--納付状況の内訳６　１月-->
+		<item type="Normal" column="106">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳６　２月-->
+		<item type="Normal" column="107">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳６　３月-->
+		<item type="Normal" column="108">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳６　４月-->
+		<item type="Normal" column="109">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳６　５月-->
+		<item type="Normal" column="110">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳６　６月-->
+		<item type="Normal" column="111">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳６　７月-->
+		<item type="Normal" column="112">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳６　８月-->
+		<item type="Normal" column="113">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳６　９月-->
+		<item type="Normal" column="114">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳６　１０月-->
+		<item type="Normal" column="115">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳６　１１月-->
+		<item type="Normal" column="116">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳６　１２月-->
+		<item type="Normal" column="117">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳７　納付対象年 元号-->
+		<item type="Normal" column="118">
+			<valid id="charSet" value="numeral"/>
+			<valid id="contain" value="4 5" messageId="HCD6143E"/>
+		</item>
+		<!--納付状況の内訳７　納付対象年 年-->
+		<item type="Normal" column="119">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="99" messageId="HCD6085E"/>
+		</item>
+		<!--納付状況の内訳７　１月-->
+		<item type="Normal" column="120">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳７　２月-->
+		<item type="Normal" column="121">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳７　３月-->
+		<item type="Normal" column="122">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳７　４月-->
+		<item type="Normal" column="123">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳７　５月-->
+		<item type="Normal" column="124">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳７　６月-->
+		<item type="Normal" column="125">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳７　７月-->
+		<item type="Normal" column="126">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳７　８月-->
+		<item type="Normal" column="127">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳７　９月-->
+		<item type="Normal" column="128">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳７　１０月-->
+		<item type="Normal" column="129">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳７　１１月-->
+		<item type="Normal" column="130">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳７　１２月-->
+		<item type="Normal" column="131">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳８　納付対象年 元号-->
+		<item type="Normal" column="132">
+			<valid id="charSet" value="numeral"/>
+			<valid id="contain" value="4 5" messageId="HCD6143E"/>
+		</item>
+		<!--納付状況の内訳８　納付対象年 年-->
+		<item type="Normal" column="133">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="99" messageId="HCD6085E"/>
+		</item>
+		<!--納付状況の内訳８　１月-->
+		<item type="Normal" column="134">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳８　２月-->
+		<item type="Normal" column="135">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳８　３月-->
+		<item type="Normal" column="136">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳８　４月-->
+		<item type="Normal" column="137">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳８　５月-->
+		<item type="Normal" column="138">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳８　６月-->
+		<item type="Normal" column="139">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳８　７月-->
+		<item type="Normal" column="140">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳８　８月-->
+		<item type="Normal" column="141">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳８　９月-->
+		<item type="Normal" column="142">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳８　１０月-->
+		<item type="Normal" column="143">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳８　１１月-->
+		<item type="Normal" column="144">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳８　１２月-->
+		<item type="Normal" column="145">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳９　納付対象年 元号-->
+		<item type="Normal" column="146">
+			<valid id="charSet" value="numeral"/>
+			<valid id="contain" value="4 5" messageId="HCD6143E"/>
+		</item>
+		<!--納付状況の内訳９　納付対象年 年-->
+		<item type="Normal" column="147">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="99" messageId="HCD6085E"/>
+		</item>
+		<!--納付状況の内訳９　１月-->
+		<item type="Normal" column="148">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳９　２月-->
+		<item type="Normal" column="149">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳９　３月-->
+		<item type="Normal" column="150">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳９　４月-->
+		<item type="Normal" column="151">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳９　５月-->
+		<item type="Normal" column="152">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳９　６月-->
+		<item type="Normal" column="153">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳９　７月-->
+		<item type="Normal" column="154">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳９　８月-->
+		<item type="Normal" column="155">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳９　９月-->
+		<item type="Normal" column="156">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳９　１０月-->
+		<item type="Normal" column="157">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳９　１１月-->
+		<item type="Normal" column="158">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳９　１２月-->
+		<item type="Normal" column="159">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１０　納付対象年 元号-->
+		<item type="Normal" column="160">
+			<valid id="charSet" value="numeral"/>
+			<valid id="contain" value="4 5" messageId="HCD6143E"/>
+		</item>
+		<!--納付状況の内訳１０　納付対象年 年-->
+		<item type="Normal" column="161">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="99" messageId="HCD6085E"/>
+		</item>
+		<!--納付状況の内訳１０　１月-->
+		<item type="Normal" column="162">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１０　２月-->
+		<item type="Normal" column="163">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１０　３月-->
+		<item type="Normal" column="164">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１０　４月-->
+		<item type="Normal" column="165">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１０　５月-->
+		<item type="Normal" column="166">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１０　６月-->
+		<item type="Normal" column="167">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１０　７月-->
+		<item type="Normal" column="168">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１０　８月-->
+		<item type="Normal" column="169">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１０　９月-->
+		<item type="Normal" column="170">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１０　１０月-->
+		<item type="Normal" column="171">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１０　１１月-->
+		<item type="Normal" column="172">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１０　１２月-->
+		<item type="Normal" column="173">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１１　納付対象年 元号-->
+		<item type="Normal" column="174">
+			<valid id="charSet" value="numeral"/>
+			<valid id="contain" value="4 5" messageId="HCD6143E"/>
+		</item>
+		<!--納付状況の内訳１１　納付対象年 年-->
+		<item type="Normal" column="175">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="99" messageId="HCD6085E"/>
+		</item>
+		<!--納付状況の内訳１１　１月-->
+		<item type="Normal" column="176">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１１　２月-->
+		<item type="Normal" column="177">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１１　３月-->
+		<item type="Normal" column="178">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１１　４月-->
+		<item type="Normal" column="179">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１１　５月-->
+		<item type="Normal" column="180">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１１　６月-->
+		<item type="Normal" column="181">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１１　７月-->
+		<item type="Normal" column="182">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１１　８月-->
+		<item type="Normal" column="183">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１１　９月-->
+		<item type="Normal" column="184">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１１　１０月-->
+		<item type="Normal" column="185">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１１　１１月-->
+		<item type="Normal" column="186">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１１　１２月-->
+		<item type="Normal" column="187">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１２　納付対象年 元号-->
+		<item type="Normal" column="188">
+			<valid id="charSet" value="numeral"/>
+			<valid id="contain" value="4 5" messageId="HCD6143E"/>
+		</item>
+		<!--納付状況の内訳１２　納付対象年 年-->
+		<item type="Normal" column="189">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="99" messageId="HCD6085E"/>
+		</item>
+		<!--納付状況の内訳１２　１月-->
+		<item type="Normal" column="190">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１２　２月-->
+		<item type="Normal" column="191">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１２　３月-->
+		<item type="Normal" column="192">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１２　４月-->
+		<item type="Normal" column="193">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１２　５月-->
+		<item type="Normal" column="194">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１２　６月-->
+		<item type="Normal" column="195">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１２　７月-->
+		<item type="Normal" column="196">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１２　８月-->
+		<item type="Normal" column="197">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１２　９月-->
+		<item type="Normal" column="198">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１２　１０月-->
+		<item type="Normal" column="199">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１２　１１月-->
+		<item type="Normal" column="200">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１２　１２月-->
+		<item type="Normal" column="201">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１３　納付対象年 元号-->
+		<item type="Normal" column="202">
+			<valid id="charSet" value="numeral"/>
+			<valid id="contain" value="4 5" messageId="HCD6143E"/>
+		</item>
+		<!--納付状況の内訳１３　納付対象年 年-->
+		<item type="Normal" column="203">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="99" messageId="HCD6085E"/>
+		</item>
+		<!--納付状況の内訳１３　１月-->
+		<item type="Normal" column="204">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１３　２月-->
+		<item type="Normal" column="205">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１３　３月-->
+		<item type="Normal" column="206">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１３　４月-->
+		<item type="Normal" column="207">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１３　５月-->
+		<item type="Normal" column="208">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１３　６月-->
+		<item type="Normal" column="209">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１３　７月-->
+		<item type="Normal" column="210">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１３　８月-->
+		<item type="Normal" column="211">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１３　９月-->
+		<item type="Normal" column="212">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１３　１０月-->
+		<item type="Normal" column="213">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１３　１１月-->
+		<item type="Normal" column="214">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--納付状況の内訳１３　１２月-->
+		<item type="Normal" column="215">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--期間外納付保有メッセージ-->
+		<item type="Normal" column="216">
+			<valid id="length" max="100" messageId="HCD6039E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--特例事由申出メッセージ　特例事由申出表示-->
+		<item type="Normal" column="217">
+			<valid id="length" value="1" messageId="HCD6159E"/>
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--特例事由申出メッセージ　特定事由申出（再掲）-->
+		<item type="Normal" column="218">
+			<valid id="exist">
+				<outer id="exist" column="217"/>
+				<outer id="contain" column="217" value="1" messageId="HCD6056E"/>
+			</valid>
+			<valid id="length" max="100" messageId="HCD6039E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--特例事由申出メッセージ　特例保険料額-->
+		<item type="Normal" column="219">
+			<valid id="exist">
+				<outer id="exist" column="217"/>
+				<outer id="contain" column="217" value="1" messageId="HCD6056E"/>
+			</valid>
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--証明日　元号-->
+		<item type="Normal" column="220">
+			<valid id="exist"/>
+			<valid id="charSet" value="numeral"/>
+			<valid id="contain" value="4 5" messageId="HCD6143E"/>
+		</item>
+		<!--証明日　年-->
+		<item type="Normal" column="221">
+			<valid id="exist"/>
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="99" messageId="HCD6085E"/>
+		</item>
+		<!--証明日　月-->
+		<item type="Normal" column="222">
+			<valid id="exist"/>
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="12" messageId="HCD6043E"/>
+		</item>
+		<!--証明日　日-->
+		<item type="Normal" column="223">
+			<valid id="exist"/>
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="31" messageId="HCD6044E"/>
+		</item>
+		<!--発行者-->
+		<item type="Normal" column="224">
+			<valid id="exist"/>
+			<valid id="length" max="100" messageId="HCD6039E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--発行団体-->
+		<item type="Normal" column="225">
+			<valid id="length" max="100" messageId="HCD6039E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--ユニークコード-->
+		<item type="Normal" column="226">
+			<valid id="exist"/>
+			<valid id="length" max="20" messageId="HCD6050E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--複合チェック-->
+		<item type="Normal" column="-1">
+			<!--証明年分１ 元号年妥当性をチェック-->
+			<valid id="existDate2" value="GYY" checkColumns="4 5" errpos="4"  messageId="HCD6163E"/>
+		</item>
+		<item type="Normal" column="-1">
+			<!--証明年分１元号・年＋証明期間（自）月・日妥当性をチェック-->
+			<valid id="existDate2" value="GYYMMDD2" checkColumns="4 5 9 10" errpos="9"  messageId="HCD6163E">
+				<outer id="exist" checkColumns="9 10" conditions="or"  messageId="HCD6163E"/>
+			</valid>
+		</item>
+		<item type="Normal" column="-1">
+			<!--証明年分１元号・年＋証明期間（至）月・日妥当性をチェック-->
+			<valid id="existDate2" value="GYYMMDD2" checkColumns="4 5 11 12" errpos="11"  messageId="HCD6163E">
+				<outer id="exist" checkColumns="11 12" conditions="or"  messageId="HCD6163E"/>
+			</valid>
+		</item>
+		<item type="Normal" column="-1">
+			<!--各年に申告する場合の証明額（当年分）　申告年分 元号年妥当性をチェック-->
+			<valid id="existDate2" value="GYY" checkColumns="19 20" errpos="19"  messageId="HCD6163E"/>
+		</item>
+		<item type="Normal" column="-1">
+			<!--各年に申告する場合の証明額（翌年分）　申告年分 元号年妥当性をチェック-->
+			<valid id="existDate2" value="GYY" checkColumns="25 26" errpos="25"  messageId="HCD6163E"/>
+		</item>
+		<item type="Normal" column="-1">
+			<!--各年に申告する場合の証明額（翌々年分）　申告年分 元号年妥当性をチェック-->
+			<valid id="existDate2" value="GYY" checkColumns="31 32" errpos="31"  messageId="HCD6163E"/>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳１　納付対象 元号年妥当性をチェック-->
+			<valid id="existDate2" value="GYY" checkColumns="34 35" errpos="34"  messageId="HCD6163E"/>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳２　納付対象 元号年妥当性をチェック-->
+			<valid id="existDate2" value="GYY" checkColumns="48 49" errpos="48"  messageId="HCD6163E"/>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳３　納付対象 元号年妥当性をチェック-->
+			<valid id="existDate2" value="GYY" checkColumns="62 63" errpos="62"  messageId="HCD6163E"/>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳４　納付対象 元号年妥当性をチェック-->
+			<valid id="existDate2" value="GYY" checkColumns="76 77" errpos="76"  messageId="HCD6163E"/>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳５　納付対象 元号年妥当性をチェック-->
+			<valid id="existDate2" value="GYY" checkColumns="90 91" errpos="90"  messageId="HCD6163E"/>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳６　納付対象 元号年妥当性をチェック-->
+			<valid id="existDate2" value="GYY" checkColumns="104 105" errpos="104"  messageId="HCD6163E"/>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳７　納付対象 元号年妥当性をチェック-->
+			<valid id="existDate2" value="GYY" checkColumns="118 119" errpos="118"  messageId="HCD6163E"/>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳８　納付対象 元号年妥当性をチェック-->
+			<valid id="existDate2" value="GYY" checkColumns="132 133" errpos="132"  messageId="HCD6163E"/>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳９　納付対象 元号年妥当性をチェック-->
+			<valid id="existDate2" value="GYY" checkColumns="146 147" errpos="146"  messageId="HCD6163E"/>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳１０　納付対象 元号年妥当性をチェック-->
+			<valid id="existDate2" value="GYY" checkColumns="160 161" errpos="160"  messageId="HCD6163E"/>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳１１　納付対象 元号年妥当性をチェック-->
+			<valid id="existDate2" value="GYY" checkColumns="174 175" errpos="174"  messageId="HCD6163E"/>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳１２　納付対象 元号年妥当性をチェック-->
+			<valid id="existDate2" value="GYY" checkColumns="188 189" errpos="188"  messageId="HCD6163E"/>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳１３　納付対象 元号年妥当性をチェック-->
+			<valid id="existDate2" value="GYY" checkColumns="202 203" errpos="202"  messageId="HCD6163E"/>
+		</item>
+		<item type="Normal" column="-1">
+			<!--証明日元号年月日妥当性をチェック-->
+			<valid id="existDate2" value="GYYMMDD" checkColumns="220 221 222 223" errpos="220"  messageId="HCD6163E"/>
+		</item>
+		<item type="Normal" column="-1">
+			<!--証明期間（自）（月）（日）、証明期間（至）（月）（日）の前後関係をチェック-->
+			<valid id="dateRange" value="MMDD" checkColumns="9 10" checkColumns2="11 12" conditions="LE" errpos="9"  messageId="HCD6164E"/>
+		</item>
+		<item type="Normal" column="-1">
+			<!--各年に申告する場合の証明額（当年分）「納付済額」「見込額」「合計額」「証明額」のいずれかに値がある場合、「申告年分 元号」および「申告年分 年」に値があること-->
+			<valid id="exist" checkColumns="19 20" conditions="and" errpos="19"  messageId="HCD6165E">
+				<outer id="exist" checkColumns="16 17 18 21" conditions="or"  messageId="HCD6165E"/>
+			</valid>
+		</item>
+		<item type="Normal" column="-1">
+			<!--各年に申告する場合の証明額（翌年分）「納付済額」「見込額」「合計額」「証明額」のいずれかに値がある場合、「申告年分 元号」および「申告年分 年」に値があること-->
+			<valid id="exist" checkColumns="25 26" conditions="and" errpos="25"  messageId="HCD6165E">
+				<outer id="exist" checkColumns="22 23 24 27" conditions="or"  messageId="HCD6165E"/>
+			</valid>
+		</item>
+		<item type="Normal" column="-1">
+			<!--各年に申告する場合の証明額（翌々年分）「納付済額」「見込額」「合計額」「証明額」のいずれかに値がある場合、「申告年分 元号」および「申告年分 年」に値があること-->
+			<valid id="exist" checkColumns="31 32" conditions="and" errpos="31"  messageId="HCD6165E">
+				<outer id="exist" checkColumns="28 29 30 33" conditions="or"  messageId="HCD6165E"/>
+			</valid>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳１・１月～１２月のいずれかに値がある場合、「納付対象年 元号」および「納付対象年 年」に値があること-->
+			<valid id="exist" checkColumns="34 35" conditions="and" errpos="34"  messageId="HCD6167E">
+				<outer id="exist" checkColumns="36 37 38 39 40 41 42 43 44 45 46 47" conditions="or"  messageId="HCD6167E"/>
+			</valid>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳２・１月～１２月のいずれかに値がある場合、「納付対象年 元号」および「納付対象年 年」に値があること-->
+			<valid id="exist" checkColumns="48 49" conditions="and" errpos="48"  messageId="HCD6167E">
+				<outer id="exist" checkColumns="50 51 52 53 54 55 56 57 58 59 60 61" conditions="or"  messageId="HCD6167E"/>
+			</valid>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳３・１月～１２月のいずれかに値がある場合、「納付対象年 元号」および「納付対象年 年」に値があること-->
+			<valid id="exist" checkColumns="62 63" conditions="and" errpos="62"  messageId="HCD6167E">
+				<outer id="exist" checkColumns="64 65 66 67 68 69 70 71 72 73 74 75" conditions="or"  messageId="HCD6167E"/>
+			</valid>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳４・１月～１２月のいずれかに値がある場合、「納付対象年 元号」および「納付対象年 年」に値があること-->
+			<valid id="exist" checkColumns="76 77" conditions="and" errpos="76"  messageId="HCD6167E">
+				<outer id="exist" checkColumns="78 79 80 81 82 83 84 85 86 87 88 89" conditions="or"  messageId="HCD6167E"/>
+			</valid>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳５・１月～１２月のいずれかに値がある場合、「納付対象年 元号」および「納付対象年 年」に値があること-->
+			<valid id="exist" checkColumns="90 91" conditions="and" errpos="90"  messageId="HCD6167E">
+				<outer id="exist" checkColumns="92 93 94 95 96 97 98 99 100 101 102 103" conditions="or"  messageId="HCD6167E"/>
+			</valid>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳６・１月～１２月のいずれかに値がある場合、「納付対象年 元号」および「納付対象年 年」に値があること-->
+			<valid id="exist" checkColumns="104 105" conditions="and" errpos="104"  messageId="HCD6167E">
+				<outer id="exist" checkColumns="106 107 108 109 110 111 112 113 114 115 116 117" conditions="or"  messageId="HCD6167E"/>
+			</valid>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳７・１月～１２月のいずれかに値がある場合、「納付対象年 元号」および「納付対象年 年」に値があること-->
+			<valid id="exist" checkColumns="118 119" conditions="and" errpos="118"  messageId="HCD6167E">
+				<outer id="exist" checkColumns="120 121 122 123 124 125 126 127 128 129 130 131" conditions="or"  messageId="HCD6167E"/>
+			</valid>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳８・１月～１２月のいずれかに値がある場合、「納付対象年 元号」および「納付対象年 年」に値があること-->
+			<valid id="exist" checkColumns="132 133" conditions="and" errpos="132"  messageId="HCD6167E">
+				<outer id="exist" checkColumns="134 135 136 137 138 139 140 141 142 143 144 145" conditions="or"  messageId="HCD6167E"/>
+			</valid>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳９・１月～１２月のいずれかに値がある場合、「納付対象年 元号」および「納付対象年 年」に値があること-->
+			<valid id="exist" checkColumns="146 147" conditions="and" errpos="146"  messageId="HCD6167E">
+				<outer id="exist" checkColumns="148 149 150 151 152 153 154 155 156 157 158 159" conditions="or"  messageId="HCD6167E"/>
+			</valid>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳１０・１月～１２月のいずれかに値がある場合、「納付対象年 元号」および「納付対象年 年」に値があること-->
+			<valid id="exist" checkColumns="160 161" conditions="and" errpos="160"  messageId="HCD6167E">
+				<outer id="exist" checkColumns="162 163 164 165 166 167 168 169 170 171 172 173" conditions="or"  messageId="HCD6167E"/>
+			</valid>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳１１・１月～１２月のいずれかに値がある場合、「納付対象年 元号」および「納付対象年 年」に値があること-->
+			<valid id="exist" checkColumns="174 175" conditions="and" errpos="174"  messageId="HCD6167E">
+				<outer id="exist" checkColumns="176 177 178 179 180 181 182 183 184 185 186 187" conditions="or"  messageId="HCD6167E"/>
+			</valid>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳１２・１月～１２月のいずれかに値がある場合、「納付対象年 元号」および「納付対象年 年」に値があること-->
+			<valid id="exist" checkColumns="188 189" conditions="and" errpos="188"  messageId="HCD6167E">
+				<outer id="exist" checkColumns="190 191 192 193 194 195 196 197 198 199 200 201" conditions="or"  messageId="HCD6167E"/>
+			</valid>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳１３・１月～１２月のいずれかに値がある場合、「納付対象年 元号」および「納付対象年 年」に値があること-->
+			<valid id="exist" checkColumns="202 203" conditions="and" errpos="202"  messageId="HCD6167E">
+				<outer id="exist" checkColumns="204 205 206 207 208 209 210 211 212 213 214 215" conditions="or"  messageId="HCD6167E"/>
+			</valid>
+		</item>
+		<item type="Normal" column="-1">
+			<!--各年に申告する場合の証明額（当年分）「申告年分 元号」および「申告年分 年」に値がある場合、「証明額」に値があること-->
+			<valid id="exist" checkColumns="21" conditions="and" errpos="21"  messageId="HCD6166E">
+				<outer id="exist" checkColumns="19 20" conditions="and"  messageId="HCD6166E"/>
+			</valid>
+		</item>
+		<item type="Normal" column="-1">
+			<!--各年に申告する場合の証明額（翌年分）「申告年分 元号」および「申告年分 年」に値がある場合、「証明額」に値があること-->
+			<valid id="exist" checkColumns="27" conditions="and" errpos="27"  messageId="HCD6166E">
+				<outer id="exist" checkColumns="25 26" conditions="and"  messageId="HCD6166E"/>
+			</valid>
+		</item>
+		<item type="Normal" column="-1">
+			<!--各年に申告する場合の証明額（翌々年分）「申告年分 元号」および「申告年分 年」に値がある場合、「証明額」に値があること-->
+			<valid id="exist" checkColumns="33" conditions="and" errpos="33"  messageId="HCD6166E">
+				<outer id="exist" checkColumns="31 32" conditions="and"  messageId="HCD6166E"/>
+			</valid>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳１・「納付対象年 元号」および「納付対象年 年」に値がある場合、１月～１２月のいずれかに値があること-->
+			<valid id="exist" checkColumns="36 37 38 39 40 41 42 43 44 45 46 47" conditions="or" errpos="36"  messageId="HCD6168E">
+				<outer id="exist" checkColumns="34 35" conditions="and"  messageId="HCD6168E"/>
+			</valid>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳２・「納付対象年 元号」および「納付対象年 年」に値がある場合、１月～１２月のいずれかに値があること-->
+			<valid id="exist" checkColumns="50 51 52 53 54 55 56 57 58 59 60 61" conditions="or" errpos="50"  messageId="HCD6168E">
+				<outer id="exist" checkColumns="48 49" conditions="and"  messageId="HCD6168E"/>
+			</valid>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳３・「納付対象年 元号」および「納付対象年 年」に値がある場合、１月～１２月のいずれかに値があること-->
+			<valid id="exist" checkColumns="64 65 66 67 68 69 70 71 72 73 74 75" conditions="or" errpos="64"  messageId="HCD6168E">
+				<outer id="exist" checkColumns="62 63" conditions="and" messageId="HCD6168E"/>
+			</valid>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳４・「納付対象年 元号」および「納付対象年 年」に値がある場合、１月～１２月のいずれかに値があること-->
+			<valid id="exist" checkColumns="78 79 80 81 82 83 84 85 86 87 88 89" conditions="or" errpos="78"  messageId="HCD6168E">
+				<outer id="exist" checkColumns="76 77" conditions="and"  messageId="HCD6168E"/>
+			</valid>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳５・「納付対象年 元号」および「納付対象年 年」に値がある場合、１月～１２月のいずれかに値があること-->
+			<valid id="exist" checkColumns="92 93 94 95 96 97 98 99 100 101 102 103" conditions="or" errpos="92"  messageId="HCD6168E">
+				<outer id="exist" checkColumns="90 91" conditions="and" messageId="HCD6168E"/>
+			</valid>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳６・「納付対象年 元号」および「納付対象年 年」に値がある場合、１月～１２月のいずれかに値があること-->
+			<valid id="exist" checkColumns="106 107 108 109 110 111 112 113 114 115 116 117" conditions="or" errpos="106"  messageId="HCD6168E">
+				<outer id="exist" checkColumns="104 105" conditions="and" messageId="HCD6168E"/>
+			</valid>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳７・「納付対象年 元号」および「納付対象年 年」に値がある場合、１月～１２月のいずれかに値があること-->
+			<valid id="exist" checkColumns="120 121 122 123 124 125 126 127 128 129 130 131" conditions="or" errpos="120"  messageId="HCD6168E">
+				<outer id="exist" checkColumns="118 119" conditions="and" messageId="HCD6168E"/>
+			</valid>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳８・「納付対象年 元号」および「納付対象年 年」に値がある場合、１月～１２月のいずれかに値があること-->
+			<valid id="exist" checkColumns="134 135 136 137 138 139 140 141 142 143 144 145" conditions="or" errpos="134"  messageId="HCD6168E">
+				<outer id="exist" checkColumns="132 133" conditions="and" messageId="HCD6168E"/>
+			</valid>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳９・「納付対象年 元号」および「納付対象年 年」に値がある場合、１月～１２月のいずれかに値があること-->
+			<valid id="exist" checkColumns="148 149 150 151 152 153 154 155 156 157 158 159" conditions="or" errpos="148"  messageId="HCD6168E">
+				<outer id="exist" checkColumns="146 147" conditions="and" messageId="HCD6168E"/>
+			</valid>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳１０・「納付対象年 元号」および「納付対象年 年」に値がある場合、１月～１２月のいずれかに値があること-->
+			<valid id="exist" checkColumns="162 163 164 165 166 167 168 169 170 171 172 173" conditions="or" errpos="162"  messageId="HCD6168E">
+				<outer id="exist" checkColumns="160 161" conditions="and" messageId="HCD6168E"/>
+			</valid>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳１１・「納付対象年 元号」および「納付対象年 年」に値がある場合、１月～１２月のいずれかに値があること-->
+			<valid id="exist" checkColumns="176 177 178 179 180 181 182 183 184 185 186 187" conditions="or" errpos="176"  messageId="HCD6168E">
+				<outer id="exist" checkColumns="174 175" conditions="and" messageId="HCD6168E"/>
+			</valid>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳１２・「納付対象年 元号」および「納付対象年 年」に値がある場合、１月～１２月のいずれかに値があること-->
+			<valid id="exist" checkColumns="190 191 192 193 194 195 196 197 198 199 200 201" conditions="or" errpos="190" messageId="HCD6168E">
+				<outer id="exist" checkColumns="188 189" conditions="and" messageId="HCD6168E"/>
+			</valid>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳１３・「納付対象年 元号」および「納付対象年 年」に値がある場合、１月～１２月のいずれかに値があること-->
+			<valid id="exist" checkColumns="204 205 206 207 208 209 210 211 212 213 214 215" conditions="or" errpos="204"  messageId="HCD6168E">
+				<outer id="exist" checkColumns="202 203" conditions="and" messageId="HCD6168E"/>
+			</valid>
+		</item>
+		<item type="Normal" column="-1">
+			<!--各年に申告する場合の証明額（当年分）（翌年分）（翌々年分）の申告年分 元号・年が重複していないこと-->
+			<valid id="duplicate" value="GYY" checkColumns="19 20 25 26 31 32" conditions="NE" messageId="HCD6169E" errset="1"/>
+		</item>
+		<item type="Normal" column="-1">
+			<!--納付状況の内訳１～１３の納付対象年 元号・納付対象年が重複していないこと-->
+			<valid id="duplicate" value="GYY" checkColumns="34 35 48 49 62 63 76 77 90 91 104 105 118 119 132 133 146 147 160 161 174 175 188 189 202 203" conditions="NE" messageId="HCD6170E" errset="1"/>
+		</item>
+	</report>
+</DatDefine>

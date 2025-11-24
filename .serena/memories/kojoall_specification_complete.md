@@ -40,7 +40,26 @@ kojo-xml-viewerプロジェクトで使用するkojoallフォルダには、源�
 - TEG840（国民年金保険料等控除証明書）
 - TEG850（小規模企業共済等掛金控除証明書）
 
-### 2. 04XMLスキーマ/（実装に使用）
+### 2. 03CSV変換モジュールインターフェイス仕様書【電子的控除証明書等】/
+
+**目的**: CSV変換モジュールインターフェイス仕様書
+
+**構造**:
+- `property/`: 各TEGコードのテンプレートファイルとバリデーションファイル
+  - `*_tpl.xml`: テンプレートファイル（各TEGコードのXML構造のテンプレート）
+  - `*_vld.xml`: バリデーションファイル（各TEGコードのXML構造のバリデーション用データ）
+
+**含まれるTEGコード**:
+- TEG800（1.1版）
+- TEG810（1.1版）
+- TEG822（1.0版）
+- TEG830（1.0版）
+- TEG840（1.0版）
+- TEG850（1.0版）
+
+**参考URL**: [マイナポータル連携APIについて](https://www.nta.go.jp/taxes/tetsuzuki/mynumberinfo/mnp_question/kaikei_question/api/about.htm)
+
+### 3. 04XMLスキーマ/（実装に使用）
 
 **目的**: XML構造を正式に定義するXSDファイル
 
@@ -131,7 +150,19 @@ XSDから要素マッピングを生成する際の処理:
    - 代替: 親要素の日本語名を使用するか、階層構造から推測
    - 影響: カテゴリ分類の精度が若干下がる可能性があるが、表示には問題ない
 
+## サンプルデータ
+
+`sample`フォルダには、[マイナポータル連携APIについて](https://www.nta.go.jp/taxes/tetsuzuki/mynumberinfo/mnp_question/kaikei_question/api/about.htm)で公開されている社会保険料控除証明書データ（TEG840）のサンプルデータが含まれています：
+
+- サンプルデータ①_TEG840_パターン１（前納&一括）.xml
+- サンプルデータ②_TEG840_パターン２（前納&分割(R4データ)）.xml
+- サンプルデータ③_TEG840_パターン２（前納&分割(R5データ)）.xml
+- サンプルデータ④_TEG840_パターン２（前納&分割(R6データ)）.xml
+- サンプルデータ⑤_TEG840_パターン3（一括（前納なし）(R6データ)）.xml
+- サンプルデータ⑥_パターン4（一括＆半年前納&見込額有）.xml
+
 ## 参考資料
 
 - [電子的控除証明書等に係る仕様書一覧](https://www.e-tax.nta.go.jp/shiyo/shiyo-kojo3.htm)
 - [控除申告書データに係る仕様書](https://www.nta.go.jp/users/gensen/oshirase/0019004-159.htm)
+- [マイナポータル連携APIについて](https://www.nta.go.jp/taxes/tetsuzuki/mynumberinfo/mnp_question/kaikei_question/api/about.htm)

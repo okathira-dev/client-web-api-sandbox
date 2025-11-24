@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<DatDefine VR="1.0">
+<!--寄附金受領証明書 TEG822-->
+	<report reportVR="1.0" reportId="TEG822" columnNum="14">
+		<!--契約者別XML作成用グルーピングコード-->
+		<item type="Normal" column="2">
+			<valid id="charSet" value="alphaNumeric"/>
+			<valid id="length" max="4" messageId="HCD6033E"/>
+		</item>
+		<!--領収書発行番号-->
+		<item type="Normal" column="3">
+			<valid id="exist"/>
+			<valid id="charSet" value="alphaNumeric"/>
+			<valid id="length" max="50" messageId="HCD6059E"/>
+		</item>
+		<!--寄附者の氏名-->
+		<item type="Normal" column="4">
+			<valid id="exist"/>
+			<valid id="length" max="100" messageId="HCD6039E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--寄附の種類-->
+		<item type="Normal" column="5">
+			<valid id="exist"/>
+			<valid id="contain" value="1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16" messageId="HCD6060E"/>
+		</item>
+		<!--適用条文（その他）-->
+		<item type="Normal" column="6">
+			<valid id="exist" messageId="HCD6030E">
+				<outer id="exist" column="5"/>
+				<outer id="contain" value="8" column="5" messageId="HCD6060E"/>
+			</valid>
+			<valid id="length" max="100" messageId="HCD6039E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--寄附金額-->
+		<item type="Normal" column="7">
+			<valid id="exist"/>
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--寄附を受けた団体名等-->
+		<item type="Normal" column="8">
+			<valid id="exist"/>
+			<valid id="length" max="100" messageId="HCD6039E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--寄附を受けた団体の所在地-->
+		<item type="Normal" column="9">
+			<valid id="exist"/>
+			<valid id="length" max="100" messageId="HCD6039E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--受領年月日-->
+		<item type="Normal" column="10">
+			<valid id="existDate" value="date">
+				<outer id="exist" column="10"/>
+				<outer id="charSet" column="10" value="numeral"/>
+				<outer id="length" column="10" value="4" messageId="HCD6040E"/>
+				<outer id="range" column="10" min="1" max="9999" messageId="HCD6067E"/>
+				<outer id="exist" column="11"/>
+				<outer id="charSet" column="11" value="numeral"/>
+				<outer id="length" column="11" max="2" messageId="HCD6042E"/>
+				<outer id="range" column="11" min="1" max="12" messageId="HCD6043E"/>
+				<outer id="exist" column="12"/>
+				<outer id="charSet" column="12" value="numeral"/>
+				<outer id="length" column="12" max="2" messageId="HCD6042E"/>
+				<outer id="range" column="12" min="1" max="31" messageId="HCD6044E"/>
+			</valid>
+		</item>
+		<!--受領年月日　年-->
+		<item type="Normal" column="10">
+			<valid id="exist"/>
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" value="4" messageId="HCD6040E"/>
+			<valid id="range" min="1" max="9999" messageId="HCD6067E"/>
+		</item>
+		<!--受領年月日　月-->
+		<item type="Normal" column="11">
+			<valid id="exist"/>
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="12" messageId="HCD6043E"/>
+		</item>
+		<!--受領年月日　日-->
+		<item type="Normal" column="12">
+			<valid id="exist"/>
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="31" messageId="HCD6044E"/>
+		</item>
+		<!--但し書き-->
+		<item type="Normal" column="13">
+			<valid id="exist"/>
+			<valid id="length" max="100" messageId="HCD6039E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--その他寄附番号-->
+		<item type="Normal" column="14">
+			<valid id="charSet" value="latinString"/>
+			<valid id="length" max="50" messageId="HCD6059E"/>
+		</item>
+	</report>
+</DatDefine>

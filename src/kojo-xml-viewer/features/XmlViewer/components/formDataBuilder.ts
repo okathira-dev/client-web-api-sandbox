@@ -1,3 +1,4 @@
+import type { KubunMapping } from "../../../specs/parsers/propertyParser";
 import type { GeneralElementInfo } from "../../../specs/parsers/xsdParser";
 import type { ElementMapping } from "../../../specs/types";
 import type { XmlNode } from "../../../types/xml";
@@ -97,6 +98,8 @@ export function buildFormData(
   mappings: ElementMapping[],
   generalLabels?: Map<string, string>,
   generalInfo?: Map<string, GeneralElementInfo>,
+  kubunMappings?: KubunMapping,
+  tegCode?: string,
 ): FormDataItem[] {
   const mappingByCode = new Map<string, ElementMapping>();
   mappings.forEach((mapping) => {
@@ -123,14 +126,43 @@ export function buildFormData(
   }
 
   /**
-   * gen:要素の値をマッピングに基づいて変換
+   * 要素の値をマッピングに基づいて変換
+   * gen:要素またはkubun_CDなどの要素の値をマッピングに基づいて変換
    */
-  function mapGenValue(elementName: string, value: string): string {
-    if (!generalInfo || !value) {
+  function mapValue(
+    elementName: string,
+    value: string,
+    parentPath: string[],
+  ): string {
+    if (!value) {
       return value;
     }
-    // gen:プレフィックスを除去
-    if (elementName.includes(":")) {
+
+    // kubun_CD要素の場合、propertyファイルのマッピングを確認
+    if (elementName === "kubun_CD" && kubunMappings && tegCode) {
+      // 親要素を探す（kubun_CDの親要素）
+      if (parentPath.length > 0) {
+        const parentElement = parentPath[parentPath.length - 1];
+        // マッピングのキー: {TEGコード}_{親要素ID}_{kubun_CDの値}
+        const key = `${tegCode}_${parentElement}_${value.trim()}`;
+        const mappedValue = kubunMappings.get(key);
+        if (mappedValue) {
+          return mappedValue;
+        }
+        // デバッグ: マッピングが見つからない場合
+        if (process.env.NODE_ENV === "development") {
+          console.debug(
+            `[kubun_CD mapping] Key not found: ${key}, parentPath: ${parentPath.join("/")}, available keys:`,
+            Array.from(kubunMappings.keys())
+              .filter((k) => k.startsWith(`${tegCode}_${parentElement}_`))
+              .slice(0, 5),
+          );
+        }
+      }
+    }
+
+    // gen:要素の場合はgeneralInfoからも取得
+    if (generalInfo && elementName.includes(":")) {
       const nameWithoutPrefix = elementName.split(":").pop();
       if (nameWithoutPrefix) {
         const info = generalInfo.get(nameWithoutPrefix);
@@ -142,6 +174,7 @@ export function buildFormData(
         }
       }
     }
+
     return value;
   }
 
@@ -169,9 +202,11 @@ export function buildFormData(
     const mapping = mappingByCode.get(node.name);
     let rawValue = trimmedText || "";
 
-    // gen:要素の値のマッピングを適用
-    if (rawValue && node.name.includes(":")) {
-      rawValue = mapGenValue(node.name, rawValue);
+    // 値のマッピングを適用
+    // parentPathは現在のノードの親要素のパス（現在のノードを除く）
+    if (rawValue) {
+      const parentPath = currentXmlPath.slice(0, -1);
+      rawValue = mapValue(node.name, rawValue, parentPath);
     }
 
     const value = rawValue;

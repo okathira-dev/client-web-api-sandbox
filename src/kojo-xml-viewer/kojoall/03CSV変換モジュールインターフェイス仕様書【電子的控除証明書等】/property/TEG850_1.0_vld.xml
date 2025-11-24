@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<DatDefine VR="1.0">
+<!--小規模企業共済等掛金控除証明書 TEG850-->
+	<report reportVR="1.0" reportId="TEG850" columnNum="54">
+		<!--証明年分　元号-->
+		<item type="Normal" column="2">
+			<valid id="exist"/>
+			<valid id="charSet" value="numeral"/>
+			<valid id="contain" value="4 5" messageId="HCD6143E"/>
+		</item>
+		<!--証明年分　年-->
+		<item type="Normal" column="3">
+			<valid id="exist"/>
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="99" messageId="HCD6085E"/>
+		</item>
+		<!--掛金種別-->
+		<item type="Normal" column="4">
+			<valid id="exist"/>
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--氏名-->
+		<item type="Normal" column="5">
+			<valid id="exist"/>
+			<valid id="length" max="100" messageId="HCD6039E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--住所-->
+		<item type="Normal" column="6">
+			<valid id="exist"/>
+			<valid id="length" max="200" messageId="HCD6162E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--共済契約者番号/基礎年金番号-->
+		<item type="Normal" column="7">
+			<valid id="exist"/>
+			<valid id="length" max="15" messageId="HCD6045E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--払込年分　元号-->
+		<item type="Normal" column="8">
+			<valid id="exist"/>
+			<valid id="charSet" value="numeral"/>
+			<valid id="contain" value="4 5" messageId="HCD6143E"/>
+		</item>
+		<!--払込年分　年-->
+		<item type="Normal" column="9">
+			<valid id="exist"/>
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="99" messageId="HCD6085E"/>
+		</item>
+		<!--払込済額期間　（至）月-->
+		<item type="Normal" column="10">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="12" messageId="HCD6043E"/>
+		</item>
+		<!--払込済額-->
+		<item type="Normal" column="11">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--払込予定額期間　（自）月-->
+		<item type="Normal" column="12">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="12" messageId="HCD6043E"/>
+		</item>
+		<!--払込予定額期間　（至）月-->
+		<item type="Normal" column="13">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="12" messageId="HCD6043E"/>
+		</item>
+		<!--払込予定額-->
+		<item type="Normal" column="14">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--控除合計額-->
+		<item type="Normal" column="15">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--前納減額金-->
+		<item type="Normal" column="16">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--小規模企業共済掛金に関する事項　契約年月日　元号-->
+		<item type="Normal" column="17">
+			<valid id="charSet" value="numeral"/>
+			<valid id="contain" value="3 4 5" messageId="HCD6172E"/>
+		</item>
+		<!--小規模企業共済掛金に関する事項　契約年月日　年-->
+		<item type="Normal" column="18">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="99" messageId="HCD6085E"/>
+		</item>
+		<!--小規模企業共済掛金に関する事項　契約年月日　月-->
+		<item type="Normal" column="19">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="12" messageId="HCD6043E"/>
+		</item>
+		<!--小規模企業共済掛金に関する事項　契約年月日　日-->
+		<item type="Normal" column="20">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="31" messageId="HCD6044E"/>
+		</item>
+		<!--小規模企業共済掛金に関する事項　掛金月額-->
+		<item type="Normal" column="21">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--小規模企業共済掛金に関する事項　払込方法-->
+		<item type="Normal" column="22">
+			<valid id="length" max="15" messageId="HCD6045E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--小規模企業共済掛金に関する事項　払込月-->
+		<item type="Normal" column="23">
+			<valid id="length" max="15" messageId="HCD6045E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--個人型確定拠出年金に関する事項　１月　金額-->
+		<item type="Normal" column="24">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--個人型確定拠出年金に関する事項　１月　備考-->
+		<item type="Normal" column="25">
+			<valid id="length" max="20" messageId="HCD6050E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--個人型確定拠出年金に関する事項　２月　金額-->
+		<item type="Normal" column="26">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--個人型確定拠出年金に関する事項　２月　備考-->
+		<item type="Normal" column="27">
+			<valid id="length" max="20" messageId="HCD6050E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--個人型確定拠出年金に関する事項　３月　金額-->
+		<item type="Normal" column="28">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--個人型確定拠出年金に関する事項　３月　備考-->
+		<item type="Normal" column="29">
+			<valid id="length" max="20" messageId="HCD6050E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--個人型確定拠出年金に関する事項　４月　金額-->
+		<item type="Normal" column="30">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--個人型確定拠出年金に関する事項　４月　備考-->
+		<item type="Normal" column="31">
+			<valid id="length" max="20" messageId="HCD6050E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--個人型確定拠出年金に関する事項　５月　金額-->
+		<item type="Normal" column="32">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--個人型確定拠出年金に関する事項　５月　備考-->
+		<item type="Normal" column="33">
+			<valid id="length" max="20" messageId="HCD6050E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--個人型確定拠出年金に関する事項　６月　金額-->
+		<item type="Normal" column="34">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--個人型確定拠出年金に関する事項　６月　備考-->
+		<item type="Normal" column="35">
+			<valid id="length" max="20" messageId="HCD6050E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--個人型確定拠出年金に関する事項　７月　金額-->
+		<item type="Normal" column="36">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--個人型確定拠出年金に関する事項　７月　備考-->
+		<item type="Normal" column="37">
+			<valid id="length" max="20" messageId="HCD6050E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--個人型確定拠出年金に関する事項　８月　金額-->
+		<item type="Normal" column="38">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--個人型確定拠出年金に関する事項　８月　備考-->
+		<item type="Normal" column="39">
+			<valid id="length" max="20" messageId="HCD6050E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--個人型確定拠出年金に関する事項　９月　金額-->
+		<item type="Normal" column="40">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--個人型確定拠出年金に関する事項　９月　備考-->
+		<item type="Normal" column="41">
+			<valid id="length" max="20" messageId="HCD6050E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--個人型確定拠出年金に関する事項　１０月　金額-->
+		<item type="Normal" column="42">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--個人型確定拠出年金に関する事項　１０月　備考-->
+		<item type="Normal" column="43">
+			<valid id="length" max="20" messageId="HCD6050E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--個人型確定拠出年金に関する事項　１１月　金額-->
+		<item type="Normal" column="44">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--個人型確定拠出年金に関する事項　１１月　備考-->
+		<item type="Normal" column="45">
+			<valid id="length" max="20" messageId="HCD6050E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--個人型確定拠出年金に関する事項　１２月　金額-->
+		<item type="Normal" column="46">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--個人型確定拠出年金に関する事項　１２月　備考-->
+		<item type="Normal" column="47">
+			<valid id="length" max="20" messageId="HCD6050E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--備考-->
+		<item type="Normal" column="48">
+			<valid id="length" max="300" messageId="HCD6173E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--証明日/発行日　元号-->
+		<item type="Normal" column="49">
+			<valid id="exist"/>
+			<valid id="charSet" value="numeral"/>
+			<valid id="contain" value="4 5" messageId="HCD6143E"/>
+		</item>
+		<!--証明日/発行日　年-->
+		<item type="Normal" column="50">
+			<valid id="exist"/>
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="99" messageId="HCD6085E"/>
+		</item>
+		<!--証明日/発行日　月-->
+		<item type="Normal" column="51">
+			<valid id="exist"/>
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="12" messageId="HCD6043E"/>
+		</item>
+		<!--証明日/発行日　日-->
+		<item type="Normal" column="52">
+			<valid id="exist"/>
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="31" messageId="HCD6044E"/>
+		</item>
+		<!--発行者-->
+		<item type="Normal" column="53">
+			<valid id="exist"/>
+			<valid id="length" max="100" messageId="HCD6039E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--ユニークコード-->
+		<item type="Normal" column="54">
+			<valid id="exist"/>
+			<valid id="length" max="20" messageId="HCD6050E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--複合チェック-->
+		<item type="Normal" column="-1">
+			<!--証明年分 元号年妥当性をチェック-->
+			<valid id="existDate2" value="GYY" checkColumns="2 3" errpos="2"  messageId="HCD6163E"/>
+		</item>
+		<item type="Normal" column="-1">
+			<!--証明年分 元号年と払込年分 元号年が一致していることをチェック-->
+			<valid id="duplicate" value="GYY2" checkColumns="2 3 8 9" errpos="8" messageId="HCD6174E"/>
+		</item>
+		<item type="Normal" column="-1">
+			<!--払込予定額期間（自）月、払込予定額期間（至）月の前後関係をチェック-->
+			<valid id="dateRange" value="MM" checkColumns="12" checkColumns2="13" errpos="12"  messageId="HCD6171E"/>
+		</item>		
+		<item type="Normal" column="-1">
+			<!--小規模企業共済掛金に関する事項 契約年月日 元号年月日妥当性をチェック-->
+			<valid id="existDate2" value="GYYMMDD" checkColumns="17 18 19 20" errpos="17"  messageId="HCD6163E"/>
+		</item>
+		<item type="Normal" column="-1">
+			<!--証明日/発行日 元号年月日妥当性をチェック-->
+			<valid id="existDate2" value="GYYMMDD" checkColumns="49 50 51 52" errpos="49"  messageId="HCD6163E"/>
+		</item>
+	</report>
+</DatDefine>

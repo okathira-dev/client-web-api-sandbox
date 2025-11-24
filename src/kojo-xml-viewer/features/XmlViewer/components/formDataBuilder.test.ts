@@ -7,6 +7,7 @@ import {
   extractElementValues,
   combineDateValues,
 } from "./formDataBuilder";
+import { loadKubunMappingsFromProperty } from "../../../specs/parsers/propertyParser";
 import { parseXml } from "../../../utils/xmlParser";
 
 import type { FormDataItem } from "./formDataBuilder";
@@ -155,6 +156,164 @@ function findItemsByCategory(
   );
 }
 
+describe("buildFormData with kubun_CD mappings", () => {
+  it("TEG840のkubun_CDの値を正しくマッピングする", () => {
+    const xmlRoot = loadXmlRoot(
+      "サンプルデータ①_TEG840_パターン１（前納&一括）.xml",
+    );
+    const mappings = createMappings();
+    const kubunMappings = new Map<string, string>();
+    kubunMappings.set("TEG840_WOA00000_1", "国民年金保険料");
+    kubunMappings.set("TEG840_WOA00000_2", "国民年金基金掛金");
+    kubunMappings.set("TEG840_WOB00000_1", "無");
+    kubunMappings.set("TEG840_WOB00000_2", "有");
+    kubunMappings.set("TEG840_WOJ00000_1", "国民年金保険料");
+    kubunMappings.set("TEG840_WOJ00000_2", "国民年金基金掛金");
+    kubunMappings.set("TEG840_WOO00060_1", "済");
+    kubunMappings.set("TEG840_WOO00060_2", "見");
+    kubunMappings.set("TEG840_WOO00030_1", "済");
+    kubunMappings.set("TEG840_WOO00030_2", "見");
+
+    const items = buildFormData(
+      xmlRoot,
+      mappings,
+      undefined,
+      undefined,
+      kubunMappings,
+      "TEG840",
+    );
+
+    // WOA00000のkubun_CDの値を確認
+    const woaKubunCd = items.find(
+      (item) => item.path.join("/") === "WOA00000/kubun_CD",
+    );
+    expect(woaKubunCd).toBeDefined();
+    expect(woaKubunCd?.value).toBe("国民年金保険料");
+
+    // WOB00000のkubun_CDの値を確認
+    const wobKubunCd = items.find(
+      (item) => item.path.join("/") === "WOB00000/kubun_CD",
+    );
+    expect(wobKubunCd).toBeDefined();
+    expect(wobKubunCd?.value).toBe("有");
+
+    // WOJ00000のkubun_CDの値を確認
+    const wojKubunCd = items.find(
+      (item) => item.path.join("/") === "WOJ00000/kubun_CD",
+    );
+    expect(wojKubunCd).toBeDefined();
+    expect(wojKubunCd?.value).toBe("国民年金保険料");
+
+    // WOO00060のkubun_CDの値を確認
+    const woo60KubunCd = items.find(
+      (item) => item.path.join("/") === "WOO00000/WOO00020/WOO00060/kubun_CD",
+    );
+    expect(woo60KubunCd).toBeDefined();
+    expect(woo60KubunCd?.value).toBe("済");
+  });
+
+  it("TEG800のkubun_CDの値を正しくマッピングする", () => {
+    const xmlRoot = loadXmlRoot("TEG800_生命保険料控除証明書_202511月.xml");
+    const mappings = createMappings();
+    const kubunMappings = new Map<string, string>();
+    kubunMappings.set("TEG800_WCE00030_1", "新生命保険料控除制度");
+    kubunMappings.set("TEG800_WCE00030_2", "旧生命保険料控除制度");
+    kubunMappings.set(
+      "TEG800_WCE00030_3",
+      "新生命保険料控除制度及び旧生命保険料控除制度",
+    );
+
+    const items = buildFormData(
+      xmlRoot,
+      mappings,
+      undefined,
+      undefined,
+      kubunMappings,
+      "TEG800",
+    );
+
+    // WCE00030のkubun_CDの値を確認
+    const wceKubunCd = items.find(
+      (item) => item.path.join("/") === "WCE00000/WCE00030/kubun_CD",
+    );
+    expect(wceKubunCd).toBeDefined();
+    expect(wceKubunCd?.value).toBe("新生命保険料控除制度");
+  });
+
+  it("実際のpropertyファイルから読み込んだマッピングでTEG840のkubun_CDを正しくマッピングする", async () => {
+    const xmlRoot = loadXmlRoot(
+      "サンプルデータ①_TEG840_パターン１（前納&一括）.xml",
+    );
+    const mappings = createMappings();
+    const kubunMappings = await loadKubunMappingsFromProperty("TEG840");
+
+    const items = buildFormData(
+      xmlRoot,
+      mappings,
+      undefined,
+      undefined,
+      kubunMappings,
+      "TEG840",
+    );
+
+    // WOA00000のkubun_CDの値を確認
+    const woaKubunCd = items.find(
+      (item) => item.path.join("/") === "WOA00000/kubun_CD",
+    );
+    expect(woaKubunCd).toBeDefined();
+    expect(woaKubunCd?.value).toBe("国民年金保険料");
+
+    // WOB00000のkubun_CDの値を確認
+    const wobKubunCd = items.find(
+      (item) => item.path.join("/") === "WOB00000/kubun_CD",
+    );
+    expect(wobKubunCd).toBeDefined();
+    expect(wobKubunCd?.value).toBe("有");
+
+    // WOJ00000のkubun_CDの値を確認
+    const wojKubunCd = items.find(
+      (item) => item.path.join("/") === "WOJ00000/kubun_CD",
+    );
+    expect(wojKubunCd).toBeDefined();
+    expect(wojKubunCd?.value).toBe("国民年金保険料");
+
+    // WOO00060のkubun_CDの値を確認（最初のWOO00000内）
+    const woo60KubunCd = items.find(
+      (item) => item.path.join("/") === "WOO00000/WOO00020/WOO00060/kubun_CD",
+    );
+    expect(woo60KubunCd).toBeDefined();
+    expect(woo60KubunCd?.value).toBe("済");
+
+    // WOO00030のkubun_CDの値を確認（2番目のWOO00000内）
+    const woo30KubunCd = items.find(
+      (item) => item.path.join("/") === "WOO00000/WOO00020/WOO00030/kubun_CD",
+    );
+    expect(woo30KubunCd).toBeDefined();
+    expect(woo30KubunCd?.value).toBe("済");
+
+    // WOO00040のkubun_CDの値を確認（2番目のWOO00000内）
+    const woo40KubunCd = items.find(
+      (item) => item.path.join("/") === "WOO00000/WOO00020/WOO00040/kubun_CD",
+    );
+    expect(woo40KubunCd).toBeDefined();
+    expect(woo40KubunCd?.value).toBe("済");
+
+    // WOO00050のkubun_CDの値を確認（2番目のWOO00000内）
+    const woo50KubunCd = items.find(
+      (item) => item.path.join("/") === "WOO00000/WOO00020/WOO00050/kubun_CD",
+    );
+    expect(woo50KubunCd).toBeDefined();
+    expect(woo50KubunCd?.value).toBe("済");
+
+    // WOO00070のkubun_CDの値を確認（最初のWOO00000内）
+    const woo70KubunCd = items.find(
+      (item) => item.path.join("/") === "WOO00000/WOO00020/WOO00070/kubun_CD",
+    );
+    expect(woo70KubunCd).toBeDefined();
+    expect(woo70KubunCd?.value).toBe("済");
+  });
+});
+
 describe("buildFormData", () => {
   it("keeps nested order and depth information for sample", () => {
     const items = buildFormData(
@@ -300,5 +459,163 @@ describe("buildFormTree", () => {
     }
     // ツリー構造が正しく構築されていることを確認
     expect(treeNodes.length).toBeGreaterThan(0);
+  });
+});
+
+describe("buildFormData with kubun_CD mappings", () => {
+  it("TEG840のkubun_CDの値を正しくマッピングする", () => {
+    const xmlRoot = loadXmlRoot(
+      "サンプルデータ①_TEG840_パターン１（前納&一括）.xml",
+    );
+    const mappings = createMappings();
+    const kubunMappings = new Map<string, string>();
+    kubunMappings.set("TEG840_WOA00000_1", "国民年金保険料");
+    kubunMappings.set("TEG840_WOA00000_2", "国民年金基金掛金");
+    kubunMappings.set("TEG840_WOB00000_1", "無");
+    kubunMappings.set("TEG840_WOB00000_2", "有");
+    kubunMappings.set("TEG840_WOJ00000_1", "国民年金保険料");
+    kubunMappings.set("TEG840_WOJ00000_2", "国民年金基金掛金");
+    kubunMappings.set("TEG840_WOO00060_1", "済");
+    kubunMappings.set("TEG840_WOO00060_2", "見");
+    kubunMappings.set("TEG840_WOO00030_1", "済");
+    kubunMappings.set("TEG840_WOO00030_2", "見");
+
+    const items = buildFormData(
+      xmlRoot,
+      mappings,
+      undefined,
+      undefined,
+      kubunMappings,
+      "TEG840",
+    );
+
+    // WOA00000のkubun_CDの値を確認
+    const woaKubunCd = items.find(
+      (item) => item.path.join("/") === "WOA00000/kubun_CD",
+    );
+    expect(woaKubunCd).toBeDefined();
+    expect(woaKubunCd?.value).toBe("国民年金保険料");
+
+    // WOB00000のkubun_CDの値を確認
+    const wobKubunCd = items.find(
+      (item) => item.path.join("/") === "WOB00000/kubun_CD",
+    );
+    expect(wobKubunCd).toBeDefined();
+    expect(wobKubunCd?.value).toBe("有");
+
+    // WOJ00000のkubun_CDの値を確認
+    const wojKubunCd = items.find(
+      (item) => item.path.join("/") === "WOJ00000/kubun_CD",
+    );
+    expect(wojKubunCd).toBeDefined();
+    expect(wojKubunCd?.value).toBe("国民年金保険料");
+
+    // WOO00060のkubun_CDの値を確認
+    const woo60KubunCd = items.find(
+      (item) => item.path.join("/") === "WOO00000/WOO00020/WOO00060/kubun_CD",
+    );
+    expect(woo60KubunCd).toBeDefined();
+    expect(woo60KubunCd?.value).toBe("済");
+  });
+
+  it("TEG800のkubun_CDの値を正しくマッピングする", () => {
+    const xmlRoot = loadXmlRoot("TEG800_生命保険料控除証明書_202511月.xml");
+    const mappings = createMappings();
+    const kubunMappings = new Map<string, string>();
+    kubunMappings.set("TEG800_WCE00030_1", "新生命保険料控除制度");
+    kubunMappings.set("TEG800_WCE00030_2", "旧生命保険料控除制度");
+    kubunMappings.set(
+      "TEG800_WCE00030_3",
+      "新生命保険料控除制度及び旧生命保険料控除制度",
+    );
+
+    const items = buildFormData(
+      xmlRoot,
+      mappings,
+      undefined,
+      undefined,
+      kubunMappings,
+      "TEG800",
+    );
+
+    // WCE00030のkubun_CDの値を確認
+    const wceKubunCd = items.find(
+      (item) => item.path.join("/") === "WCE00000/WCE00030/kubun_CD",
+    );
+    expect(wceKubunCd).toBeDefined();
+    expect(wceKubunCd?.value).toBe("新生命保険料控除制度");
+  });
+
+  it("実際のpropertyファイルから読み込んだマッピングでTEG840のkubun_CDを正しくマッピングする", async () => {
+    const xmlRoot = loadXmlRoot(
+      "サンプルデータ①_TEG840_パターン１（前納&一括）.xml",
+    );
+    const mappings = createMappings();
+    const kubunMappings = await loadKubunMappingsFromProperty("TEG840");
+
+    const items = buildFormData(
+      xmlRoot,
+      mappings,
+      undefined,
+      undefined,
+      kubunMappings,
+      "TEG840",
+    );
+
+    // WOA00000のkubun_CDの値を確認
+    const woaKubunCd = items.find(
+      (item) => item.path.join("/") === "WOA00000/kubun_CD",
+    );
+    expect(woaKubunCd).toBeDefined();
+    expect(woaKubunCd?.value).toBe("国民年金保険料");
+
+    // WOB00000のkubun_CDの値を確認
+    const wobKubunCd = items.find(
+      (item) => item.path.join("/") === "WOB00000/kubun_CD",
+    );
+    expect(wobKubunCd).toBeDefined();
+    expect(wobKubunCd?.value).toBe("有");
+
+    // WOJ00000のkubun_CDの値を確認
+    const wojKubunCd = items.find(
+      (item) => item.path.join("/") === "WOJ00000/kubun_CD",
+    );
+    expect(wojKubunCd).toBeDefined();
+    expect(wojKubunCd?.value).toBe("国民年金保険料");
+
+    // WOO00060のkubun_CDの値を確認（最初のWOO00000内）
+    const woo60KubunCd = items.find(
+      (item) => item.path.join("/") === "WOO00000/WOO00020/WOO00060/kubun_CD",
+    );
+    expect(woo60KubunCd).toBeDefined();
+    expect(woo60KubunCd?.value).toBe("済");
+
+    // WOO00030のkubun_CDの値を確認（2番目のWOO00000内）
+    const woo30KubunCd = items.find(
+      (item) => item.path.join("/") === "WOO00000/WOO00020/WOO00030/kubun_CD",
+    );
+    expect(woo30KubunCd).toBeDefined();
+    expect(woo30KubunCd?.value).toBe("済");
+
+    // WOO00040のkubun_CDの値を確認（2番目のWOO00000内）
+    const woo40KubunCd = items.find(
+      (item) => item.path.join("/") === "WOO00000/WOO00020/WOO00040/kubun_CD",
+    );
+    expect(woo40KubunCd).toBeDefined();
+    expect(woo40KubunCd?.value).toBe("済");
+
+    // WOO00050のkubun_CDの値を確認（2番目のWOO00000内）
+    const woo50KubunCd = items.find(
+      (item) => item.path.join("/") === "WOO00000/WOO00020/WOO00050/kubun_CD",
+    );
+    expect(woo50KubunCd).toBeDefined();
+    expect(woo50KubunCd?.value).toBe("済");
+
+    // WOO00070のkubun_CDの値を確認（最初のWOO00000内）
+    const woo70KubunCd = items.find(
+      (item) => item.path.join("/") === "WOO00000/WOO00020/WOO00070/kubun_CD",
+    );
+    expect(woo70KubunCd).toBeDefined();
+    expect(woo70KubunCd?.value).toBe("済");
   });
 });
