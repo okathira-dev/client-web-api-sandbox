@@ -22,10 +22,3 @@ export const AVAILABLE_TEG_CODES = [
   "TEG840",
   "TEG850",
 ] as const;
-
-/**
- * TEGコードが利用可能かどうかを確認
- */
-export function isTegCodeAvailable(tegCode: string): boolean {
-  return (AVAILABLE_TEG_CODES as readonly string[]).includes(tegCode);
-}

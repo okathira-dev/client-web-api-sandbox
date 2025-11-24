@@ -181,5 +181,3 @@ export async function loadTegSpecificationFromXsd(
     formFieldItems,
   };
 }
-
-export { AVAILABLE_TEG_CODES } from "./getAvailableTegCodes";

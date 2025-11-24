@@ -77,11 +77,6 @@ export interface FormDataItem {
   path: string[];
 }
 
-export interface FormDataSection {
-  category: string;
-  items: FormDataItem[];
-}
-
 export interface FormTreeNode {
   id: string;
   elementCode: string;

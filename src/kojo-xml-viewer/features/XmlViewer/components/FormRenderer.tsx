@@ -19,12 +19,9 @@ import { TreeItem } from "@mui/x-tree-view/TreeItem";
 import { useEffect, useMemo, useState } from "react";
 
 import { buildFormData, buildFormTree } from "./formDataBuilder";
-import {
-  generateAllElementMappings,
-  getMappingsByTeg,
-} from "../../../mappings/elementMapping";
+import { getMappingsByTeg } from "../../../mappings/elementMapping";
+import { generateElementMappingsFromXsd } from "../../../mappings/elementMappingFromXsd";
 import { AVAILABLE_TEG_CODES } from "../../../specs/getAvailableTegCodes";
-import { loadTegSpecificationFromXsd } from "../../../specs/loadSpecs";
 
 import type { FormTreeNode } from "./formDataBuilder";
 import type { ElementMapping } from "../../../specs/types";
@@ -240,24 +237,20 @@ export function FormRenderer({
         setError(null);
 
         try {
-          const specification =
-            await loadTegSpecificationFromXsd(activeTegCode);
+          const generatedMappings =
+            await generateElementMappingsFromXsd(activeTegCode);
           if (cancelled) {
             return;
           }
 
-          if (
-            specification.xmlStructureItems.length === 0 ||
-            specification.formFieldItems.length === 0
-          ) {
+          if (generatedMappings.length === 0) {
             throw new Error(
-              `TEGコード ${activeTegCode} に対応する仕様書データが見つかりませんでした。` +
+              `TEGコード ${activeTegCode} に対応する要素マッピングが見つかりませんでした。` +
                 `XSDファイルが存在しないか、パースに失敗した可能性があります。` +
-                `現在利用可能なTEGコード: TEG104`,
+                `現在利用可能なTEGコード: ${AVAILABLE_TEG_CODES.join(", ")}`,
             );
           }
 
-          const generatedMappings = generateAllElementMappings([specification]);
           setMappings(generatedMappings);
         } catch (loadError: unknown) {
           if (cancelled) {
