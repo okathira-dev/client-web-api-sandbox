@@ -52,7 +52,7 @@ export function XmlViewer() {
     setXmlString(xml);
     const parsed = parseXml(xml);
     setParsedXml(parsed);
-    // XMLが読み込まれたらXML閲覧タブに切り替え（デフォルト）
+    // XMLが読み込まれたら簡易帳票タブに切り替え（デフォルト）
     if (parsed.isValid) {
       setTabIndex(0);
     }
@@ -78,20 +78,36 @@ export function XmlViewer() {
             indicatorColor="primary"
           >
             <Tab
-              label="XML閲覧"
-              id={TAB_IDS.XML}
-              aria-controls={TABPANEL_IDS.XML}
-            />
-            <Tab
               label="XML簡易帳票"
               id={TAB_IDS.FORM}
               aria-controls={TABPANEL_IDS.FORM}
+            />
+            <Tab
+              label="XML閲覧"
+              id={TAB_IDS.XML}
+              aria-controls={TABPANEL_IDS.XML}
             />
           </Tabs>
 
           <TabPanel
             value={tabIndex}
             index={0}
+            tabId={TAB_IDS.FORM}
+            tabpanelId={TABPANEL_IDS.FORM}
+          >
+            {parsedXml && parsedXml.isValid ? (
+              <FormRenderer xmlNode={parsedXml.root} parsedXml={parsedXml} />
+            ) : (
+              <Box sx={{ color: "error.main", mt: 2 }}>
+                <strong>エラー:</strong>{" "}
+                {parsedXml?.error || "XMLの解析に失敗しました"}
+              </Box>
+            )}
+          </TabPanel>
+
+          <TabPanel
+            value={tabIndex}
+            index={1}
             tabId={TAB_IDS.XML}
             tabpanelId={TABPANEL_IDS.XML}
           >
@@ -112,22 +128,6 @@ export function XmlViewer() {
             >
               <XMLViewer xml={xmlString} collapsible showLineNumbers />
             </Box>
-          </TabPanel>
-
-          <TabPanel
-            value={tabIndex}
-            index={1}
-            tabId={TAB_IDS.FORM}
-            tabpanelId={TABPANEL_IDS.FORM}
-          >
-            {parsedXml && parsedXml.isValid ? (
-              <FormRenderer xmlNode={parsedXml.root} parsedXml={parsedXml} />
-            ) : (
-              <Box sx={{ color: "error.main", mt: 2 }}>
-                <strong>エラー:</strong>{" "}
-                {parsedXml?.error || "XMLの解析に失敗しました"}
-              </Box>
-            )}
           </TabPanel>
         </Paper>
       )}

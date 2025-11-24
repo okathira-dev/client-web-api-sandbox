@@ -129,73 +129,30 @@ function RootAttributesSection({
         <TableBody>
           {items.map((item, index) => (
             <TableRow key={index}>
-              <TableCell sx={{ fontWeight: "medium", width: "40%" }}>
+              <TableCell
+                sx={{
+                  fontWeight: "medium",
+                  width: "40%",
+                  fontSize: "1rem",
+                  py: 0.5,
+                  px: 1,
+                }}
+              >
                 {item.label}
               </TableCell>
               <TableCell
                 sx={{
                   fontFamily: "monospace",
-                  fontSize: "0.875rem",
+                  fontSize: "1rem",
                   width: "60%",
+                  py: 0.5,
+                  px: 1,
                 }}
               >
                 {item.value}
               </TableCell>
             </TableRow>
           ))}
-        </TableBody>
-      </Table>
-      <Divider sx={{ mt: 2 }} />
-    </Box>
-  );
-}
-
-/**
- * XML署名情報を表示するコンポーネント
- */
-function SignatureSection({
-  signature,
-}: {
-  signature:
-    | {
-        exists: boolean;
-        referenceUri?: string;
-      }
-    | undefined;
-}) {
-  if (!signature || !signature.exists) {
-    return null;
-  }
-
-  return (
-    <Box sx={{ mb: 4 }}>
-      <Typography variant="h6" sx={{ mb: 2, fontWeight: "bold" }}>
-        XML署名情報
-      </Typography>
-      <Table>
-        <TableBody>
-          <TableRow>
-            <TableCell sx={{ fontWeight: "medium", width: "40%" }}>
-              署名の有無
-            </TableCell>
-            <TableCell sx={{ width: "60%" }}>あり</TableCell>
-          </TableRow>
-          {signature.referenceUri && (
-            <TableRow>
-              <TableCell sx={{ fontWeight: "medium", width: "40%" }}>
-                参照URI
-              </TableCell>
-              <TableCell
-                sx={{
-                  fontFamily: "monospace",
-                  fontSize: "0.875rem",
-                  width: "60%",
-                }}
-              >
-                {signature.referenceUri}
-              </TableCell>
-            </TableRow>
-          )}
         </TableBody>
       </Table>
       <Divider sx={{ mt: 2 }} />
@@ -359,11 +316,6 @@ export function FormRenderer({
           <RootAttributesSection attributes={parsedXml.rootAttributes} />
         ) : null}
 
-        {/* XML署名情報を表示 */}
-        {parsedXml?.signature ? (
-          <SignatureSection signature={parsedXml.signature} />
-        ) : null}
-
         {treeNodes.length === 0 ? (
           <Typography
             sx={{ textAlign: "center", color: "text.secondary", py: 4 }}
@@ -399,39 +351,65 @@ function collectNodeIds(nodes: FormTreeNode[], acc: string[]): void {
   });
 }
 
-function renderTreeItems(nodes: FormTreeNode[]): ReactNode {
-  return nodes.map((node) => (
+function renderTreeItems(
+  nodes: FormTreeNode[],
+  isFirstLevel: boolean = true,
+): ReactNode {
+  return nodes.map((node, index) => (
     <TreeItem
       key={node.id}
       itemId={node.id}
       label={<TreeItemLabel node={node} />}
+      sx={{
+        borderTop: isFirstLevel && index === 0 ? "none" : "1px solid",
+        borderBottom: "1px solid",
+        borderColor: "divider",
+        py: 0.5,
+      }}
     >
-      {node.children.length > 0 ? renderTreeItems(node.children) : null}
+      {node.children.length > 0 ? renderTreeItems(node.children, false) : null}
     </TreeItem>
   ));
 }
 
 function TreeItemLabel({ node }: { node: FormTreeNode }): JSX.Element {
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: 0.25 }}>
-      <Typography
-        variant="body2"
-        sx={{ fontWeight: node.children.length > 0 ? "bold" : "medium" }}
+    <Box sx={{ display: "flex", alignItems: "center", gap: 1, width: "100%" }}>
+      <Box
+        sx={{ display: "flex", flexDirection: "column", gap: 0.25, flex: 1 }}
       >
-        {node.label}
-      </Typography>
-      <Typography
-        variant="caption"
-        sx={{
-          color: "text.secondary",
-          fontFamily: "monospace",
-          opacity: node.hasMapping ? 1 : 0.7,
-        }}
-      >
-        {node.elementCode}
-      </Typography>
+        <Typography
+          variant="body1"
+          sx={{
+            fontWeight: node.children.length > 0 ? "bold" : "medium",
+            fontSize: "1rem",
+          }}
+        >
+          {node.label}
+        </Typography>
+        <Typography
+          variant="body2"
+          sx={{
+            color: "text.secondary",
+            fontFamily: "monospace",
+            opacity: node.hasMapping ? 1 : 0.7,
+            fontSize: "0.875rem",
+          }}
+        >
+          {node.elementCode}
+        </Typography>
+      </Box>
       {node.value && (
-        <Typography variant="body2" sx={{ fontFamily: "monospace" }}>
+        <Typography
+          variant="body1"
+          sx={{
+            fontFamily: "monospace",
+            fontWeight: "bold",
+            fontSize: "1.25rem",
+            ml: "auto",
+            wordBreak: "break-all",
+          }}
+        >
           {node.value}
         </Typography>
       )}
