@@ -23,27 +23,25 @@ export interface XsdElementInfo {
 
 /**
  * XSDファイルを読み込んでDOMに変換
- * ブラウザ環境ではfetchを使用し、Node.js環境ではファイルシステムから読み込む
  */
 export async function loadXsdFile(tegCode: string): Promise<Document> {
-  const xsdPath = `/kojo-xml-viewer/kojoall/04XMLスキーマ/kyotsu/${tegCode}-001.xsd`;
+  // Viteの静的アセットとして扱うため、new URL()を使用
+  const xsdPath = new URL(
+    `../../kojoall/04XMLスキーマ/kyotsu/${tegCode}-001.xsd`,
+    import.meta.url,
+  );
+  const xsdUrl = xsdPath.href;
 
   let xmlText: string;
+  let errorPath: string;
 
-  // Node.js環境（テスト環境）かブラウザ環境かを判定
-  if (typeof window === "undefined" && typeof process !== "undefined") {
+  // file://プロトコルの場合（テスト環境）はファイルシステムから読み込む
+  if (xsdPath.protocol === "file:") {
     // Node.js環境: ファイルシステムから読み込む
+    const { fileURLToPath } = await import("node:url");
     const { readFileSync } = await import("node:fs");
-    const path = await import("node:path");
-    const xsdDir = path.resolve(
-      process.cwd(),
-      "src",
-      "kojo-xml-viewer",
-      "kojoall",
-      "04XMLスキーマ",
-      "kyotsu",
-    );
-    const filePath = path.join(xsdDir, `${tegCode}-001.xsd`);
+    const filePath = fileURLToPath(xsdPath);
+    errorPath = filePath;
     try {
       xmlText = readFileSync(filePath, "utf-8");
     } catch (_error) {
@@ -54,16 +52,17 @@ export async function loadXsdFile(tegCode: string): Promise<Document> {
     }
   } else {
     // ブラウザ環境: fetchを使用
-    const response = await fetch(xsdPath);
+    errorPath = xsdUrl;
+    const response = await fetch(xsdUrl);
     if (!response.ok) {
       if (response.status === 404) {
         throw new Error(
-          `XSDファイルが見つかりません: ${xsdPath}\n` +
+          `XSDファイルが見つかりません: ${xsdUrl}\n` +
             `TEGコード ${tegCode} に対応するXSDファイルが存在しない可能性があります。`,
         );
       }
       throw new Error(
-        `Failed to load XSD file: ${xsdPath} (${response.status} ${response.statusText})`,
+        `Failed to load XSD file: ${xsdUrl} (${response.status} ${response.statusText})`,
       );
     }
     xmlText = await response.text();
@@ -75,10 +74,10 @@ export async function loadXsdFile(tegCode: string): Promise<Document> {
   // パースエラーのチェック
   const parseError = doc.getElementsByTagName("parsererror")[0];
   if (parseError) {
-    throw new Error(`Failed to parse XSD file: ${xsdPath}`);
+    throw new Error(`Failed to parse XSD file: ${errorPath}`);
   }
 
-  return doc as unknown as Document;
+  return doc;
 }
 
 /**
