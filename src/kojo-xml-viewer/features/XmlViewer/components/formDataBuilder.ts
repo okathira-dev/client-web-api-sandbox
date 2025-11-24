@@ -94,6 +94,7 @@ export interface FormTreeNode {
 export function buildFormData(
   xmlNode: XmlNode,
   mappings: ElementMapping[],
+  generalLabels?: Map<string, string>,
 ): FormDataItem[] {
   const mappingByCode = new Map<string, ElementMapping>();
   mappings.forEach((mapping) => {
@@ -101,6 +102,23 @@ export function buildFormData(
   });
 
   const items: FormDataItem[] = [];
+
+  /**
+   * gen:要素のラベルを取得
+   */
+  function getGenLabel(elementName: string): string | undefined {
+    if (!generalLabels) {
+      return undefined;
+    }
+    // gen:プレフィックスを除去
+    if (elementName.includes(":")) {
+      const nameWithoutPrefix = elementName.split(":").pop();
+      if (nameWithoutPrefix) {
+        return generalLabels.get(nameWithoutPrefix);
+      }
+    }
+    return undefined;
+  }
 
   /**
    * XMLノードを再帰的に走査し、すべての要素を収集する
@@ -126,8 +144,17 @@ export function buildFormData(
     const mapping = mappingByCode.get(node.name);
     const value = trimmedText || "";
 
-    // 仕様にない要素は、要素コードをラベルとして使用
-    const label = mapping?.label || node.name;
+    // ラベルの決定: マッピング → gen:ラベル → 要素コード
+    let label: string;
+    if (mapping?.label) {
+      label = mapping.label;
+    } else if (node.name.includes(":")) {
+      // gen:要素の場合はGeneral.xsdからラベルを取得
+      const genLabel = getGenLabel(node.name);
+      label = genLabel || node.name;
+    } else {
+      label = node.name;
+    }
 
     // XMLの階層構造に基づいてpathを構築
     const itemPath = currentXmlPath;

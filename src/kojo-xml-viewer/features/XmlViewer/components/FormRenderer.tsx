@@ -22,6 +22,7 @@ import { buildFormData, buildFormTree } from "./formDataBuilder";
 import { getMappingsByTeg } from "../../../mappings/elementMapping";
 import { generateElementMappingsFromXsd } from "../../../mappings/elementMappingFromXsd";
 import { AVAILABLE_TEG_CODES } from "../../../specs/getAvailableTegCodes";
+import { loadGeneralElementLabels } from "../../../specs/parsers/xsdParser";
 
 import type { FormTreeNode } from "./formDataBuilder";
 import type { ElementMapping } from "../../../specs/types";
@@ -169,6 +170,9 @@ export function FormRenderer({
   parsedXml,
 }: FormRendererProps) {
   const [mappings, setMappings] = useState<ElementMapping[]>([]);
+  const [generalLabels, setGeneralLabels] = useState<Map<string, string>>(
+    new Map(),
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -176,6 +180,36 @@ export function FormRenderer({
   const tegCode = useMemo(() => {
     return propTegCode || extractTegCode(xmlNode);
   }, [propTegCode, xmlNode]);
+
+  // General.xsdのラベルマッピングを読み込む
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadGeneralLabels(): Promise<void> {
+      try {
+        const loadFn = loadGeneralElementLabels as () => Promise<
+          Map<string, string>
+        >;
+        const labels = await loadFn();
+        if (!cancelled) {
+          setGeneralLabels(labels);
+        }
+      } catch (err: unknown) {
+        // General.xsdの読み込みエラーは無視（gen:要素のラベルが表示されないだけ）
+        if (err instanceof Error) {
+          console.warn("Failed to load General.xsd labels:", err.message);
+        } else {
+          console.warn("Failed to load General.xsd labels:", String(err));
+        }
+      }
+    }
+
+    void loadGeneralLabels();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // 仕様書を読み込んで要素マッピングを生成
   useEffect(() => {
@@ -255,8 +289,8 @@ export function FormRenderer({
     const tegMappings = tegCode
       ? getMappingsByTeg(mappings, tegCode)
       : mappings;
-    return buildFormData(xmlNode, tegMappings);
-  }, [xmlNode, mappings, tegCode]);
+    return buildFormData(xmlNode, tegMappings, generalLabels);
+  }, [xmlNode, mappings, tegCode, generalLabels]);
 
   const treeNodes = useMemo(() => {
     return buildFormTree(formDataItems);
