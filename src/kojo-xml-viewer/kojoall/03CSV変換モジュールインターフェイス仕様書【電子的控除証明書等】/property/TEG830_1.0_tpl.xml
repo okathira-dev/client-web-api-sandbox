@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<DatDefine VR="1.0">
+<!--寄附金控除に関する証明書 TEG830-->
+	<report reportVR="1.0" reportId="TEG830" columnNum="25">
+		<!--一面-->
+		<item id="TEG830-1" parent="TEG830" type="Normal" page="1">
+		</item>
+		<!--証明年分-->
+		<item id="WMA00000" parent="TEG830-1" type="Normal">
+		</item>
+		<!--証明年分 元号-->
+		<item id="gen:era" parent="WMA00000" column="12" type="Normal">
+		</item>
+		<!--証明年分 年-->
+		<item id="gen:yy" parent="WMA00000" column="13" zeroSuppress="1" type="Normal">
+		</item>
+		<!--寄附の種類-->
+		<item id="WMB00000" parent="TEG830-1" type="Normal">
+		</item>
+		<!--寄附の種類 区分コード-->
+		<item id="kubun_CD" parent="WMB00000" column="14" type="Normal">
+		</item>
+		<!--寄附の種類 区分名称-->
+		<item id="kubun_NM" parent="WMB00000" refcol="14" refval="1" rejectEmpty="1" value="国に対する寄附金" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WMB00000" refcol="14" refval="2" rejectEmpty="1" value="都道府県、市区町村に対する寄附金" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WMB00000" refcol="14" refval="3" rejectEmpty="1" value="日本赤十字支部に対する寄附金" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WMB00000" refcol="14" refval="4" rejectEmpty="1" value="共同募金会支部に対する寄附金" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WMB00000" refcol="14" refval="5" rejectEmpty="1" value="政党及び政治資金団体に対する寄附金" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WMB00000" refcol="14" refval="6" rejectEmpty="1" value="認定NPO法人等に対する寄附金" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WMB00000" refcol="14" refval="7" rejectEmpty="1" value="公益社団法人又は公益財団法人等に対する寄附金" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WMB00000" refcol="14" refval="8" rejectEmpty="1" value="上記以外の寄附金控除に該当する寄附金" type="Normal">
+		</item>
+		<!--寄附者氏名（一面）-->
+		<item id="WMC00000" parent="TEG830-1" column="3" type="Normal">
+		</item>
+		<!--寄附者ＩＤ-->
+		<item id="WMD00000" parent="TEG830-1" column="5" rejectEmpty="1" type="Normal">
+		</item>
+		<!--寄附者住所-->
+		<item id="WME00000" parent="TEG830-1" column="4" rejectEmpty="1" type="Normal">
+		</item>
+		<!--年間寄附額-->
+		<item id="WMF00000" parent="TEG830-1" column="16" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--適用条文-->
+		<item id="WMG00000" parent="TEG830-1" refcol="14" refval="1" rejectEmpty="1" value="所得税法第78条２項及び法人税法第37条第３項" type="Normal">
+		</item>
+		<item id="WMG00000" parent="TEG830-1" refcol="14" refval="2" rejectEmpty="1" value="所得税法第78条２項及び法人税法第37条第３項" type="Normal">
+		</item>
+		<item id="WMG00000" parent="TEG830-1" refcol="14" refval="3" rejectEmpty="1" value="所得税法第78条２項及び法人税法第37条第３項" type="Normal">
+		</item>
+		<item id="WMG00000" parent="TEG830-1" refcol="14" refval="4" rejectEmpty="1" value="所得税法第78条２項及び法人税法第37条第３項" type="Normal">
+		</item>
+		<item id="WMG00000" parent="TEG830-1" refcol="14" refval="5" rejectEmpty="1" value="所得税法第78条２項及び租税特別措置法第41条の18第２項" type="Normal">
+		</item>
+		<item id="WMG00000" parent="TEG830-1" refcol="14" refval="6" rejectEmpty="1" value="所得税法第78条２項、租税特別措置法第41条の18の２第２項及び法人税法第37条第４項（租税特別措置法第66条の11の２第２項により読み替えて適用する場合）" type="Normal">
+		</item>
+		<item id="WMG00000" parent="TEG830-1" refcol="14" refval="7" rejectEmpty="1" value="所得税法第78条２項、租税特別措置法第41条の18の３第１項及び法人税法第37条第３項" type="Normal">
+		</item>
+		<!--適用条文（その他）-->
+		<item id="WMH00000" parent="TEG830-1" rejectEmpty="1" column="15" type="Normal">
+		</item>
+		<!--証明書発行年月日-->
+		<item id="WMI00000" parent="TEG830-1" type="Normal">
+		</item>
+		<!--証明書発行年月日 元号-->
+		<item id="gen:era" parent="WMI00000" column="8" type="Normal">
+		</item>
+		<!--証明書発行年月日 年-->
+		<item id="gen:yy" parent="WMI00000" column="9" zeroSuppress="1" type="Normal">
+		</item>
+		<!--証明書発行年月日 月-->
+		<item id="gen:mm" parent="WMI00000" column="10" zeroSuppress="1" type="Normal">
+		</item>
+		<!--証明書発行年月日 日-->
+		<item id="gen:dd" parent="WMI00000" column="11" zeroSuppress="1" type="Normal">
+		</item>
+		<!--証明書発行者名-->
+		<item id="WMJ00000" parent="TEG830-1" column="6" type="Normal">
+		</item>
+		<!--証明書発行者法人番号-->
+		<item id="WMK00000" parent="TEG830-1" rejectEmpty="1" type="Normal">
+		</item>
+		<item id="gen:hojinbango" parent="WMK00000" column="7" rejectEmpty="1" type="Normal">
+		</item>
+		<!--寄附の内訳（一面）-->
+		<item id="WML00000" parent="TEG830-1" type="Normal">
+		</item>
+		<!--明細　繰り返し-->
+		<item id="WML00010" parent="WML00000" type="Normal">
+		</item>
+		<!--寄附番号-->
+		<item id="WML00020" parent="WML00010" column="17" rejectEmpty="1" type="Normal">
+		</item>
+		<!--寄附年月日-->
+		<item id="WML00030" parent="WML00010" type="Normal">
+		</item>
+		<!--寄附年月日 年-->
+		<item id="gen:yyyy" parent="WML00030" column="18" type="Normal">
+		</item>
+		<!--寄附年月日 月-->
+		<item id="gen:mm" parent="WML00030" column="19" zeroSuppress="1" type="Normal">
+		</item>
+		<!--寄附年月日 日-->
+		<item id="gen:dd" parent="WML00030" column="20" zeroSuppress="1" type="Normal">
+		</item>
+		<!--寄附先に関する事項-->
+		<item id="WML00040" parent="WML00010" type="Normal">
+		</item>
+		<!--名称-->
+		<item id="WML00050" parent="WML00040" column="21" type="Normal">
+		</item>
+		<!--法人番号-->
+		<item id="WML00060" parent="WML00040" rejectEmpty="1" type="Normal">
+		</item>
+		<item id="gen:hojinbango" parent="WML00060" column="22" rejectEmpty="1" type="Normal">
+		</item>
+		<!--寄附金の額-->
+		<item id="WML00070" parent="WML00010" column="23" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--備考-->
+		<item id="WML00080" parent="WML00010" column="24" rejectEmpty="1" type="Normal">
+		</item>
+		<!--キャンセル情報-->
+		<item id="WML00090" parent="WML00010" rejectEmpty="1" type="Normal">
+		</item>
+		<!--キャンセル情報 区分コード-->
+		<item id="kubun_CD" parent="WML00090" column="25" zeroSuppress="1" rejectEmpty="1" type="Normal">
+		</item>
+		<!--二面-->
+		<item id="TEG830-2" parent="TEG830" rejectEmpty="1" type="Normal" page="2">
+		</item>
+		<!--寄附者氏名（二面）-->
+		<item id="WMM00000" parent="TEG830-2" column="3" rejectEmpty="1" type="Normal">
+		</item>
+		<!--寄附の内訳（二面）　繰り返し-->
+		<item id="WMN00000" parent="TEG830-2" rejectEmpty="1" type="Normal">
+		</item>
+		<!--明細　繰り返し-->
+		<item id="WMN00010" parent="WMN00000" rejectEmpty="1" type="Normal">
+		</item>
+		<!--寄附番号-->
+		<item id="WMN00020" parent="WMN00010" column="17" rejectEmpty="1" type="Normal">
+		</item>
+		<!--寄附年月日-->
+		<item id="WMN00030" parent="WMN00010" rejectEmpty="1" type="Normal">
+		</item>
+		<!--寄附年月日 年-->
+		<item id="gen:yyyy" parent="WMN00030" column="18" rejectEmpty="1" type="Normal">
+		</item>
+		<!--寄附年月日 月-->
+		<item id="gen:mm" parent="WMN00030" column="19" rejectEmpty="1" zeroSuppress="1" type="Normal">
+		</item>
+		<!--寄附年月日 日-->
+		<item id="gen:dd" parent="WMN00030" column="20" rejectEmpty="1" zeroSuppress="1" type="Normal">
+		</item>
+		<!--寄附先に関する事項-->
+		<item id="WMN00040" parent="WMN00010" rejectEmpty="1" type="Normal">
+		</item>
+		<!--名称-->
+		<item id="WMN00050" parent="WMN00040" column="21" rejectEmpty="1" type="Normal">
+		</item>
+		<!--法人番号-->
+		<item id="WMN00060" parent="WMN00040" rejectEmpty="1" type="Normal">
+		</item>
+		<item id="gen:hojinbango" parent="WMN00060" column="22" rejectEmpty="1" type="Normal">
+		</item>
+		<!--寄附金の額-->
+		<item id="WMN00070" parent="WMN00010" column="23" rejectEmpty="1" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--備考-->
+		<item id="WMN00080" parent="WMN00010" column="24" rejectEmpty="1" type="Normal">
+		</item>
+		<!--キャンセル情報-->
+		<item id="WMN00090" parent="WMN00010" rejectEmpty="1" type="Normal">
+		</item>
+		<!--キャンセル情報 区分コード-->
+		<item id="kubun_CD" parent="WMN00090" column="25" zeroSuppress="1" rejectEmpty="1" type="Normal">
+		</item>
+	</report>
+</DatDefine>

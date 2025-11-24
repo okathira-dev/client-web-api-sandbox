@@ -1,0 +1,623 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema targetNamespace="http://xml.e-tax.nta.go.jp/XSD/kyotsu"
+xmlns="http://xml.e-tax.nta.go.jp/XSD/kyotsu"
+xmlns:gen="http://xml.e-tax.nta.go.jp/XSD/general" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0" > 
+<xsd:annotation> 
+<xsd:documentation> 
+様式名：生命保険料控除証明書
+version：1.1
+Date：2020年08月31日
+</xsd:documentation> 
+</xsd:annotation> 
+
+<!-- import -->
+<xsd:import namespace="http://xml.e-tax.nta.go.jp/XSD/general" schemaLocation="../general/General.xsd"/>
+<xsd:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="../general/XMLDSIG050.xsd"/>
+
+<!-- version -->
+<xsd:simpleType name="TEG800-1-1VRtype"><xsd:restriction base="xsd:string"><xsd:enumeration value="1.0"/><xsd:enumeration value="1.1"/></xsd:restriction></xsd:simpleType>
+<!-- Root Element Definition -->
+<xsd:element name="TEG800" type="TEG800-1-1type"/>
+
+<xsd:complexType name="TEG800-1-1type">
+<xsd:sequence>
+
+<xsd:element name="WCA00000" type="gen:name">
+<xsd:annotation>
+<xsd:appinfo>"保険会社名"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCB00000" type="gen:bango" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"法人番号"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCC00000" type="gen:yyyymmdd">
+<xsd:annotation>
+<xsd:appinfo>"証明日"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCD00000" type="WCD00000-1-1Rtype">
+<xsd:annotation>
+<xsd:appinfo>"契約者"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element><xsd:element name="WCE00000" type="WCE00000-1-1type" maxOccurs="100">
+<xsd:annotation>
+<xsd:appinfo>"明細　繰り返し"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+
+<!-- XML-SIGNATURE -->
+<xsd:element ref="dsig:Signature" minOccurs="1" maxOccurs="1"/>
+</xsd:sequence>
+<xsd:attribute name="VR"
+type="TEG800-1-1VRtype"
+use="required"/>
+<xsd:attributeGroup ref="gen:FormAttribute"/>
+</xsd:complexType>
+
+<xsd:complexType name="WCE00000-1-1type">
+<xsd:sequence>
+
+<xsd:element name="WCE00010" type="gen:yyyy">
+<xsd:annotation>
+<xsd:appinfo>"証明年"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00020" type="WCE00020-1-1Rtype">
+<xsd:annotation>
+<xsd:appinfo>"題"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00030" type="WCE00030-1-1Rtype">
+<xsd:annotation>
+<xsd:appinfo>"適用制度"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00040" type="WCE00040-1-1Rtype">
+<xsd:annotation>
+<xsd:appinfo>"証券番号"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00050" type="WCE00050-1-1Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"保険種類"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00060" type="gen:yyyymmdd" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"契約日"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00070" type="WCE00070-1-1Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"事業所（団体）コード"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00080" type="WCE00080-1-1Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"被保険者"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00090" type="WCE00090-1-1Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"被保険者番号"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00100" type="WCE00100-1-1Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"払込方法"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00110" type="WCE00110-1-1Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"受取人"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00120" type="WCE00120-1-1type" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"一般生命保険、または介護医療保険　保険期間"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00130" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"個人年金保険"</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element name="WCE00140" type="gen:yyyymmdd" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"受取人生年月日"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00150" type="WCE00150-1-1type" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"保険料払込期間"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00160" type="WCE00160-1-1Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"年金種類"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00170" type="WCE00170-1-1type" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"年金支払期間"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00180" type="gen:yyyymmdd" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"年金支払開始日"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="WCE00190" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"証明額"</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element name="WCE00200" type="gen:yyyymm" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"証明対象保険料の月分（自）"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00210" type="gen:yyyymm" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"証明対象保険料の月分（至）"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00220" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"旧制度"</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element name="WCE00230" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"一般"</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element name="WCE00240" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"保険料"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00250" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"配当金"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00260" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"差引保険料等合計額"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="WCE00270" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"年金"</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element name="WCE00280" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"保険料"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00290" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"配当金"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00300" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"差引保険料等合計額"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="WCE00310" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"新制度"</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element name="WCE00320" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"一般"</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element name="WCE00330" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"保険料"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00340" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"配当金"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00350" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"差引保険料等合計額"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="WCE00360" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"介護医療"</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element name="WCE00370" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"保険料"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00380" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"配当金"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00390" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"差引保険料等合計額"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="WCE00400" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"年金"</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element name="WCE00410" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"保険料"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00420" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"配当金"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00430" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"差引保険料等合計額"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="WCE00440" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"証明額（12月期想定）"</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element name="WCE00460" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"旧制度"</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element name="WCE00470" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"一般"</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element name="WCE00480" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"年間払込保険料（参考）"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00490" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"配当金（参考）"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00500" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"申告額（参考）"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="WCE00510" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"年金"</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element name="WCE00520" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"年間払込保険料（参考）"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00530" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"配当金（参考）"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00540" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"申告額（参考）"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="WCE00550" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"新制度"</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element name="WCE00560" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"一般"</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element name="WCE00570" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"年間払込保険料（参考）"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00580" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"配当金（参考）"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00590" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"申告額（参考）"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="WCE00600" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"介護医療"</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element name="WCE00610" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"年間払込保険料（参考）"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00620" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"配当金（参考）"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00630" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"申告額（参考）"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="WCE00640" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"年金"</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element name="WCE00650" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"年間払込保険料（参考）"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00660" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"配当金（参考）"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00670" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"申告額（参考）"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="WCE00680" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"転換等一時払保険料"</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element name="WCE00690" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"一般"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00700" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"介護医療"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WCE00710" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"年金"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="WCE00720" type="WCE00720-1-1Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"その他"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+
+
+<xsd:simpleType name="WCD00000-1-1Rtype">
+    <xsd:restriction base="gen:str">
+        <xsd:maxLength value="100"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="WCE00020-1-1Rtype">
+    <xsd:restriction base="gen:str">
+        <xsd:maxLength value="35"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:complexType name="WCE00030-1-1Rtype">
+    <xsd:complexContent>
+        <xsd:restriction base="gen:kubun">
+            <xsd:sequence>
+                <xsd:element name="kubun_CD">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_CD">
+                            <xsd:enumeration value="1"/><xsd:enumeration value="2"/><xsd:enumeration value="3"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="kubun_NM" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_NM">
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:restriction>
+    </xsd:complexContent>
+</xsd:complexType>
+
+<xsd:simpleType name="WCE00040-1-1Rtype">
+    <xsd:restriction base="gen:str">
+        <xsd:maxLength value="30"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="WCE00050-1-1Rtype">
+    <xsd:restriction base="gen:str">
+        <xsd:maxLength value="30"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="WCE00070-1-1Rtype">
+    <xsd:restriction base="gen:str">
+        <xsd:maxLength value="30"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="WCE00080-1-1Rtype">
+    <xsd:restriction base="gen:str">
+        <xsd:maxLength value="100"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="WCE00090-1-1Rtype">
+    <xsd:restriction base="gen:str">
+        <xsd:maxLength value="20"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="WCE00100-1-1Rtype">
+    <xsd:restriction base="gen:str">
+        <xsd:maxLength value="15"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="WCE00110-1-1Rtype">
+    <xsd:restriction base="gen:str">
+        <xsd:maxLength value="100"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="WCE00120-1-1Rtype">
+    <xsd:restriction base="gen:nonNegativeType">
+        <xsd:pattern value="\d?\d?\d"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="WCE00150-1-1Rtype">
+    <xsd:restriction base="gen:nonNegativeType">
+        <xsd:pattern value="\d?\d?\d"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="WCE00160-1-1Rtype">
+    <xsd:restriction base="gen:str">
+        <xsd:maxLength value="30"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="WCE00170-1-1Rtype">
+    <xsd:restriction base="gen:nonNegativeType">
+        <xsd:pattern value="\d?\d?\d"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="WCE00720-1-1Rtype">
+    <xsd:restriction base="gen:str">
+        <xsd:maxLength value="500"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+
+
+<xsd:complexType name="WCE00120-1-1type">
+<xsd:simpleContent>
+<xsd:extension base="WCE00120-1-1Rtype">
+<xsd:attribute name="AutoCalc" type="xsd:string"/>
+</xsd:extension>
+</xsd:simpleContent>
+</xsd:complexType>
+<xsd:complexType name="WCE00150-1-1type">
+<xsd:simpleContent>
+<xsd:extension base="WCE00150-1-1Rtype">
+<xsd:attribute name="AutoCalc" type="xsd:string"/>
+</xsd:extension>
+</xsd:simpleContent>
+</xsd:complexType>
+<xsd:complexType name="WCE00170-1-1type">
+<xsd:simpleContent>
+<xsd:extension base="WCE00170-1-1Rtype">
+<xsd:attribute name="AutoCalc" type="xsd:string"/>
+</xsd:extension>
+</xsd:simpleContent>
+</xsd:complexType>
+</xsd:schema>

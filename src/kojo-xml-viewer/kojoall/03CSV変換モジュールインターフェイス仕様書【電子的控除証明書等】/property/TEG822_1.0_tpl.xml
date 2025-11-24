@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<DatDefine VR="1.0">
+<!--寄附金受領証明書 TEG822-->
+	<report reportVR="1.0" reportId="TEG822" columnNum="14">
+		<!--寄附者の氏名-->
+		<item id="WLA00000" parent="TEG822" column="4" type="Normal">
+		</item>
+		<!--明細　繰り返し-->
+		<item id="WLB00000" parent="TEG822" type="Normal">
+		</item>
+		<!--領収書発行番号-->
+		<item id="WLB00010" parent="WLB00000" column="3" type="Normal">
+		</item>
+		<!--寄附の種類-->
+		<item id="WLB00020" parent="WLB00000" type="Normal">
+		</item>
+		<!--寄附の種類 区分コード-->
+		<item id="kubun_CD" parent="WLB00020" column="5" type="Normal">
+		</item>
+		<!--寄附の種類 区分名称-->
+		<item id="kubun_NM" parent="WLB00020" refcol="5" refval="1" rejectEmpty="1" value="国に対する寄附金" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WLB00020" refcol="5" refval="2" rejectEmpty="1" value="都道府県、市区町村に対する寄附金" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WLB00020" refcol="5" refval="3" rejectEmpty="1" value="日本赤十字支部に対する寄附金" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WLB00020" refcol="5" refval="4" rejectEmpty="1" value="共同募金会支部に対する寄附金" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WLB00020" refcol="5" refval="5" rejectEmpty="1" value="政党及び政治資金団体に対する寄附金" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WLB00020" refcol="5" refval="6" rejectEmpty="1" value="認定NPO法人等に対する寄附金" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WLB00020" refcol="5" refval="7" rejectEmpty="1" value="公益社団法人又は公益財団法人等に対する寄附金" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WLB00020" refcol="5" refval="8" rejectEmpty="1" value="上記以外の寄附金控除に該当する寄附金" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WLB00020" refcol="5" refval="9" rejectEmpty="1" value="国が主催したイベント等に対する払戻請求権放棄に係る寄附金" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WLB00020" refcol="5" refval="10" rejectEmpty="1" value="都道府県が主催したイベント等に対する払戻請求権放棄に係る寄附" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WLB00020" refcol="5" refval="11" rejectEmpty="1" value="市区町村が主催したイベント等に対する払戻請求権放棄に係る寄附" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WLB00020" refcol="5" refval="12" rejectEmpty="1" value="日本赤十字社支部・共同募金会が主催したイベント等に対する払戻" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WLB00020" refcol="5" refval="13" rejectEmpty="1" value="認定NPO法人等が主催したイベント等に対する払戻請求権放棄に" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WLB00020" refcol="5" refval="14" rejectEmpty="1" value="公益社団法人又は公益財団法人等が主催したイベント等に対する払" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WLB00020" refcol="5" refval="15" rejectEmpty="1" value="特定公益増進法人等が主催したイベント等に対する払戻請求権放棄" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WLB00020" refcol="5" refval="16" rejectEmpty="1" value="一般事業者等が主催したイベント等に対する払戻請求権放棄に係る" type="Normal">
+		</item>
+		<!--適用条文 固定値-->
+		<item id="WLB00030" parent="WLB00000" refcol="5" refval="1" rejectEmpty="1" value="所得税法第78条２項及び法人税法第37条第３項" type="Normal">
+		</item>
+		<item id="WLB00030" parent="WLB00000" refcol="5" refval="2" rejectEmpty="1" value="所得税法第78条２項及び法人税法第37条第３項" type="Normal">
+		</item>
+		<item id="WLB00030" parent="WLB00000" refcol="5" refval="3" rejectEmpty="1" value="所得税法第78条２項及び法人税法第37条第３項" type="Normal">
+		</item>
+		<item id="WLB00030" parent="WLB00000" refcol="5" refval="4" rejectEmpty="1" value="所得税法第78条２項及び法人税法第37条第３項" type="Normal">
+		</item>
+		<item id="WLB00030" parent="WLB00000" refcol="5" refval="5" rejectEmpty="1" value="所得税法第78条２項及び租税特別措置法第41条の18第２項" type="Normal">
+		</item>
+		<item id="WLB00030" parent="WLB00000" refcol="5" refval="6" rejectEmpty="1" value="所得税法第78条２項、租税特別措置法第41条の18の２第２項及び法人税法第37条第４項（租税特別措置法第66条の11の２第２項により読み替えて適用する場合）" type="Normal">
+		</item>
+		<item id="WLB00030" parent="WLB00000" refcol="5" refval="7" rejectEmpty="1" value="所得税法第78条２項、租税特別措置法第41条の18の３第１項及び法人税法第37条第３項" type="Normal">
+		</item>
+		<item id="WLB00030" parent="WLB00000" refcol="5" refval="9" rejectEmpty="1" value="新型コロナ法第５条" type="Normal">
+		</item>
+		<item id="WLB00030" parent="WLB00000" refcol="5" refval="10" rejectEmpty="1" value="新型コロナ法第５条" type="Normal">
+		</item>
+		<item id="WLB00030" parent="WLB00000" refcol="5" refval="11" rejectEmpty="1" value="新型コロナ法第５条" type="Normal">
+		</item>
+		<item id="WLB00030" parent="WLB00000" refcol="5" refval="12" rejectEmpty="1" value="新型コロナ法第５条" type="Normal">
+		</item>
+		<item id="WLB00030" parent="WLB00000" refcol="5" refval="13" rejectEmpty="1" value="新型コロナ法第５条" type="Normal">
+		</item>
+		<item id="WLB00030" parent="WLB00000" refcol="5" refval="14" rejectEmpty="1" value="新型コロナ法第５条" type="Normal">
+		</item>
+		<item id="WLB00030" parent="WLB00000" refcol="5" refval="15" rejectEmpty="1" value="新型コロナ法第５条" type="Normal">
+		</item>
+		<item id="WLB00030" parent="WLB00000" refcol="5" refval="16" rejectEmpty="1" value="新型コロナ法第５条" type="Normal">
+		</item>
+		<!--適用条文（その他）-->
+		<item id="WLB00040" parent="WLB00000" rejectEmpty="1" column="6" type="Normal">
+		</item>
+		<!--寄附金額-->
+		<item id="WLB00050" parent="WLB00000" column="7" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--受領年月日-->
+		<item id="WLB00060" parent="WLB00000" type="Normal">
+		</item>
+		<!--受領年月日 年-->
+		<item id="gen:yyyy" parent="WLB00060" column="10" type="Normal">
+		</item>
+		<!--受領年月日 月-->
+		<item id="gen:mm" parent="WLB00060" column="11" zeroSuppress="1" type="Normal">
+		</item>
+		<!--受領年月日 日-->
+		<item id="gen:dd" parent="WLB00060" column="12" zeroSuppress="1" type="Normal">
+		</item>
+		<!--寄附を受けた団体名等-->
+		<item id="WLB00070" parent="WLB00000" column="8" type="Normal">
+		</item>
+		<!--寄附を受けた団体の所在地-->
+		<item id="WLB00080" parent="WLB00000" column="9" type="Normal">
+		</item>
+		<!--その他寄附番号-->
+		<item id="WLB00090" parent="WLB00000" column="14" rejectEmpty="1" type="Normal">
+		</item>
+		<!--但し書き-->
+		<item id="WLB00100" parent="WLB00000" column="13" type="Normal">
+		</item>
+	</report>
+</DatDefine>

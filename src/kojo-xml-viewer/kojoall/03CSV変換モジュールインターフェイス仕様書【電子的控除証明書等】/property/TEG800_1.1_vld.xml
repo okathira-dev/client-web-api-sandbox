@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<DatDefine VR="1.0">
+<!--生命保険料控除証明書 TEG800-->
+	<report reportVR="1.1" reportId="TEG800" columnNum="69">
+		<!--契約者別XML作成用グルーピングコード-->
+		<item type="Normal" column="2">
+			<valid id="charSet" value="alphaNumeric"/>
+			<valid id="length" max="4" messageId="HCD6033E"/>
+		</item>
+		<!--題-->
+		<item type="Normal" column="3">
+			<valid id="exist"/>
+			<valid id="length" max="35" messageId="HCD6035E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--証券番号-->
+		<item type="Normal" column="4">
+			<valid id="exist"/>
+			<valid id="length" max="30" messageId="HCD6036E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--保険種類-->
+		<item type="Normal" column="5">
+			<valid id="length" max="30" messageId="HCD6036E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--保険期間-->
+		<item type="Normal" column="6">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" value="3" messageId="HCD6038E"/>
+		</item>
+		<!--契約者-->
+		<item type="Normal" column="7">
+			<valid id="exist"/>
+			<valid id="length" max="100" messageId="HCD6039E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--被保険者-->
+		<item type="Normal" column="8">
+			<valid id="length" max="100" messageId="HCD6039E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--受取人-->
+		<item type="Normal" column="9">
+			<valid id="length" max="100" messageId="HCD6039E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--受取人生年月日-->
+		<item type="Normal" column="10">
+			<valid id="existDate" value="date">
+				<outer id="charSet" column="10" value="numeral"/>
+				<outer id="length" column="10" value="4" messageId="HCD6040E"/>
+				<outer id="range" column="10" min="1" max="9999" messageId="HCD6067E"/>
+				<outer id="charSet" column="11" value="numeral"/>
+				<outer id="length" column="11" max="2" messageId="HCD6042E"/>
+				<outer id="range" column="11" min="1" max="12" messageId="HCD6043E"/>
+				<outer id="charSet" column="12" value="numeral"/>
+				<outer id="length" column="12" max="2" messageId="HCD6042E"/>
+				<outer id="range" column="12" min="1" max="31" messageId="HCD6044E"/>
+			</valid>
+		</item>
+		<!--受取人生年月日  年-->
+		<item type="Normal" column="10">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" value="4" messageId="HCD6040E"/>
+			<valid id="range" min="1" max="9999" messageId="HCD6067E"/>
+		</item>
+		<!--受取人生年月日  月-->
+		<item type="Normal" column="11">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="12" messageId="HCD6043E"/>
+		</item>
+		<!--受取人生年月日  日-->
+		<item type="Normal" column="12">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="31" messageId="HCD6044E"/>
+		</item>
+		<!--年金種類-->
+		<item type="Normal" column="13">
+			<valid id="length" max="30" messageId="HCD6036E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--年金支払期間-->
+		<item type="Normal" column="14">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" value="3" messageId="HCD6038E"/>
+		</item>
+		<!--年金支払開始日-->
+		<item type="Normal" column="15">
+			<valid id="existDate" value="date">
+				<outer id="charSet" column="15" value="numeral"/>
+				<outer id="length" column="15" value="4" messageId="HCD6040E"/>
+				<outer id="range" column="15" min="1" max="9999" messageId="HCD6067E"/>
+				<outer id="charSet" column="16" value="numeral"/>
+				<outer id="length" column="16" max="2" messageId="HCD6042E"/>
+				<outer id="range" column="16" min="1" max="12" messageId="HCD6043E"/>
+				<outer id="charSet" column="17" value="numeral"/>
+				<outer id="length" column="17" max="2" messageId="HCD6042E"/>
+				<outer id="range" column="17" min="1" max="31" messageId="HCD6044E"/>
+			</valid>
+		</item>
+		<!--年金支払開始日  年-->
+		<item type="Normal" column="15">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" value="4" messageId="HCD6040E"/>
+			<valid id="range" min="1" max="9999" messageId="HCD6067E"/>
+		</item>
+		<!--年金支払開始日  月-->
+		<item type="Normal" column="16">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="12" messageId="HCD6043E"/>
+		</item>
+		<!--年金支払開始日  日-->
+		<item type="Normal" column="17">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="31" messageId="HCD6044E"/>
+		</item>
+		<!--保険料払込期間-->
+		<item type="Normal" column="18">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" value="3" messageId="HCD6038E"/>
+		</item>
+		<!--旧制度_保険料_年金-->
+		<item type="Normal" column="19">
+			<valid id="charSet" value="integer"/>
+			<valid id="range" min="-999999999999999" max="999999999999999" messageId="HCD6047E"/>
+		</item>
+		<!--旧制度_配当金_年金-->
+		<item type="Normal" column="20">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--旧制度_差引保険料等合計額_年金-->
+		<item type="Normal" column="21">
+			<valid id="charSet" value="integer"/>
+			<valid id="range" min="-999999999999999" max="999999999999999" messageId="HCD6047E"/>
+		</item>
+		<!--旧制度_保険料_一般-->
+		<item type="Normal" column="22">
+			<valid id="charSet" value="integer"/>
+			<valid id="range" min="-999999999999999" max="999999999999999" messageId="HCD6047E"/>
+		</item>
+		<!--旧制度_配当金_一般-->
+		<item type="Normal" column="23">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--旧制度_差引保険料等合計額_一般-->
+		<item type="Normal" column="24">
+			<valid id="charSet" value="integer"/>
+			<valid id="range" min="-999999999999999" max="999999999999999" messageId="HCD6047E"/>
+		</item>
+		<!--新制度_保険料_年金-->
+		<item type="Normal" column="25">
+			<valid id="charSet" value="integer"/>
+			<valid id="range" min="-999999999999999" max="999999999999999" messageId="HCD6047E"/>
+		</item>
+		<!--新制度_配当金_年金-->
+		<item type="Normal" column="26">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--新制度_差引保険料等合計額_年金-->
+		<item type="Normal" column="27">
+			<valid id="charSet" value="integer"/>
+			<valid id="range" min="-999999999999999" max="999999999999999" messageId="HCD6047E"/>
+		</item>
+		<!--新制度_保険料_一般-->
+		<item type="Normal" column="28">
+			<valid id="charSet" value="integer"/>
+			<valid id="range" min="-999999999999999" max="999999999999999" messageId="HCD6047E"/>
+		</item>
+		<!--新制度_配当金_一般-->
+		<item type="Normal" column="29">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--新制度_差引保険料等合計額_一般-->
+		<item type="Normal" column="30">
+			<valid id="charSet" value="integer"/>
+			<valid id="range" min="-999999999999999" max="999999999999999" messageId="HCD6047E"/>
+		</item>
+		<!--新制度_保険料_介護医療-->
+		<item type="Normal" column="31">
+			<valid id="charSet" value="integer"/>
+			<valid id="range" min="-999999999999999" max="999999999999999" messageId="HCD6047E"/>
+		</item>
+		<!--新制度_配当金_介護医療-->
+		<item type="Normal" column="32">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--新制度_差引保険料等合計額_介護医療-->
+		<item type="Normal" column="33">
+			<valid id="charSet" value="integer"/>
+			<valid id="range" min="-999999999999999" max="999999999999999" messageId="HCD6047E"/>
+		</item>
+		<!--旧制度_年間払込保険料（参考）_年金-->
+		<item type="Normal" column="34">
+			<valid id="charSet" value="integer"/>
+			<valid id="range" min="-999999999999999" max="999999999999999" messageId="HCD6047E"/>
+		</item>
+		<!--旧制度_配当金（参考）_年金-->
+		<item type="Normal" column="35">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--旧制度_申告額（参考）_年金-->
+		<item type="Normal" column="36">
+			<valid id="charSet" value="integer"/>
+			<valid id="range" min="-999999999999999" max="999999999999999" messageId="HCD6047E"/>
+		</item>
+		<!--旧制度_年間払込保険料（参考）_一般-->
+		<item type="Normal" column="37">
+			<valid id="charSet" value="integer"/>
+			<valid id="range" min="-999999999999999" max="999999999999999" messageId="HCD6047E"/>
+		</item>
+		<!--旧制度_配当金（参考）_一般-->
+		<item type="Normal" column="38">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--旧制度_申告額（参考）_一般-->
+		<item type="Normal" column="39">
+			<valid id="charSet" value="integer"/>
+			<valid id="range" min="-999999999999999" max="999999999999999" messageId="HCD6047E"/>
+		</item>
+		<!--新制度_年間払込保険料（参考）_年金-->
+		<item type="Normal" column="40">
+			<valid id="charSet" value="integer"/>
+			<valid id="range" min="-999999999999999" max="999999999999999" messageId="HCD6047E"/>
+		</item>
+		<!--新制度_配当金（参考）_年金-->
+		<item type="Normal" column="41">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--新制度_申告額（参考）_年金-->
+		<item type="Normal" column="42">
+			<valid id="charSet" value="integer"/>
+			<valid id="range" min="-999999999999999" max="999999999999999" messageId="HCD6047E"/>
+		</item>
+		<!--新制度_年間払込保険料（参考）_一般-->
+		<item type="Normal" column="43">
+			<valid id="charSet" value="integer"/>
+			<valid id="range" min="-999999999999999" max="999999999999999" messageId="HCD6047E"/>
+		</item>
+		<!--新制度_配当金（参考）_一般-->
+		<item type="Normal" column="44">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--新制度_申告額（参考）_一般-->
+		<item type="Normal" column="45">
+			<valid id="charSet" value="integer"/>
+			<valid id="range" min="-999999999999999" max="999999999999999" messageId="HCD6047E"/>
+		</item>
+		<!--新制度_年間払込保険料（参考）_介護医療-->
+		<item type="Normal" column="46">
+			<valid id="charSet" value="integer"/>
+			<valid id="range" min="-999999999999999" max="999999999999999" messageId="HCD6047E"/>
+		</item>
+		<!--新制度_配当金（参考）_介護医療-->
+		<item type="Normal" column="47">
+			<valid id="charSet" value="nonNegativeInteger"/>
+			<valid id="range" min="0" max="999999999999999" messageId="HCD6046E"/>
+		</item>
+		<!--新制度_申告額（参考）_介護医療-->
+		<item type="Normal" column="48">
+			<valid id="charSet" value="integer"/>
+			<valid id="range" min="-999999999999999" max="999999999999999" messageId="HCD6047E"/>
+		</item>
+		<!--保険会社名-->
+		<item type="Normal" column="49">
+			<valid id="exist"/>
+			<valid id="length" max="30" messageId="HCD6036E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--法人番号-->
+		<item type="Normal" column="50">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" value="13" messageId="HCD6048E"/>
+			<valid id="format" value="checkDigits"/>
+		</item>
+		<!--証明年-->
+		<item type="Normal" column="51">
+			<valid id="exist"/>
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" value="4" messageId="HCD6040E"/>
+			<valid id="range" min="1" max="9999" messageId="HCD6067E"/>
+		</item>
+		<!--払込方法-->
+		<item type="Normal" column="52">
+			<valid id="length" max="15" messageId="HCD6045E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--契約日-->
+		<item type="Normal" column="53">
+			<valid id="existDate" value="date">
+				<outer id="charSet" column="53" value="numeral"/>
+				<outer id="length" column="53" value="4" messageId="HCD6040E"/>
+				<outer id="range" column="53" min="1" max="9999" messageId="HCD6067E"/>
+				<outer id="charSet" column="54" value="numeral"/>
+				<outer id="length" column="54" max="2" messageId="HCD6042E"/>
+				<outer id="range" column="54" min="1" max="12" messageId="HCD6043E"/>
+				<outer id="charSet" column="55" value="numeral"/>
+				<outer id="length" column="55" max="2" messageId="HCD6042E"/>
+				<outer id="range" column="55" min="1" max="31" messageId="HCD6044E"/>
+			</valid>
+		</item>
+		<!--契約日  年-->
+		<item type="Normal" column="53">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" value="4" messageId="HCD6040E"/>
+			<valid id="range" min="1" max="9999" messageId="HCD6067E"/>
+		</item>
+		<!--契約日  月-->
+		<item type="Normal" column="54">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="12" messageId="HCD6043E"/>
+		</item>
+		<!--契約日  日-->
+		<item type="Normal" column="55">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="31" messageId="HCD6044E"/>
+		</item>
+		<!--転換等一時払保険料_年金-->
+		<item type="Normal" column="56">
+			<valid id="charSet" value="integer"/>
+			<valid id="range" min="-999999999999999" max="999999999999999" messageId="HCD6047E"/>
+		</item>
+		<!--転換等一時払保険料_一般-->
+		<item type="Normal" column="57">
+			<valid id="charSet" value="integer"/>
+			<valid id="range" min="-999999999999999" max="999999999999999" messageId="HCD6047E"/>
+		</item>
+		<!--転換等一時払保険料_介護医療-->
+		<item type="Normal" column="58">
+			<valid id="charSet" value="integer"/>
+			<valid id="range" min="-999999999999999" max="999999999999999" messageId="HCD6047E"/>
+		</item>
+		<!--証明対象保険料の月分（自）-->
+		<item type="Normal" column="59">
+			<valid id="dateRange" value="LT">
+				<!--（自）-->
+				<outer id="exist" column="59"/>
+				<outer id="charSet" column="59" value="numeral"/>
+				<outer id="length" column="59" value="4" messageId="HCD6040E"/>
+				<outer id="range" column="59" min="1" max="9999" messageId="HCD6067E"/>
+				<outer id="exist" column="60"/>
+				<outer id="charSet" column="60" value="numeral"/>
+				<outer id="length" column="60" max="2" messageId="HCD6042E"/>
+				<outer id="range" column="60" min="1" max="12" messageId="HCD6043E"/>
+				<!--（至）-->
+				<outer id="exist" column="61"/>
+				<outer id="charSet" column="61" value="numeral"/>
+				<outer id="length" column="61" value="4" messageId="HCD6040E"/>
+				<outer id="range" column="61" min="1" max="9999" messageId="HCD6067E"/>
+				<outer id="exist" column="62"/>
+				<outer id="charSet" column="62" value="numeral"/>
+				<outer id="length" column="62" max="2" messageId="HCD6042E"/>
+				<outer id="range" column="62" min="1" max="12" messageId="HCD6043E"/>
+			</valid>
+		</item>
+		<!--証明対象保険料の月分（自）  年-->
+		<item type="Normal" column="59">
+			<valid id="exist">
+				<outer id="exist" column="60"/>
+			</valid>
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" value="4" messageId="HCD6040E"/>
+			<valid id="range" min="1" max="9999" messageId="HCD6067E"/>
+		</item>
+		<!--証明対象保険料の月分（自）  月-->
+		<item type="Normal" column="60">
+			<valid id="exist">
+				<outer id="exist" column="59"/>
+			</valid>
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="12" messageId="HCD6043E"/>
+		</item>
+		<!--証明対象保険料の月分（至）-->
+		<item type="Normal" column="61">
+		</item>
+		<!--証明対象保険料の月分（至）  年-->
+		<item type="Normal" column="61">
+			<valid id="exist">
+				<outer id="exist" column="62"/>
+			</valid>
+			<valid id="exist" messageId="HCD6061E">
+				<outer id="exist" column="59"/>
+			</valid>
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" value="4" messageId="HCD6040E"/>
+			<valid id="range" min="1" max="9999" messageId="HCD6067E"/>
+		</item>
+		<!--証明対象保険料の月分（至）  月-->
+		<item type="Normal" column="62">
+			<valid id="exist">
+				<outer id="exist" column="61"/>
+			</valid>
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="12" messageId="HCD6043E"/>
+		</item>
+		<!--証明日-->
+		<item type="Normal" column="63">
+			<valid id="existDate" value="date">
+				<outer id="exist" column="63"/>
+				<outer id="charSet" column="63" value="numeral"/>
+				<outer id="length" column="63" value="4" messageId="HCD6040E"/>
+				<outer id="range" column="63" min="1" max="9999" messageId="HCD6067E"/>
+				<outer id="exist" column="64"/>
+				<outer id="charSet" column="64" value="numeral"/>
+				<outer id="length" column="64" max="2" messageId="HCD6042E"/>
+				<outer id="range" column="64" min="1" max="12" messageId="HCD6043E"/>
+				<outer id="exist" column="65"/>
+				<outer id="charSet" column="65" value="numeral"/>
+				<outer id="length" column="65" max="2" messageId="HCD6042E"/>
+				<outer id="range" column="65" min="1" max="31" messageId="HCD6044E"/>
+			</valid>
+		</item>
+		<!--証明日　年-->
+		<item type="Normal" column="63">
+			<valid id="exist"/>
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" value="4" messageId="HCD6040E"/>
+			<valid id="range" min="1" max="9999" messageId="HCD6067E"/>
+		</item>
+		<!--証明日　月-->
+		<item type="Normal" column="64">
+			<valid id="exist"/>
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="12" messageId="HCD6043E"/>
+		</item>
+		<!--証明日　日-->
+		<item type="Normal" column="65">
+			<valid id="exist"/>
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="31" messageId="HCD6044E"/>
+		</item>
+		<!--適用制度-->
+		<item type="Normal" column="66">
+			<valid id="exist"/>
+			<valid id="contain" value="1 2 3" messageId="HCD6049E"/>
+		</item>
+		<!--その他-->
+		<item type="Normal" column="67">
+			<valid id="length" max="500" messageId="HCD6068E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--事業所（団体）コード-->
+		<item type="Normal" column="68">
+			<valid id="length" max="30" messageId="HCD6036E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--被保険者番号-->
+		<item type="Normal" column="69">
+			<valid id="length" max="20" messageId="HCD6050E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+	</report>
+</DatDefine>

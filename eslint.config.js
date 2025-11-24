@@ -15,7 +15,7 @@ import { config, configs as tsEslintConfigs } from "typescript-eslint";
 export default config(
   // 全般
   { files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"] },
-  { ignores: ["dist", "**/*.d.ts"] },
+  { ignores: ["dist", "**/*.d.ts", "**/kojoall/**/*"] },
   {
     languageOptions: {
       globals: { ...globals.browser, ...globals.es2020, ...globals.node },

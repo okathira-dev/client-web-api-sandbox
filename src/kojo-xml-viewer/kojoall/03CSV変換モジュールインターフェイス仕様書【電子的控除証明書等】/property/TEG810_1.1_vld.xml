@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<DatDefine VR="1.0">
+<!--地震保険料控除証明書 TEG810-->
+	<report reportVR="1.1" reportId="TEG810" columnNum="29">
+		<!--契約者別XML作成用グルーピングコード-->
+		<item type="Normal" column="2">
+			<valid id="charSet" value="alphaNumeric"/>
+			<valid id="length" max="4" messageId="HCD6033E"/>
+		</item>
+		<!--証券番号-->
+		<item type="Normal" column="3">
+			<valid id="exist"/>
+			<valid id="length" max="30" messageId="HCD6036E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--証券番号-枝番号-->
+		<item type="Normal" column="4">
+			<valid id="length" max="5" messageId="HCD6054E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--契約者名-->
+		<item type="Normal" column="5">
+			<valid id="exist"/>
+			<valid id="length" max="100" messageId="HCD6039E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--保険料控除の対象となる保険料-->
+		<item type="Normal" column="6">
+			<valid id="exist"/>
+			<valid id="contain" value="1 2 3" messageId="HCD6049E"/>
+		</item>
+		<!--保険の対象-->
+		<item type="Normal" column="7">
+			<valid id="exist"/>
+			<valid id="contain" value="1 2 3 4" messageId="HCD6055E"/>
+		</item>
+		<!--被保険者名-->
+		<item type="Normal" column="8">
+			<valid id="length" max="100" messageId="HCD6039E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--基本契約保険期間の開始日-->
+		<item type="Normal" column="9">
+			<valid id="existDate" value="date">
+				<outer id="exist" column="9"/>
+				<outer id="charSet" column="9" value="numeral"/>
+				<outer id="length" column="9" value="4" messageId="HCD6040E"/>
+				<outer id="range" column="9" min="1" max="9999" messageId="HCD6067E"/>
+				<outer id="exist" column="10"/>
+				<outer id="charSet" column="10" value="numeral"/>
+				<outer id="length" column="10" max="2" messageId="HCD6042E"/>
+				<outer id="range" column="10" min="1" max="12" messageId="HCD6043E"/>
+				<outer id="exist" column="11"/>
+				<outer id="charSet" column="11" value="numeral"/>
+				<outer id="length" column="11" max="2" messageId="HCD6042E"/>
+				<outer id="range" column="11" min="1" max="31" messageId="HCD6044E"/>
+			</valid>
+		</item>
+		<!--基本契約保険期間の開始日  年-->
+		<item type="Normal" column="9">
+			<valid id="exist"/>
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" value="4" messageId="HCD6040E"/>
+			<valid id="range" min="1" max="9999" messageId="HCD6067E"/>
+		</item>
+		<!--基本契約保険期間の開始日  月-->
+		<item type="Normal" column="10">
+			<valid id="exist"/>
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="12" messageId="HCD6043E"/>
+		</item>
+		<!--基本契約保険期間の開始日  日-->
+		<item type="Normal" column="11">
+			<valid id="exist"/>
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="31" messageId="HCD6044E"/>
+		</item>
+		<!--基本契約保険期間-->
+		<item type="Normal" column="12">
+			<valid id="exist"/>
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" value="3" messageId="HCD6038E"/>
+		</item>
+		<!--満期返戻金の有無-->
+		<item type="Normal" column="13">
+			<valid id="contain" value="1 2" messageId="HCD6056E"/>
+		</item>
+		<!--地震保険期間（旧長期損害保険期間）の開始日-->
+		<item type="Normal" column="14">
+			<valid id="existDate" value="date">
+				<outer id="exist" column="14"/>
+				<outer id="charSet" column="14" value="numeral"/>
+				<outer id="length" column="14" value="4" messageId="HCD6040E"/>
+				<outer id="range" column="14" min="1" max="9999" messageId="HCD6067E"/>
+				<outer id="exist" column="15"/>
+				<outer id="charSet" column="15" value="numeral"/>
+				<outer id="length" column="15" max="2" messageId="HCD6042E"/>
+				<outer id="range" column="15" min="1" max="12" messageId="HCD6043E"/>
+				<outer id="exist" column="16"/>
+				<outer id="charSet" column="16" value="numeral"/>
+				<outer id="length" column="16" max="2" messageId="HCD6042E"/>
+				<outer id="range" column="16" min="1" max="31" messageId="HCD6044E"/>
+			</valid>
+		</item>
+		<!--地震保険期間（旧長期損害保険期間）の開始日  年-->
+		<item type="Normal" column="14">
+			<valid id="exist"/>
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" value="4" messageId="HCD6040E"/>
+			<valid id="range" min="1" max="9999" messageId="HCD6067E"/>
+		</item>
+		<!--地震保険期間（旧長期損害保険期間）の開始日  月-->
+		<item type="Normal" column="15">
+			<valid id="exist"/>
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="12" messageId="HCD6043E"/>
+		</item>
+		<!--地震保険期間（旧長期損害保険期間）の開始日  日-->
+		<item type="Normal" column="16">
+			<valid id="exist"/>
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="31" messageId="HCD6044E"/>
+		</item>
+		<!--地震保険期間（旧長期損害保険期間）-->
+		<item type="Normal" column="17">
+			<valid id="exist"/>
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" value="3" messageId="HCD6038E"/>
+		</item>
+		<!--証明年-->
+		<item type="Normal" column="18">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" value="4" messageId="HCD6040E"/>
+			<valid id="range" min="1" max="9999" messageId="HCD6067E"/>
+		</item>
+		<!--証明日-->
+		<item type="Normal" column="19">
+			<valid id="existDate" value="date">
+				<outer id="exist" column="19"/>
+				<outer id="charSet" column="19" value="numeral"/>
+				<outer id="length" column="19" value="4" messageId="HCD6040E"/>
+				<outer id="range" column="19" min="1" max="9999" messageId="HCD6067E"/>
+				<outer id="exist" column="20"/>
+				<outer id="charSet" column="20" value="numeral"/>
+				<outer id="length" column="20" max="2" messageId="HCD6042E"/>
+				<outer id="range" column="20" min="1" max="12" messageId="HCD6043E"/>
+				<outer id="exist" column="21"/>
+				<outer id="charSet" column="21" value="numeral"/>
+				<outer id="length" column="21" max="2" messageId="HCD6042E"/>
+				<outer id="range" column="21" min="1" max="31" messageId="HCD6044E"/>
+			</valid>
+		</item>
+		<!--証明日　年-->
+		<item type="Normal" column="19">
+			<valid id="exist"/>
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" value="4" messageId="HCD6040E"/>
+			<valid id="range" min="1" max="9999" messageId="HCD6067E"/>
+		</item>
+		<!--証明日　月-->
+		<item type="Normal" column="20">
+			<valid id="exist"/>
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="12" messageId="HCD6043E"/>
+		</item>
+		<!--証明日　日-->
+		<item type="Normal" column="21">
+			<valid id="exist"/>
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" max="2" messageId="HCD6042E"/>
+			<valid id="range" min="1" max="31" messageId="HCD6044E"/>
+		</item>
+		<!--保険会社名-->
+		<item type="Normal" column="22">
+			<valid id="exist"/>
+			<valid id="length" max="30" messageId="HCD6036E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+		<!--法人番号-->
+		<item type="Normal" column="23">
+			<valid id="charSet" value="numeral"/>
+			<valid id="length" value="13" messageId="HCD6048E"/>
+			<valid id="format" value="checkDigits"/>
+		</item>
+		<!--払込方法-->
+		<item type="Normal" column="24">
+			<valid id="contain" value="1 2 3 4 5" messageId="HCD6069E"/>
+		</item>
+		<!--地震保険料-->
+		<item type="Normal" column="25">
+			<valid id="charSet" value="integer"/>
+			<valid id="range" min="-999999999999999" max="999999999999999" messageId="HCD6047E"/>
+		</item>
+		<!--地震保険_控除対象保険料-->
+		<item type="Normal" column="26">
+			<valid id="exist" messageId="HCD6057E">
+				<outer id="exist" column="6"/>
+				<outer id="contain" column="6" value="1 3" messageId="HCD6049E"/>
+			</valid>
+			<valid id="charSet" value="integer"/>
+			<valid id="range" min="-999999999999999" max="999999999999999" messageId="HCD6047E"/>
+		</item>
+		<!--旧長期損害保険料-->
+		<item type="Normal" column="27">
+			<valid id="charSet" value="integer"/>
+			<valid id="range" min="-999999999999999" max="999999999999999" messageId="HCD6047E"/>
+		</item>
+		<!--旧長期損害保険_控除対象保険料-->
+		<item type="Normal" column="28">
+			<valid id="exist" messageId="HCD6058E">
+				<outer id="exist" column="6"/>
+				<outer id="contain" column="6" value="2 3" messageId="HCD6049E"/>
+			</valid>
+			<valid id="charSet" value="integer"/>
+			<valid id="range" min="-999999999999999" max="999999999999999" messageId="HCD6047E"/>
+		</item>
+		<!--その他-->
+		<item type="Normal" column="29">
+			<valid id="length" max="500" messageId="HCD6068E"/>
+			<valid id="etxString" messageId="HCD6023E"/>
+		</item>
+	</report>
+</DatDefine>

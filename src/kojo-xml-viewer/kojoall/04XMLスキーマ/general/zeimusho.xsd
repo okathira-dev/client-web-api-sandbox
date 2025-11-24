@@ -1,0 +1,1150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://xml.e-tax.nta.go.jp/XSD/general"
+xmlns="http://xml.e-tax.nta.go.jp/XSD/general"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+elementFormDefault="qualified" attributeFormDefault="unqualified"
+version="1.0">
+<xsd:annotation>
+<xsd:documentation>税務署（共通ボキャブラリ）</xsd:documentation>
+</xsd:annotation>
+<!--税務署-->
+<xsd:complexType name="zeimushoType">
+<xsd:sequence>
+<xsd:element name="zeimusho_CD">
+<xsd:simpleType>
+<xsd:annotation>
+<xsd:appinfo>税務署番号</xsd:appinfo>
+<xsd:documentation>
+00001:国税庁
+00041:国税不服審判所
+01001:東京
+01041:東京国税不服審判所
+01043:東京国税不服審判所横浜支所
+01101:麹町
+01103:神田
+01105:日本橋
+01107:京橋
+01109:芝
+01111:四谷
+01113:麻布
+01115:小石川
+01117:本郷
+01119:東京上野
+01121:浅草
+01123:品川
+01125:荏原
+01127:大森
+01129:雪谷
+01131:蒲田
+01133:世田谷
+01135:北沢
+01137:玉川
+01139:目黒
+01141:渋谷
+01143:新宿
+01145:中野
+01147:杉並
+01149:荻窪
+01151:板橋
+01155:練馬東
+01157:練馬西
+01159:豊島
+01161:王子
+01163:荒川
+01165:足立
+01167:西新井
+01169:本所
+01171:向島
+01173:葛飾
+01175:江戸川北
+01177:江戸川南
+01179:江東西
+01181:江東東
+01183:青梅
+01185:八王子
+01187:日野
+01189:町田
+01191:立川
+01193:東村山
+01197:武蔵野
+01199:武蔵府中
+01201:横浜中
+01203:横浜南
+01207:保土ケ谷
+01209:戸塚
+01211:神奈川
+01213:緑
+01215:鶴見
+01217:川崎南
+01219:川崎北
+01221:川崎西
+01223:横須賀
+01225:鎌倉
+01227:藤沢
+01229:平塚
+01231:厚木
+01233:大和
+01235:相模原
+01237:小田原
+01301:千葉東
+01303:千葉西
+01305:千葉南
+01307:成田
+01309:松戸
+01313:柏
+01315:市川
+01317:船橋
+01319:佐原
+01321:銚子
+01323:東金
+01325:茂原
+01327:木更津
+01329:館山
+01401:甲府
+01403:山梨
+01405:鰍沢
+01407:大月
+02001:関東信越
+02041:関東信越国税不服審判所
+02043:関東信越国税不服審判所長野支所
+02045:関東信越国税不服審判所新潟支所
+02101:浦和
+02103:朝霞
+02105:大宮
+02107:上尾
+02109:川口
+02111:西川口
+02113:川越
+02117:所沢
+02121:東松山
+02123:秩父
+02125:熊谷
+02127:本庄
+02129:行田
+02131:春日部
+02135:越谷
+02201:水戸
+02203:太田
+02205:日立
+02207:潮来
+02209:竜ヶ崎
+02211:土浦
+02213:下館
+02215:古河
+02301:宇都宮
+02303:鹿沼
+02305:真岡
+02307:栃木
+02309:大田原
+02311:氏家
+02313:足利
+02315:佐野
+02401:前橋
+02403:伊勢崎
+02405:高崎
+02407:藤岡
+02409:富岡
+02411:中之条
+02413:沼田
+02415:桐生
+02417:館林
+02501:長野
+02503:佐久
+02505:上田
+02507:諏訪
+02509:伊那
+02511:飯田
+02513:木曽
+02515:松本
+02517:大町
+02519:信濃中野
+02601:新潟
+02603:新津
+02605:新発田
+02607:巻
+02609:三条
+02611:長岡
+02613:小千谷
+02615:十日町
+02617:柏崎
+02619:高田
+02621:糸魚川
+02623:村上
+02625:佐渡
+03001:大阪
+03041:大阪国税不服審判所
+03043:大阪国税不服審判所京都支所
+03045:大阪国税不服審判所神戸支所
+03101:東
+03103:西
+03105:港
+03107:南
+03109:浪速
+03111:天王寺
+03113:北
+03115:大阪福島
+03119:西淀川
+03121:生野
+03123:東成
+03125:旭
+03127:城東
+03129:阿倍野
+03131:東住吉
+03133:西成
+03135:住吉
+03137:大淀
+03139:東淀川
+03141:茨木
+03143:吹田
+03145:豊能
+03149:堺
+03153:泉大津
+03155:岸和田
+03157:泉佐野
+03159:富田林
+03161:東大阪
+03163:八尾
+03165:枚方
+03169:門真
+03201:上京
+03203:中京
+03205:下京
+03207:右京
+03209:東山
+03211:左京
+03213:伏見
+03215:宇治
+03217:園部
+03219:福知山
+03221:宮津
+03223:舞鶴
+03225:峰山
+03301:神戸
+03303:灘
+03305:須磨
+03307:兵庫
+03309:長田
+03311:西宮
+03313:芦屋
+03315:伊丹
+03317:尼崎
+03319:明石
+03321:三木
+03323:社
+03325:西脇
+03327:加古川
+03329:姫路
+03333:龍野
+03335:相生
+03337:豊岡
+03341:和田山
+03343:柏原
+03345:洲本
+03401:奈良
+03405:葛城
+03407:桜井
+03409:吉野
+03501:和歌山
+03503:粉河
+03505:海南
+03507:湯浅
+03509:御坊
+03511:田辺
+03513:新宮
+03601:大津
+03603:草津
+03605:水口
+03607:近江八幡
+03609:彦根
+03611:長浜
+03613:今津
+04001:札幌
+04041:札幌国税不服審判所
+04101:札幌中
+04103:札幌西
+04105:札幌北
+04106:札幌東
+04107:札幌南
+04111:函館
+04113:江差
+04115:八雲
+04117:小樽
+04119:余市
+04121:倶知安
+04123:岩見沢
+04127:滝川
+04129:深川
+04131:旭川中
+04133:旭川東
+04135:富良野
+04137:名寄
+04139:留萌
+04141:稚内
+04143:室蘭
+04145:浦河
+04147:苫小牧
+04149:網走
+04151:紋別
+04153:北見
+04155:釧路
+04157:帯広
+04159:十勝池田
+04161:根室
+05001:仙台
+05041:仙台国税不服審判所
+05101:仙台北
+05103:仙台中
+05105:仙台南
+05107:塩釜
+05109:古川
+05111:築館
+05113:佐沼
+05115:石巻
+05117:気仙沼
+05119:大河原
+05201:盛岡
+05203:花巻
+05205:水沢
+05207:一関
+05209:大船渡
+05211:釜石
+05213:宮古
+05215:久慈
+05217:二戸
+05301:福島
+05303:二本松
+05305:郡山
+05307:須賀川
+05309:田島
+05311:会津若松
+05313:喜多方
+05317:白河
+05319:いわき
+05321:相馬
+05401:秋田南
+05403:秋田北
+05405:大館
+05409:能代
+05411:本荘
+05413:大曲
+05415:横手
+05417:湯沢
+05501:青森
+05505:弘前
+05507:黒石
+05509:五所川原
+05511:十和田
+05513:むつ
+05515:八戸
+05601:山形
+05603:寒河江
+05605:村山
+05607:新庄
+05609:酒田
+05611:鶴岡
+05613:長井
+05615:米沢
+06001:名古屋
+06041:名古屋国税不服審判所
+06043:名古屋国税不服審判所静岡支所
+06101:名古屋中
+06103:名古屋東
+06105:千種
+06107:名古屋北
+06109:名古屋西
+06111:名古屋中村
+06113:昭和
+06115:熱田
+06117:中川
+06119:小牧
+06123:尾張瀬戸
+06125:一宮
+06127:津島
+06129:半田
+06131:刈谷
+06133:西尾
+06135:岡崎
+06137:豊田
+06139:豊橋
+06143:新城
+06201:静岡
+06203:清水
+06205:下田
+06207:沼津
+06209:三島
+06211:熱海
+06213:富士
+06215:藤枝
+06217:島田
+06219:磐田
+06221:掛川
+06223:浜松西
+06225:浜松東
+06301:津
+06303:桑名
+06305:鈴鹿
+06307:四日市
+06309:松阪
+06311:伊勢
+06313:上野
+06315:尾鷲
+06401:岐阜北
+06403:岐阜南
+06405:大垣
+06407:関
+06411:多治見
+06413:中津川
+06415:高山
+07001:金沢
+07041:金沢国税不服審判所
+07101:金沢
+07103:松任
+07105:小松
+07107:七尾
+07109:輪島
+07201:福井
+07203:三国
+07205:大野
+07207:武生
+07209:敦賀
+07211:小浜
+07301:富山
+07303:魚津
+07305:高岡
+07307:砺波
+08001:広島
+08041:広島国税不服審判所
+08043:広島国税不服審判所岡山支所
+08101:広島東
+08103:広島西
+08105:広島南
+08107:廿日市
+08109:呉
+08111:海田
+08113:広島北
+08115:吉田
+08117:西条
+08119:竹原
+08121:尾道
+08123:三原
+08125:福山
+08127:府中
+08129:三次
+08131:庄原
+08201:山口
+08203:岩国
+08205:柳井
+08207:徳山
+08209:光
+08211:防府
+08213:厚狭
+08215:下関
+08217:宇部
+08219:長門
+08221:萩
+08301:岡山東
+08303:岡山西
+08305:西大寺
+08307:瀬戸
+08309:玉野
+08311:児島
+08313:倉敷
+08315:玉島
+08317:笠岡
+08319:高梁
+08321:新見
+08323:久世
+08325:津山
+08401:鳥取
+08403:倉吉
+08405:米子
+08501:松江
+08505:大東
+08507:出雲
+08509:石見大田
+08511:浜田
+08513:益田
+08515:西郷
+09001:高松
+09041:高松国税不服審判所
+09101:高松
+09103:丸亀
+09105:観音寺
+09107:坂出
+09109:長尾
+09111:土庄
+09201:松山
+09203:今治
+09205:伊予西条
+09207:新居浜
+09209:伊予三島
+09211:大洲
+09213:八幡浜
+09217:宇和島
+09301:徳島
+09303:川島
+09305:阿南
+09307:鳴門
+09309:脇町
+09311:池田
+09401:高知
+09403:伊野
+09405:中村
+09407:須崎
+09409:南国
+09411:安芸
+10001:福岡
+10041:福岡国税不服審判所
+10101:福岡
+10103:西福岡
+10105:博多
+10107:香椎
+10109:筑紫
+10111:八幡
+10113:若松
+10115:直方
+10117:田川
+10119:飯塚
+10121:久留米
+10123:甘木
+10125:大川
+10127:八女
+10129:大牟田
+10131:小倉
+10133:門司
+10135:行橋
+10201:佐賀
+10203:鳥栖
+10205:唐津
+10207:武雄
+10209:伊万里
+10301:長崎
+10303:諫早
+10305:佐世保
+10307:島原
+10309:平戸
+10311:福江
+10313:壱岐
+10315:厳原
+11001:熊本
+11041:熊本国税不服審判所
+11101:熊本西
+11103:熊本東
+11105:宇土
+11107:玉名
+11109:山鹿
+11111:菊池
+11113:阿蘇
+11115:八代
+11117:人吉
+11119:天草
+11201:大分
+11205:別府
+11207:臼杵
+11209:佐伯
+11211:三重
+11213:竹田
+11215:日田
+11219:中津
+11221:宇佐
+11301:鹿児島
+11303:伊集院
+11305:知覧
+11307:指宿
+11309:川内
+11311:出水
+11313:加治木
+11315:大隅
+11317:鹿屋
+11319:種子島
+11321:大島
+11401:宮崎
+11403:日南
+11405:都城
+11407:小林
+11409:高鍋
+11411:延岡
+12001:沖縄
+12041:国税不服審判所沖縄事務所
+12101:那覇
+12103:北那覇
+12105:沖縄
+12107:名護
+12109:宮古島
+12111:石垣
+</xsd:documentation>
+</xsd:annotation>
+<xsd:restriction base="xsd:string">
+<xsd:enumeration value="00001"/>
+<xsd:enumeration value="00041"/>
+<xsd:enumeration value="01001"/>
+<xsd:enumeration value="01041"/>
+<xsd:enumeration value="01043"/>
+<xsd:enumeration value="01101"/>
+<xsd:enumeration value="01103"/>
+<xsd:enumeration value="01105"/>
+<xsd:enumeration value="01107"/>
+<xsd:enumeration value="01109"/>
+<xsd:enumeration value="01111"/>
+<xsd:enumeration value="01113"/>
+<xsd:enumeration value="01115"/>
+<xsd:enumeration value="01117"/>
+<xsd:enumeration value="01119"/>
+<xsd:enumeration value="01121"/>
+<xsd:enumeration value="01123"/>
+<xsd:enumeration value="01125"/>
+<xsd:enumeration value="01127"/>
+<xsd:enumeration value="01129"/>
+<xsd:enumeration value="01131"/>
+<xsd:enumeration value="01133"/>
+<xsd:enumeration value="01135"/>
+<xsd:enumeration value="01137"/>
+<xsd:enumeration value="01139"/>
+<xsd:enumeration value="01141"/>
+<xsd:enumeration value="01143"/>
+<xsd:enumeration value="01145"/>
+<xsd:enumeration value="01147"/>
+<xsd:enumeration value="01149"/>
+<xsd:enumeration value="01151"/>
+<xsd:enumeration value="01155"/>
+<xsd:enumeration value="01157"/>
+<xsd:enumeration value="01159"/>
+<xsd:enumeration value="01161"/>
+<xsd:enumeration value="01163"/>
+<xsd:enumeration value="01165"/>
+<xsd:enumeration value="01167"/>
+<xsd:enumeration value="01169"/>
+<xsd:enumeration value="01171"/>
+<xsd:enumeration value="01173"/>
+<xsd:enumeration value="01175"/>
+<xsd:enumeration value="01177"/>
+<xsd:enumeration value="01179"/>
+<xsd:enumeration value="01181"/>
+<xsd:enumeration value="01183"/>
+<xsd:enumeration value="01185"/>
+<xsd:enumeration value="01187"/>
+<xsd:enumeration value="01189"/>
+<xsd:enumeration value="01191"/>
+<xsd:enumeration value="01193"/>
+<xsd:enumeration value="01197"/>
+<xsd:enumeration value="01199"/>
+<xsd:enumeration value="01201"/>
+<xsd:enumeration value="01203"/>
+<xsd:enumeration value="01207"/>
+<xsd:enumeration value="01209"/>
+<xsd:enumeration value="01211"/>
+<xsd:enumeration value="01213"/>
+<xsd:enumeration value="01215"/>
+<xsd:enumeration value="01217"/>
+<xsd:enumeration value="01219"/>
+<xsd:enumeration value="01221"/>
+<xsd:enumeration value="01223"/>
+<xsd:enumeration value="01225"/>
+<xsd:enumeration value="01227"/>
+<xsd:enumeration value="01229"/>
+<xsd:enumeration value="01231"/>
+<xsd:enumeration value="01233"/>
+<xsd:enumeration value="01235"/>
+<xsd:enumeration value="01237"/>
+<xsd:enumeration value="01301"/>
+<xsd:enumeration value="01303"/>
+<xsd:enumeration value="01305"/>
+<xsd:enumeration value="01307"/>
+<xsd:enumeration value="01309"/>
+<xsd:enumeration value="01313"/>
+<xsd:enumeration value="01315"/>
+<xsd:enumeration value="01317"/>
+<xsd:enumeration value="01319"/>
+<xsd:enumeration value="01321"/>
+<xsd:enumeration value="01323"/>
+<xsd:enumeration value="01325"/>
+<xsd:enumeration value="01327"/>
+<xsd:enumeration value="01329"/>
+<xsd:enumeration value="01401"/>
+<xsd:enumeration value="01403"/>
+<xsd:enumeration value="01405"/>
+<xsd:enumeration value="01407"/>
+<xsd:enumeration value="02001"/>
+<xsd:enumeration value="02041"/>
+<xsd:enumeration value="02043"/>
+<xsd:enumeration value="02045"/>
+<xsd:enumeration value="02101"/>
+<xsd:enumeration value="02103"/>
+<xsd:enumeration value="02105"/>
+<xsd:enumeration value="02107"/>
+<xsd:enumeration value="02109"/>
+<xsd:enumeration value="02111"/>
+<xsd:enumeration value="02113"/>
+<xsd:enumeration value="02117"/>
+<xsd:enumeration value="02121"/>
+<xsd:enumeration value="02123"/>
+<xsd:enumeration value="02125"/>
+<xsd:enumeration value="02127"/>
+<xsd:enumeration value="02129"/>
+<xsd:enumeration value="02131"/>
+<xsd:enumeration value="02135"/>
+<xsd:enumeration value="02201"/>
+<xsd:enumeration value="02203"/>
+<xsd:enumeration value="02205"/>
+<xsd:enumeration value="02207"/>
+<xsd:enumeration value="02209"/>
+<xsd:enumeration value="02211"/>
+<xsd:enumeration value="02213"/>
+<xsd:enumeration value="02215"/>
+<xsd:enumeration value="02301"/>
+<xsd:enumeration value="02303"/>
+<xsd:enumeration value="02305"/>
+<xsd:enumeration value="02307"/>
+<xsd:enumeration value="02309"/>
+<xsd:enumeration value="02311"/>
+<xsd:enumeration value="02313"/>
+<xsd:enumeration value="02315"/>
+<xsd:enumeration value="02401"/>
+<xsd:enumeration value="02403"/>
+<xsd:enumeration value="02405"/>
+<xsd:enumeration value="02407"/>
+<xsd:enumeration value="02409"/>
+<xsd:enumeration value="02411"/>
+<xsd:enumeration value="02413"/>
+<xsd:enumeration value="02415"/>
+<xsd:enumeration value="02417"/>
+<xsd:enumeration value="02501"/>
+<xsd:enumeration value="02503"/>
+<xsd:enumeration value="02505"/>
+<xsd:enumeration value="02507"/>
+<xsd:enumeration value="02509"/>
+<xsd:enumeration value="02511"/>
+<xsd:enumeration value="02513"/>
+<xsd:enumeration value="02515"/>
+<xsd:enumeration value="02517"/>
+<xsd:enumeration value="02519"/>
+<xsd:enumeration value="02601"/>
+<xsd:enumeration value="02603"/>
+<xsd:enumeration value="02605"/>
+<xsd:enumeration value="02607"/>
+<xsd:enumeration value="02609"/>
+<xsd:enumeration value="02611"/>
+<xsd:enumeration value="02613"/>
+<xsd:enumeration value="02615"/>
+<xsd:enumeration value="02617"/>
+<xsd:enumeration value="02619"/>
+<xsd:enumeration value="02621"/>
+<xsd:enumeration value="02623"/>
+<xsd:enumeration value="02625"/>
+<xsd:enumeration value="03001"/>
+<xsd:enumeration value="03041"/>
+<xsd:enumeration value="03043"/>
+<xsd:enumeration value="03045"/>
+<xsd:enumeration value="03101"/>
+<xsd:enumeration value="03103"/>
+<xsd:enumeration value="03105"/>
+<xsd:enumeration value="03107"/>
+<xsd:enumeration value="03109"/>
+<xsd:enumeration value="03111"/>
+<xsd:enumeration value="03113"/>
+<xsd:enumeration value="03115"/>
+<xsd:enumeration value="03119"/>
+<xsd:enumeration value="03121"/>
+<xsd:enumeration value="03123"/>
+<xsd:enumeration value="03125"/>
+<xsd:enumeration value="03127"/>
+<xsd:enumeration value="03129"/>
+<xsd:enumeration value="03131"/>
+<xsd:enumeration value="03133"/>
+<xsd:enumeration value="03135"/>
+<xsd:enumeration value="03137"/>
+<xsd:enumeration value="03139"/>
+<xsd:enumeration value="03141"/>
+<xsd:enumeration value="03143"/>
+<xsd:enumeration value="03145"/>
+<xsd:enumeration value="03149"/>
+<xsd:enumeration value="03153"/>
+<xsd:enumeration value="03155"/>
+<xsd:enumeration value="03157"/>
+<xsd:enumeration value="03159"/>
+<xsd:enumeration value="03161"/>
+<xsd:enumeration value="03163"/>
+<xsd:enumeration value="03165"/>
+<xsd:enumeration value="03169"/>
+<xsd:enumeration value="03201"/>
+<xsd:enumeration value="03203"/>
+<xsd:enumeration value="03205"/>
+<xsd:enumeration value="03207"/>
+<xsd:enumeration value="03209"/>
+<xsd:enumeration value="03211"/>
+<xsd:enumeration value="03213"/>
+<xsd:enumeration value="03215"/>
+<xsd:enumeration value="03217"/>
+<xsd:enumeration value="03219"/>
+<xsd:enumeration value="03221"/>
+<xsd:enumeration value="03223"/>
+<xsd:enumeration value="03225"/>
+<xsd:enumeration value="03301"/>
+<xsd:enumeration value="03303"/>
+<xsd:enumeration value="03305"/>
+<xsd:enumeration value="03307"/>
+<xsd:enumeration value="03309"/>
+<xsd:enumeration value="03311"/>
+<xsd:enumeration value="03313"/>
+<xsd:enumeration value="03315"/>
+<xsd:enumeration value="03317"/>
+<xsd:enumeration value="03319"/>
+<xsd:enumeration value="03321"/>
+<xsd:enumeration value="03323"/>
+<xsd:enumeration value="03325"/>
+<xsd:enumeration value="03327"/>
+<xsd:enumeration value="03329"/>
+<xsd:enumeration value="03333"/>
+<xsd:enumeration value="03335"/>
+<xsd:enumeration value="03337"/>
+<xsd:enumeration value="03341"/>
+<xsd:enumeration value="03343"/>
+<xsd:enumeration value="03345"/>
+<xsd:enumeration value="03401"/>
+<xsd:enumeration value="03405"/>
+<xsd:enumeration value="03407"/>
+<xsd:enumeration value="03409"/>
+<xsd:enumeration value="03501"/>
+<xsd:enumeration value="03503"/>
+<xsd:enumeration value="03505"/>
+<xsd:enumeration value="03507"/>
+<xsd:enumeration value="03509"/>
+<xsd:enumeration value="03511"/>
+<xsd:enumeration value="03513"/>
+<xsd:enumeration value="03601"/>
+<xsd:enumeration value="03603"/>
+<xsd:enumeration value="03605"/>
+<xsd:enumeration value="03607"/>
+<xsd:enumeration value="03609"/>
+<xsd:enumeration value="03611"/>
+<xsd:enumeration value="03613"/>
+<xsd:enumeration value="04001"/>
+<xsd:enumeration value="04041"/>
+<xsd:enumeration value="04101"/>
+<xsd:enumeration value="04103"/>
+<xsd:enumeration value="04105"/>
+<xsd:enumeration value="04106"/>
+<xsd:enumeration value="04107"/>
+<xsd:enumeration value="04111"/>
+<xsd:enumeration value="04113"/>
+<xsd:enumeration value="04115"/>
+<xsd:enumeration value="04117"/>
+<xsd:enumeration value="04119"/>
+<xsd:enumeration value="04121"/>
+<xsd:enumeration value="04123"/>
+<xsd:enumeration value="04127"/>
+<xsd:enumeration value="04129"/>
+<xsd:enumeration value="04131"/>
+<xsd:enumeration value="04133"/>
+<xsd:enumeration value="04135"/>
+<xsd:enumeration value="04137"/>
+<xsd:enumeration value="04139"/>
+<xsd:enumeration value="04141"/>
+<xsd:enumeration value="04143"/>
+<xsd:enumeration value="04145"/>
+<xsd:enumeration value="04147"/>
+<xsd:enumeration value="04149"/>
+<xsd:enumeration value="04151"/>
+<xsd:enumeration value="04153"/>
+<xsd:enumeration value="04155"/>
+<xsd:enumeration value="04157"/>
+<xsd:enumeration value="04159"/>
+<xsd:enumeration value="04161"/>
+<xsd:enumeration value="05001"/>
+<xsd:enumeration value="05041"/>
+<xsd:enumeration value="05101"/>
+<xsd:enumeration value="05103"/>
+<xsd:enumeration value="05105"/>
+<xsd:enumeration value="05107"/>
+<xsd:enumeration value="05109"/>
+<xsd:enumeration value="05111"/>
+<xsd:enumeration value="05113"/>
+<xsd:enumeration value="05115"/>
+<xsd:enumeration value="05117"/>
+<xsd:enumeration value="05119"/>
+<xsd:enumeration value="05201"/>
+<xsd:enumeration value="05203"/>
+<xsd:enumeration value="05205"/>
+<xsd:enumeration value="05207"/>
+<xsd:enumeration value="05209"/>
+<xsd:enumeration value="05211"/>
+<xsd:enumeration value="05213"/>
+<xsd:enumeration value="05215"/>
+<xsd:enumeration value="05217"/>
+<xsd:enumeration value="05301"/>
+<xsd:enumeration value="05303"/>
+<xsd:enumeration value="05305"/>
+<xsd:enumeration value="05307"/>
+<xsd:enumeration value="05309"/>
+<xsd:enumeration value="05311"/>
+<xsd:enumeration value="05313"/>
+<xsd:enumeration value="05317"/>
+<xsd:enumeration value="05319"/>
+<xsd:enumeration value="05321"/>
+<xsd:enumeration value="05401"/>
+<xsd:enumeration value="05403"/>
+<xsd:enumeration value="05405"/>
+<xsd:enumeration value="05409"/>
+<xsd:enumeration value="05411"/>
+<xsd:enumeration value="05413"/>
+<xsd:enumeration value="05415"/>
+<xsd:enumeration value="05417"/>
+<xsd:enumeration value="05501"/>
+<xsd:enumeration value="05505"/>
+<xsd:enumeration value="05507"/>
+<xsd:enumeration value="05509"/>
+<xsd:enumeration value="05511"/>
+<xsd:enumeration value="05513"/>
+<xsd:enumeration value="05515"/>
+<xsd:enumeration value="05601"/>
+<xsd:enumeration value="05603"/>
+<xsd:enumeration value="05605"/>
+<xsd:enumeration value="05607"/>
+<xsd:enumeration value="05609"/>
+<xsd:enumeration value="05611"/>
+<xsd:enumeration value="05613"/>
+<xsd:enumeration value="05615"/>
+<xsd:enumeration value="06001"/>
+<xsd:enumeration value="06041"/>
+<xsd:enumeration value="06043"/>
+<xsd:enumeration value="06101"/>
+<xsd:enumeration value="06103"/>
+<xsd:enumeration value="06105"/>
+<xsd:enumeration value="06107"/>
+<xsd:enumeration value="06109"/>
+<xsd:enumeration value="06111"/>
+<xsd:enumeration value="06113"/>
+<xsd:enumeration value="06115"/>
+<xsd:enumeration value="06117"/>
+<xsd:enumeration value="06119"/>
+<xsd:enumeration value="06123"/>
+<xsd:enumeration value="06125"/>
+<xsd:enumeration value="06127"/>
+<xsd:enumeration value="06129"/>
+<xsd:enumeration value="06131"/>
+<xsd:enumeration value="06133"/>
+<xsd:enumeration value="06135"/>
+<xsd:enumeration value="06137"/>
+<xsd:enumeration value="06139"/>
+<xsd:enumeration value="06143"/>
+<xsd:enumeration value="06201"/>
+<xsd:enumeration value="06203"/>
+<xsd:enumeration value="06205"/>
+<xsd:enumeration value="06207"/>
+<xsd:enumeration value="06209"/>
+<xsd:enumeration value="06211"/>
+<xsd:enumeration value="06213"/>
+<xsd:enumeration value="06215"/>
+<xsd:enumeration value="06217"/>
+<xsd:enumeration value="06219"/>
+<xsd:enumeration value="06221"/>
+<xsd:enumeration value="06223"/>
+<xsd:enumeration value="06225"/>
+<xsd:enumeration value="06301"/>
+<xsd:enumeration value="06303"/>
+<xsd:enumeration value="06305"/>
+<xsd:enumeration value="06307"/>
+<xsd:enumeration value="06309"/>
+<xsd:enumeration value="06311"/>
+<xsd:enumeration value="06313"/>
+<xsd:enumeration value="06315"/>
+<xsd:enumeration value="06401"/>
+<xsd:enumeration value="06403"/>
+<xsd:enumeration value="06405"/>
+<xsd:enumeration value="06407"/>
+<xsd:enumeration value="06411"/>
+<xsd:enumeration value="06413"/>
+<xsd:enumeration value="06415"/>
+<xsd:enumeration value="07001"/>
+<xsd:enumeration value="07041"/>
+<xsd:enumeration value="07101"/>
+<xsd:enumeration value="07103"/>
+<xsd:enumeration value="07105"/>
+<xsd:enumeration value="07107"/>
+<xsd:enumeration value="07109"/>
+<xsd:enumeration value="07201"/>
+<xsd:enumeration value="07203"/>
+<xsd:enumeration value="07205"/>
+<xsd:enumeration value="07207"/>
+<xsd:enumeration value="07209"/>
+<xsd:enumeration value="07211"/>
+<xsd:enumeration value="07301"/>
+<xsd:enumeration value="07303"/>
+<xsd:enumeration value="07305"/>
+<xsd:enumeration value="07307"/>
+<xsd:enumeration value="08001"/>
+<xsd:enumeration value="08041"/>
+<xsd:enumeration value="08043"/>
+<xsd:enumeration value="08101"/>
+<xsd:enumeration value="08103"/>
+<xsd:enumeration value="08105"/>
+<xsd:enumeration value="08107"/>
+<xsd:enumeration value="08109"/>
+<xsd:enumeration value="08111"/>
+<xsd:enumeration value="08113"/>
+<xsd:enumeration value="08115"/>
+<xsd:enumeration value="08117"/>
+<xsd:enumeration value="08119"/>
+<xsd:enumeration value="08121"/>
+<xsd:enumeration value="08123"/>
+<xsd:enumeration value="08125"/>
+<xsd:enumeration value="08127"/>
+<xsd:enumeration value="08129"/>
+<xsd:enumeration value="08131"/>
+<xsd:enumeration value="08201"/>
+<xsd:enumeration value="08203"/>
+<xsd:enumeration value="08205"/>
+<xsd:enumeration value="08207"/>
+<xsd:enumeration value="08209"/>
+<xsd:enumeration value="08211"/>
+<xsd:enumeration value="08213"/>
+<xsd:enumeration value="08215"/>
+<xsd:enumeration value="08217"/>
+<xsd:enumeration value="08219"/>
+<xsd:enumeration value="08221"/>
+<xsd:enumeration value="08301"/>
+<xsd:enumeration value="08303"/>
+<xsd:enumeration value="08305"/>
+<xsd:enumeration value="08307"/>
+<xsd:enumeration value="08309"/>
+<xsd:enumeration value="08311"/>
+<xsd:enumeration value="08313"/>
+<xsd:enumeration value="08315"/>
+<xsd:enumeration value="08317"/>
+<xsd:enumeration value="08319"/>
+<xsd:enumeration value="08321"/>
+<xsd:enumeration value="08323"/>
+<xsd:enumeration value="08325"/>
+<xsd:enumeration value="08401"/>
+<xsd:enumeration value="08403"/>
+<xsd:enumeration value="08405"/>
+<xsd:enumeration value="08501"/>
+<xsd:enumeration value="08505"/>
+<xsd:enumeration value="08507"/>
+<xsd:enumeration value="08509"/>
+<xsd:enumeration value="08511"/>
+<xsd:enumeration value="08513"/>
+<xsd:enumeration value="08515"/>
+<xsd:enumeration value="09001"/>
+<xsd:enumeration value="09041"/>
+<xsd:enumeration value="09101"/>
+<xsd:enumeration value="09103"/>
+<xsd:enumeration value="09105"/>
+<xsd:enumeration value="09107"/>
+<xsd:enumeration value="09109"/>
+<xsd:enumeration value="09111"/>
+<xsd:enumeration value="09201"/>
+<xsd:enumeration value="09203"/>
+<xsd:enumeration value="09205"/>
+<xsd:enumeration value="09207"/>
+<xsd:enumeration value="09209"/>
+<xsd:enumeration value="09211"/>
+<xsd:enumeration value="09213"/>
+<xsd:enumeration value="09217"/>
+<xsd:enumeration value="09301"/>
+<xsd:enumeration value="09303"/>
+<xsd:enumeration value="09305"/>
+<xsd:enumeration value="09307"/>
+<xsd:enumeration value="09309"/>
+<xsd:enumeration value="09311"/>
+<xsd:enumeration value="09401"/>
+<xsd:enumeration value="09403"/>
+<xsd:enumeration value="09405"/>
+<xsd:enumeration value="09407"/>
+<xsd:enumeration value="09409"/>
+<xsd:enumeration value="09411"/>
+<xsd:enumeration value="10001"/>
+<xsd:enumeration value="10041"/>
+<xsd:enumeration value="10101"/>
+<xsd:enumeration value="10103"/>
+<xsd:enumeration value="10105"/>
+<xsd:enumeration value="10107"/>
+<xsd:enumeration value="10109"/>
+<xsd:enumeration value="10111"/>
+<xsd:enumeration value="10113"/>
+<xsd:enumeration value="10115"/>
+<xsd:enumeration value="10117"/>
+<xsd:enumeration value="10119"/>
+<xsd:enumeration value="10121"/>
+<xsd:enumeration value="10123"/>
+<xsd:enumeration value="10125"/>
+<xsd:enumeration value="10127"/>
+<xsd:enumeration value="10129"/>
+<xsd:enumeration value="10131"/>
+<xsd:enumeration value="10133"/>
+<xsd:enumeration value="10135"/>
+<xsd:enumeration value="10201"/>
+<xsd:enumeration value="10203"/>
+<xsd:enumeration value="10205"/>
+<xsd:enumeration value="10207"/>
+<xsd:enumeration value="10209"/>
+<xsd:enumeration value="10301"/>
+<xsd:enumeration value="10303"/>
+<xsd:enumeration value="10305"/>
+<xsd:enumeration value="10307"/>
+<xsd:enumeration value="10309"/>
+<xsd:enumeration value="10311"/>
+<xsd:enumeration value="10313"/>
+<xsd:enumeration value="10315"/>
+<xsd:enumeration value="11001"/>
+<xsd:enumeration value="11041"/>
+<xsd:enumeration value="11101"/>
+<xsd:enumeration value="11103"/>
+<xsd:enumeration value="11105"/>
+<xsd:enumeration value="11107"/>
+<xsd:enumeration value="11109"/>
+<xsd:enumeration value="11111"/>
+<xsd:enumeration value="11113"/>
+<xsd:enumeration value="11115"/>
+<xsd:enumeration value="11117"/>
+<xsd:enumeration value="11119"/>
+<xsd:enumeration value="11201"/>
+<xsd:enumeration value="11205"/>
+<xsd:enumeration value="11207"/>
+<xsd:enumeration value="11209"/>
+<xsd:enumeration value="11211"/>
+<xsd:enumeration value="11213"/>
+<xsd:enumeration value="11215"/>
+<xsd:enumeration value="11219"/>
+<xsd:enumeration value="11221"/>
+<xsd:enumeration value="11301"/>
+<xsd:enumeration value="11303"/>
+<xsd:enumeration value="11305"/>
+<xsd:enumeration value="11307"/>
+<xsd:enumeration value="11309"/>
+<xsd:enumeration value="11311"/>
+<xsd:enumeration value="11313"/>
+<xsd:enumeration value="11315"/>
+<xsd:enumeration value="11317"/>
+<xsd:enumeration value="11319"/>
+<xsd:enumeration value="11321"/>
+<xsd:enumeration value="11401"/>
+<xsd:enumeration value="11403"/>
+<xsd:enumeration value="11405"/>
+<xsd:enumeration value="11407"/>
+<xsd:enumeration value="11409"/>
+<xsd:enumeration value="11411"/>
+<xsd:enumeration value="12001"/>
+<xsd:enumeration value="12041"/>
+<xsd:enumeration value="12101"/>
+<xsd:enumeration value="12103"/>
+<xsd:enumeration value="12105"/>
+<xsd:enumeration value="12107"/>
+<xsd:enumeration value="12109"/>
+<xsd:enumeration value="12111"/>
+</xsd:restriction>
+</xsd:simpleType>
+</xsd:element>
+<xsd:element name="zeimusho_NM" minOccurs="0">
+<xsd:simpleType>
+<xsd:annotation>
+<xsd:appinfo>税務署名</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="str">
+<xsd:maxLength value="15"/>
+</xsd:restriction>
+</xsd:simpleType>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:schema>

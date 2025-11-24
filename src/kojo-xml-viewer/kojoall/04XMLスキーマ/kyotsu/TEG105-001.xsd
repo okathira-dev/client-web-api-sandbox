@@ -1,0 +1,1314 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema targetNamespace="http://xml.e-tax.nta.go.jp/XSD/kyotsu"
+xmlns="http://xml.e-tax.nta.go.jp/XSD/kyotsu"
+xmlns:gen="http://xml.e-tax.nta.go.jp/XSD/general" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0" > 
+<xsd:annotation> 
+<xsd:documentation> 
+様式名：年分　給与所得の源泉徴収票(平成30年以降用)
+version：1.0
+Date：2018年11月13日
+</xsd:documentation> 
+</xsd:annotation> 
+
+<!-- import -->
+<xsd:import namespace="http://xml.e-tax.nta.go.jp/XSD/general" schemaLocation="../general/General.xsd"/>
+<xsd:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="../general/XMLDSIG050.xsd"/>
+
+<!-- version -->
+<xsd:simpleType name="TEG105-1-0VRtype"><xsd:restriction base="xsd:string"><xsd:enumeration value="1.0"/></xsd:restriction></xsd:simpleType>
+<!-- Root Element Definition -->
+<xsd:element name="TEG105" type="TEG105-1-0type"/>
+
+<xsd:complexType name="TEG105-1-0type">
+<xsd:sequence>
+
+<xsd:element name="ZIA00000" type="ZIA00000-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"表題"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIB00000" type="gen:yy" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"年分"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element><xsd:element name="ZIC00000" type="ZIC00000-1-0type" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"支払を受ける者"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+
+<xsd:element name="ZID00000" type="ZID00000-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"種別"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element><xsd:element name="ZIE00000" type="ZIE00000-1-0type" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"支払金額"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+
+<xsd:element name="ZIF00000" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"給与所得控除後の金額"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIG00000" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"所得控除の額の合計額"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element><xsd:element name="ZIH00000" type="ZIH00000-1-0type" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"源泉徴収税額"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZII00000" type="ZII00000-1-0type" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"（源泉）控除対象配偶者の有無等"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+
+<xsd:element name="ZIJ00000" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"配偶者（特別）控除の額"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element><xsd:element name="ZIK00000" type="ZIK00000-1-0type" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"控除対象扶養親族の数（配偶者を除く。）"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+
+<xsd:element name="ZIC10000" type="ZIC10000-1-0type" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"16歳未満扶養親族の数"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element><xsd:element name="ZIL00000" type="ZIL00000-1-0type" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"障害者の数（本人を除く。）"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+
+<xsd:element name="ZID10000" type="ZID10000-1-0type" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"非居住者である親族の数"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element><xsd:element name="ZIM00000" type="ZIM00000-1-0type" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"社会保険料等の金額"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+
+<xsd:element name="ZIN00000" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"生命保険料の控除額"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIO00000" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"地震保険料の控除額"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIP00000" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"住宅借入金等特別控除の額"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element><xsd:element name="ZIQ00000" type="ZIQ00000-1-0type" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"（摘要）"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+
+<xsd:element name="ZIR00000" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"配偶者の合計所得"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIY00000" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"新生命保険料の金額"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIZ00000" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"旧生命保険料の金額"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIA10000" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"介護医療保険料の金額"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIB10000" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"新個人年金保険料の金額"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIS00000" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"旧個人年金保険料の金額"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIT00000" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"旧長期損害保険料の金額"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element><xsd:element name="ZIE10000" type="ZIE10000-1-0type" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"住宅借入金等特別控除の額の内訳"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIF10000" type="ZIF10000-1-0type" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"（源泉・特別）控除対象配偶者"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+
+<xsd:element name="ZIG10000" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"国民年金保険料等の金額"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element><xsd:element name="ZIH10000" type="ZIH10000-1-0type" minOccurs="0" maxOccurs="4">
+<xsd:annotation>
+<xsd:appinfo>"控除対象扶養親族　繰り返し"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZII10000" type="ZII10000-1-0type" minOccurs="0" maxOccurs="4">
+<xsd:annotation>
+<xsd:appinfo>"16歳未満の扶養親族　繰り返し"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIU00000" type="ZIU00000-1-0type" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"本人控除内容"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIV00000" type="ZIV00000-1-0type" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"中途就・退職"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+
+<xsd:element name="ZIW00000" type="gen:yymmdd" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"受給者生年月日"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element><xsd:element name="ZIX00000" type="ZIX00000-1-0type" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"支払者"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+
+<!-- XML-SIGNATURE -->
+<xsd:element ref="dsig:Signature" minOccurs="1" maxOccurs="1"/>
+</xsd:sequence>
+<xsd:attribute name="VR"
+type="TEG105-1-0VRtype"
+use="required"/>
+<xsd:attributeGroup ref="gen:FormAttribute"/>
+</xsd:complexType>
+
+<xsd:complexType name="ZIC00000-1-0type">
+<xsd:sequence>
+
+<xsd:element name="ZIC00010" type="gen:address" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"住所又は居所"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIC00080" type="ZIC00080-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"（受給者番号）"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIC00090" type="ZIC00090-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"（役職名）"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIC00100" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"氏名"</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element name="ZIC00110" type="gen:n-kana" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"（フリガナ）"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIC00120" type="gen:name" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"氏名"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType><xsd:complexType name="ZIE00000-1-0type">
+<xsd:sequence>
+
+<xsd:element name="ZIE00010" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"内書"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIE00020" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"支払金額"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType><xsd:complexType name="ZIH00000-1-0type">
+<xsd:sequence>
+
+<xsd:element name="ZIH00010" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"内書"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIH00020" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"税額"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType><xsd:complexType name="ZII00000-1-0type">
+<xsd:sequence>
+
+<xsd:element name="ZII00010" type="ZII00010-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"有"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZII00030" type="ZII00030-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"従有"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZII00050" type="ZII00050-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"老人"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType><xsd:complexType name="ZIK00000-1-0type">
+<xsd:sequence>
+
+<xsd:element name="ZIK00010" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"特定"</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element name="ZIK00020" type="ZIK00020-1-0type" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"人"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIK00030" type="ZIK00030-1-0type" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"従人"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="ZIK00040" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"老人"</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element name="ZIK00050" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"人数"</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element name="ZIK00060" type="ZIK00060-1-0type" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"内書"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIK00070" type="ZIK00070-1-0type" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"人"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="ZIK00080" type="ZIK00080-1-0type" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"従人"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="ZIK00090" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"その他"</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element name="ZIK00100" type="ZIK00100-1-0type" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"人"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIK00110" type="ZIK00110-1-0type" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"従人"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType><xsd:complexType name="ZIL00000-1-0type">
+<xsd:sequence>
+
+<xsd:element name="ZIL00010" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"特別"</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element name="ZIL00020" type="ZIL00020-1-0type" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"内書"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIL00030" type="ZIL00030-1-0type" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"人"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="ZIL00040" type="ZIL00040-1-0type" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"その他"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType><xsd:complexType name="ZIM00000-1-0type">
+<xsd:sequence>
+
+<xsd:element name="ZIM00010" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"内書"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIM00020" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"社会保険料等"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType><xsd:complexType name="ZIQ00000-1-0type">
+<xsd:sequence>
+
+<xsd:element name="ZIQ00010" type="ZIQ00010-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"摘要の内容"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIQ00020" type="ZIQ00020-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"電子交付"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType><xsd:complexType name="ZIE10000-1-0type">
+<xsd:sequence>
+
+<xsd:element name="ZIE10010" type="ZIE10010-1-0type" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"住宅借入金等特別控除適用数"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIE10020" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"住宅借入金等特別控除可能額"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIE10030" type="gen:yymmdd" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"居住開始年月日（１回目）"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIE10040" type="ZIE10040-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"住宅借入金等特別控除区分（１回目）"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIE10050" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"住宅借入金等年末残高（１回目）"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIE10060" type="gen:yymmdd" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"居住開始年月日（２回目）"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIE10070" type="ZIE10070-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"住宅借入金等特別控除区分（２回目）"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIE10080" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"住宅借入金等年末残高（２回目）"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType><xsd:complexType name="ZIF10000-1-0type">
+<xsd:sequence>
+
+<xsd:element name="ZIF10010" type="gen:n-kana" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"氏名（フリガナ）"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIF10020" type="gen:name" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"氏名"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIF10030" type="ZIF10030-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"区分"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType><xsd:complexType name="ZIH10000-1-0type">
+<xsd:sequence>
+
+<xsd:element name="ZIH10010" type="gen:n-kana" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"氏名（フリガナ）"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIH10020" type="gen:name" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"氏名"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIH10030" type="ZIH10030-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"区分"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType><xsd:complexType name="ZII10000-1-0type">
+<xsd:sequence>
+
+<xsd:element name="ZII10010" type="gen:n-kana" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"氏名（フリガナ）"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZII10020" type="gen:name" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"氏名"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZII10030" type="ZII10030-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"区分"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType><xsd:complexType name="ZIU00000-1-0type">
+<xsd:sequence>
+
+<xsd:element name="ZIU00010" type="ZIU00010-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"未成年者"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIU00020" type="ZIU00020-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"乙欄"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIU00030" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"本人が障害者"</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element name="ZIU00040" type="ZIU00040-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"特別"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIU00050" type="ZIU00050-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"その他"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="ZIU00060" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"寡婦"</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element name="ZIU00070" type="ZIU00070-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"一般"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIU00080" type="ZIU00080-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"特別"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="ZIU00090" type="ZIU00090-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"寡夫"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIU00100" type="ZIU00100-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"勤労学生"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIU00110" type="ZIU00110-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"死亡退職"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIU00120" type="ZIU00120-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"災害者"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIU00130" type="ZIU00130-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"外国人"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType><xsd:complexType name="ZIV00000-1-0type">
+<xsd:sequence>
+
+<xsd:element name="ZIV00010" type="ZIV00010-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"就職"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIV00020" type="ZIV00020-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"退職"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIV00030" type="gen:yymmdd" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"中途就・退職年月日"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType><xsd:complexType name="ZIX00000-1-0type">
+<xsd:sequence>
+
+<xsd:element name="ZIX00010" type="gen:address" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"住所（居所）又は所在地"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIX00020" type="gen:name" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"氏名又は名称"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="ZIX00030" type="gen:tel-number" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"電話番号"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+
+
+<xsd:simpleType name="ZIA00000-1-0Rtype">
+    <xsd:restriction base="gen:str">
+        <xsd:maxLength value="20"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="ZIC00080-1-0Rtype">
+    <xsd:restriction base="gen:str">
+        <xsd:maxLength value="20"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="ZIC00090-1-0Rtype">
+    <xsd:restriction base="gen:str">
+        <xsd:maxLength value="15"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="ZID00000-1-0Rtype">
+    <xsd:restriction base="gen:str">
+        <xsd:maxLength value="10"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:complexType name="ZII00010-1-0Rtype">
+    <xsd:complexContent>
+        <xsd:restriction base="gen:kubun">
+            <xsd:sequence>
+                <xsd:element name="kubun_CD">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_CD">
+                            <xsd:enumeration value="1"/><xsd:enumeration value="2"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="kubun_NM" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_NM">
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:restriction>
+    </xsd:complexContent>
+</xsd:complexType>
+
+<xsd:complexType name="ZII00030-1-0Rtype">
+    <xsd:complexContent>
+        <xsd:restriction base="gen:kubun">
+            <xsd:sequence>
+                <xsd:element name="kubun_CD">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_CD">
+                            <xsd:enumeration value="1"/><xsd:enumeration value="2"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="kubun_NM" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_NM">
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:restriction>
+    </xsd:complexContent>
+</xsd:complexType>
+
+<xsd:complexType name="ZII00050-1-0Rtype">
+    <xsd:complexContent>
+        <xsd:restriction base="gen:kubun">
+            <xsd:sequence>
+                <xsd:element name="kubun_CD">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_CD">
+                            <xsd:enumeration value="1"/><xsd:enumeration value="2"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="kubun_NM" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_NM">
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:restriction>
+    </xsd:complexContent>
+</xsd:complexType>
+
+<xsd:simpleType name="ZIK00020-1-0Rtype">
+    <xsd:restriction base="gen:nonNegativeType">
+        <xsd:pattern value="\d"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="ZIK00030-1-0Rtype">
+    <xsd:restriction base="gen:nonNegativeType">
+        <xsd:pattern value="\d"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="ZIK00060-1-0Rtype">
+    <xsd:restriction base="gen:nonNegativeType">
+        <xsd:pattern value="\d"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="ZIK00070-1-0Rtype">
+    <xsd:restriction base="gen:nonNegativeType">
+        <xsd:pattern value="\d"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="ZIK00080-1-0Rtype">
+    <xsd:restriction base="gen:nonNegativeType">
+        <xsd:pattern value="\d"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="ZIK00100-1-0Rtype">
+    <xsd:restriction base="gen:nonNegativeType">
+        <xsd:pattern value="\d?\d"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="ZIK00110-1-0Rtype">
+    <xsd:restriction base="gen:nonNegativeType">
+        <xsd:pattern value="\d?\d"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="ZIC10000-1-0Rtype">
+    <xsd:restriction base="gen:nonNegativeType">
+        <xsd:pattern value="\d?\d"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="ZIL00020-1-0Rtype">
+    <xsd:restriction base="gen:nonNegativeType">
+        <xsd:pattern value="\d"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="ZIL00030-1-0Rtype">
+    <xsd:restriction base="gen:nonNegativeType">
+        <xsd:pattern value="\d"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="ZIL00040-1-0Rtype">
+    <xsd:restriction base="gen:nonNegativeType">
+        <xsd:pattern value="\d"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="ZID10000-1-0Rtype">
+    <xsd:restriction base="gen:nonNegativeType">
+        <xsd:pattern value="\d?\d"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="ZIQ00010-1-0Rtype">
+    <xsd:restriction base="gen:str">
+        <xsd:maxLength value="300"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="ZIQ00020-1-0Rtype">
+    <xsd:restriction base="gen:str">
+        <xsd:maxLength value="4"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="ZIE10010-1-0Rtype">
+    <xsd:restriction base="gen:nonNegativeType">
+        <xsd:pattern value="\d"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:complexType name="ZIE10040-1-0Rtype">
+    <xsd:complexContent>
+        <xsd:restriction base="gen:kubun2">
+            <xsd:sequence>
+                <xsd:element name="kubun_CD">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun2_CD">
+                            <xsd:enumeration value="01"/><xsd:enumeration value="02"/><xsd:enumeration value="03"/><xsd:enumeration value="04"/><xsd:enumeration value="05"/><xsd:enumeration value="06"/><xsd:enumeration value="07"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="kubun_NM" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_NM">
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:restriction>
+    </xsd:complexContent>
+</xsd:complexType>
+
+<xsd:complexType name="ZIE10070-1-0Rtype">
+    <xsd:complexContent>
+        <xsd:restriction base="gen:kubun2">
+            <xsd:sequence>
+                <xsd:element name="kubun_CD">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun2_CD">
+                            <xsd:enumeration value="01"/><xsd:enumeration value="02"/><xsd:enumeration value="03"/><xsd:enumeration value="04"/><xsd:enumeration value="05"/><xsd:enumeration value="06"/><xsd:enumeration value="07"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="kubun_NM" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_NM">
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:restriction>
+    </xsd:complexContent>
+</xsd:complexType>
+
+<xsd:complexType name="ZIF10030-1-0Rtype">
+    <xsd:complexContent>
+        <xsd:restriction base="gen:kubun">
+            <xsd:sequence>
+                <xsd:element name="kubun_CD">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_CD">
+                            <xsd:enumeration value="1"/><xsd:enumeration value="2"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="kubun_NM" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_NM">
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:restriction>
+    </xsd:complexContent>
+</xsd:complexType>
+
+<xsd:complexType name="ZIH10030-1-0Rtype">
+    <xsd:complexContent>
+        <xsd:restriction base="gen:kubun">
+            <xsd:sequence>
+                <xsd:element name="kubun_CD">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_CD">
+                            <xsd:enumeration value="1"/><xsd:enumeration value="2"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="kubun_NM" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_NM">
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:restriction>
+    </xsd:complexContent>
+</xsd:complexType>
+
+<xsd:complexType name="ZII10030-1-0Rtype">
+    <xsd:complexContent>
+        <xsd:restriction base="gen:kubun">
+            <xsd:sequence>
+                <xsd:element name="kubun_CD">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_CD">
+                            <xsd:enumeration value="1"/><xsd:enumeration value="2"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="kubun_NM" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_NM">
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:restriction>
+    </xsd:complexContent>
+</xsd:complexType>
+
+<xsd:complexType name="ZIU00010-1-0Rtype">
+    <xsd:complexContent>
+        <xsd:restriction base="gen:kubun">
+            <xsd:sequence>
+                <xsd:element name="kubun_CD">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_CD">
+                            <xsd:enumeration value="1"/><xsd:enumeration value="2"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="kubun_NM" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_NM">
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:restriction>
+    </xsd:complexContent>
+</xsd:complexType>
+
+<xsd:complexType name="ZIU00020-1-0Rtype">
+    <xsd:complexContent>
+        <xsd:restriction base="gen:kubun">
+            <xsd:sequence>
+                <xsd:element name="kubun_CD">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_CD">
+                            <xsd:enumeration value="1"/><xsd:enumeration value="2"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="kubun_NM" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_NM">
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:restriction>
+    </xsd:complexContent>
+</xsd:complexType>
+
+<xsd:complexType name="ZIU00040-1-0Rtype">
+    <xsd:complexContent>
+        <xsd:restriction base="gen:kubun">
+            <xsd:sequence>
+                <xsd:element name="kubun_CD">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_CD">
+                            <xsd:enumeration value="1"/><xsd:enumeration value="2"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="kubun_NM" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_NM">
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:restriction>
+    </xsd:complexContent>
+</xsd:complexType>
+
+<xsd:complexType name="ZIU00050-1-0Rtype">
+    <xsd:complexContent>
+        <xsd:restriction base="gen:kubun">
+            <xsd:sequence>
+                <xsd:element name="kubun_CD">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_CD">
+                            <xsd:enumeration value="1"/><xsd:enumeration value="2"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="kubun_NM" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_NM">
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:restriction>
+    </xsd:complexContent>
+</xsd:complexType>
+
+<xsd:complexType name="ZIU00070-1-0Rtype">
+    <xsd:complexContent>
+        <xsd:restriction base="gen:kubun">
+            <xsd:sequence>
+                <xsd:element name="kubun_CD">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_CD">
+                            <xsd:enumeration value="1"/><xsd:enumeration value="2"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="kubun_NM" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_NM">
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:restriction>
+    </xsd:complexContent>
+</xsd:complexType>
+
+<xsd:complexType name="ZIU00080-1-0Rtype">
+    <xsd:complexContent>
+        <xsd:restriction base="gen:kubun">
+            <xsd:sequence>
+                <xsd:element name="kubun_CD">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_CD">
+                            <xsd:enumeration value="1"/><xsd:enumeration value="2"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="kubun_NM" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_NM">
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:restriction>
+    </xsd:complexContent>
+</xsd:complexType>
+
+<xsd:complexType name="ZIU00090-1-0Rtype">
+    <xsd:complexContent>
+        <xsd:restriction base="gen:kubun">
+            <xsd:sequence>
+                <xsd:element name="kubun_CD">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_CD">
+                            <xsd:enumeration value="1"/><xsd:enumeration value="2"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="kubun_NM" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_NM">
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:restriction>
+    </xsd:complexContent>
+</xsd:complexType>
+
+<xsd:complexType name="ZIU00100-1-0Rtype">
+    <xsd:complexContent>
+        <xsd:restriction base="gen:kubun">
+            <xsd:sequence>
+                <xsd:element name="kubun_CD">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_CD">
+                            <xsd:enumeration value="1"/><xsd:enumeration value="2"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="kubun_NM" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_NM">
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:restriction>
+    </xsd:complexContent>
+</xsd:complexType>
+
+<xsd:complexType name="ZIU00110-1-0Rtype">
+    <xsd:complexContent>
+        <xsd:restriction base="gen:kubun">
+            <xsd:sequence>
+                <xsd:element name="kubun_CD">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_CD">
+                            <xsd:enumeration value="1"/><xsd:enumeration value="2"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="kubun_NM" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_NM">
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:restriction>
+    </xsd:complexContent>
+</xsd:complexType>
+
+<xsd:complexType name="ZIU00120-1-0Rtype">
+    <xsd:complexContent>
+        <xsd:restriction base="gen:kubun">
+            <xsd:sequence>
+                <xsd:element name="kubun_CD">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_CD">
+                            <xsd:enumeration value="1"/><xsd:enumeration value="2"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="kubun_NM" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_NM">
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:restriction>
+    </xsd:complexContent>
+</xsd:complexType>
+
+<xsd:complexType name="ZIU00130-1-0Rtype">
+    <xsd:complexContent>
+        <xsd:restriction base="gen:kubun">
+            <xsd:sequence>
+                <xsd:element name="kubun_CD">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_CD">
+                            <xsd:enumeration value="1"/><xsd:enumeration value="2"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="kubun_NM" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_NM">
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:restriction>
+    </xsd:complexContent>
+</xsd:complexType>
+
+<xsd:complexType name="ZIV00010-1-0Rtype">
+    <xsd:complexContent>
+        <xsd:restriction base="gen:kubun">
+            <xsd:sequence>
+                <xsd:element name="kubun_CD">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_CD">
+                            <xsd:enumeration value="1"/><xsd:enumeration value="2"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="kubun_NM" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_NM">
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:restriction>
+    </xsd:complexContent>
+</xsd:complexType>
+
+<xsd:complexType name="ZIV00020-1-0Rtype">
+    <xsd:complexContent>
+        <xsd:restriction base="gen:kubun">
+            <xsd:sequence>
+                <xsd:element name="kubun_CD">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_CD">
+                            <xsd:enumeration value="1"/><xsd:enumeration value="2"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="kubun_NM" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_NM">
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:restriction>
+    </xsd:complexContent>
+</xsd:complexType>
+
+
+
+<xsd:complexType name="ZIC10000-1-0type">
+<xsd:simpleContent>
+<xsd:extension base="ZIC10000-1-0Rtype">
+<xsd:attribute name="AutoCalc" type="xsd:string"/>
+</xsd:extension>
+</xsd:simpleContent>
+</xsd:complexType>
+<xsd:complexType name="ZID10000-1-0type">
+<xsd:simpleContent>
+<xsd:extension base="ZID10000-1-0Rtype">
+<xsd:attribute name="AutoCalc" type="xsd:string"/>
+</xsd:extension>
+</xsd:simpleContent>
+</xsd:complexType>
+<xsd:complexType name="ZIK00020-1-0type">
+<xsd:simpleContent>
+<xsd:extension base="ZIK00020-1-0Rtype">
+<xsd:attribute name="AutoCalc" type="xsd:string"/>
+</xsd:extension>
+</xsd:simpleContent>
+</xsd:complexType>
+<xsd:complexType name="ZIK00030-1-0type">
+<xsd:simpleContent>
+<xsd:extension base="ZIK00030-1-0Rtype">
+<xsd:attribute name="AutoCalc" type="xsd:string"/>
+</xsd:extension>
+</xsd:simpleContent>
+</xsd:complexType>
+<xsd:complexType name="ZIK00060-1-0type">
+<xsd:simpleContent>
+<xsd:extension base="ZIK00060-1-0Rtype">
+<xsd:attribute name="AutoCalc" type="xsd:string"/>
+</xsd:extension>
+</xsd:simpleContent>
+</xsd:complexType>
+<xsd:complexType name="ZIK00070-1-0type">
+<xsd:simpleContent>
+<xsd:extension base="ZIK00070-1-0Rtype">
+<xsd:attribute name="AutoCalc" type="xsd:string"/>
+</xsd:extension>
+</xsd:simpleContent>
+</xsd:complexType>
+<xsd:complexType name="ZIK00080-1-0type">
+<xsd:simpleContent>
+<xsd:extension base="ZIK00080-1-0Rtype">
+<xsd:attribute name="AutoCalc" type="xsd:string"/>
+</xsd:extension>
+</xsd:simpleContent>
+</xsd:complexType>
+<xsd:complexType name="ZIK00100-1-0type">
+<xsd:simpleContent>
+<xsd:extension base="ZIK00100-1-0Rtype">
+<xsd:attribute name="AutoCalc" type="xsd:string"/>
+</xsd:extension>
+</xsd:simpleContent>
+</xsd:complexType>
+<xsd:complexType name="ZIK00110-1-0type">
+<xsd:simpleContent>
+<xsd:extension base="ZIK00110-1-0Rtype">
+<xsd:attribute name="AutoCalc" type="xsd:string"/>
+</xsd:extension>
+</xsd:simpleContent>
+</xsd:complexType>
+<xsd:complexType name="ZIL00020-1-0type">
+<xsd:simpleContent>
+<xsd:extension base="ZIL00020-1-0Rtype">
+<xsd:attribute name="AutoCalc" type="xsd:string"/>
+</xsd:extension>
+</xsd:simpleContent>
+</xsd:complexType>
+<xsd:complexType name="ZIL00030-1-0type">
+<xsd:simpleContent>
+<xsd:extension base="ZIL00030-1-0Rtype">
+<xsd:attribute name="AutoCalc" type="xsd:string"/>
+</xsd:extension>
+</xsd:simpleContent>
+</xsd:complexType>
+<xsd:complexType name="ZIL00040-1-0type">
+<xsd:simpleContent>
+<xsd:extension base="ZIL00040-1-0Rtype">
+<xsd:attribute name="AutoCalc" type="xsd:string"/>
+</xsd:extension>
+</xsd:simpleContent>
+</xsd:complexType>
+<xsd:complexType name="ZIE10010-1-0type">
+<xsd:simpleContent>
+<xsd:extension base="ZIE10010-1-0Rtype">
+<xsd:attribute name="AutoCalc" type="xsd:string"/>
+</xsd:extension>
+</xsd:simpleContent>
+</xsd:complexType>
+</xsd:schema>

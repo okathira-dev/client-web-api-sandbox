@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<DatDefine VR="1.0">
+<!--小規模企業共済等掛金控除証明書 TEG850-->
+	<report reportVR="1.0" reportId="TEG850" columnNum="54">
+		<!--証明年分-->
+		<item  id="WPA00000" parent="TEG850" type="Normal" >
+		</item>
+		<!--証明年分　元号-->
+		<item  id="gen:era" parent="WPA00000" column="2" type="Normal" >
+		</item>
+		<!--証明年分　年-->
+		<item  id="gen:yy" parent="WPA00000" column="3" zeroSuppress="1" type="Normal" >
+		</item>
+		<!--掛金種別-->
+		<item  id="WPB00000" parent="TEG850" type="Normal" >
+		</item>
+		<item  id="kubun_CD" parent="WPB00000" column="4" type="Normal" >
+		</item>
+		<item id="kubun_NM" parent="WPB00000" refcol="2" refval="1" rejectEmpty="1" value="小規模企業共済掛金" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WPB00000" refcol="2" refval="2" rejectEmpty="1" value="個人型確定拠出年金（iDeCo）" type="Normal">
+		</item>
+		<!--氏名-->
+		<item  id="WPC00000" parent="TEG850" column="5" type="Normal" >
+		</item>
+		<!--住所-->
+		<item  id="WPD00000" parent="TEG850" column="6" type="Normal" >
+		</item>
+		<!--共済契約者番号/基礎年金番号-->
+		<item  id="WPE00000" parent="TEG850" column="7" type="Normal" >
+		</item>
+		<!--払込年分-->
+		<item  id="WPF00000" parent="TEG850" type="Normal" >
+		</item>
+		<!--払込年分　元号-->
+		<item  id="gen:era" parent="WPF00000" column="8" type="Normal" >
+		</item>
+		<!--払込年分　年-->
+		<item  id="gen:yy" parent="WPF00000" column="9" zeroSuppress="1" type="Normal" >
+		</item>
+		<!--払込済額-->
+		<item  id="WPG00000" parent="TEG850" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--払込済額　期間（至）　月-->
+		<item  id="WPG00010" parent="WPG00000" column="10" rejectEmpty="1" zeroSuppress="1" type="Normal" >
+		</item>
+		<!--払込済額　金額-->
+		<item  id="WPG00020" parent="WPG00000" column="11" rejectEmpty="1" removeLeadingPlusSign="1" type="Normal" >
+		</item>
+		<!--払込予定額-->
+		<item id="WPH00000" parent="TEG850" rejectEmpty="1" type="Normal">
+		</item>
+		<!--払込予定額　期間（自）　月-->
+		<item id="WPH00010" parent="WPH00000" column="12" rejectEmpty="1" zeroSuppress="1" type="Normal">
+		</item>
+		<!--払込予定額　期間（至）　月-->
+		<item id="WPH00020" parent="WPH00000" column="13" rejectEmpty="1" zeroSuppress="1" type="Normal">
+		</item>
+		<!--払込予定額　金額-->
+		<item  id="WPH00030" parent="WPH00000" column="14" rejectEmpty="1" removeLeadingPlusSign="1" type="Normal" >
+		</item>
+		<!--控除合計額-->
+		<item  id="WPI00000" parent="TEG850" column="15" rejectEmpty="1" removeLeadingPlusSign="1" type="Normal" >
+		</item>
+		<!--前納減額金-->
+		<item  id="WPJ00000" parent="TEG850" column="16" rejectEmpty="1" removeLeadingPlusSign="1" type="Normal" >
+		</item>
+		<!--小規模企業共済掛金に関する事項-->
+		<item  id="WPK00000" parent="TEG850" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--小規模企業共済掛金に関する事項　契約年月日-->
+		<item  id="WPK00010" parent="WPK00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--小規模企業共済掛金に関する事項　契約年月日　元号-->
+		<item  id="gen:era" parent="WPK00010" column="17" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--小規模企業共済掛金に関する事項　契約年月日　年-->
+		<item  id="gen:yy" parent="WPK00010" column="18" rejectEmpty="1" zeroSuppress="1" type="Normal" >
+		</item>
+		<!--小規模企業共済掛金に関する事項　契約年月日　月-->
+		<item id="gen:mm" parent="WPK00010" column="19" rejectEmpty="1" zeroSuppress="1" type="Normal">
+		</item>
+		<!--小規模企業共済掛金に関する事項　契約年月日　日-->
+		<item id="gen:dd" parent="WPK00010" column="20" rejectEmpty="1" zeroSuppress="1" type="Normal">
+		</item>
+		<!--小規模企業共済掛金に関する事項　掛金月額-->
+		<item  id="WPK00020" parent="WPK00000" column="21" rejectEmpty="1" removeLeadingPlusSign="1" type="Normal" >
+		</item>
+		<!--小規模企業共済掛金に関する事項　払込方法-->
+		<item  id="WPK00030" parent="WPK00000" column="22" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--小規模企業共済掛金に関する事項　払込月-->
+		<item  id="WPK00040" parent="WPK00000" column="23" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項-->
+		<item  id="WPL00000" parent="TEG850" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項　１月-->
+		<item  id="WPL00010" parent="WPL00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項　１月　金額-->
+		<item  id="WPL00020" parent="WPL00010" column="24" rejectEmpty="1" removeLeadingPlusSign="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項　１月　備考-->
+		<item  id="WPL00030" parent="WPL00010" column="25" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項　２月-->
+		<item  id="WPL00040" parent="WPL00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項　２月　金額-->
+		<item  id="WPL00050" parent="WPL00040" column="26" rejectEmpty="1" removeLeadingPlusSign="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項　２月　備考-->
+		<item  id="WPL00060" parent="WPL00040" column="27" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項　３月-->
+		<item  id="WPL00070" parent="WPL00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項　３月　金額-->
+		<item  id="WPL00080" parent="WPL00070" column="28" rejectEmpty="1" removeLeadingPlusSign="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項　３月　備考-->
+		<item  id="WPL00090" parent="WPL00070" column="29" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項　４月-->
+		<item  id="WPL00100" parent="WPL00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項　４月　金額-->
+		<item  id="WPL00110" parent="WPL00100" column="30" rejectEmpty="1" removeLeadingPlusSign="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項　４月　備考-->
+		<item  id="WPL00120" parent="WPL00100" column="31" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項　５月-->
+		<item  id="WPL00130" parent="WPL00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項　５月　金額-->
+		<item  id="WPL00140" parent="WPL00130" column="32" rejectEmpty="1" removeLeadingPlusSign="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項　５月　備考-->
+		<item  id="WPL00150" parent="WPL00130" column="33" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項　６月-->
+		<item  id="WPL00160" parent="WPL00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項　６月　金額-->
+		<item  id="WPL00170" parent="WPL00160" column="34" rejectEmpty="1" removeLeadingPlusSign="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項　６月　備考-->
+		<item  id="WPL00180" parent="WPL00160" column="35" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項　７月-->
+		<item  id="WPL00190" parent="WPL00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項　７月　金額-->
+		<item  id="WPL00200" parent="WPL00190" column="36" rejectEmpty="1" removeLeadingPlusSign="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項　７月　備考-->
+		<item  id="WPL00210" parent="WPL00190" column="37" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項　８月-->
+		<item  id="WPL00220" parent="WPL00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項　８月　金額-->
+		<item  id="WPL00230" parent="WPL00220" column="38" rejectEmpty="1" removeLeadingPlusSign="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項　８月　備考-->
+		<item  id="WPL00240" parent="WPL00220" column="39" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項　９月-->
+		<item  id="WPL00250" parent="WPL00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項　９月　金額-->
+		<item  id="WPL00260" parent="WPL00250" column="40" rejectEmpty="1" removeLeadingPlusSign="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項　９月　備考-->
+		<item  id="WPL00270" parent="WPL00250" column="41" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項　10月-->
+		<item  id="WPL00280" parent="WPL00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項　10月　金額-->
+		<item  id="WPL00290" parent="WPL00280" column="42" rejectEmpty="1" removeLeadingPlusSign="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項　10月　備考-->
+		<item  id="WPL00300" parent="WPL00280" column="43" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項　11月-->
+		<item  id="WPL00310" parent="WPL00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項　11月　金額-->
+		<item  id="WPL00320" parent="WPL00310" column="44" rejectEmpty="1" removeLeadingPlusSign="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項　11月　備考-->
+		<item  id="WPL00330" parent="WPL00310" column="45" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項　12月-->
+		<item  id="WPL00340" parent="WPL00000" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項　12月　金額-->
+		<item  id="WPL00350" parent="WPL00340" column="46" rejectEmpty="1" removeLeadingPlusSign="1" type="Normal" >
+		</item>
+		<!--個人型確定拠出年金に関する事項　12月　備考-->
+		<item  id="WPL00360" parent="WPL00340" column="47" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--備考-->
+		<item  id="WPM00000" parent="TEG850" column="48" rejectEmpty="1" type="Normal" >
+		</item>
+		<!--証明日/発行日-->
+		<item  id="WPN00000" parent="TEG850" type="Normal" >
+		</item>
+		<!--証明日/発行日　元号-->
+		<item  id="gen:era" parent="WPN00000" column="49" type="Normal" >
+		</item>
+		<!--証明日/発行日　年-->
+		<item  id="gen:yy" parent="WPN00000" column="50" zeroSuppress="1" type="Normal" >
+		</item>
+		<!--証明日/発行日　月-->
+		<item  id="gen:mm" parent="WPN00000" column="51" zeroSuppress="1" type="Normal" >
+		</item>
+		<!--証明日/発行日　日-->
+		<item  id="gen:dd" parent="WPN00000" column="52" zeroSuppress="1" type="Normal" >
+		</item>
+		<!--発行者-->
+		<item  id="WPO00000" parent="TEG850" column="53" type="Normal" >
+		</item>
+		<!--ユニークコード-->
+		<item  id="WPP00000" parent="TEG850" column="54" type="Normal" >
+		</item>
+	</report>
+</DatDefine>

@@ -1,0 +1,933 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://xml.e-tax.nta.go.jp/XSD/general" 
+xmlns="http://xml.e-tax.nta.go.jp/XSD/general"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+elementFormDefault="qualified" attributeFormDefault="unqualified"
+version="1.0"> 
+
+<xsd:annotation>
+<xsd:documentation>
+共通ボキャブラリ
+version:β2.1
+Date:2021年05月10日
+</xsd:documentation>
+</xsd:annotation>
+
+<!-- Include -->
+<xsd:include schemaLocation="../general/zeimusho.xsd" /> 
+<xsd:include schemaLocation="../general/zeimoku.xsd" /> 
+<xsd:include schemaLocation="../general/ITreference.xsd" /> 
+
+<!--General-->
+<xsd:attributeGroup name="FormAttribute">
+<xsd:attribute name="page" type="xsd:positiveInteger"/>
+<xsd:attribute name="softNM" type="xsd:string" use="required"/>
+<xsd:attribute name="sakuseiNM" type="xsd:string" use="required"/>
+<xsd:attribute name="sakuseiDay" type="xsd:date" use="required"/>
+<xsd:attribute name="id" type="xsd:ID"/>
+</xsd:attributeGroup>
+
+
+<xsd:simpleType name="n-kana">
+<xsd:annotation>
+<xsd:appinfo>名前ふりがな</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="str">
+</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="name">
+<xsd:annotation>
+<xsd:appinfo>名前</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="str">
+</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="a-kana">
+<xsd:annotation>
+<xsd:appinfo>住所ふりがな</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="str">
+</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="address">
+<xsd:annotation>
+<xsd:appinfo>住所</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="str">
+</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="address-code">
+<xsd:annotation>
+<xsd:appinfo>地方自治体住所コード</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="xsd:string">
+<xsd:pattern value="\d*"/>
+<xsd:maxLength value="5"/>
+</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:group name="telGroup">
+<xsd:annotation>
+<xsd:appinfo>電話番号</xsd:appinfo>
+</xsd:annotation>
+<xsd:sequence>
+<xsd:element name="tel1" minOccurs="0">
+<xsd:simpleType>
+<xsd:annotation>
+<xsd:appinfo>市外局番</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="xsd:string">
+<xsd:pattern value="\d*"/>
+<xsd:maxLength value="6"/>
+</xsd:restriction>
+</xsd:simpleType>
+</xsd:element>
+<xsd:element name="tel2" minOccurs="0">
+<xsd:simpleType>
+<xsd:annotation>
+<xsd:appinfo>市内局番</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="xsd:string">
+<xsd:pattern value="\d*"/>
+<xsd:maxLength value="4"/>
+</xsd:restriction>
+</xsd:simpleType>
+</xsd:element>
+<xsd:element name="tel3">
+<xsd:simpleType>
+<xsd:annotation>
+<xsd:appinfo>加入者番号</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="xsd:string">
+<xsd:pattern value="\d*"/>
+<xsd:maxLength value="4"/>
+</xsd:restriction>
+</xsd:simpleType>
+</xsd:element>
+</xsd:sequence>
+</xsd:group>
+
+<xsd:complexType name="tel-number">
+<xsd:annotation>
+<xsd:appinfo>電話番号</xsd:appinfo>
+</xsd:annotation>
+<xsd:sequence>
+<xsd:element name="tel1" minOccurs="0">
+<xsd:simpleType>
+<xsd:annotation>
+<xsd:appinfo>市外局番</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="xsd:string">
+<xsd:pattern value="\d*"/>
+<xsd:maxLength value="6"/>
+</xsd:restriction>
+</xsd:simpleType>
+</xsd:element>
+<xsd:element name="tel2" minOccurs="0">
+<xsd:simpleType>
+<xsd:annotation>
+<xsd:appinfo>市内局番</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="xsd:string">
+<xsd:pattern value="\d*"/>
+<xsd:maxLength value="4"/>
+</xsd:restriction>
+</xsd:simpleType>
+</xsd:element>
+<xsd:element name="tel3">
+<xsd:simpleType>
+<xsd:annotation>
+<xsd:appinfo>加入者番号</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="xsd:string">
+<xsd:pattern value="\d*"/>
+<xsd:maxLength value="4"/>
+</xsd:restriction>
+</xsd:simpleType>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:simpleType name="kingakuType">
+<xsd:annotation>
+<xsd:appinfo>金額</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="xsd:long">
+<xsd:pattern value="[\-]?\d?\d?\d?\d?\d?\d?\d?\d?\d?\d?\d?\d?\d?\d?\d?"/>
+</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:complexType name="kingaku">
+<xsd:simpleContent>
+<xsd:extension base="kingakuType">
+<xsd:attribute name="AutoCalc" type="xsd:string"/>
+</xsd:extension>
+</xsd:simpleContent>
+</xsd:complexType>
+
+<xsd:simpleType name="gaikaType">
+<xsd:annotation>
+<xsd:appinfo>銭及び外貨</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="xsd:decimal">
+<xsd:pattern value="[\-]?\d?\d?\d?\d?\d?\d?\d?\d?\d?\d?\d?\d?\d?\d?\d?"/>
+<xsd:pattern value="[\-]?\d?\d?\d?\d?\d?\d?\d?\d?\d?\d?\d?\d?\d?\d?\d?[.]\d"/>
+<xsd:pattern value="[\-]?\d?\d?\d?\d?\d?\d?\d?\d?\d?\d?\d?\d?\d?\d?\d?[.]\d\d"/>
+</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:complexType name="gaika">
+<xsd:simpleContent>
+<xsd:extension base="gaikaType">
+<xsd:attribute name="unit" type="xsd:string"/>
+<xsd:attribute name="AutoCalc" type="xsd:string"/>
+</xsd:extension>
+</xsd:simpleContent>
+</xsd:complexType>
+
+<xsd:group name="zipGroup">
+<xsd:sequence>
+<xsd:element name="zip1">
+<xsd:simpleType>
+<xsd:annotation>
+<xsd:appinfo>上3桁</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="xsd:string">
+<xsd:pattern value="\d*"/>
+<xsd:maxLength value="3"/>
+</xsd:restriction>
+</xsd:simpleType>
+</xsd:element>
+<xsd:element name="zip2">
+<xsd:simpleType>
+<xsd:annotation>
+<xsd:appinfo>下4桁</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="xsd:string">
+<xsd:pattern value="\d*"/>
+<xsd:maxLength value="4"/>
+</xsd:restriction>
+</xsd:simpleType>
+</xsd:element>
+</xsd:sequence>
+</xsd:group>
+
+<xsd:complexType name="zipcode">
+<xsd:annotation>
+<xsd:appinfo>郵便番号</xsd:appinfo>
+</xsd:annotation>
+<xsd:sequence>
+<xsd:element name="zip1">
+<xsd:simpleType>
+<xsd:annotation>
+<xsd:appinfo>上3桁</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="xsd:string">
+<xsd:pattern value="\d*"/>
+<xsd:maxLength value="3"/>
+</xsd:restriction>
+</xsd:simpleType>
+</xsd:element>
+<xsd:element name="zip2">
+<xsd:simpleType>
+<xsd:annotation>
+<xsd:appinfo>下4桁</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="xsd:string">
+<xsd:pattern value="\d*"/>
+<xsd:maxLength value="4"/>
+</xsd:restriction>
+</xsd:simpleType>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:group name="yyGroup">
+<xsd:sequence>
+<xsd:element name="era">
+<xsd:simpleType>
+<xsd:annotation>
+<xsd:appinfo>年号</xsd:appinfo>
+<xsd:documentation>
+1：明治
+2：大正
+3：昭和
+4：平成
+5：令和
+</xsd:documentation>
+</xsd:annotation>
+<xsd:restriction base="xsd:nonNegativeInteger">
+<xsd:pattern value="[1-5]"/>
+</xsd:restriction>
+</xsd:simpleType>
+</xsd:element>
+<xsd:element name="yy">
+<xsd:simpleType>
+<xsd:annotation>
+<xsd:appinfo>年</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="xsd:nonNegativeInteger">
+<xsd:pattern value="\d?\d"/>
+<xsd:maxInclusive value="99"/>
+<xsd:minInclusive value="1"/>
+</xsd:restriction>
+</xsd:simpleType>
+</xsd:element>
+</xsd:sequence>
+</xsd:group>
+
+<xsd:group name="mmGroup">
+<xsd:sequence>
+<xsd:element name="mm">
+<xsd:simpleType>
+<xsd:annotation>
+<xsd:appinfo>月</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="xsd:nonNegativeInteger">
+<xsd:pattern value="\d?\d"/>
+<xsd:maxInclusive value="12"/>
+<xsd:minInclusive value="1"/>
+</xsd:restriction>
+</xsd:simpleType>
+</xsd:element>
+</xsd:sequence>
+</xsd:group>
+
+<xsd:group name="ddGroup">
+<xsd:sequence>
+<xsd:element name="dd">
+<xsd:simpleType>
+<xsd:annotation>
+<xsd:appinfo>日</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="xsd:nonNegativeInteger">
+<xsd:pattern value="\d?\d"/>
+<xsd:maxInclusive value="31"/>
+<xsd:minInclusive value="1"/>
+</xsd:restriction>
+</xsd:simpleType>
+</xsd:element>
+</xsd:sequence>
+</xsd:group>
+
+<xsd:complexType name="yymmdd">
+<xsd:annotation>
+<xsd:appinfo>日付</xsd:appinfo>
+</xsd:annotation>
+<xsd:sequence>
+<xsd:group ref="yyGroup"/>
+<xsd:group ref="mmGroup"/>
+<xsd:group ref="ddGroup"/>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="yymm">
+<xsd:annotation>
+<xsd:appinfo>年月</xsd:appinfo>
+</xsd:annotation>
+<xsd:sequence>
+<xsd:group ref="yyGroup"/>
+<xsd:group ref="mmGroup"/>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="mmdd">
+<xsd:annotation>
+<xsd:appinfo>月日</xsd:appinfo>
+</xsd:annotation>
+<xsd:sequence>
+<xsd:group ref="mmGroup"/>
+<xsd:group ref="ddGroup"/>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="yy">
+<xsd:annotation>
+<xsd:appinfo>年</xsd:appinfo>
+</xsd:annotation>
+<xsd:sequence>
+<xsd:group ref="yyGroup"/>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:simpleType name="mm">
+<xsd:annotation>
+<xsd:appinfo>月</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="xsd:nonNegativeInteger">
+<xsd:pattern value="\d?\d"/>
+<xsd:maxInclusive value="12"/>
+<xsd:minInclusive value="1"/>
+</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="dd">
+<xsd:annotation>
+<xsd:appinfo>日</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="xsd:nonNegativeInteger">
+<xsd:pattern value="\d?\d"/>
+<xsd:maxInclusive value="31"/>
+<xsd:minInclusive value="1"/>
+</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="yobi">
+<xsd:annotation>
+<xsd:appinfo>曜日</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="xsd:string">
+<xsd:enumeration value="日"/>
+<xsd:enumeration value="月"/>
+<xsd:enumeration value="火"/>
+<xsd:enumeration value="水"/>
+<xsd:enumeration value="木"/>
+<xsd:enumeration value="金"/>
+<xsd:enumeration value="土"/>
+</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="hh">
+<xsd:annotation>
+<xsd:appinfo>時</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="xsd:nonNegativeInteger">
+<xsd:pattern value="\d?\d"/>
+<xsd:maxInclusive value="23"/>
+<xsd:minInclusive value="0"/>
+</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="kinyukikan_KB">
+<xsd:annotation>
+<xsd:appinfo>金融機関コード</xsd:appinfo>
+<xsd:documentation>
+1：銀行
+2：金庫
+3：組合
+4：農協
+5：漁協
+</xsd:documentation>
+</xsd:annotation>
+<xsd:restriction base="xsd:string">
+<xsd:pattern value="[1-5]"/>
+</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="shiten_KB">
+<xsd:annotation>
+<xsd:appinfo>支店コード</xsd:appinfo>
+<xsd:documentation>
+1：本店
+2：支店
+3：本所
+4：支所
+5：出張所
+</xsd:documentation>
+</xsd:annotation>
+<xsd:restriction base="xsd:string">
+<xsd:pattern value="[1-5]"/>
+</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="kinyukikan_NMType">
+<xsd:annotation>
+<xsd:appinfo>金融機関名</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="str">
+<xsd:maxLength value="15"/>
+</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="shiten_NMType">
+<xsd:annotation>
+<xsd:appinfo>支店名</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="str">
+<xsd:maxLength value="15"/>
+</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:complexType name="account">
+<xsd:annotation>
+<xsd:appinfo>口座</xsd:appinfo>
+</xsd:annotation>
+<xsd:choice>
+
+	<xsd:annotation>
+	<xsd:appinfo>金融機関又は郵便局</xsd:appinfo>
+	</xsd:annotation>
+
+	<xsd:sequence>
+		<xsd:element name="kinyukikan_NM" minOccurs="0">
+		<xsd:complexType>
+		<xsd:simpleContent>
+		<xsd:extension base="kinyukikan_NMType">
+		<xsd:attribute name="kinyukikan_KB" type="kinyukikan_KB"/>
+		</xsd:extension>
+		</xsd:simpleContent>
+		</xsd:complexType>
+		</xsd:element>
+
+		<xsd:element name="shiten_NM" minOccurs="0">
+		<xsd:complexType>
+		<xsd:simpleContent>
+		<xsd:extension base="shiten_NMType">
+		<xsd:attribute name="shiten_KB" type="shiten_KB"/>
+		</xsd:extension>
+		</xsd:simpleContent>
+		</xsd:complexType>
+		</xsd:element>
+
+		<xsd:element name="kinyukikan_CD" minOccurs="0">
+		<xsd:simpleType>
+		<xsd:annotation>
+		<xsd:appinfo>金融機関コード</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+		<xsd:pattern value="\d*"/>
+		<xsd:maxLength value="4"/>
+		</xsd:restriction>
+		</xsd:simpleType>
+		</xsd:element>
+
+		<xsd:element name="shiten_CD" minOccurs="0">
+		<xsd:simpleType>
+		<xsd:annotation>
+		<xsd:appinfo>支店コード</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+		<xsd:pattern value="\d*"/>
+		<xsd:maxLength value="3"/>
+		</xsd:restriction>
+		</xsd:simpleType>
+		</xsd:element>
+
+		<xsd:element name="yokin" minOccurs="0">
+		<xsd:simpleType>
+		<xsd:annotation>
+		<xsd:appinfo>預金種類</xsd:appinfo>
+		<xsd:documentation>
+		1：普通
+		2：当座
+		3：納税準備
+		4：通知
+		5：別段
+		6：貯蓄
+		9：その他
+		</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:nonNegativeInteger">
+		<xsd:pattern value="[1-6]|[9]"/>
+		</xsd:restriction>
+		</xsd:simpleType>
+		</xsd:element>
+
+		<xsd:element name="koza" minOccurs="0">
+		<xsd:simpleType>
+		<xsd:annotation>
+		<xsd:appinfo>口座番号</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+		<xsd:pattern value="\d*"/>
+		<xsd:maxLength value="10"/>
+		</xsd:restriction>
+		</xsd:simpleType>
+		</xsd:element>
+
+	</xsd:sequence>
+	<xsd:sequence>
+		<xsd:element name="yubinkyoku_NM" minOccurs="0">
+		<xsd:simpleType>
+		<xsd:annotation>
+		<xsd:appinfo>郵便局名</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:restriction base="str">
+		<xsd:maxLength value="20"/>
+		</xsd:restriction>
+		</xsd:simpleType>
+		</xsd:element>
+
+		<xsd:element name="kigobango1" minOccurs="0">
+		<xsd:simpleType>
+		<xsd:annotation>
+		<xsd:appinfo>貯金記号番号上5桁</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+		<xsd:pattern value="\d*"/>
+		<xsd:maxLength value="5"/>
+		</xsd:restriction>
+		</xsd:simpleType>
+		</xsd:element>
+
+		<xsd:element name="kigobango2" minOccurs="0">
+		<xsd:simpleType>
+		<xsd:annotation>
+		<xsd:appinfo>貯金記号番号下8桁</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+		<xsd:pattern value="\d*"/>
+		<xsd:maxLength value="8"/>
+		</xsd:restriction>
+		</xsd:simpleType>
+		</xsd:element>
+	</xsd:sequence>
+</xsd:choice>
+</xsd:complexType>
+
+<xsd:simpleType name="y-kana">
+<xsd:annotation>
+<xsd:appinfo>屋号ふりがな</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="str">
+<xsd:maxLength value="60"/>
+</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="yago">
+<xsd:annotation>
+<xsd:appinfo>屋号</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="str">
+<xsd:maxLength value="30"/>
+</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="zokugara">
+<xsd:annotation>
+<xsd:appinfo>続柄</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="str">
+<xsd:maxLength value="5"/>
+</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="shokugyo">
+<xsd:annotation>
+<xsd:appinfo>職業</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="str">
+<xsd:maxLength value="20"/>
+</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="kubun_CD">
+<xsd:annotation>
+<xsd:appinfo>区分コード</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="xsd:nonNegativeInteger">
+<xsd:pattern value="\d"/>
+</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="kubun2_CD">
+<xsd:annotation>
+<xsd:appinfo>区分コード</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="xsd:nonNegativeInteger">
+<xsd:pattern value="\d?\d"/>
+</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="kubun3_CD">
+<xsd:annotation>
+<xsd:appinfo>区分コード</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="xsd:nonNegativeInteger">
+<xsd:pattern value="\d?\d?\d"/>
+</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="kubun4_CD">
+<xsd:annotation>
+<xsd:appinfo>区分コード</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="xsd:nonNegativeInteger">
+<xsd:pattern value="\d?\d?\d?\d"/>
+</xsd:restriction>
+</xsd:simpleType>
+
+
+<xsd:simpleType name="kubun_NM">
+<xsd:annotation>
+<xsd:appinfo>区分名</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="str">
+<xsd:maxLength value="30"/>
+</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:complexType name="kubun">
+<xsd:annotation>
+<xsd:appinfo>区分</xsd:appinfo>
+</xsd:annotation>
+<xsd:sequence>
+<xsd:element name="kubun_CD" type="kubun_CD"/>
+<xsd:element name="kubun_NM" type="kubun_NM" minOccurs="0"/>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="kubun2">
+<xsd:annotation>
+<xsd:appinfo>区分</xsd:appinfo>
+</xsd:annotation>
+<xsd:sequence>
+<xsd:element name="kubun_CD" type="kubun2_CD"/>
+<xsd:element name="kubun_NM" type="kubun_NM" minOccurs="0"/>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="kubun3">
+<xsd:annotation>
+<xsd:appinfo>区分</xsd:appinfo>
+</xsd:annotation>
+<xsd:sequence>
+<xsd:element name="kubun_CD" type="kubun3_CD"/>
+<xsd:element name="kubun_NM" type="kubun_NM" minOccurs="0"/>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="kubun4">
+<xsd:annotation>
+<xsd:appinfo>区分</xsd:appinfo>
+</xsd:annotation>
+<xsd:sequence>
+<xsd:element name="kubun_CD" type="kubun4_CD"/>
+<xsd:element name="kubun_NM" type="kubun_NM" minOccurs="0"/>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="zeimusho">
+<xsd:annotation>
+<xsd:appinfo>税務署</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexContent>
+<xsd:extension base="zeimushoType"/>
+</xsd:complexContent>
+</xsd:complexType>
+
+
+<xsd:simpleType name="seiribango">
+<xsd:annotation>
+<xsd:appinfo>整理番号</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="xsd:string">
+<xsd:pattern value="\d*"/>
+<xsd:maxLength value="8"/>
+</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="nozeisha-id">
+<xsd:annotation>
+<xsd:appinfo>利用者識別番号</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="xsd:string">
+<xsd:pattern value="\d*"/>
+<xsd:maxLength value="16"/>
+</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="procedure_CD">
+<xsd:annotation>
+<xsd:appinfo>手続きコード</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="xsd:string">
+<xsd:maxLength value="7"/>
+</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="procedure_NM">
+<xsd:annotation>
+<xsd:appinfo>手続き名</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="str">
+<xsd:maxLength value="200"/>
+</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:complexType name="procedure">
+<xsd:annotation>
+<xsd:appinfo>手続き</xsd:appinfo>
+</xsd:annotation>
+<xsd:sequence>
+<xsd:element name="procedure_CD" type="procedure_CD"/>
+<xsd:element name="procedure_NM" type="procedure_NM" minOccurs="0"/>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="zeimoku">
+	<xsd:annotation>
+		<xsd:appinfo>税目</xsd:appinfo>
+	</xsd:annotation>
+<xsd:complexContent>
+<xsd:extension base="zeimokuType"/>
+</xsd:complexContent>
+</xsd:complexType>
+
+<xsd:simpleType name="h-kana">
+<xsd:restriction base="xsd:string">
+<xsd:pattern value="([0-9]|[A-Z]|[ｦ]|[ｱ-ﾝ]|[\\]|[,]|[\.]|[\(]|[\)]|[\-]|[/]|[ﾞ]|[ﾟ]|[｢]|[｣]|[ ])*"/>
+</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="str">
+<xsd:restriction base="xsd:string">
+<xsd:pattern value="(&#x0009;|&#x000A;|&#x000D;|[\p{IsBasicLatin}-[\p{Cc}]]|\p{IsHiragana}|\p{IsKatakana}|\p{IsCJKUnifiedIdeographs}|\p{IsCJKCompatibilityIdeographs}|\p{IsCJKSymbolsandPunctuation}|[\p{IsHalfwidthandFullwidthForms}-[ｦ-ﾟ]]|[\p{IsLatin-1Supplement}-[\p{Cc}&#x0085;]]|\p{IsGreek}|\p{IsCyrillic}|\p{IsGeneralPunctuation}|\p{IsArrows}|\p{IsMathematicalOperators}|\p{IsBoxDrawing}|\p{IsGeometricShapes}|\p{IsNumberForms}|\p{IsEnclosedAlphanumerics}|\p{IsEnclosedCJKLettersandMonths}|\p{IsCJKCompatibility})*"/>
+</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="i-string">
+<xsd:restriction base="str">
+</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="in-string">
+<xsd:restriction base="xsd:string">
+</xsd:restriction>
+</xsd:simpleType>
+
+
+<xsd:simpleType name="decimalType">
+<xsd:restriction base="xsd:decimal">
+<xsd:pattern value="[^+]*"/>
+</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="nonNegativeType">
+<xsd:restriction base="xsd:nonNegativeInteger">
+<xsd:pattern value="[^+]*"/>
+</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:complexType name="bango">
+<xsd:annotation>
+<xsd:appinfo>個人番号又は法人番号</xsd:appinfo>
+</xsd:annotation>
+<xsd:choice>
+	<xsd:sequence>
+		<xsd:element name="kojinbango" minOccurs="0">
+		<xsd:simpleType>
+		<xsd:annotation>
+		<xsd:appinfo>個人番号</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+		<xsd:pattern value="\d*"/>
+		<xsd:maxLength value="12"/>
+		</xsd:restriction>
+		</xsd:simpleType>
+		</xsd:element>
+	</xsd:sequence>
+	<xsd:sequence>
+		<xsd:element name="hojinbango" minOccurs="0">
+		<xsd:simpleType>
+		<xsd:annotation>
+		<xsd:appinfo>法人番号</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+		<xsd:pattern value="\d*"/>
+		<xsd:maxLength value="13"/>
+		</xsd:restriction>
+		</xsd:simpleType>
+		</xsd:element>
+	</xsd:sequence>
+</xsd:choice>
+</xsd:complexType>
+
+<xsd:complexType name="country">
+<xsd:annotation>
+<xsd:appinfo>国</xsd:appinfo>
+</xsd:annotation>
+<xsd:sequence>
+<xsd:element name="country_CD" type="country_CD"/>
+<xsd:element name="country_NM" minOccurs="0">
+<xsd:complexType>
+<xsd:simpleContent>
+<xsd:extension base="country_NMType">
+<xsd:attribute name="seishikiNM" type="xsd:string"/>
+</xsd:extension>
+</xsd:simpleContent>
+</xsd:complexType>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:simpleType name="country_CD">
+<xsd:annotation>
+<xsd:appinfo>国コード</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="xsd:string">
+<xsd:pattern value="([0-9]|[A-Z]){2}"/>
+</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="country_NMType">
+<xsd:annotation>
+<xsd:appinfo>国名</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="str">
+<xsd:maxLength value="50"/>
+</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:group name="yyyyGroup">
+<xsd:sequence>
+<xsd:element name="yyyy">
+<xsd:simpleType>
+<xsd:annotation>
+<xsd:appinfo>年</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="xsd:nonNegativeInteger">
+<xsd:pattern value="\d?\d?\d?\d"/>
+<xsd:maxInclusive value="9999"/>
+<xsd:minInclusive value="1"/>
+</xsd:restriction>
+</xsd:simpleType>
+</xsd:element>
+</xsd:sequence>
+</xsd:group>
+
+<xsd:complexType name="yyyymmdd">
+<xsd:annotation>
+<xsd:appinfo>年月日（西暦）</xsd:appinfo>
+</xsd:annotation>
+<xsd:sequence>
+<xsd:group ref="yyyyGroup"/>
+<xsd:group ref="mmGroup"/>
+<xsd:group ref="ddGroup"/>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="yyyymm">
+<xsd:annotation>
+<xsd:appinfo>年月（西暦）</xsd:appinfo>
+</xsd:annotation>
+<xsd:sequence>
+<xsd:group ref="yyyyGroup"/>
+<xsd:group ref="mmGroup"/>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="yyyy">
+<xsd:annotation>
+<xsd:appinfo>年（西暦）</xsd:appinfo>
+</xsd:annotation>
+<xsd:sequence>
+<xsd:group ref="yyyyGroup"/>
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:simpleType name="eltax-id">
+<xsd:annotation>
+<xsd:appinfo>eLTAXの利用者ID</xsd:appinfo>
+</xsd:annotation>
+<xsd:restriction base="xsd:string">
+<xsd:pattern value="([0-9]|[a-z])*"/>
+<xsd:maxLength value="11"/>
+</xsd:restriction>
+</xsd:simpleType>
+
+</xsd:schema>

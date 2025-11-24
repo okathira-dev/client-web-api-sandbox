@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<DatDefine VR="1.0">
+<!--生命保険料控除証明書 TEG800-->
+	<report reportVR="1.1" reportId="TEG800" columnNum="69">
+		<!--保険会社名-->
+		<item id="WCA00000" parent="TEG800" column="49" type="Normal">
+		</item>
+		<!--法人番号-->
+		<item id="WCB00000" parent="TEG800" rejectEmpty="1" type="Normal">
+		</item>
+		<!--法人番号 法人番号-->
+		<item id="gen:hojinbango" parent="WCB00000" rejectEmpty="1" column="50" type="Normal">
+		</item>
+		<!--証明日-->
+		<item id="WCC00000" parent="TEG800" type="Normal">
+		</item>
+		<!--証明日 年-->
+		<item id="gen:yyyy" parent="WCC00000" column="63" type="Normal">
+		</item>
+		<!--証明日 月-->
+		<item id="gen:mm" parent="WCC00000" column="64" zeroSuppress="1" type="Normal">
+		</item>
+		<!--証明日 日-->
+		<item id="gen:dd" parent="WCC00000" column="65" zeroSuppress="1" type="Normal">
+		</item>
+		<!--契約者-->
+		<item id="WCD00000" parent="TEG800" column="7" type="Normal">
+		</item>
+		<!--明細　繰り返し-->
+		<item id="WCE00000" parent="TEG800" type="Normal">
+		</item>
+		<!--証明年-->
+		<item id="WCE00010" parent="WCE00000" type="Normal">
+		</item>
+		<!--証明年 年-->
+		<item id="gen:yyyy" parent="WCE00010" column="51" type="Normal">
+		</item>
+		<!--題-->
+		<item id="WCE00020" parent="WCE00000" column="3" type="Normal">
+		</item>
+		<!--適用制度-->
+		<item id="WCE00030" parent="WCE00000" type="Normal">
+		</item>
+		<!--適用制度 区分コード-->
+		<item id="kubun_CD" parent="WCE00030" column="66" type="Normal">
+		</item>
+		<!--適用制度 区分名称-->
+		<item id="kubun_NM" parent="WCE00030" refcol="66" refval="1" rejectEmpty="1" value="新生命保険料控除制度" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WCE00030" refcol="66" refval="2" rejectEmpty="1" value="旧生命保険料控除制度" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WCE00030" refcol="66" refval="3" rejectEmpty="1" value="新生命保険料控除制度及び旧生命保険料控除制度" type="Normal">
+		</item>
+		<!--証券番号-->
+		<item id="WCE00040" parent="WCE00000" column="4" type="Normal">
+		</item>
+		<!--保険種類-->
+		<item id="WCE00050" parent="WCE00000" rejectEmpty="1" column="5" type="Normal">
+		</item>
+		<!--契約日-->
+		<item id="WCE00060" parent="WCE00000" rejectEmpty="1" type="Normal">
+		</item>
+		<!--契約日 年-->
+		<item id="gen:yyyy" parent="WCE00060" rejectEmpty="1" column="53" type="Normal">
+		</item>
+		<!--契約日 月-->
+		<item id="gen:mm" parent="WCE00060" rejectEmpty="1" column="54" zeroSuppress="1" type="Normal">
+		</item>
+		<!--契約日 日-->
+		<item id="gen:dd" parent="WCE00060" rejectEmpty="1" column="55" zeroSuppress="1" type="Normal">
+		</item>
+		<!--事業所（団体）コード-->
+		<item id="WCE00070" parent="WCE00000" rejectEmpty="1" column="68" type="Normal">
+		</item>
+		<!--被保険者-->
+		<item id="WCE00080" parent="WCE00000" rejectEmpty="1" column="8" type="Normal">
+		</item>
+		<!--被保険者番号-->
+		<item id="WCE00090" parent="WCE00000" rejectEmpty="1" column="69" type="Normal">
+		</item>
+		<!--払込方法-->
+		<item id="WCE00100" parent="WCE00000" rejectEmpty="1" column="52" type="Normal">
+		</item>
+		<!--受取人-->
+		<item id="WCE00110" parent="WCE00000" rejectEmpty="1" column="9" type="Normal">
+		</item>
+		<!--一般生命保険、または介護医療保険　保険期間-->
+		<item id="WCE00120" parent="WCE00000" rejectEmpty="1" column="6" type="Normal">
+		</item>
+		<!--個人年金保険-->
+		<item id="WCE00130" parent="WCE00000" rejectEmpty="1" type="Normal">
+		</item>
+		<!--受取人生年月日-->
+		<item id="WCE00140" parent="WCE00130" rejectEmpty="1" type="Normal">
+		</item>
+		<!--受取人生年月日 年-->
+		<item id="gen:yyyy" parent="WCE00140" rejectEmpty="1" column="10" type="Normal">
+		</item>
+		<!--受取人生年月日 月-->
+		<item id="gen:mm" parent="WCE00140" rejectEmpty="1" column="11" zeroSuppress="1" type="Normal">
+		</item>
+		<!--受取人生年月日 日-->
+		<item id="gen:dd" parent="WCE00140" rejectEmpty="1" column="12" zeroSuppress="1" type="Normal">
+		</item>
+		<!--保険料払込期間-->
+		<item id="WCE00150" parent="WCE00130" rejectEmpty="1" column="18" type="Normal">
+		</item>
+		<!--年金種類-->
+		<item id="WCE00160" parent="WCE00130" rejectEmpty="1" column="13" type="Normal">
+		</item>
+		<!--年金支払期間-->
+		<item id="WCE00170" parent="WCE00130" rejectEmpty="1" column="14" type="Normal">
+		</item>
+		<!--年金支払開始日-->
+		<item id="WCE00180" parent="WCE00130" rejectEmpty="1" type="Normal">
+		</item>
+		<!--年金支払開始日 年-->
+		<item id="gen:yyyy" parent="WCE00180" rejectEmpty="1" column="15" type="Normal">
+		</item>
+		<!--年金支払開始日 月-->
+		<item id="gen:mm" parent="WCE00180" rejectEmpty="1" column="16" zeroSuppress="1" type="Normal">
+		</item>
+		<!--年金支払開始日 日-->
+		<item id="gen:dd" parent="WCE00180" rejectEmpty="1" column="17" zeroSuppress="1" type="Normal">
+		</item>
+		<!--証明額-->
+		<item id="WCE00190" parent="WCE00000" rejectEmpty="1" type="Normal">
+		</item>
+		<!--証明対象保険料の月分（自）-->
+		<item id="WCE00200" parent="WCE00190" rejectEmpty="1" type="Normal">
+		</item>
+		<!--証明対象保険料の月分（自） 年-->
+		<item id="gen:yyyy" parent="WCE00200" rejectEmpty="1" column="59" type="Normal">
+		</item>
+		<!--証明対象保険料の月分（自） 月-->
+		<item id="gen:mm" parent="WCE00200" rejectEmpty="1" column="60" zeroSuppress="1" type="Normal">
+		</item>
+		<!--証明対象保険料の月分（至）-->
+		<item id="WCE00210" parent="WCE00190" rejectEmpty="1" type="Normal">
+		</item>
+		<!--証明対象保険料の月分（至） 年-->
+		<item id="gen:yyyy" parent="WCE00210" rejectEmpty="1" column="61" type="Normal">
+		</item>
+		<!--証明対象保険料の月分（至） 月-->
+		<item id="gen:mm" parent="WCE00210" rejectEmpty="1" column="62" zeroSuppress="1" type="Normal">
+		</item>
+		<!--旧制度-->
+		<item id="WCE00220" parent="WCE00190" rejectEmpty="1" type="Normal">
+		</item>
+		<!--一般-->
+		<item id="WCE00230" parent="WCE00220" rejectEmpty="1" type="Normal">
+		</item>
+		<!--保険料-->
+		<item id="WCE00240" parent="WCE00230" rejectEmpty="1" column="22" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--配当金-->
+		<item id="WCE00250" parent="WCE00230" rejectEmpty="1" column="23" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--差引保険料等合計額-->
+		<item id="WCE00260" parent="WCE00230" rejectEmpty="1" column="24" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--年金-->
+		<item id="WCE00270" parent="WCE00220" rejectEmpty="1" type="Normal">
+		</item>
+		<!--保険料-->
+		<item id="WCE00280" parent="WCE00270" rejectEmpty="1" column="19" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--配当金-->
+		<item id="WCE00290" parent="WCE00270" rejectEmpty="1" column="20" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--差引保険料等合計額-->
+		<item id="WCE00300" parent="WCE00270" rejectEmpty="1" column="21" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--新制度-->
+		<item id="WCE00310" parent="WCE00190" rejectEmpty="1" type="Normal">
+		</item>
+		<!--一般-->
+		<item id="WCE00320" parent="WCE00310" rejectEmpty="1" type="Normal">
+		</item>
+		<!--保険料-->
+		<item id="WCE00330" parent="WCE00320" rejectEmpty="1" column="28" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--配当金-->
+		<item id="WCE00340" parent="WCE00320" rejectEmpty="1" column="29" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--差引保険料等合計額-->
+		<item id="WCE00350" parent="WCE00320" rejectEmpty="1" column="30" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--介護医療-->
+		<item id="WCE00360" parent="WCE00310" rejectEmpty="1" type="Normal">
+		</item>
+		<!--保険料-->
+		<item id="WCE00370" parent="WCE00360" rejectEmpty="1" column="31" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--配当金-->
+		<item id="WCE00380" parent="WCE00360" rejectEmpty="1" column="32" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--差引保険料等合計額-->
+		<item id="WCE00390" parent="WCE00360" rejectEmpty="1" column="33" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--年金-->
+		<item id="WCE00400" parent="WCE00310" rejectEmpty="1" type="Normal">
+		</item>
+		<!--保険料-->
+		<item id="WCE00410" parent="WCE00400" rejectEmpty="1" column="25" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--配当金-->
+		<item id="WCE00420" parent="WCE00400" rejectEmpty="1" column="26" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--差引保険料等合計額-->
+		<item id="WCE00430" parent="WCE00400" rejectEmpty="1" column="27" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--証明額（12月期想定）-->
+		<item id="WCE00440" parent="WCE00000" rejectEmpty="1" type="Normal">
+		</item>
+		<!--旧制度-->
+		<item id="WCE00460" parent="WCE00440" rejectEmpty="1" type="Normal">
+		</item>
+		<!--一般-->
+		<item id="WCE00470" parent="WCE00460" rejectEmpty="1" type="Normal">
+		</item>
+		<!--年間払込保険料（参考）-->
+		<item id="WCE00480" parent="WCE00470" rejectEmpty="1" column="37" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--配当金（参考）-->
+		<item id="WCE00490" parent="WCE00470" rejectEmpty="1" column="38" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--申告額（参考）-->
+		<item id="WCE00500" parent="WCE00470" rejectEmpty="1" column="39" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--年金-->
+		<item id="WCE00510" parent="WCE00460" rejectEmpty="1" type="Normal">
+		</item>
+		<!--年間払込保険料（参考）-->
+		<item id="WCE00520" parent="WCE00510" rejectEmpty="1" column="34" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--配当金（参考）-->
+		<item id="WCE00530" parent="WCE00510" rejectEmpty="1" column="35" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--申告額（参考）-->
+		<item id="WCE00540" parent="WCE00510" rejectEmpty="1" column="36" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--新制度-->
+		<item id="WCE00550" parent="WCE00440" rejectEmpty="1" type="Normal">
+		</item>
+		<!--一般-->
+		<item id="WCE00560" parent="WCE00550" rejectEmpty="1" type="Normal">
+		</item>
+		<!--年間払込保険料（参考）-->
+		<item id="WCE00570" parent="WCE00560" rejectEmpty="1" column="43" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--配当金（参考）-->
+		<item id="WCE00580" parent="WCE00560" rejectEmpty="1" column="44" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--申告額（参考）-->
+		<item id="WCE00590" parent="WCE00560" rejectEmpty="1" column="45" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--介護医療-->
+		<item id="WCE00600" parent="WCE00550" rejectEmpty="1" type="Normal">
+		</item>
+		<!--年間払込保険料（参考）-->
+		<item id="WCE00610" parent="WCE00600" rejectEmpty="1" column="46" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--配当金（参考）-->
+		<item id="WCE00620" parent="WCE00600" rejectEmpty="1" column="47" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--申告額（参考）-->
+		<item id="WCE00630" parent="WCE00600" rejectEmpty="1" column="48" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--年金-->
+		<item id="WCE00640" parent="WCE00550" rejectEmpty="1" type="Normal">
+		</item>
+		<!--年間払込保険料（参考）-->
+		<item id="WCE00650" parent="WCE00640" rejectEmpty="1" column="40" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--配当金（参考）-->
+		<item id="WCE00660" parent="WCE00640" rejectEmpty="1" column="41" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--申告額（参考）-->
+		<item id="WCE00670" parent="WCE00640" rejectEmpty="1" column="42" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--転換等一時払保険料-->
+		<item id="WCE00680" parent="WCE00000" rejectEmpty="1" type="Normal">
+		</item>
+		<!--一般-->
+		<item id="WCE00690" parent="WCE00680" rejectEmpty="1" column="57" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--介護医療-->
+		<item id="WCE00700" parent="WCE00680" rejectEmpty="1" column="58" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--年金-->
+		<item id="WCE00710" parent="WCE00680" rejectEmpty="1" column="56" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--その他-->
+		<item id="WCE00720" parent="WCE00000" rejectEmpty="1" column="67" type="Normal">
+		</item>
+	</report>
+</DatDefine>

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<DatDefine VR="1.0">
+<!--地震保険料控除証明書 TEG810-->
+	<report reportVR="1.1" reportId="TEG810" columnNum="29">
+		<!--保険会社名-->
+		<item id="WDA00000" parent="TEG810" column="22" type="Normal">
+		</item>
+		<!--法人番号-->
+		<item id="WDB00000" parent="TEG810" rejectEmpty="1" type="Normal">
+		</item>
+		<!--法人番号-->
+		<item id="gen:hojinbango" parent="WDB00000" rejectEmpty="1" column="23" type="Normal">
+		</item>
+		<!--証明日-->
+		<item id="WDC00000" parent="TEG810" type="Normal">
+		</item>
+		<!--証明日 年-->
+		<item id="gen:yyyy" parent="WDC00000" column="19" type="Normal">
+		</item>
+		<!--証明日 月-->
+		<item id="gen:mm" parent="WDC00000" column="20" zeroSuppress="1" type="Normal">
+		</item>
+		<!--証明日 日-->
+		<item id="gen:dd" parent="WDC00000" column="21" zeroSuppress="1" type="Normal">
+		</item>
+		<!--契約者名-->
+		<item id="WDD00000" parent="TEG810" column="5" type="Normal">
+		</item>
+		<!--明細　繰り返し-->
+		<item id="WDE00000" parent="TEG810" type="Normal">
+		</item>
+		<!--証明年-->
+		<item id="WDE00010" parent="WDE00000" rejectEmpty="1" type="Normal">
+		</item>
+		<!--証明年 年-->
+		<item id="gen:yyyy" parent="WDE00010" rejectEmpty="1" column="18" type="Normal">
+		</item>
+		<!--保険料控除の対象となる保険料-->
+		<item id="WDE00020" parent="WDE00000" type="Normal">
+		</item>
+		<!--保険料控除の対象となる保険料 区分コード-->
+		<item id="kubun_CD" parent="WDE00020" column="6" type="Normal">
+		</item>
+		<!--保険料控除の対象となる保険料 区分名称-->
+		<item id="kubun_NM" parent="WDE00020" refcol="6" refval="1" rejectEmpty="1" value="地震保険料" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WDE00020" refcol="6" refval="2" rejectEmpty="1" value="旧長期損害保険料" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WDE00020" refcol="6" refval="3" rejectEmpty="1" value="地震保険料及び旧長期損害保険料" type="Normal">
+		</item>
+		<!--証券番号-->
+		<item id="WDE00030" parent="WDE00000" type="Normal">
+		</item>
+		<!--証券番号-->
+		<item id="WDE00040" parent="WDE00030" column="3" type="Normal">
+		</item>
+		<!--証券番号-枝番号-->
+		<item id="WDE00050" parent="WDE00030" rejectEmpty="1" column="4" type="Normal">
+		</item>
+		<!--被保険者名-->
+		<item id="WDE00060" parent="WDE00000" rejectEmpty="1" column="8" type="Normal">
+		</item>
+		<!--保険の対象-->
+		<item id="WDE00070" parent="WDE00000" type="Normal">
+		</item>
+		<!--保険の対象 区分コード-->
+		<item id="kubun_CD" parent="WDE00070" column="7" type="Normal">
+		</item>
+		<!--保険の対象 区分名称-->
+		<item id="kubun_NM" parent="WDE00070" refcol="7" refval="1" rejectEmpty="1" value="建物" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WDE00070" refcol="7" refval="2" rejectEmpty="1" value="家財" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WDE00070" refcol="7" refval="3" rejectEmpty="1" value="建物及び家財" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WDE00070" refcol="7" refval="4" rejectEmpty="1" value="その他" type="Normal">
+		</item>
+		<!--基本契約保険期間-->
+		<item id="WDE00080" parent="WDE00000" type="Normal">
+		</item>
+		<!--基本契約保険期間の開始日-->
+		<item id="WDE00090" parent="WDE00080" type="Normal">
+		</item>
+		<!--基本契約保険期間の開始日 年-->
+		<item id="gen:yyyy" parent="WDE00090" column="9" type="Normal">
+		</item>
+		<!--基本契約保険期間の開始日 月-->
+		<item id="gen:mm" parent="WDE00090" column="10" zeroSuppress="1" type="Normal">
+		</item>
+		<!--基本契約保険期間の開始日 日-->
+		<item id="gen:dd" parent="WDE00090" column="11" zeroSuppress="1" type="Normal">
+		</item>
+		<!--基本契約保険期間-->
+		<item id="WDE00100" parent="WDE00080" column="12" type="Normal">
+		</item>
+		<!--満期返戻金の有無-->
+		<item id="WDE00110" parent="WDE00000" rejectEmpty="1" type="Normal">
+		</item>
+		<!--満期返戻金の有無 区分コード-->
+		<item id="kubun_CD" parent="WDE00110" rejectEmpty="1" column="13" type="Normal">
+		</item>
+		<!--満期返戻金の有無 区分名称-->
+		<item id="kubun_NM" parent="WDE00110" refcol="13" refval="1" rejectEmpty="1" value="有" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WDE00110" refcol="13" refval="2" rejectEmpty="1" value="無" type="Normal">
+		</item>
+		<!--地震保険期間（旧長期損害保険期間）-->
+		<item id="WDE00120" parent="WDE00000" type="Normal">
+		</item>
+		<!--地震保険期間（旧長期損害保険期間）の開始日-->
+		<item id="WDE00130" parent="WDE00120" type="Normal">
+		</item>
+		<!--地震保険期間（旧長期損害保険期間）の開始日 年-->
+		<item id="gen:yyyy" parent="WDE00130" column="14" type="Normal">
+		</item>
+		<!--地震保険期間（旧長期損害保険期間）の開始日 月-->
+		<item id="gen:mm" parent="WDE00130" column="15" zeroSuppress="1" type="Normal">
+		</item>
+		<!--地震保険期間（旧長期損害保険期間）の開始日 日-->
+		<item id="gen:dd" parent="WDE00130" column="16" zeroSuppress="1" type="Normal">
+		</item>
+		<!--地震保険期間（旧長期損害保険期間）-->
+		<item id="WDE00140" parent="WDE00120" column="17" type="Normal">
+		</item>
+		<!--払込方法-->
+		<item id="WDE00150" parent="WDE00000" rejectEmpty="1" type="Normal">
+		</item>
+		<!--払込方法 区分コード-->
+		<item id="kubun_CD" parent="WDE00150" rejectEmpty="1" column="24" type="Normal">
+		</item>
+		<!--払込方法 区分名称-->
+		<item id="kubun_NM" parent="WDE00150" refcol="24" refval="1" rejectEmpty="1" value="年払" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WDE00150" refcol="24" refval="2" rejectEmpty="1" value="一時払" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WDE00150" refcol="24" refval="3" rejectEmpty="1" value="月払" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WDE00150" refcol="24" refval="4" rejectEmpty="1" value="半年払" type="Normal">
+		</item>
+		<item id="kubun_NM" parent="WDE00150" refcol="24" refval="5" rejectEmpty="1" value="その他" type="Normal">
+		</item>
+		<!--地震保険-->
+		<item id="WDE00160" parent="WDE00000" rejectEmpty="1" type="Normal">
+		</item>
+		<!--地震保険 地震保険料-->
+		<item id="WDE00170" parent="WDE00160" rejectEmpty="1" column="25" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--地震保険 控除対象保険料-->
+		<item id="WDE00180" parent="WDE00160" rejectEmpty="1" column="26" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--旧長期損害保険-->
+		<item id="WDE00190" parent="WDE00000" rejectEmpty="1" type="Normal">
+		</item>
+		<!--旧長期損害保険 旧長期損害保険料-->
+		<item id="WDE00200" parent="WDE00190" rejectEmpty="1" column="27" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--旧長期損害保険 控除対象保険料-->
+		<item id="WDE00210" parent="WDE00190" rejectEmpty="1" column="28" type="Normal" removeLeadingPlusSign="1">
+		</item>
+		<!--適用条文 固定値-->
+		<item id="WDE00215" parent="WDE00000" refcol="6" refval="1" rejectEmpty="1" value="上記保険料は、所得税法第七十七条第一項に規定する地震保険料に該当するものです。" type="Normal">
+		</item>
+		<item id="WDE00215" parent="WDE00000" refcol="6" refval="2" rejectEmpty="1" value="上記保険料は、所得税法附則第十条第二項第一号に規定する旧長期損害保険料に該当するものです。" type="Normal">
+		</item>
+		<item id="WDE00215" parent="WDE00000" refcol="6" refval="3" rejectEmpty="1" value="上記保険料は、所得税法第七十七条第一項に規定する地震保険料および所得税法附則第十条第二項第一号に規定する旧長期損害保険料に該当するものです。" type="Normal">
+		</item>
+		<!--その他-->
+		<item id="WDE00220" parent="WDE00000" rejectEmpty="1" column="29" type="Normal">
+		</item>
+	</report>
+</DatDefine>

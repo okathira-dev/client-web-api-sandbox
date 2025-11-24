@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="CMTEG840-001.xsl"?><TEG840 xmlns="http://xml.e-tax.nta.go.jp/XSD/kyotsu" xmlns:gen="http://xml.e-tax.nta.go.jp/XSD/general" xmlns:kyo="http://xml.e-tax.nta.go.jp/XSD/kyotsu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" VR="1.0" id="TEG840202412230117074871004" page="1" sakuseiDay="2024-12-23" sakuseiNM="日本年金機構" softNM="ねんきんネット">
+	<WOA00000>
+		<kubun_CD>1</kubun_CD>
+	</WOA00000>
+	<WOB00000>
+		<kubun_CD>2</kubun_CD>
+	</WOB00000>
+	<WOC00000>
+		<gen:era>5</gen:era>
+		<gen:yy>6</gen:yy>
+	</WOC00000>
+	<WOD00000>0150004052</WOD00000>
+	<WOE00000>公的　一郎</WOE00000>
+	<WOF00000>神奈川県鎌倉市山ノ内１１０－１</WOF00000>
+	<WOG00000>
+		<gen:era>5</gen:era>
+		<gen:yy>6</gen:yy>
+	</WOG00000>
+	<WOH00000>
+		<gen:mm>1</gen:mm>
+		<gen:dd>1</gen:dd>
+	</WOH00000>
+	<WOI00000>
+		<gen:mm>11</gen:mm>
+		<gen:dd>2</gen:dd>
+	</WOI00000>
+	<WOJ00000>
+		<kubun_CD>1</kubun_CD>
+	</WOJ00000>
+	<WOK00000>240000</WOK00000>
+	<WOL00000>0</WOL00000>
+	<WOM00000>0</WOM00000>
+	<WON00000>
+		<WON00010>
+			<WON00020>90000</WON00020>
+			<WON00030>0</WON00030>
+			<WON00040>0</WON00040>
+			<WON00050>
+				<gen:era>5</gen:era>
+				<gen:yy>6</gen:yy>
+			</WON00050>
+			<WON00060>90000</WON00060>
+		</WON00010>
+		<WON00070>
+			<WON00080>120000</WON00080>
+			<WON00090>0</WON00090>
+			<WON00100>0</WON00100>
+			<WON00110>
+				<gen:era>5</gen:era>
+				<gen:yy>7</gen:yy>
+			</WON00110>
+			<WON00120>120000</WON00120>
+		</WON00070>
+		<WON00130>
+			<WON00140>30000</WON00140>
+			<WON00150>0</WON00150>
+			<WON00160>0</WON00160>
+			<WON00170>
+				<gen:era>5</gen:era>
+				<gen:yy>8</gen:yy>
+			</WON00170>
+			<WON00180>30000</WON00180>
+		</WON00130>
+	</WON00000>
+	<WOO00000>
+		<WOO00010>
+			<gen:era>5</gen:era>
+			<gen:yy>6</gen:yy>
+		</WOO00010>
+		<WOO00020>
+			<WOO00060>
+				<kubun_CD>1</kubun_CD>
+			</WOO00060>
+			<WOO00070>
+				<kubun_CD>1</kubun_CD>
+			</WOO00070>
+			<WOO00080>
+				<kubun_CD>1</kubun_CD>
+			</WOO00080>
+			<WOO00090>
+				<kubun_CD>1</kubun_CD>
+			</WOO00090>
+			<WOO00100>
+				<kubun_CD>1</kubun_CD>
+			</WOO00100>
+			<WOO00110>
+				<kubun_CD>1</kubun_CD>
+			</WOO00110>
+			<WOO00120>
+				<kubun_CD>1</kubun_CD>
+			</WOO00120>
+			<WOO00130>
+				<kubun_CD>1</kubun_CD>
+			</WOO00130>
+			<WOO00140>
+				<kubun_CD>1</kubun_CD>
+			</WOO00140>
+		</WOO00020>
+	</WOO00000>
+	<WOO00000>
+		<WOO00010>
+			<gen:era>5</gen:era>
+			<gen:yy>7</gen:yy>
+		</WOO00010>
+		<WOO00020>
+			<WOO00030>
+				<kubun_CD>1</kubun_CD>
+			</WOO00030>
+			<WOO00040>
+				<kubun_CD>1</kubun_CD>
+			</WOO00040>
+			<WOO00050>
+				<kubun_CD>1</kubun_CD>
+			</WOO00050>
+			<WOO00060>
+				<kubun_CD>1</kubun_CD>
+			</WOO00060>
+			<WOO00070>
+				<kubun_CD>1</kubun_CD>
+			</WOO00070>
+			<WOO00080>
+				<kubun_CD>1</kubun_CD>
+			</WOO00080>
+			<WOO00090>
+				<kubun_CD>1</kubun_CD>
+			</WOO00090>
+			<WOO00100>
+				<kubun_CD>1</kubun_CD>
+			</WOO00100>
+			<WOO00110>
+				<kubun_CD>1</kubun_CD>
+			</WOO00110>
+			<WOO00120>
+				<kubun_CD>1</kubun_CD>
+			</WOO00120>
+			<WOO00130>
+				<kubun_CD>1</kubun_CD>
+			</WOO00130>
+			<WOO00140>
+				<kubun_CD>1</kubun_CD>
+			</WOO00140>
+		</WOO00020>
+	</WOO00000>
+	<WOO00000>
+		<WOO00010>
+			<gen:era>5</gen:era>
+			<gen:yy>8</gen:yy>
+		</WOO00010>
+		<WOO00020>
+			<WOO00030>
+				<kubun_CD>1</kubun_CD>
+			</WOO00030>
+			<WOO00040>
+				<kubun_CD>1</kubun_CD>
+			</WOO00040>
+			<WOO00050>
+				<kubun_CD>1</kubun_CD>
+			</WOO00050>
+		</WOO00020>
+	</WOO00000>
+	<WOP00000>
+		<WOP00020>
+			<WOP00030>
+				<kubun_CD>2</kubun_CD>
+			</WOP00030>
+		</WOP00020>
+	</WOP00000>
+	<WOQ00000>
+		<gen:era>5</gen:era>
+		<gen:yy>6</gen:yy>
+		<gen:mm>11</gen:mm>
+		<gen:dd>2</gen:dd>
+	</WOQ00000>
+	<WOR00000>歳入徴収官　厚生労働省年金局事業管理課長</WOR00000>
+	<WOS00000>差出人　日本年金機構</WOS00000>
+	<WOT00000>NA20230150004052</WOT00000>
+<dsig:Signature xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" Id="_0150004052202312043A"><dsig:SignedInfo><dsig:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/><dsig:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><dsig:Reference URI="#TEG840202412230117074871004"><dsig:Transforms><dsig:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><dsig:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/></dsig:Transforms><dsig:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><dsig:DigestValue>9mGZ0A0fRZT58NsQxPSz0kWRrU+GPVq+3Waj9T52jN4=</dsig:DigestValue></dsig:Reference></dsig:SignedInfo><dsig:SignatureValue>qLP3cAwp9dueRra5f9+mlbHE1zyaziqS6ny4/VGZOgGmvnxtKKMR7VXOjWfkFwr8Dq9Oc6hfqgMx&#13;
+UTVoLQeHc/cB7W9vRoT+8lRNbcqS+yKit4f7YqWoAVKV4mLba2uGX1c5FYb5yIBMIxsl3OXhUfPu&#13;
+Q8KBBnanZcrjktF3nxiWNpD76z5WAQB7t/cqsacic3McoZsRwoGTqLzhOSyuXYfBFay/520h4Tkp&#13;
+4nmPK2I2Gdc+1sQX2irSMn8RiKDwCXtn6eT3VwHBT7RW5yLfe9eLl3fqNfdvtCmKxv5fEiiaZ9zD&#13;
+S4dzc8V1TkifSMhW6dC7nhyGumuWQAdU9qyM8w==</dsig:SignatureValue><dsig:KeyInfo><dsig:X509Data><dsig:X509Certificate>MIIFRDCCBCygAwIBAgIPODU1NTczMDgyMTIyMTYzMA0GCSqGSIb3DQEBCwUAMEYxCzAJBgNVBAYT&#13;
+AkpQMRwwGgYDVQQKDBNKYXBhbmVzZSBHb3Zlcm5tZW50MRkwFwYDVQQLDBBPZmZpY2lhbFN0YXR1&#13;
+c0NBMB4XDTIyMDcyNjE1MDAwMFoXDTI3MDcyNjE0NTk1OVowgaQxCzAJBgNVBAYTAkpQMRwwGgYD&#13;
+VQQKDBNKYXBhbmVzZSBHb3Zlcm5tZW50MS8wLQYDVQQLDCZNaW5pc3RyeSBvZiBIZWFsdGgsIExh&#13;
+Ym91ciBhbmQgV2VsZmFyZTFGMEQGA1UEAww9RGlyZWN0b3IsIFBlbnNpb24gU2VydmljZSBNYW5h&#13;
+Z2VtZW50IERpdmlzaW9uLCBQZW5zaW9uIEJ1cmVhdTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCC&#13;
+AQoCggEBAPQwyQK1PK9PMp4qvMjHl8IEusHlRKMGLfbBWuul5fjm+Gr8A8x/Z+ADf0G7TdBr1FhL&#13;
+jwe7Z5dEciGOSx9nNGy9EjPRRX/BHjqy36awa/XBfDVRKdIQY1CE8Ta9KZPLoAUG7dBiMs58Yo4j&#13;
+YZZbJyCfq5R809PFOuPrfXh4mMvAWc7jphzmTkkKisxMzBQt6yqxUC2zlj2db/I5gqJPSz1ZS8H2&#13;
+JyW52BS6Kc94suI/puF4kiac59DNjyqmhCoUEAK3qwyKttP5+cwIkRXkZaHMofjLs9mtB+sdoaVx&#13;
+gRPXWsf24FByWbqTBY/VUEG/QZN4jqIoYMTVAUFf3Y2gZ3kCAwEAAaOCAc4wggHKMB8GA1UdIwQY&#13;
+MBaAFFIm8Y7mfjbpZKQk94zYbSJcqFWZMB0GA1UdDgQWBBQpMwIGGj6+25jX4N59EjXQHCDeZjAO&#13;
+BgNVHQ8BAf8EBAMCBsAwVwYDVR0gAQH/BE0wSzBJBgsCgziGjjEIAwEBbjA6MDgGCCsGAQUFBwIB&#13;
+FixodHRwczovL3d3dy5ncGtpLmdvLmpwL29zY2EvY3BjcHMvaW5kZXguaHRtbDB0BgNVHREEbTBr&#13;
+pGkwZzELMAkGA1UEBhMCSlAxGDAWBgNVBAoMD+aXpeacrOWbveaUv+W6nDEYMBYGA1UECwwP5Y6a&#13;
+55Sf5Yq05YON55yBMSQwIgYDVQQDDBvlubTph5HlsYDkuovmpa3nrqHnkIboqrLplbcwTgYDVR0S&#13;
+BEcwRaRDMEExCzAJBgNVBAYTAkpQMRgwFgYDVQQKDA/ml6XmnKzlm73mlL/lupwxGDAWBgNVBAsM&#13;
+D+WumOiBt+iqjeiovOWxgDBZBgNVHR8EUjBQME6gTKBKpEgwRjELMAkGA1UEBhMCSlAxHDAaBgNV&#13;
+BAoME0phcGFuZXNlIEdvdmVybm1lbnQxGTAXBgNVBAsMEE9mZmljaWFsU3RhdHVzQ0EwDQYJKoZI&#13;
+hvcNAQELBQADggEBAGn+xz513vDCugiZnK2ZL1euUl0LWNysgYXmvQbA1z3tvFwbL6vhkPt2kagF&#13;
+8fW93xEPsUP7Suoxu/aSWnU1VTDolFJsCcKKTHwatnEZp4XKC3DZzj4ihzpwESEsKtsGYRgGvsp5&#13;
+yY5Q1i2z5+6/rBVOGQ7Lp2d4JarUWgYgtOwnkq2EuKgSaT2b7vZzxyOMgmWSgjk50hSocpA8kC61&#13;
+2WDmEmUGF8ATOVUpaY4vkJ9Q9km8tRcAQ14J+22Y5UYQS5u1ZzWiezHsx78BAjqBGiSyYRALVZPP&#13;
+yTc+hgbxGIVl92eMX0VmBmDXa5apFD7mkxYlmclEJ48HHa8T1hNyPow=</dsig:X509Certificate></dsig:X509Data></dsig:KeyInfo></dsig:Signature></TEG840>

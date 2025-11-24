@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://xml.e-tax.nta.go.jp/XSD/general" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://xml.e-tax.nta.go.jp/XSD/general" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0">
+	<xsd:annotation>
+		<xsd:documentation>税目（共通ボキャブラリ）</xsd:documentation>
+	</xsd:annotation>
+	<!--税目-->
+	<xsd:complexType name="zeimokuType">
+		<xsd:sequence>
+			<xsd:element name="zeimoku_CD">
+				<xsd:simpleType>
+					<xsd:annotation>
+					<xsd:appinfo>税目番号</xsd:appinfo>
+					<xsd:documentation>
+						010:源泉所得税
+						020:申告所得税
+						030:法人税
+						031:特定信託法人税
+						032:連結法人税
+						040:地方法人税
+						042:連結地方法人税
+						050:相続税
+						051:贈与税
+						060:酒税
+						070:揮発油及地方揮発油税
+						080:石油税
+						110:国際観光旅客税
+						170:電源開発促進税
+						180:揮発油及地方道路税
+						190:石油ガス税
+						200:自動車重量税
+						210:航空燃料税
+						220:印紙税
+						221:登録免許税
+						230:たばこ税及たばこ特別税
+						240:消費税
+						250:たばこ税
+						300:消費税及地方消費税
+						310:源泉所得税及復興特別所得税
+						320:申告所得税及復興特別所得税
+						330:復興特別法人税
+						332:連結復興特別法人税
+						380:石油石炭税
+					</xsd:documentation>
+					</xsd:annotation>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="010"/>
+						<xsd:enumeration value="020"/>
+						<xsd:enumeration value="030"/>
+						<xsd:enumeration value="031"/>
+						<xsd:enumeration value="032"/>
+						<xsd:enumeration value="040"/>
+						<xsd:enumeration value="042"/>
+						<xsd:enumeration value="050"/>
+						<xsd:enumeration value="051"/>
+						<xsd:enumeration value="060"/>
+						<xsd:enumeration value="070"/>
+						<xsd:enumeration value="080"/>
+						<xsd:enumeration value="110"/>
+						<xsd:enumeration value="170"/>
+						<xsd:enumeration value="180"/>
+						<xsd:enumeration value="190"/>
+						<xsd:enumeration value="200"/>
+						<xsd:enumeration value="210"/>
+						<xsd:enumeration value="220"/>
+						<xsd:enumeration value="221"/>
+						<xsd:enumeration value="230"/>
+						<xsd:enumeration value="240"/>
+						<xsd:enumeration value="250"/>
+						<xsd:enumeration value="300"/>
+						<xsd:enumeration value="310"/>
+						<xsd:enumeration value="320"/>
+						<xsd:enumeration value="330"/>
+						<xsd:enumeration value="332"/>
+						<xsd:enumeration value="380"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="zeimoku_NM" minOccurs="0">
+				<xsd:simpleType>
+					<xsd:annotation>
+					<xsd:appinfo>税目名</xsd:appinfo>
+					</xsd:annotation>
+					<xsd:restriction base="str">
+						<xsd:maxLength value="20"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:schema>

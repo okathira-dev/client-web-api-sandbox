@@ -9,6 +9,7 @@ const outDir = resolve(__dirname, "dist"); // でも当然ビルドフォルダ�
 export default defineConfig({
   base: "./", // JSのimportが相対パスになる。ビルドしたフォルダ単体で動くので便利。
   root,
+  appType: "mpa", // マルチページアプリケーションとして設定（SPAフォールバックを無効化）。kojo-xml-viewerで404の反応を見る必要があるため。
   plugins: [react()],
   worker: {
     // ビルド時にワーカーを ES モジュール形式で出力（コードスプリット互換）
@@ -46,6 +47,7 @@ export default defineConfig({
           "pdf-compressor-wasm",
           "index.html",
         ),
+        "kojo-xml-viewer": resolve(root, "kojo-xml-viewer", "index.html"),
       },
     },
   },
