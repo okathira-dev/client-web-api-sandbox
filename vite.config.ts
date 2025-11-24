@@ -46,6 +46,7 @@ export default defineConfig({
           "pdf-compressor-wasm",
           "index.html",
         ),
+        "kojo-xml-viewer": resolve(root, "kojo-xml-viewer", "index.html"),
       },
     },
   },

@@ -11,4 +11,5 @@ coverage
 .DS_Store
 .env
 .env.*
-*.log 
+*.log
+**/kojoall/**/*

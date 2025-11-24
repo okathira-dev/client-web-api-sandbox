@@ -1,0 +1,447 @@
+/**
+ * 仕様書ベースの帳票レンダラー
+ */
+
+import {
+  Alert,
+  Box,
+  CircularProgress,
+  Divider,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+  Typography,
+} from "@mui/material";
+import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
+import { TreeItem } from "@mui/x-tree-view/TreeItem";
+import { useEffect, useMemo, useState } from "react";
+
+import { buildFormData, buildFormTree } from "./formDataBuilder";
+import {
+  generateAllElementMappings,
+  getMappingsByTeg,
+} from "../../../mappings/elementMapping";
+import { AVAILABLE_TEG_CODES } from "../../../specs/getAvailableTegCodes";
+import { loadTegSpecificationFromXsd } from "../../../specs/loadSpecs";
+
+import type { FormTreeNode } from "./formDataBuilder";
+import type { ElementMapping } from "../../../specs/types";
+import type { XmlNode, ParsedXml } from "../../../types/xml";
+import type { ReactNode, SyntheticEvent } from "react";
+
+type AvailableTegCode = (typeof AVAILABLE_TEG_CODES)[number];
+
+function isAvailableTegCode(
+  value: string | undefined,
+): value is AvailableTegCode {
+  if (!value) {
+    return false;
+  }
+  return AVAILABLE_TEG_CODES.includes(value as AvailableTegCode);
+}
+
+function formatErrorMessage(error: Error | string | undefined | null): string {
+  if (error instanceof Error && typeof error.message === "string") {
+    const trimmed = error.message.trim();
+    return trimmed.length > 0 ? trimmed : "仕様書の読み込みに失敗しました";
+  }
+  if (typeof error === "string") {
+    const trimmed = error.trim();
+    return trimmed.length > 0 ? trimmed : "仕様書の読み込みに失敗しました";
+  }
+  return "仕様書の読み込みに失敗しました";
+}
+
+interface FormRendererProps {
+  xmlNode: XmlNode;
+  tegCode?: string;
+  parsedXml?: ParsedXml;
+}
+
+/**
+ * XMLノードからTEGコードを取得
+ */
+function extractTegCode(node: XmlNode): string | undefined {
+  // ルート要素の名前がTEGコードの場合
+  if (isAvailableTegCode(node.name)) {
+    return node.name;
+  }
+
+  // 属性から取得を試みる
+  if (node.attributes) {
+    const tegAttr = node.attributes["teg"] || node.attributes["TEG"];
+    if (isAvailableTegCode(tegAttr)) {
+      return tegAttr;
+    }
+  }
+
+  // 子要素から取得を試みる
+  if (node.children) {
+    for (const child of node.children) {
+      const teg = extractTegCode(child);
+      if (teg) {
+        return teg;
+      }
+    }
+  }
+
+  return undefined;
+}
+
+/**
+ * ルート要素の属性を表示するコンポーネント
+ */
+function RootAttributesSection({
+  attributes,
+}: {
+  attributes:
+    | {
+        VR?: string;
+        id?: string;
+        page?: string;
+        sakuseiDay?: string;
+        sakuseiNM?: string;
+        softNM?: string;
+      }
+    | undefined;
+}) {
+  if (!attributes) {
+    return null;
+  }
+  const items = [
+    { label: "バージョン（VR）", value: attributes.VR },
+    { label: "ID", value: attributes.id },
+    { label: "ページ", value: attributes.page },
+    { label: "作成日", value: attributes.sakuseiDay },
+    { label: "作成者", value: attributes.sakuseiNM },
+    { label: "ソフト名", value: attributes.softNM },
+  ].filter((item) => item.value);
+
+  if (items.length === 0) {
+    return null;
+  }
+
+  return (
+    <Box sx={{ mb: 4 }}>
+      <Typography variant="h6" sx={{ mb: 2, fontWeight: "bold" }}>
+        様式ID要素の属性
+      </Typography>
+      <Table>
+        <TableBody>
+          {items.map((item, index) => (
+            <TableRow key={index}>
+              <TableCell sx={{ fontWeight: "medium", width: "40%" }}>
+                {item.label}
+              </TableCell>
+              <TableCell
+                sx={{
+                  fontFamily: "monospace",
+                  fontSize: "0.875rem",
+                  width: "60%",
+                }}
+              >
+                {item.value}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      <Divider sx={{ mt: 2 }} />
+    </Box>
+  );
+}
+
+/**
+ * XML署名情報を表示するコンポーネント
+ */
+function SignatureSection({
+  signature,
+}: {
+  signature:
+    | {
+        exists: boolean;
+        referenceUri?: string;
+      }
+    | undefined;
+}) {
+  if (!signature || !signature.exists) {
+    return null;
+  }
+
+  return (
+    <Box sx={{ mb: 4 }}>
+      <Typography variant="h6" sx={{ mb: 2, fontWeight: "bold" }}>
+        XML署名情報
+      </Typography>
+      <Table>
+        <TableBody>
+          <TableRow>
+            <TableCell sx={{ fontWeight: "medium", width: "40%" }}>
+              署名の有無
+            </TableCell>
+            <TableCell sx={{ width: "60%" }}>あり</TableCell>
+          </TableRow>
+          {signature.referenceUri && (
+            <TableRow>
+              <TableCell sx={{ fontWeight: "medium", width: "40%" }}>
+                参照URI
+              </TableCell>
+              <TableCell
+                sx={{
+                  fontFamily: "monospace",
+                  fontSize: "0.875rem",
+                  width: "60%",
+                }}
+              >
+                {signature.referenceUri}
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+      <Divider sx={{ mt: 2 }} />
+    </Box>
+  );
+}
+
+/**
+ * 仕様書ベースの帳票をレンダリング
+ */
+export function FormRenderer({
+  xmlNode,
+  tegCode: propTegCode,
+  parsedXml,
+}: FormRendererProps) {
+  const [mappings, setMappings] = useState<ElementMapping[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // TEGコードを取得
+  const tegCode = useMemo(() => {
+    return propTegCode || extractTegCode(xmlNode);
+  }, [propTegCode, xmlNode]);
+
+  // 仕様書を読み込んで要素マッピングを生成
+  useEffect(() => {
+    if (!tegCode) {
+      setError("TEGコードが見つかりません");
+      setLoading(false);
+      return;
+    }
+
+    const activeTegCode = tegCode;
+    let cancelled = false;
+
+    async function loadMappings() {
+      try {
+        setLoading(true);
+        setError(null);
+
+        try {
+          const specification =
+            await loadTegSpecificationFromXsd(activeTegCode);
+          if (cancelled) {
+            return;
+          }
+
+          if (
+            specification.xmlStructureItems.length === 0 ||
+            specification.formFieldItems.length === 0
+          ) {
+            throw new Error(
+              `TEGコード ${activeTegCode} に対応する仕様書データが見つかりませんでした。` +
+                `XSDファイルが存在しないか、パースに失敗した可能性があります。` +
+                `現在利用可能なTEGコード: TEG104`,
+            );
+          }
+
+          const generatedMappings = generateAllElementMappings([specification]);
+          setMappings(generatedMappings);
+        } catch (loadError: unknown) {
+          if (cancelled) {
+            return;
+          }
+          let loadErrorMessage: string;
+          if (loadError instanceof Error) {
+            loadErrorMessage = formatErrorMessage(loadError);
+          } else if (typeof loadError === "string") {
+            loadErrorMessage = formatErrorMessage(loadError);
+          } else {
+            loadErrorMessage = formatErrorMessage(undefined);
+          }
+          setError(loadErrorMessage);
+          return;
+        }
+      } catch (err: unknown) {
+        if (cancelled) {
+          return;
+        }
+        let fallbackMessage: string;
+        if (err instanceof Error) {
+          fallbackMessage = formatErrorMessage(err);
+        } else if (typeof err === "string") {
+          fallbackMessage = formatErrorMessage(err);
+        } else {
+          fallbackMessage = formatErrorMessage(undefined);
+        }
+        setError(fallbackMessage);
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    }
+
+    void loadMappings();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [tegCode]);
+
+  const formDataItems = useMemo(() => {
+    const tegMappings = tegCode
+      ? getMappingsByTeg(mappings, tegCode)
+      : mappings;
+    return buildFormData(xmlNode, tegMappings);
+  }, [xmlNode, mappings, tegCode]);
+
+  const treeNodes = useMemo(() => {
+    return buildFormTree(formDataItems);
+  }, [formDataItems]);
+
+  const defaultExpandedIds = useMemo(() => {
+    const ids: string[] = [];
+    collectNodeIds(treeNodes, ids);
+    return ids;
+  }, [treeNodes]);
+
+  const [expandedNodes, setExpandedNodes] =
+    useState<string[]>(defaultExpandedIds);
+
+  useEffect(() => {
+    setExpandedNodes(defaultExpandedIds);
+  }, [defaultExpandedIds]);
+
+  const handleExpandedChange = (
+    _event: SyntheticEvent | null,
+    itemIds: string[],
+  ) => {
+    setExpandedNodes(itemIds);
+  };
+
+  if (loading) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Alert severity="error" sx={{ mt: 2 }}>
+        {error}
+      </Alert>
+    );
+  }
+
+  return (
+    <Box sx={{ mt: 2 }}>
+      <Paper sx={{ p: 3 }}>
+        <Alert severity="warning" sx={{ mb: 3 }}>
+          <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+            注意: この簡易帳票は公式のフォーマットではありません。
+          </Typography>
+        </Alert>
+
+        <Typography variant="h5" sx={{ mb: 3, textAlign: "center" }}>
+          {tegCode ? `${tegCode} 簡易帳票` : "簡易帳票"}
+        </Typography>
+
+        {/* ルート要素の属性を表示 */}
+        {parsedXml?.rootAttributes ? (
+          <RootAttributesSection attributes={parsedXml.rootAttributes} />
+        ) : null}
+
+        {/* XML署名情報を表示 */}
+        {parsedXml?.signature ? (
+          <SignatureSection signature={parsedXml.signature} />
+        ) : null}
+
+        {treeNodes.length === 0 ? (
+          <Typography
+            sx={{ textAlign: "center", color: "text.secondary", py: 4 }}
+          >
+            表示できるデータがありません
+          </Typography>
+        ) : (
+          <SimpleTreeView
+            expandedItems={expandedNodes}
+            onExpandedItemsChange={handleExpandedChange}
+            sx={{
+              border: "1px solid",
+              borderColor: "divider",
+              borderRadius: 1,
+              px: 1,
+              py: 1,
+            }}
+          >
+            {renderTreeItems(treeNodes)}
+          </SimpleTreeView>
+        )}
+      </Paper>
+    </Box>
+  );
+}
+
+function collectNodeIds(nodes: FormTreeNode[], acc: string[]): void {
+  nodes.forEach((node) => {
+    acc.push(node.id);
+    if (node.children.length > 0) {
+      collectNodeIds(node.children, acc);
+    }
+  });
+}
+
+function renderTreeItems(nodes: FormTreeNode[]): ReactNode {
+  return nodes.map((node) => (
+    <TreeItem
+      key={node.id}
+      itemId={node.id}
+      label={<TreeItemLabel node={node} />}
+    >
+      {node.children.length > 0 ? renderTreeItems(node.children) : null}
+    </TreeItem>
+  ));
+}
+
+function TreeItemLabel({ node }: { node: FormTreeNode }): JSX.Element {
+  return (
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 0.25 }}>
+      <Typography
+        variant="body2"
+        sx={{ fontWeight: node.children.length > 0 ? "bold" : "medium" }}
+      >
+        {node.label}
+      </Typography>
+      <Typography
+        variant="caption"
+        sx={{
+          color: "text.secondary",
+          fontFamily: "monospace",
+          opacity: node.hasMapping ? 1 : 0.7,
+        }}
+      >
+        {node.elementCode}
+      </Typography>
+      {node.value && (
+        <Typography variant="body2" sx={{ fontFamily: "monospace" }}>
+          {node.value}
+        </Typography>
+      )}
+    </Box>
+  );
+}

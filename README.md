@@ -40,6 +40,10 @@ npm run dev
 
 完全クライアントサイドでPDFを圧縮するWebアプリケーション（Ghostscript WASM使用）
 
+### [./src/kojo-xml-viewer](./src/kojo-xml-viewer)
+
+日本の控除証明書データのXMLファイルを閲覧する読み取り専用のウェブアプリケーション
+
 ## 開発サポートファイル
 
 ### [./Scratchpad.md](./Scratchpad.md)

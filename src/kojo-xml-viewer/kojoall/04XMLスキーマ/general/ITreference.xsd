@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://xml.e-tax.nta.go.jp/XSD/general"
+xmlns="http://xml.e-tax.nta.go.jp/XSD/general"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+elementFormDefault="qualified" attributeFormDefault="unqualified"
+version="1.0"> 
+<xsd:annotation>
+<xsd:documentation>
+IT部への参照定義
+version:1.0/1.1/1.2/1.3/1.4/1.5
+Date:2021年08月24日
+</xsd:documentation>
+</xsd:annotation>
+
+<!-- IT reference -->
+<xsd:annotation>
+<xsd:documentation>
+IT部への参照データ型の定義
+</xsd:documentation>
+</xsd:annotation>
+
+	<xsd:complexType name="ZEIMUSHOref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="ZEIMUSHO"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="TEISYUTSU_DAYref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="TEISYUTSU_DAY"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="NOZEISHA_IDref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="NOZEISHA_ID"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="NOZEISHA_BANGOref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="NOZEISHA_BANGO"/>
+	</xsd:complexType>
+	
+	<xsd:complexType name="SEIRIBANGOref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="SEIRIBANGO"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="NOZEISHA_NM_KNref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="NOZEISHA_NM_KN"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="NOZEISHA_NMref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="NOZEISHA_NM"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="NOZEISHA_ZIPref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="NOZEISHA_ZIP"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="NOZEISHA_ADR_KNref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="NOZEISHA_ADR_KN"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="NOZEISHA_ADRref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="NOZEISHA_ADR"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="NOZEISHA_ADR_CODEref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="NOZEISHA_ADR_CODE"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="ICHIGATSUIPPI_ADRref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="ICHIGATSUIPPI_ADR"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="ICHIGATSUIPPI_ADR_CODEref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="ICHIGATSUIPPI_ADR_CODE"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="NOZEISHA_YAGO_KNref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="NOZEISHA_YAGO_KN"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="NOZEISHA_YAGOref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="NOZEISHA_YAGO"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="NOZEISHA_TELref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="NOZEISHA_TEL"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="SEIBETSUref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="SEIBETSU"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="BIRTHDAYref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="BIRTHDAY"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="SETSURITSU_DAYref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="SETSURITSU_DAY"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="KESSAN_DAYref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="KESSAN_DAY"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="KESSAN_TIMESref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="KESSAN_TIMES"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="SHIHON_KINref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="SHIHON_KIN"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="SETAINUSHI_NMref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="SETAINUSHI_NM"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="SETAINUSHI_ZOKUref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="SETAINUSHI_ZOKU"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="JIGYO_NAIYOref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="JIGYO_NAIYO"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="SHOKUGYOref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="SHOKUGYO"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="KANPU_KINYUKIKANref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="KANPU_KINYUKIKAN"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="JIGYOSHO_NM_KNref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="JIGYOSHO_NM_KN"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="JIGYOSHO_NMref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="JIGYOSHO_NM"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="JIGYOSHO_ZIPref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="JIGYOSHO_ZIP"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="JIGYOSHO_ADRref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="JIGYOSHO_ADR"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="JIGYOSHO_YAGOref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="JIGYOSHO_YAGO"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="JIGYOSHO_TELref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="JIGYOSHO_TEL"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="DAIHYO_NM_KNref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="DAIHYO_NM_KN"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="DAIHYO_NMref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="DAIHYO_NM"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="DAIHYO_ZIPref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="DAIHYO_ZIP"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="DAIHYO_ADRref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="DAIHYO_ADR"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="DAIHYO_TELref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="DAIHYO_TEL"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="SEIZOJO_NM_KNref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="SEIZOJO_NM_KN"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="SEIZOJO_NMref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="SEIZOJO_NM"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="SEIZOJO_ZIPref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="SEIZOJO_ZIP"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="SEIZOJO_ADRref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="SEIZOJO_ADR"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="SEIZOJO_TELref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="SEIZOJO_TEL"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="DAIRI_IDref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="DAIRI_ID"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="DAIRI_NM_KNref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="DAIRI_NM_KN"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="DAIRI_NMref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="DAIRI_NM"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="DAIRI_ZIPref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="DAIRI_ZIP"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="DAIRI_ADRref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="DAIRI_ADR"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="DAIRI_TELref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="DAIRI_TEL"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="GROUP_OYA_HOJIN_IDref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="GROUP_OYA_HOJIN_ID"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="TETSUZUKIref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="TETSUZUKI"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="NENBUNref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="NENBUN"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="NENGETSUBUNref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="NENGETSUBUN"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="JIGYO_NENDO_FROMref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="JIGYO_NENDO_FROM"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="JIGYO_NENDO_TOref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="JIGYO_NENDO_TO"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="KAZEI_KIKAN_FROMref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="KAZEI_KIKAN_FROM"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="KAZEI_KIKAN_TOref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="KAZEI_KIKAN_TO"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="KEIRI_SEKININSHAref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="KEIRI_SEKININSHA"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="SHINKOKU_KBNref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="SHINKOKU_KBN"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="KEISANSHO_KBNref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="KEISANSHO_KBN"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="OYA_HOJIN_NMref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="OYA_HOJIN_NM"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="OYA_HOJIN_ADRref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="OYA_HOJIN_ADR"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="RENKETSU_ITIREN_NOref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="RENKETSU_ITIREN_NO"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="RENKETSU_JIGYO_NENDO_FROMref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="RENKETSU_JIGYO_NENDO_FROM"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="RENKETSU_JIGYO_NENDO_TOref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="RENKETSU_JIGYO_NENDO_TO"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="RENKETSU_HOJIN_NM_KNref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="RENKETSU_HOJIN_NM_KN"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="RENKETSU_HOJIN_NMref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="RENKETSU_HOJIN_NM"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="RENKETSU_HOJIN_ADR_KNref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="RENKETSU_HOJIN_ADR_KN"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="RENKETSU_HOJIN_ADRref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="RENKETSU_HOJIN_ADR"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="RENKETSU_HOJIN_TELref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="RENKETSU_HOJIN_TEL"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="RENKETSU_SHIHON_KINref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="RENKETSU_SHIHON_KIN"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="RENKETSU_DAIHYO_NM_KNref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="RENKETSU_DAIHYO_NM_KN"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="RENKETSU_DAIHYO_NMref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="RENKETSU_DAIHYO_NM"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="RENKETSU_DAIHYO_ADRref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="RENKETSU_DAIHYO_ADR"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="RENKETSU_KEIRI_SEKININSHAref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="RENKETSU_KEIRI_SEKININSHA"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="RENKETSU_JIGYO_NAIYOref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="RENKETSU_JIGYO_NAIYO"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="RENKETSUKO_NOZEISHA_IDref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="RENKETSUKO_NOZEISHA_ID"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="RENKETSUKO_ZEIMUSHOref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="RENKETSUKO_ZEIMUSHO"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="RENKETSUKO_NOZEISHA_BANGOref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="RENKETSUKO_NOZEISHA_BANGO"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="RENKETSUKO_SEIRIBANGOref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="RENKETSUKO_SEIRIBANGO"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="SONOTA_IDref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="ELTAX_IDref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="ELTAX_ID"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="RENKETSUKO_ELTAX_IDref">
+				<xsd:attribute name="IDREF" type="xsd:IDREF" use="required" fixed="RENKETSUKO_ELTAX_ID"/>
+	</xsd:complexType>
+
+</xsd:schema>

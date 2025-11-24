@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema targetNamespace="http://xml.e-tax.nta.go.jp/XSD/kyotsu"
+xmlns="http://xml.e-tax.nta.go.jp/XSD/kyotsu"
+xmlns:gen="http://xml.e-tax.nta.go.jp/XSD/general" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0" > 
+<xsd:annotation> 
+<xsd:documentation> 
+様式名：寄附金控除に関する証明書
+version：1.0
+Date：2021年04月26日
+</xsd:documentation> 
+</xsd:annotation> 
+
+<!-- import -->
+<xsd:import namespace="http://xml.e-tax.nta.go.jp/XSD/general" schemaLocation="../general/General.xsd"/>
+<xsd:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="../general/XMLDSIG050.xsd"/>
+
+<!-- version -->
+<xsd:simpleType name="TEG830-1-0VRtype"><xsd:restriction base="xsd:string"><xsd:enumeration value="1.0"/></xsd:restriction></xsd:simpleType>
+<!-- Root Element Definition -->
+<xsd:element name="TEG830" type="TEG830-1-0type"/>
+
+<xsd:complexType name="TEG830-1-0type">
+<xsd:sequence>
+<xsd:element name="TEG830-1" type="TEG830-1-1-0type">
+<xsd:annotation>
+<xsd:appinfo>"一面"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="TEG830-2" type="TEG830-2-1-0type" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"二面"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+
+<!-- XML-SIGNATURE -->
+<xsd:element ref="dsig:Signature" minOccurs="1" maxOccurs="1"/>
+</xsd:sequence>
+<xsd:attribute name="VR"
+type="TEG830-1-0VRtype"
+use="required"/>
+<xsd:attributeGroup ref="gen:FormAttribute"/>
+</xsd:complexType>
+
+<xsd:complexType name="TEG830-1-1-0type">
+<xsd:sequence>
+
+<xsd:element name="WMA00000" type="gen:yy">
+<xsd:annotation>
+<xsd:appinfo>"証明年分"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WMB00000" type="WMB00000-1-0Rtype">
+<xsd:annotation>
+<xsd:appinfo>"寄附の種類"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WMC00000" type="WMC00000-1-0Rtype">
+<xsd:annotation>
+<xsd:appinfo>"寄附者氏名（一面）"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WMD00000" type="WMD00000-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"寄附者ID"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WME00000" type="gen:address" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"寄附者住所"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WMF00000" type="gen:kingaku">
+<xsd:annotation>
+<xsd:appinfo>"年間寄附額"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WMG00000" type="WMG00000-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"適用条文"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WMH00000" type="WMH00000-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"適用条文（その他）"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WMI00000" type="gen:yymmdd">
+<xsd:annotation>
+<xsd:appinfo>"証明書発行年月日"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WMJ00000" type="WMJ00000-1-0Rtype">
+<xsd:annotation>
+<xsd:appinfo>"証明書発行者名"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WMK00000" type="gen:bango" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"証明書発行者法人番号"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WML00000">
+<xsd:annotation>
+<xsd:appinfo>"寄附の内訳（一面）"</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element name="WML00010" maxOccurs="10">
+<xsd:annotation>
+<xsd:appinfo>"明細　繰り返し"</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element name="WML00020" type="WML00020-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"寄附番号"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WML00030" type="gen:yyyymmdd">
+<xsd:annotation>
+<xsd:appinfo>"寄附年月日"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WML00040">
+<xsd:annotation>
+<xsd:appinfo>"寄附先に関する事項"</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element name="WML00050" type="WML00050-1-0Rtype">
+<xsd:annotation>
+<xsd:appinfo>"名称"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WML00060" type="gen:bango" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"法人番号"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="WML00070" type="gen:kingaku">
+<xsd:annotation>
+<xsd:appinfo>"寄附金の額"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WML00080" type="WML00080-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"備考"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WML00090" type="WML00090-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"キャンセル情報"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+</xsd:sequence>
+<xsd:attribute name="page" type="xsd:positiveInteger"/>
+</xsd:complexType><xsd:complexType name="TEG830-2-1-0type">
+<xsd:sequence>
+
+<xsd:element name="WMM00000" type="WMM00000-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"寄附者氏名（二面）"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WMN00000" minOccurs="0" maxOccurs="50">
+<xsd:annotation>
+<xsd:appinfo>"寄附の内訳（二面）　繰り返し"</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element name="WMN00010" minOccurs="0" maxOccurs="20">
+<xsd:annotation>
+<xsd:appinfo>"明細　繰り返し"</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element name="WMN00020" type="WMN00020-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"寄附番号"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WMN00030" type="gen:yyyymmdd" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"寄附年月日"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WMN00040" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"寄附先に関する事項"</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element name="WMN00050" type="WMN00050-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"名称"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WMN00060" type="gen:bango" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"法人番号"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="WMN00070" type="gen:kingaku" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"寄附金の額"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WMN00080" type="WMN00080-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"備考"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element name="WMN00090" type="WMN00090-1-0Rtype" minOccurs="0">
+<xsd:annotation>
+<xsd:appinfo>"キャンセル情報"</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+</xsd:sequence>
+<xsd:attribute name="page" type="xsd:positiveInteger"/>
+</xsd:complexType>
+
+
+<xsd:complexType name="WMB00000-1-0Rtype">
+    <xsd:complexContent>
+        <xsd:restriction base="gen:kubun">
+            <xsd:sequence>
+                <xsd:element name="kubun_CD">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_CD">
+                            <xsd:enumeration value="1"/><xsd:enumeration value="2"/><xsd:enumeration value="3"/><xsd:enumeration value="4"/><xsd:enumeration value="5"/><xsd:enumeration value="6"/><xsd:enumeration value="7"/><xsd:enumeration value="8"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="kubun_NM" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_NM">
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:restriction>
+    </xsd:complexContent>
+</xsd:complexType>
+
+<xsd:simpleType name="WMC00000-1-0Rtype">
+    <xsd:restriction base="gen:str">
+        <xsd:maxLength value="100"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="WMD00000-1-0Rtype">
+    <xsd:restriction base="gen:str">
+        <xsd:maxLength value="20"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="WMG00000-1-0Rtype">
+    <xsd:restriction base="gen:str">
+        <xsd:maxLength value="90"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="WMH00000-1-0Rtype">
+    <xsd:restriction base="gen:str">
+        <xsd:maxLength value="90"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="WMJ00000-1-0Rtype">
+    <xsd:restriction base="gen:str">
+        <xsd:maxLength value="20"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="WML00020-1-0Rtype">
+    <xsd:restriction base="gen:str">
+        <xsd:maxLength value="50"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="WML00050-1-0Rtype">
+    <xsd:restriction base="gen:str">
+        <xsd:maxLength value="20"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="WML00080-1-0Rtype">
+    <xsd:restriction base="gen:str">
+        <xsd:maxLength value="50"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:complexType name="WML00090-1-0Rtype">
+    <xsd:complexContent>
+        <xsd:restriction base="gen:kubun">
+            <xsd:sequence>
+                <xsd:element name="kubun_CD">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_CD">
+                            <xsd:enumeration value="1"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="kubun_NM" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_NM">
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:restriction>
+    </xsd:complexContent>
+</xsd:complexType>
+
+<xsd:simpleType name="WMM00000-1-0Rtype">
+    <xsd:restriction base="gen:str">
+        <xsd:maxLength value="100"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="WMN00020-1-0Rtype">
+    <xsd:restriction base="gen:str">
+        <xsd:maxLength value="50"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="WMN00050-1-0Rtype">
+    <xsd:restriction base="gen:str">
+        <xsd:maxLength value="20"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="WMN00080-1-0Rtype">
+    <xsd:restriction base="gen:str">
+        <xsd:maxLength value="50"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:complexType name="WMN00090-1-0Rtype">
+    <xsd:complexContent>
+        <xsd:restriction base="gen:kubun">
+            <xsd:sequence>
+                <xsd:element name="kubun_CD">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_CD">
+                            <xsd:enumeration value="1"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="kubun_NM" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="gen:kubun_NM">
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:restriction>
+    </xsd:complexContent>
+</xsd:complexType>
+
+
+
+</xsd:schema>
