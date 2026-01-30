@@ -35,7 +35,7 @@
     "@mui/x-tree-view": "^8.19.0",
     "@okathira/ghostpdl-wasm": "^1.1.0",
     "@xmldom/xmldom": "^0.8.11",
-    "fast-xml-parser": "^5.3.2",
+    "fast-xml-parser": "^5.3.4",
     "i18next": "^24.2.3",
     "i18next-browser-languagedetector": "^8.1.0",
     "jotai": "^2.15.0",
