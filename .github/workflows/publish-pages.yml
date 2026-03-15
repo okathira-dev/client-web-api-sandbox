@@ -1,9 +1,9 @@
 # ref: https://ja.vitejs.dev/guide/static-deploy.html#github-pages
-# 静的コンテンツを GitHub Pages にデプロイするためのシンプルなワークフロー
+# 静的コンテンツを GitHub Pages にデプロイするためのワークフロー
 name: Deploy static content to Pages
 
 on:
-  # デフォルトブランチを対象としたプッシュ時にで実行されます
+  # デフォルトブランチを対象としたプッシュ時に実行されます
   push:
     branches: ["main"]
 
@@ -13,40 +13,51 @@ on:
 # GITHUB_TOKEN のパーミッションを設定し、GitHub Pages へのデプロイを許可します
 permissions:
   contents: read
-  pages: write
-  id-token: write
+
+# 再実行時に artifact 名が衝突しないよう、run_attempt を含める
+env:
+  PAGES_ARTIFACT_NAME: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
 
 # 1 つの同時デプロイメントを可能にする
 concurrency:
   group: "pages"
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
-  # デプロイするだけなので、単一のデプロイジョブ
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Set up Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: "22.12.0"
+          node-version: "24.14.0"
           cache: "npm"
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       - name: Build
         run: npm run build
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
-          # dist リポジトリーのアップロード
+          name: ${{ env.PAGES_ARTIFACT_NAME }}
           path: "./dist"
+
+  deploy:
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: ${{ env.PAGES_ARTIFACT_NAME }}
