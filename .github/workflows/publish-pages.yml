@@ -16,6 +16,7 @@ permissions:
 
 # 再実行時に artifact 名が衝突しないよう、run_attempt を含める
 env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   PAGES_ARTIFACT_NAME: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
 
 # 1 つの同時デプロイメントを可能にする
