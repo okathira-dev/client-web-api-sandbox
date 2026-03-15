@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "engines": {
-    "node": ">=24.0.0"
+    "node": ">=24.14.0"
   },
   "scripts": {
     "dev": "vite --host",
@@ -95,5 +95,8 @@
       "eslint --cache",
       "prettier --check"
     ]
+  },
+  "volta": {
+    "node": "24.14.0"
   }
 }
