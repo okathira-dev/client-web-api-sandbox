@@ -30,7 +30,7 @@ import type { KubunMapping } from "../../../specs/parsers/propertyParser";
 import type { GeneralElementInfo } from "../../../specs/parsers/xsdParser";
 import type { ElementMapping } from "../../../specs/types";
 import type { XmlNode, ParsedXml } from "../../../types/xml";
-import type { ReactNode, SyntheticEvent } from "react";
+import type { ReactNode, SyntheticEvent, JSX } from "react";
 
 type AvailableTegCode = (typeof AVAILABLE_TEG_CODES)[number];
 
