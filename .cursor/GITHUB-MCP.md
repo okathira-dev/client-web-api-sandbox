@@ -28,18 +28,18 @@
 1. **グローバル設定ファイル** `~/.cursor/mcp.json` を開く（なければ作成）。
 2. 次の内容を追加する。**`YOUR_GITHUB_PAT`** を実際の [GitHub PAT](https://github.com/settings/personal-access-tokens/new) に置き換える。
 
-```json
-{
-  "mcpServers": {
-    "github": {
-      "url": "https://api.githubcopilot.com/mcp/",
-      "headers": {
-        "Authorization": "Bearer YOUR_GITHUB_PAT"
+    ```json
+    {
+      "mcpServers": {
+        "github": {
+          "url": "https://api.githubcopilot.com/mcp/",
+          "headers": {
+            "Authorization": "Bearer YOUR_GITHUB_PAT"
+          }
+        }
       }
     }
-  }
-}
-```
+    ```
 
 3. **Settings** → **Tools & Integrations** → **MCP tools** で「github」の横の **鉛筆アイコン**からも PAT を編集できる。
 4. 保存し、**Cursor を再起動**する。
