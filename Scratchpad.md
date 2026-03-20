@@ -9,6 +9,13 @@
 
 ## 最近完了したタスク
 
+### Dependabot グループ化（完了）
+
+- `.github/dependabot.yml` に `groups` を追加。`react` / `react-dom` / `@types/react` / `@types/react-dom` を `react-core` で同一 PR にまとめる。
+- MUI / Emotion / Vite / i18next / ESLint / Jest / markuplint / three もフロント周りで一緒に上げやすい単位でグループ化。
+- **注意**: Dependabot に Renovate の「プリセット」相当はない。公式は手動の `groups` のみ。
+- 個別 bump PR（#298 など）の手作業記録は書かない。バージョンは Dependabot のグループ PR に任せる。
+
 ### kojo-xml-viewer: XSDベース実装への移行とコード品質改善（完了）
 
 XML簡易帳票機能をCSVベースからXSDベースの実装に移行完了。すべての機能が動作確認済み。

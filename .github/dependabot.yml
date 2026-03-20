@@ -2,10 +2,64 @@
 # package ecosystems to update and where the package manifests are located.
 # Please see the documentation for all configuration options:
 # https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+#
+# ## グループ化について
+# - Dependabot に Renovate の「プリセット」相当の共有ライブラリはない。公式は `groups` で名前パターンを列挙する方式。
+# - 依存名が複数グループにマッチする場合は「先に定義したグループ」に入る（順序が重要）。
+# - マッチしない依存は従来どおり「1依存 = 1 PR」。
+# - 既存の分割 PR（例: react と react-dom を別 PR）をやめたい場合は、設定マージ後に古い PR を閉じ、次回スケジュールでグループ PR が出るのを待つか手動で「Dependabot を再実行」する。
 
 version: 2
 updates:
-  - package-ecosystem: "npm" # See documentation for possible values
-    directory: "/" # Location of package manifests
+  - package-ecosystem: "npm"
+    directory: "/"
     schedule:
       interval: "weekly"
+    groups:
+      # react / react-dom / @types/* を同一 PR に（旧 #264 + #261 の分離を解消）
+      react-core:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
+      emotion:
+        patterns:
+          - "@emotion/*"
+      mui:
+        patterns:
+          - "@mui/*"
+      dnd-kit:
+        patterns:
+          - "@dnd-kit/*"
+      vite:
+        patterns:
+          - "vite"
+          - "@vitejs/*"
+      i18next:
+        patterns:
+          - "i18next"
+          - "i18next-*"
+          - "react-i18next"
+      eslint:
+        patterns:
+          - "eslint"
+          - "eslint-*"
+          - "@eslint/*"
+          - "@typescript-eslint/*"
+          - "typescript-eslint"
+      jest:
+        patterns:
+          - "jest"
+          - "ts-jest"
+          - "ts-jest-*"
+          - "@types/jest"
+          - "@testing-library/*"
+      markuplint:
+        patterns:
+          - "markuplint"
+          - "@markuplint/*"
+      three:
+        patterns:
+          - "three"
+          - "@types/three"
