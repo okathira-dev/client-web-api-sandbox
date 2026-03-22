@@ -21,7 +21,7 @@ export async function runGhostscriptWasm(
       const handleMessage = (ev: MessageEvent<WorkerMessageOut>) => {
         const msg = ev.data;
         if (msg.type === "log") {
-          logs += msg.line + "\n";
+          logs += `${msg.line}\n`;
           onLog?.(msg.line);
           return;
         }
@@ -33,13 +33,13 @@ export async function runGhostscriptWasm(
         }
         if (msg.type === "error") {
           cleanup();
-          reject(new Error(logs + `ERROR: ${msg.error}`));
+          reject(new Error(`${logs}ERROR: ${msg.error}`));
           return;
         }
       };
       const handleError = (err: ErrorEvent) => {
         cleanup();
-        reject(new Error(logs + `ERROR: ${err.message}`));
+        reject(new Error(`${logs}ERROR: ${err.message}`));
       };
       const cleanup = () => {
         worker.removeEventListener("message", handleMessage);

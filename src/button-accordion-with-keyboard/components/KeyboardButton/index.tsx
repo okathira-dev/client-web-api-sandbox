@@ -19,6 +19,7 @@ export const KeyboardButton: FC<KeyboardButtonProps> = ({
 }) => {
   return (
     <button
+      type="button"
       style={{
         width: "48px",
         height: "48px",

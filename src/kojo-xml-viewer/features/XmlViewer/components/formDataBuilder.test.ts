@@ -1,17 +1,16 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
-
-import {
-  buildFormData,
-  buildFormTree,
-  extractElementValues,
-  combineDateValues,
-} from "./formDataBuilder";
 import { loadKubunMappingsFromProperty } from "../../../specs/parsers/propertyParser";
+import type { ElementMapping } from "../../../specs/types";
 import { parseXml } from "../../../utils/xmlParser";
 
 import type { FormDataItem } from "./formDataBuilder";
-import type { ElementMapping } from "../../../specs/types";
+import {
+  buildFormData,
+  buildFormTree,
+  combineDateValues,
+  extractElementValues,
+} from "./formDataBuilder";
 
 const SAMPLE_DIR = path.resolve(
   process.cwd(),

@@ -1,6 +1,7 @@
+import type { DragEndEvent } from "@dnd-kit/core";
 import {
-  DndContext,
   closestCenter,
+  DndContext,
   KeyboardSensor,
   PointerSensor,
   useSensor,
@@ -8,9 +9,9 @@ import {
 } from "@dnd-kit/core";
 import {
   arrayMove,
+  horizontalListSortingStrategy,
   SortableContext,
   sortableKeyboardCoordinates,
-  horizontalListSortingStrategy,
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -18,20 +19,17 @@ import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import MusicNoteOutlinedIcon from "@mui/icons-material/MusicNoteOutlined";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import type { CSSProperties, FC } from "react";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-
 import {
-  useStradellaReedStatesValue,
-  useSetStradellaRegister,
-  useStradellaRegisterValue,
   useAdoptStradellaRegister,
+  useSetStradellaRegister,
+  useStradellaReedStatesValue,
+  useStradellaRegisterValue,
 } from "../atoms/register";
 import { STRADELLA_REGISTER_PRESETS } from "../consts";
-
 import type { StradellaRegisterName } from "../types";
-import type { DragEndEvent } from "@dnd-kit/core";
-import type { FC, CSSProperties } from "react";
 
 const bassNoteIcon = <MusicNoteOutlinedIcon />;
 const chordIcon = (
@@ -222,7 +220,7 @@ export const RegisterSwitch: FC = () => {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key.startsWith("F") && !isNaN(Number(e.key.slice(1)))) {
+      if (e.key.startsWith("F") && !Number.isNaN(Number(e.key.slice(1)))) {
         const position = Number(e.key.slice(1)) - 1;
         if (position >= 0 && position < presetOrder.length) {
           e.preventDefault();

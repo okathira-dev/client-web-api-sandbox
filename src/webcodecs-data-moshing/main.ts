@@ -59,7 +59,10 @@ const startWorker = (
   });
 
   const stream = srcCanvas.captureStream(FPS);
-  const track = stream.getVideoTracks()[0]!; // とりあえず最初のトラックを取得
+  const track = stream.getVideoTracks()[0];
+  if (!track) {
+    throw new Error("No video track on capture stream");
+  }
   const mediaProcessor = new MediaStreamTrackProcessor({ track });
   const reader = mediaProcessor.readable;
 
@@ -70,7 +73,7 @@ const startWorker = (
     if (e.data.response === "error") {
       // workerからエラーメッセージを受けたらworkerを再起動する
       // Recreate worker in case of an error
-      console.error("Worker error: " + e.data.error);
+      console.error(`Worker error: ${e.data.error}`);
       worker.terminate();
       afterErrorTermination();
     } else if (e.data.response === "stop") {

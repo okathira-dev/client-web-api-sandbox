@@ -1,10 +1,9 @@
 import { ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
+import type { FC, MouseEvent } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useAccordionDisplayMode } from "../../atoms/accordionDisplay";
-
 import type { AccordionDisplayMode } from "../../atoms/accordionDisplay";
-import type { FC, MouseEvent } from "react";
+import { useAccordionDisplayMode } from "../../atoms/accordionDisplay";
 
 export const AccordionDisplaySwitch: FC = () => {
   const { t } = useTranslation();

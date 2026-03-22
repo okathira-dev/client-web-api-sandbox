@@ -1,14 +1,12 @@
 import { atom, useAtomValue, useSetAtom } from "jotai";
-
-import {
-  useSetBassReedPitch,
-  useSetTenorReedPitch,
-  useSetSopranoReedPitch,
-  useSetAltoReedPitch,
-} from "./reeds";
 import { DEFAULT_RELATIVE_REED_PITCHES } from "../consts";
-
 import type { ReedPitches } from "../types";
+import {
+  useSetAltoReedPitch,
+  useSetBassReedPitch,
+  useSetSopranoReedPitch,
+  useSetTenorReedPitch,
+} from "./reeds";
 
 // リード全体の基準となるピッチ。そのままだとA4=440Hzになる。
 const baseReedPitchAtom = atom<number>(0);

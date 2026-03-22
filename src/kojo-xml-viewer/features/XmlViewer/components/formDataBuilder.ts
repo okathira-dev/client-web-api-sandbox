@@ -17,9 +17,9 @@ export function extractElementValues(
     typeof node.text === "string" ? node.text.trim() : undefined;
 
   if (node.name.startsWith("TEG")) {
-    node.children?.forEach((child) =>
-      extractElementValues(child, values, [node.name]),
-    );
+    node.children?.forEach((child) => {
+      extractElementValues(child, values, [node.name]);
+    });
     return;
   }
 
@@ -32,9 +32,9 @@ export function extractElementValues(
     ) {
       values.set(`${parentCode}_${node.name}`, trimmedText);
     }
-    node.children?.forEach((child) =>
-      extractElementValues(child, values, currentPath),
-    );
+    node.children?.forEach((child) => {
+      extractElementValues(child, values, currentPath);
+    });
     return;
   }
 
@@ -42,9 +42,9 @@ export function extractElementValues(
     values.set(node.name, trimmedText);
   }
 
-  node.children?.forEach((child) =>
-    extractElementValues(child, values, currentPath),
-  );
+  node.children?.forEach((child) => {
+    extractElementValues(child, values, currentPath);
+  });
 }
 
 export function combineDateValues(

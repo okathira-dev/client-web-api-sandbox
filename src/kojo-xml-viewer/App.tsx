@@ -1,7 +1,6 @@
 import { Alert, Box, Container, Link, Typography } from "@mui/material";
-
-import { XmlViewer } from "./features/XmlViewer";
 import { SocialIcons } from "../shared/components/SocialIcons";
+import { XmlViewer } from "./features/XmlViewer";
 
 export function App() {
   return (

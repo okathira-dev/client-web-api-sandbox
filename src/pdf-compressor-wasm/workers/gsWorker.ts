@@ -1,9 +1,8 @@
 // Ghostscript を Web Worker 内で実行し、print/printErr をリアルタイムに転送するワーカー。
 
+import type { GhostscriptModule } from "@okathira/ghostpdl-wasm";
 import gsFactory from "@okathira/ghostpdl-wasm";
 import wasmUrl from "@okathira/ghostpdl-wasm/gs.wasm?url"; // Vite に wasm アセットを認識させるため URL import を使う
-
-import type { GhostscriptModule } from "@okathira/ghostpdl-wasm";
 
 // 本来であれば compilerOptions.lib に "WebWorker" を入れれば自動的に型が適応されるのではないかと思うが、
 // "@types/dom-mediacapture-transform" が効かなくなってしまうため、ここで宣言する。
@@ -48,7 +47,7 @@ async function loadModule() {
   return modulePromise;
 }
 
-onmessage = async (ev: MessageEvent<WorkerMessageIn>) => {
+self.addEventListener("message", async (ev: MessageEvent<WorkerMessageIn>) => {
   const msg = ev.data;
   if (msg.type !== "run") return;
 
@@ -98,4 +97,4 @@ onmessage = async (ev: MessageEvent<WorkerMessageIn>) => {
       error: String(e),
     });
   }
-};
+});

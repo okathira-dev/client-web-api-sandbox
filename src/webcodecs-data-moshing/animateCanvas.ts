@@ -18,7 +18,7 @@ export const getAnimateCanvasFunc = (cnv: HTMLCanvasElement) => {
   const cy = height / 2;
   // const r = Math.min(width, height) / 5;
   ctx.font = "30px Helvetica";
-  const text = getRandomFood() + "📹📷Hello WebCodecs 🎥🎞️" + getRandomFood();
+  const text = `${getRandomFood()}📹📷Hello WebCodecs 🎥🎞️${getRandomFood()}`;
   const size = ctx.measureText(text).width;
 
   // ここではシンプルにキャンバスに描画しているだけ

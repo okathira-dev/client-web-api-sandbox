@@ -24,7 +24,7 @@ import {
 
 export function LcgGenerator() {
   // 状態管理
-  const [params, setParams] = useState<LcgParams>(LCG_PRESETS["Custom"]);
+  const [params, setParams] = useState<LcgParams>(LCG_PRESETS.Custom);
   const [customParams, setCustomParams] = useState<LcgParams>({
     a: 0n,
     c: 0n,
@@ -32,7 +32,9 @@ export function LcgGenerator() {
   });
   const [seed, setSeed] = useState<string>("42");
   const [count, setCount] = useState<string>("10");
-  const [generatedValues, setGeneratedValues] = useState<bigint[]>([]);
+  const [generatedValues, setGeneratedValues] = useState<
+    { id: string; value: bigint }[]
+  >([]);
   const [error, setError] = useState<string>("");
 
   // プリセット変更時の処理
@@ -74,7 +76,7 @@ export function LcgGenerator() {
   // 生成数の検証
   const validateCount = (): number | null => {
     const countNum = parseInt(count, 10);
-    if (isNaN(countNum) || countNum <= 0) {
+    if (Number.isNaN(countNum) || countNum <= 0) {
       setError("生成数は正の整数である必要があります");
       return null;
     }
@@ -112,9 +114,9 @@ export function LcgGenerator() {
       const lcg = new LCG(seedValue, params.a, params.c, params.m);
 
       // 乱数を生成
-      const values: bigint[] = [];
+      const values: { id: string; value: bigint }[] = [];
       for (let i = 0; i < countValue; i++) {
-        values.push(lcg.next());
+        values.push({ id: crypto.randomUUID(), value: lcg.next() });
       }
 
       setGeneratedValues(values);
@@ -254,8 +256,8 @@ export function LcgGenerator() {
               <Box sx={{ fontWeight: "bold", marginBottom: "8px" }}>
                 シード値: {seed}
               </Box>
-              {generatedValues.map((value, index) => (
-                <Box key={index} sx={{ marginBottom: "4px" }}>
+              {generatedValues.map(({ id, value }, index) => (
+                <Box key={id} sx={{ marginBottom: "4px" }}>
                   #{index + 1}: {value.toString()}
                 </Box>
               ))}

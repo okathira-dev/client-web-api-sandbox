@@ -86,7 +86,7 @@ describe("elementMappingFromXsd", () => {
       const childMapping = mappings.find(
         (m) => m.elementCode !== "TEG800" && m.parentElementCode,
       );
-      if (childMapping && childMapping.parentElementCode) {
+      if (childMapping?.parentElementCode) {
         const parentMapping = mappings.find(
           (m) => m.elementCode === childMapping.parentElementCode,
         );

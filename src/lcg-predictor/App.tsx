@@ -1,11 +1,10 @@
-import { Container, Typography, Tabs, Tab } from "@mui/material";
+import { Container, Tab, Tabs, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import { useState } from "react";
-
+import { SocialIcons } from "../shared/components/SocialIcons";
 import { LcgFormula } from "./components/LcgFormula";
 import { LcgGenerator } from "./features/LcgGenerator";
 import { LcgPredictor } from "./features/LcgPredictor";
-import { SocialIcons } from "../shared/components/SocialIcons";
 
 // タブパネルのインターフェース
 interface TabPanelProps {

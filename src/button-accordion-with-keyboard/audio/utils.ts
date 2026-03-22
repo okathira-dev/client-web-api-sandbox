@@ -4,7 +4,7 @@ export type PitchUnit = "cent" | "hz";
 
 // 周波数変換の共通関数
 export const semitoneToFrequency = (semitone: number): number => {
-  return CONCERT_PITCH * Math.pow(2, semitone / 12);
+  return CONCERT_PITCH * 2 ** (semitone / 12);
 };
 
 export const hzToCent = (hz: number): number => {
@@ -12,5 +12,5 @@ export const hzToCent = (hz: number): number => {
 };
 
 export const centToHz = (cent: number): number => {
-  return CONCERT_PITCH * Math.pow(2, cent / 1200);
+  return CONCERT_PITCH * 2 ** (cent / 1200);
 };

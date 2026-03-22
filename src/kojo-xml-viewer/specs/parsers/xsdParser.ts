@@ -186,7 +186,7 @@ function getValueMapping(element: Element): Map<string, string> | undefined {
   for (const line of lines) {
     // "1：明治" または "1:明治" の形式をパース
     const match = line.match(/^(\d+)[：:]\s*(.+)$/);
-    if (match && match[1] && match[2]) {
+    if (match?.[1] && match[2]) {
       const key = match[1].trim();
       const value = match[2].trim();
       if (key && value) {

@@ -25,7 +25,9 @@ export async function initializeAudioDevices() {
       });
 
     // すぐにストリームを停止
-    stream.getTracks().forEach((track) => track.stop());
+    for (const track of stream.getTracks()) {
+      track.stop();
+    }
 
     // メディアデバイスの一覧を取得
     const devices = await navigator.mediaDevices

@@ -1,8 +1,8 @@
-import { useRef, useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 import {
-  usePlayBassReed,
   usePlayAltoReed,
+  usePlayBassReed,
   usePlaySopranoReed,
   usePlayTenorReed,
 } from "../atoms/reeds";

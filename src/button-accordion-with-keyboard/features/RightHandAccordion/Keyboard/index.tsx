@@ -1,21 +1,20 @@
-import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
-import { useCallback, useEffect, useState, useMemo } from "react";
+import type { SelectChangeEvent } from "@mui/material";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import type { CSSProperties, FC } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-
-import { usePlayActiveReeds } from "./hooks";
-import { getFrequency, useGetNoteLabel, isWhiteKey } from "./utils";
 import {
+  type BackslashPosition,
   useRightHandBackslashPositionValue,
   useSetRightHandBackslashPosition,
-  type BackslashPosition,
 } from "../../../atoms/keyboardLayout";
 import { KeyboardButton } from "../../../components/KeyboardButton";
 import { getKeyboardLayout } from "../../../consts/keyboardLayout";
 
 import type { KeyboardSystemType } from "./consts";
+import { usePlayActiveReeds } from "./hooks";
 import type { KeyLabelStyle } from "./utils";
-import type { SelectChangeEvent } from "@mui/material";
-import type { FC, CSSProperties } from "react";
+import { getFrequency, isWhiteKey, useGetNoteLabel } from "./utils";
 
 // コンポーネント外に定数を移動
 const KEYBOARD_SYSTEM_SELECT_LABEL_ID = "keyboard-system-select-label";
@@ -205,7 +204,7 @@ export const Keyboard: FC = () => {
 
           return (
             <div
-              key={rowIndex}
+              key={row.join("-")}
               style={{
                 display: "flex",
                 marginLeft: `${marginLeft}px`, // 行が下がるごとに右にずらす

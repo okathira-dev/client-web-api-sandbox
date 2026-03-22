@@ -1,20 +1,19 @@
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
-
-import {
-  C_SYSTEM_ROW_OFFSETS,
-  B_SYSTEM_ROW_OFFSETS,
-  KEY_LABEL_TEXTS,
-} from "./consts";
 import { semitoneToFrequency } from "../../../audio/utils";
+import type { BackslashPosition } from "../../../consts/keyboardLayout";
 import {
-  PHYSICAL_KEYBOARD_MAP,
   BACKSLASH_POSITIONS,
   getCodeLabel,
+  PHYSICAL_KEYBOARD_MAP,
 } from "../../../consts/keyboardLayout";
 
-import type { NoteNameStyle, KeyboardSystemType } from "./consts";
-import type { BackslashPosition } from "../../../consts/keyboardLayout";
+import type { KeyboardSystemType, NoteNameStyle } from "./consts";
+import {
+  B_SYSTEM_ROW_OFFSETS,
+  C_SYSTEM_ROW_OFFSETS,
+  KEY_LABEL_TEXTS,
+} from "./consts";
 
 export type KeyLabelStyle = "keytop" | NoteNameStyle;
 

@@ -125,7 +125,6 @@ async function loadPropertyFile(tegCode: string): Promise<Document | null> {
           err,
         );
       }
-      continue;
     }
   }
 
@@ -248,7 +247,7 @@ export async function loadKubunMappingsFromProperty(
     ) {
       // refcolがkubun_CDのカラム番号と一致するか確認
       const kubunCdColumns = kubunCdItems.get(parent);
-      if (kubunCdColumns && kubunCdColumns.has(refcol)) {
+      if (kubunCdColumns?.has(refcol)) {
         // マッピングのキー: {TEGコード}_{親要素ID}_{kubun_CDの値}
         const key = `${reportId}_${parent}_${refval}`;
         mapping.set(key, value);

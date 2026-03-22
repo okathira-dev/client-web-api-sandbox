@@ -1,3 +1,4 @@
+import type { SelectChangeEvent } from "@mui/material";
 import {
   Box,
   Button,
@@ -13,10 +14,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useMemo, useRef, useState } from "react";
-
 import { SocialIcons } from "../shared/components/SocialIcons";
-
-import type { SelectChangeEvent } from "@mui/material";
 
 type PdfSettingsPreset = "/screen" | "/ebook" | "/printer" | "/prepress";
 

@@ -1,4 +1,4 @@
-import { Box, Button, Typography, Link, Container } from "@mui/material";
+import { Box, Button, Container, Link, Typography } from "@mui/material";
 
 import { SocialIcons } from "../shared/components/SocialIcons";
 

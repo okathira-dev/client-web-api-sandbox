@@ -1,6 +1,7 @@
+import type { DragEndEvent } from "@dnd-kit/core";
 import {
-  DndContext,
   closestCenter,
+  DndContext,
   KeyboardSensor,
   PointerSensor,
   useSensor,
@@ -8,31 +9,28 @@ import {
 } from "@dnd-kit/core";
 import {
   arrayMove,
+  horizontalListSortingStrategy,
   SortableContext,
   sortableKeyboardCoordinates,
-  horizontalListSortingStrategy,
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import type { FC } from "react";
 import { useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-
 import {
-  useSelectedPreset,
-  useSetSelectedPreset,
-  useAdoptPreset,
-  useReedActivation,
-  usePresetOrder,
-  useSetPresetOrder,
   reedActivationPresets,
+  useAdoptPreset,
+  usePresetOrder,
+  useReedActivation,
+  useSelectedPreset,
+  useSetPresetOrder,
+  useSetSelectedPreset,
 } from "../atoms/reeds";
-
 import type { ReedName } from "../consts";
-import type { DragEndEvent } from "@dnd-kit/core";
-import type { FC } from "react";
 
 interface SortablePresetButtonProps {
   position: number;
@@ -199,7 +197,7 @@ export const RegisterSwitch: FC = () => {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key.startsWith("F") && !isNaN(Number(e.key.slice(1)))) {
+      if (e.key.startsWith("F") && !Number.isNaN(Number(e.key.slice(1)))) {
         const position = Number(e.key.slice(1)) - 1;
         if (position >= 0 && position < 12) {
           e.preventDefault();
@@ -260,7 +258,10 @@ export const RegisterSwitch: FC = () => {
             strategy={horizontalListSortingStrategy}
           >
             {presetOrder.map((presetIndex, position) => {
-              const preset = reedActivationPresets[presetIndex]!;
+              const preset = reedActivationPresets[presetIndex];
+              if (!preset) {
+                return null;
+              }
               const isActive =
                 JSON.stringify(preset) === JSON.stringify(reedActivation);
 

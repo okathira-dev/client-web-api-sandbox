@@ -1,33 +1,31 @@
 import {
   FormControl,
   InputLabel,
-  Select,
   MenuItem,
+  Select,
   type SelectChangeEvent,
 } from "@mui/material";
-import { useCallback, useEffect, useState, useMemo } from "react";
+import type { CSSProperties } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-
+import {
+  type BackslashPosition,
+  useLeftHandBackslashPositionValue,
+  useSetLeftHandBackslashPosition,
+} from "../../../atoms/keyboardLayout";
+import {
+  BACKSLASH_POSITIONS,
+  getKeyboardLayout,
+  PHYSICAL_KEYBOARD_MAP,
+} from "../../../consts/keyboardLayout";
+import type { StradellaType } from "../types";
 import { usePlayActiveReeds } from "./hooks";
 import {
   getFrequencies,
   getKeyLabel,
-  getTypeFromRow,
   getStradellaSoundType,
+  getTypeFromRow,
 } from "./utils";
-import {
-  useLeftHandBackslashPositionValue,
-  useSetLeftHandBackslashPosition,
-  type BackslashPosition,
-} from "../../../atoms/keyboardLayout";
-import {
-  PHYSICAL_KEYBOARD_MAP,
-  BACKSLASH_POSITIONS,
-  getKeyboardLayout,
-} from "../../../consts/keyboardLayout";
-
-import type { StradellaType } from "../types";
-import type { CSSProperties } from "react";
 
 type KeyLabelStyle = "keytop" | "note";
 
@@ -212,7 +210,7 @@ export const Keyboard = () => {
 
           return (
             <div
-              key={rowIndex}
+              key={row.join("-")}
               style={{
                 display: "flex",
                 marginLeft: `${marginLeft}px`, // 行が下がるごとに右にずらす
@@ -254,6 +252,7 @@ export const Keyboard = () => {
 
                 return (
                   <button
+                    type="button"
                     key={code}
                     style={buttonStyle}
                     onMouseDown={() => buttonDown(code)}
