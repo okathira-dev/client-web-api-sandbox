@@ -1,8 +1,7 @@
 import { CloudUpload } from "@mui/icons-material";
-import { Box, Typography, Alert, CircularProgress } from "@mui/material";
+import { Alert, Box, CircularProgress, Typography } from "@mui/material";
+import type { ChangeEvent, DragEvent } from "react";
 import { useRef, useState } from "react";
-
-import type { DragEvent, ChangeEvent } from "react";
 
 interface FileUploaderProps {
   onFileLoad: (xmlString: string) => void;

@@ -32,41 +32,22 @@ export async function loadXsdFile(tegCode: string): Promise<Document> {
   );
   const xsdUrl = xsdPath.href;
 
-  let xmlText: string;
-  let errorPath: string;
-
-  // file://プロトコルの場合（テスト環境）はファイルシステムから読み込む
-  if (xsdPath.protocol === "file:") {
-    // Node.js環境: ファイルシステムから読み込む
-    const { fileURLToPath } = await import("node:url");
-    const { readFileSync } = await import("node:fs");
-    const filePath = fileURLToPath(xsdPath);
-    errorPath = filePath;
-    try {
-      xmlText = readFileSync(filePath, "utf-8");
-    } catch (_error) {
+  // Node組み込み(import("node:fs")など)をクライアントグラフに載せないため、
+  // parser側は常にfetch経路を使う。file://はJest setupで吸収する。
+  const errorPath = xsdUrl;
+  const response = await fetch(xsdUrl);
+  if (!response.ok) {
+    if (response.status === 404) {
       throw new Error(
-        `XSDファイルが見つかりません: ${filePath}\n` +
+        `XSDファイルが見つかりません: ${xsdUrl}\n` +
           `TEGコード ${tegCode} に対応するXSDファイルが存在しない可能性があります。`,
       );
     }
-  } else {
-    // ブラウザ環境: fetchを使用
-    errorPath = xsdUrl;
-    const response = await fetch(xsdUrl);
-    if (!response.ok) {
-      if (response.status === 404) {
-        throw new Error(
-          `XSDファイルが見つかりません: ${xsdUrl}\n` +
-            `TEGコード ${tegCode} に対応するXSDファイルが存在しない可能性があります。`,
-        );
-      }
-      throw new Error(
-        `Failed to load XSD file: ${xsdUrl} (${response.status} ${response.statusText})`,
-      );
-    }
-    xmlText = await response.text();
+    throw new Error(
+      `Failed to load XSD file: ${xsdUrl} (${response.status} ${response.statusText})`,
+    );
   }
+  const xmlText = await response.text();
 
   const parser = new DOMParser();
   const doc = parser.parseFromString(xmlText, "text/xml");
@@ -91,35 +72,18 @@ export async function loadGeneralXsd(): Promise<Document> {
   );
   const xsdUrl = xsdPath.href;
 
-  let xmlText: string;
-  let errorPath: string;
-
-  // file://プロトコルの場合（テスト環境）はファイルシステムから読み込む
-  if (xsdPath.protocol === "file:") {
-    // Node.js環境: ファイルシステムから読み込む
-    const { fileURLToPath } = await import("node:url");
-    const { readFileSync } = await import("node:fs");
-    const filePath = fileURLToPath(xsdPath);
-    errorPath = filePath;
-    try {
-      xmlText = readFileSync(filePath, "utf-8");
-    } catch (_error) {
-      throw new Error(`General.xsdファイルが見つかりません: ${filePath}`);
+  // loadXsdFileと同様に、ランタイム分岐を持たずfetchで統一する。
+  const errorPath = xsdUrl;
+  const response = await fetch(xsdUrl);
+  if (!response.ok) {
+    if (response.status === 404) {
+      throw new Error(`General.xsdファイルが見つかりません: ${xsdUrl}`);
     }
-  } else {
-    // ブラウザ環境: fetchを使用
-    errorPath = xsdUrl;
-    const response = await fetch(xsdUrl);
-    if (!response.ok) {
-      if (response.status === 404) {
-        throw new Error(`General.xsdファイルが見つかりません: ${xsdUrl}`);
-      }
-      throw new Error(
-        `Failed to load General.xsd file: ${xsdUrl} (${response.status} ${response.statusText})`,
-      );
-    }
-    xmlText = await response.text();
+    throw new Error(
+      `Failed to load General.xsd file: ${xsdUrl} (${response.status} ${response.statusText})`,
+    );
   }
+  const xmlText = await response.text();
 
   const parser = new DOMParser();
   const doc = parser.parseFromString(xmlText, "text/xml");
@@ -186,7 +150,7 @@ function getValueMapping(element: Element): Map<string, string> | undefined {
   for (const line of lines) {
     // "1：明治" または "1:明治" の形式をパース
     const match = line.match(/^(\d+)[：:]\s*(.+)$/);
-    if (match && match[1] && match[2]) {
+    if (match?.[1] && match[2]) {
       const key = match[1].trim();
       const value = match[2].trim();
       if (key && value) {
@@ -491,20 +455,12 @@ async function loadIncludedXsd(
   );
   const xsdUrl = xsdPath.href;
 
-  let xmlText: string;
-
-  if (xsdPath.protocol === "file:") {
-    const { fileURLToPath } = await import("node:url");
-    const { readFileSync } = await import("node:fs");
-    const filePath = fileURLToPath(xsdPath);
-    xmlText = readFileSync(filePath, "utf-8");
-  } else {
-    const response = await fetch(xsdUrl);
-    if (!response.ok) {
-      throw new Error(`Failed to load included XSD: ${xsdUrl}`);
-    }
-    xmlText = await response.text();
+  // include先も同じ方針でfetchに統一し、環境差分をJest setup側へ寄せる。
+  const response = await fetch(xsdUrl);
+  if (!response.ok) {
+    throw new Error(`Failed to load included XSD: ${xsdUrl}`);
   }
+  const xmlText = await response.text();
 
   const parser = new DOMParser();
   const doc = parser.parseFromString(xmlText, "text/xml");

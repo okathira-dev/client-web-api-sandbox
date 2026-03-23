@@ -1,15 +1,13 @@
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import type { FC } from "react";
 import { useTranslation } from "react-i18next";
-
 import {
   useRelativeReedPitchesValue,
   useSetRelativeReedPitches,
 } from "../../atoms/pitch";
 import { REED_LABEL_MAP_FULL } from "../../consts";
-
 import type { ReedName } from "../../types";
-import type { FC } from "react";
 
 export const RelativePitchControl: FC = () => {
   const { t } = useTranslation();
@@ -46,7 +44,7 @@ export const RelativePitchControl: FC = () => {
                   const newValue = parseInt(e.target.value, 10);
                   setRelativeReedPitches((prev) => ({
                     ...prev,
-                    [reed]: isNaN(newValue) ? prev[reed] : newValue,
+                    [reed]: Number.isNaN(newValue) ? prev[reed] : newValue,
                   }));
                 }}
                 size="small"

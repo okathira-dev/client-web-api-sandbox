@@ -69,9 +69,12 @@ export const useAdoptPreset = () => {
 };
 
 // リードの有効/無効状態
-const reedActivationAtom = atom<ReedActivation>(
-  reedActivationPresets[INITIAL_SELECTED_PRESET]!, // TODO: get関数を作って型安全にしたい
-);
+const initialReedActivation =
+  reedActivationPresets.at(INITIAL_SELECTED_PRESET) ?? reedActivationPresets[0];
+if (initialReedActivation === undefined) {
+  throw new Error("reedActivationPresets must not be empty");
+}
+const reedActivationAtom = atom<ReedActivation>(initialReedActivation);
 export const useReedActivation = () => useAtomValue(reedActivationAtom);
 export const useSetReedActivation = () => useSetAtom(reedActivationAtom);
 

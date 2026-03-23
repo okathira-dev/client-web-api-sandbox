@@ -35,7 +35,7 @@ const reportError = (e: Error) => {
     response: "error",
     error: e.message,
   };
-  postMessage(error);
+  self.postMessage(error);
 };
 
 const captureAndEncode = (
@@ -156,7 +156,7 @@ interface StopProcessResponse {
 
 type VideoWorkerResponse = ErrorProcessResponse | StopProcessResponse;
 
-onmessage = (e: MessageEvent<VideoWorkerCommand>) => {
+self.addEventListener("message", (e: MessageEvent<VideoWorkerCommand>) => {
   if (e.data.command === "start") {
     const { frameSource, canvas, fps } = e.data;
     main(frameSource, canvas, fps);
@@ -165,7 +165,7 @@ onmessage = (e: MessageEvent<VideoWorkerCommand>) => {
     const returnCanvas: StopProcessResponse = {
       response: "stop",
     };
-    postMessage(returnCanvas);
+    self.postMessage(returnCanvas);
   } else if (e.data.command === "play") {
     setNextFrameEncoding("key");
     setNextFrameDecoding("encode");
@@ -179,6 +179,6 @@ onmessage = (e: MessageEvent<VideoWorkerCommand>) => {
     setNextFrameEncoding("delta");
     setNextFrameDecoding("drop");
   }
-};
+});
 
 export type { VideoWorkerCommand, VideoWorkerResponse };

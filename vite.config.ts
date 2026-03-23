@@ -1,6 +1,5 @@
-import { resolve } from "path";
-
-import react from "@vitejs/plugin-react-swc";
+import { resolve } from "node:path";
+import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
 const root = resolve(__dirname, "src"); // srcフォルダをrootにする。マルチページのフォルダをsrcにまとめたい＆変に階層を増やしたくない。
@@ -18,7 +17,7 @@ export default defineConfig({
   build: {
     outDir,
     emptyOutDir: true,
-    rollupOptions: {
+    rolldownOptions: {
       input: {
         index: resolve(root, "index.html"),
         "webcodecs-data-moshing": resolve(

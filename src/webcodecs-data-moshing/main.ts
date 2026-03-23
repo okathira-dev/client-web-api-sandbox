@@ -13,6 +13,8 @@ const PLAY_BUTTON_ID = "play";
 const PAUSE_BUTTON_ID = "pause";
 const DOUBLE_BUTTON_ID = "double";
 const DROP_BUTTON_ID = "drop";
+// HMR disposeで確実にterminateするため、現在のworkerを保持する。
+let activeWorker: Worker | null = null;
 
 const appendCanvas = (
   container: HTMLElement,
@@ -57,32 +59,56 @@ const startWorker = (
     name: "Video worker",
     type: "module",
   });
+  activeWorker = worker;
 
   const stream = srcCanvas.captureStream(FPS);
-  const track = stream.getVideoTracks()[0]!; // とりあえず最初のトラックを取得
+  const track = stream.getVideoTracks()[0];
+  if (!track) {
+    throw new Error("No video track on capture stream");
+  }
   const mediaProcessor = new MediaStreamTrackProcessor({ track });
   const reader = mediaProcessor.readable;
 
   // workerにキャンバスの制御を譲渡する
   const offscreen = dstCanvas.transferControlToOffscreen();
+  // OffscreenCanvas/ReadableStreamはTransferableのため、転送付きstartは1回に制限する。
+  let hasStarted = false;
+
+  const startButton = document.getElementById(START_BUTTON_ID);
+  if (!(startButton instanceof HTMLButtonElement)) {
+    throw new Error("Could not find start button");
+  }
+  const stopButton = document.getElementById(STOP_BUTTON_ID);
+  if (!(stopButton instanceof HTMLButtonElement)) {
+    throw new Error("Could not find stop button");
+  }
+
+  const resetStartControls = () => {
+    hasStarted = false;
+    startButton.disabled = false;
+    stopButton.disabled = true;
+  };
+  resetStartControls();
 
   worker.onmessage = (e: MessageEvent<VideoWorkerResponse>) => {
     if (e.data.response === "error") {
       // workerからエラーメッセージを受けたらworkerを再起動する
       // Recreate worker in case of an error
-      console.error("Worker error: " + e.data.error);
+      console.error(`Worker error: ${e.data.error}`);
       worker.terminate();
+      activeWorker = null;
+      resetStartControls();
       afterErrorTermination();
     } else if (e.data.response === "stop") {
       console.log("Worker stopped successfully");
       worker.terminate();
+      activeWorker = null;
+      resetStartControls();
       afterErrorTermination();
     }
   };
 
   // ボタンでworkerをスタートする
-  const startButton = document.getElementById(START_BUTTON_ID);
-  if (startButton == null) throw new Error("Could not find start button");
   const commandStart: VideoWorkerCommand = {
     command: "start",
     canvas: offscreen,
@@ -90,14 +116,23 @@ const startWorker = (
     fps: FPS,
   };
   startButton.onclick = () => {
+    // 2回目以降のstartで再転送するとDataCloneErrorになるため無視する。
+    if (hasStarted) {
+      return;
+    }
+    hasStarted = true;
+    startButton.disabled = true;
+    stopButton.disabled = false;
     worker.postMessage(commandStart, [offscreen, reader]);
   };
 
   // ボタンでworkerをストップする
-  const stopButton = document.getElementById(STOP_BUTTON_ID);
-  if (stopButton == null) throw new Error("Could not find stop button");
   const commandStop: VideoWorkerCommand = { command: "stop" };
   stopButton.onclick = () => {
+    if (!hasStarted) {
+      return;
+    }
+    stopButton.disabled = true;
     worker.postMessage(commandStop);
   };
 
@@ -180,3 +215,11 @@ const main = () => {
 };
 
 document.body.onload = main;
+
+if (import.meta.hot) {
+  // HMR更新時に古いworkerが残らないように明示的に停止する。
+  import.meta.hot.dispose(() => {
+    activeWorker?.terminate();
+    activeWorker = null;
+  });
+}

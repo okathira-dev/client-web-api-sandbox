@@ -1,7 +1,6 @@
-import { createPolySynth } from "../../../audio/audioCore";
-
-import type { ReedName } from "../types";
 import type * as Tone from "tone";
+import { createPolySynth } from "../../../audio/audioCore";
+import type { ReedName } from "../types";
 
 // ストラデラベース用のシンセサイザー設定
 // 各リードのシンセサイザーを作成

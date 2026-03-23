@@ -4,13 +4,13 @@ import { useTranslation } from "react-i18next";
 
 import { useAccordionDisplayModeValue } from "./atoms/accordionDisplay";
 import "./i18n";
+import { SocialIcons } from "../shared/components/SocialIcons";
 import { AccordionDisplaySwitch } from "./features/AccordionDisplaySwitch";
 import { AudioDeviceSelector } from "./features/AudioDeviceSelector";
 import { AudioInitializer } from "./features/AudioInitializer";
 import { LatencyDisplay } from "./features/LatencyDisplay";
 import { LeftHandAccordion } from "./features/LeftHandAccordion";
 import { RightHandAccordion } from "./features/RightHandAccordion";
-import { SocialIcons } from "../shared/components/SocialIcons";
 
 export function App() {
   const { t, i18n } = useTranslation();

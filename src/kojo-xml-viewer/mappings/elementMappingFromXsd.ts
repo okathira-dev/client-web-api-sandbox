@@ -64,7 +64,7 @@ export async function generateElementMappingsFromXsd(
     if (parentCode) {
       // 親要素の日本語名を取得
       const parentMapping = mappings.find((m) => m.elementCode === parentCode);
-      if (parentMapping && parentMapping.label) {
+      if (parentMapping?.label) {
         category = parentMapping.label;
       }
     }

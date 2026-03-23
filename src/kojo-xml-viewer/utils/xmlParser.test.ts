@@ -1,9 +1,7 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
-
-import { parseXml } from "./xmlParser";
-
 import type { XmlNode } from "../types/xml";
+import { parseXml } from "./xmlParser";
 
 const SAMPLE_DIR = path.resolve(
   process.cwd(),

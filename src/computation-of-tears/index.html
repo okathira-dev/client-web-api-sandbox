@@ -70,7 +70,7 @@
     </div>
 
     <div class="instructions" id="instructions">
-      <button class="toggle-button" onclick="toggleInstructions()">×</button>
+      <button type="button" class="toggle-button">×</button>
       <dl class="instructions-content">
         <dt>操作方法</dt>
         <dd>
@@ -91,8 +91,7 @@
             target="_blank"
             rel="noopener noreferrer"
             style="color: #88ccff"
-            >YouTube</a
-          >
+            >YouTube</a>
         </dd>
       </dl>
     </div>
@@ -101,8 +100,11 @@
       // 説明パネルの展開・折りたたみ
       function toggleInstructions() {
         const instructionsEl = document.getElementById("instructions");
-        instructionsEl.classList.toggle("collapsed");
         const toggleButtonEl = document.querySelector(".toggle-button");
+        if (!instructionsEl || !toggleButtonEl) {
+          return;
+        }
+        instructionsEl.classList.toggle("collapsed");
         toggleButtonEl.textContent = instructionsEl.classList.contains(
           "collapsed",
         )
@@ -110,8 +112,12 @@
           : "×";
       }
 
+      document
+        .querySelector(".toggle-button")
+        ?.addEventListener("click", toggleInstructions);
+
       // エラーハンドリング
-      window.addEventListener("error", function (event) {
+      window.addEventListener("error", (event) => {
         console.error("グローバルエラー:", event.error);
         const log = document.getElementById("log");
         if (log) {

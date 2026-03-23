@@ -1,13 +1,12 @@
-import { NOTE_LABELS, EVEN_COL_OFFSET, ODD_COL_OFFSET } from "./consts";
 import { semitoneToFrequency } from "../../../audio/utils";
+import type { BackslashPosition } from "../../../consts/keyboardLayout";
 import {
-  PHYSICAL_KEYBOARD_MAP,
   BACKSLASH_POSITIONS,
   getCodeLabel,
+  PHYSICAL_KEYBOARD_MAP,
 } from "../../../consts/keyboardLayout";
-
-import type { BackslashPosition } from "../../../consts/keyboardLayout";
-import type { StradellaType, StradellaSoundType } from "../types";
+import type { StradellaSoundType, StradellaType } from "../types";
+import { EVEN_COL_OFFSET, NOTE_LABELS, ODD_COL_OFFSET } from "./consts";
 
 /**
  * col から ROOT_NOTE を計算する関数

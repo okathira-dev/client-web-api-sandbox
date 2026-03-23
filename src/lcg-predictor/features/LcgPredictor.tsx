@@ -35,10 +35,17 @@ import {
 // 予測モードを定義
 type PredictionMode = "all-known" | "unknown-c" | "unknown-a-c" | "all-unknown";
 
+type RandValueField = { id: string; value: string };
+
+const createRandField = (value = ""): RandValueField => ({
+  id: crypto.randomUUID(),
+  value,
+});
+
 // プロジェクト内のLCGPredictorコンポーネント
 
 export function LcgPredictor() {
-  const [params, setParams] = useState<LcgParams>(LCG_PRESETS["Custom"]);
+  const [params, setParams] = useState<LcgParams>(LCG_PRESETS.Custom);
   const [customParams, setCustomParams] = useState<LcgParams>({
     a: 0n,
     c: 0n,
@@ -46,16 +53,15 @@ export function LcgPredictor() {
   });
 
   // 個別の乱数入力フィールド用の状態
-  const [randValues, setRandValues] = useState<string[]>([
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-  ]);
-  const [knownValues, setKnownValues] = useState<bigint[]>([]);
-  const [predictedValues, setPredictedValues] = useState<bigint[]>([]);
+  const [randValues, setRandValues] = useState<RandValueField[]>(() =>
+    Array.from({ length: 6 }, () => createRandField()),
+  );
+  const [knownValues, setKnownValues] = useState<
+    { id: string; value: bigint }[]
+  >([]);
+  const [predictedValues, setPredictedValues] = useState<
+    { id: string; value: bigint }[]
+  >([]);
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<boolean>(false);
 
@@ -97,34 +103,32 @@ export function LcgPredictor() {
   };
 
   // 乱数値入力の変更処理
-  const handleRandValueChange = (index: number, value: string) => {
-    const newValues = [...randValues];
-    newValues[index] = value;
-    setRandValues(newValues);
+  const handleRandValueChange = (id: string, value: string) => {
+    setRandValues((prev) =>
+      prev.map((f) => (f.id === id ? { ...f, value } : f)),
+    );
   };
 
   // 乱数入力フィールドの追加
   const addRandValueField = () => {
-    setRandValues([...randValues, ""]);
+    setRandValues((prev) => [...prev, createRandField()]);
   };
 
   // 乱数入力フィールドの削除
-  const removeRandValueField = (index: number) => {
+  const removeRandValueField = (id: string) => {
     if (randValues.length <= 2) {
       setError("少なくとも2つの入力フィールドが必要です");
       return;
     }
-    const newValues = [...randValues];
-    newValues.splice(index, 1);
-    setRandValues(newValues);
+    setRandValues((prev) => prev.filter((f) => f.id !== id));
   };
 
   // 入力値の解析
   const parseRandValues = () => {
     try {
       const values = randValues
-        .filter((value) => value.trim() !== "")
-        .map((value) => BigInt(value.trim()));
+        .filter((f) => f.value.trim() !== "")
+        .map((f) => BigInt(f.value.trim()));
 
       // 必要な最小値の数をチェック
       const minRequiredValues = getMinRequiredValues();
@@ -136,7 +140,9 @@ export function LcgPredictor() {
         return null;
       }
 
-      setKnownValues(values);
+      setKnownValues(
+        values.map((v) => ({ id: crypto.randomUUID(), value: v })),
+      );
       setError("");
       return values;
     } catch {
@@ -328,7 +334,9 @@ export function LcgPredictor() {
           break;
       }
 
-      setPredictedValues(predictions);
+      setPredictedValues(
+        predictions.map((v) => ({ id: crypto.randomUUID(), value: v })),
+      );
       setSuccess(true);
     } catch (e) {
       if (e instanceof Error) {
@@ -490,9 +498,9 @@ export function LcgPredictor() {
           各値を個別の入力欄に入力してください。必要に応じて入力欄を追加できます。
         </Typography>
 
-        {randValues.map((value, index) => (
+        {randValues.map(({ id, value }, index) => (
           <Box
-            key={index}
+            key={id}
             sx={{
               display: "flex",
               alignItems: "center",
@@ -505,12 +513,12 @@ export function LcgPredictor() {
             <TextField
               fullWidth
               value={value}
-              onChange={(e) => handleRandValueChange(index, e.target.value)}
+              onChange={(e) => handleRandValueChange(id, e.target.value)}
               placeholder={`乱数値 ${index + 1}`}
               size="small"
             />
             <IconButton
-              onClick={() => removeRandValueField(index)}
+              onClick={() => removeRandValueField(id)}
               disabled={randValues.length <= 2}
               size="small"
             >
@@ -584,9 +592,9 @@ export function LcgPredictor() {
                 component="div"
                 sx={{ maxHeight: "100px", overflowY: "auto" }}
               >
-                {knownValues.map((v, i) => (
+                {knownValues.map(({ id, value: v }, i) => (
                   <Box
-                    key={i}
+                    key={id}
                     component="span"
                     sx={{ display: "inline-block", mr: 1 }}
                   >
@@ -604,9 +612,9 @@ export function LcgPredictor() {
                 component="div"
                 sx={{ maxHeight: "100px", overflowY: "auto" }}
               >
-                {predictedValues.map((v, i) => (
+                {predictedValues.map(({ id, value: v }, i) => (
                   <Box
-                    key={i}
+                    key={id}
                     component="span"
                     sx={{ display: "inline-block", mr: 1 }}
                   >

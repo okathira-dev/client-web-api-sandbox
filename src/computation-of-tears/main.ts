@@ -1,14 +1,12 @@
 // Three.jsのモジュールをインポート
 import * as THREE from "three";
+import type { Font } from "three/addons/loaders/FontLoader.js";
 // TextGeometryとFontLoaderのインポート
 import { FontLoader } from "three/addons/loaders/FontLoader.js";
-
 import { BEAT_TIME } from "./consts/animation";
 import { textLineScript } from "./consts/textLineScript";
 import NotoSerifJPBold from "./public/font/Noto_Serif_JP_Bold.json?url";
 import { TextLine } from "./TextLine";
-
-import type { Font } from "three/addons/loaders/FontLoader.js";
 
 /**
  * デバッグモード
@@ -470,7 +468,9 @@ const init = async (): Promise<{ dispose: () => void }> => {
       cleanup();
 
       // テキストラインのリソース解放
-      textLineInstances.forEach((textLine) => textLine.dispose());
+      textLineInstances.forEach((textLine) => {
+        textLine.dispose();
+      });
 
       // グリッドヘルパーを削除
       if (gridHelper) {
@@ -485,7 +485,9 @@ const init = async (): Promise<{ dispose: () => void }> => {
         if (line.material instanceof THREE.Material) {
           line.material.dispose();
         } else if (Array.isArray(line.material)) {
-          line.material.forEach((mat: THREE.Material) => mat.dispose());
+          line.material.forEach((mat: THREE.Material) => {
+            mat.dispose();
+          });
         }
       });
       gridLines.length = 0; // 配列をクリア

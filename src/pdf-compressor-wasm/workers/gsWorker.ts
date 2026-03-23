@@ -1,9 +1,13 @@
 // Ghostscript を Web Worker 内で実行し、print/printErr をリアルタイムに転送するワーカー。
 
+// TODO: @okathira/ghostpdl-wasm の dist/gs.js が Node 用分岐で `import("module")` を含むため、
+// Vite 8 本番ビルドで「Module "module" has been externalized for browser compatibility」警告が出る。
+// ブラウザ実行では該当分岐に入らないことが多く動作はするが、警告解消と将来の互換は upstream（ブラウザ専用ビルドや package exports の整理）待ち。
+// 参考: https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility
+// リポジトリ: https://github.com/okathira-dev/ghostpdl-wasm
+import type { GhostscriptModule } from "@okathira/ghostpdl-wasm";
 import gsFactory from "@okathira/ghostpdl-wasm";
 import wasmUrl from "@okathira/ghostpdl-wasm/gs.wasm?url"; // Vite に wasm アセットを認識させるため URL import を使う
-
-import type { GhostscriptModule } from "@okathira/ghostpdl-wasm";
 
 // 本来であれば compilerOptions.lib に "WebWorker" を入れれば自動的に型が適応されるのではないかと思うが、
 // "@types/dom-mediacapture-transform" が効かなくなってしまうため、ここで宣言する。
@@ -48,7 +52,7 @@ async function loadModule() {
   return modulePromise;
 }
 
-onmessage = async (ev: MessageEvent<WorkerMessageIn>) => {
+self.addEventListener("message", async (ev: MessageEvent<WorkerMessageIn>) => {
   const msg = ev.data;
   if (msg.type !== "run") return;
 
@@ -98,4 +102,4 @@ onmessage = async (ev: MessageEvent<WorkerMessageIn>) => {
       error: String(e),
     });
   }
-};
+});

@@ -2,10 +2,10 @@ import { XMLParser } from "fast-xml-parser";
 
 import type {
   ParsedXml,
-  XmlNode,
-  XmlDeclaration,
   StylesheetDeclaration,
   TegElementAttributes,
+  XmlDeclaration,
+  XmlNode,
   XmlSignature,
 } from "../types/xml";
 

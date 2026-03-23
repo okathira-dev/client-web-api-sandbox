@@ -1,11 +1,11 @@
 import { LCG } from "./lcg";
 import {
-  predictNextValueWithKnownParams,
-  predictNextValueFromSequenceWithKnownParams,
   calculateUnknownIncrement,
   calculateUnknownMultiplierAndIncrement,
   calculateUnknownParams,
   predictNextValueFromSequence,
+  predictNextValueFromSequenceWithKnownParams,
+  predictNextValueWithKnownParams,
 } from "./predictor";
 
 /**

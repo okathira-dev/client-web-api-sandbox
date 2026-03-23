@@ -5,7 +5,7 @@ import {
   STRADELLA_REGISTER_PRESETS,
 } from "../consts";
 
-import type { StradellaRegisterName, StradellaReedStates } from "../types";
+import type { StradellaReedStates, StradellaRegisterName } from "../types";
 
 // 現在選択中のレジスタープリセット
 const stradellaRegisterAtom = atom<StradellaRegisterName>(

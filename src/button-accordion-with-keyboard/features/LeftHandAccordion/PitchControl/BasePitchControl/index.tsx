@@ -3,18 +3,16 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import type { FC } from "react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-
-import { hzToCent, centToHz } from "../../../../audio/utils";
+import type { PitchUnit } from "../../../../audio/utils";
+import { centToHz, hzToCent } from "../../../../audio/utils";
 import {
+  useAdaptAllReedPitches,
   useBaseReedPitchValue,
   useSetBaseReedPitch,
-  useAdaptAllReedPitches,
 } from "../../atoms/pitch";
-
-import type { PitchUnit } from "../../../../audio/utils";
-import type { FC } from "react";
 
 // ピッチ単位に応じたステップ値を返す
 const getPitchLimits = (unit: PitchUnit) => {
@@ -50,7 +48,7 @@ export const BasePitchControl: FC = () => {
     setInputValue(value);
     const numValue = parseFloat(value);
 
-    if (!isNaN(numValue)) {
+    if (!Number.isNaN(numValue)) {
       if (pitchUnit === "hz") {
         const targetHz = numValue;
         const newCentValue = hzToCent(targetHz);

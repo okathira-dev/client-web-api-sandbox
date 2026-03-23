@@ -1,10 +1,8 @@
 import Slider from "@mui/material/Slider";
 import Typography from "@mui/material/Typography";
-import { useTranslation } from "react-i18next";
-
-import { useSetVolume, useVolumeValue } from "./atoms";
-
 import type { FC } from "react";
+import { useTranslation } from "react-i18next";
+import { useSetVolume, useVolumeValue } from "./atoms";
 
 export const VolumeControl: FC = () => {
   const { t } = useTranslation();

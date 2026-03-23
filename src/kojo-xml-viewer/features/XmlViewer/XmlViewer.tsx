@@ -1,12 +1,10 @@
-import { Box, Paper, Tabs, Tab } from "@mui/material";
+import { Box, Paper, Tab, Tabs } from "@mui/material";
 import { useState } from "react";
 import XMLViewer from "react-xml-viewer";
-
+import type { ParsedXml } from "../../types/xml";
+import { parseXml } from "../../utils/xmlParser";
 import { FileUploader } from "./components/FileUploader";
 import { FormRenderer } from "./components/FormRenderer";
-import { parseXml } from "../../utils/xmlParser";
-
-import type { ParsedXml } from "../../types/xml";
 
 const TAB_IDS = {
   XML: "viewer-tab-xml",
@@ -95,7 +93,7 @@ export function XmlViewer() {
             tabId={TAB_IDS.FORM}
             tabpanelId={TABPANEL_IDS.FORM}
           >
-            {parsedXml && parsedXml.isValid ? (
+            {parsedXml?.isValid ? (
               <FormRenderer xmlNode={parsedXml.root} parsedXml={parsedXml} />
             ) : (
               <Box sx={{ color: "error.main", mt: 2 }}>

@@ -1,11 +1,10 @@
 import * as THREE from "three";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
-
-import { BEAT_TIME } from "./consts/animation";
-import { easingFuncList } from "./utils/easings";
-
-import type { TextLine as TextLineType, AnimParam, Letter } from "./types";
 import type { Font } from "three/addons/loaders/FontLoader.js";
+import { BEAT_TIME } from "./consts/animation";
+
+import type { AnimParam, Letter, TextLine as TextLineType } from "./types";
+import { easingFuncList } from "./utils/easings";
 
 const DEFAULT_FONT_SIZE = 11;
 const SPACING_X = 60; // 文字間隔
@@ -205,7 +204,9 @@ export class TextLine {
     this.meshes.forEach((mesh) => {
       mesh.geometry.dispose();
       if (Array.isArray(mesh.material)) {
-        mesh.material.forEach((m) => m.dispose());
+        mesh.material.forEach((m) => {
+          m.dispose();
+        });
       } else {
         mesh.material.dispose();
       }

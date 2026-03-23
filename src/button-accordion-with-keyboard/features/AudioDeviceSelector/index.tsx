@@ -1,3 +1,4 @@
+import type { SelectChangeEvent } from "@mui/material";
 import {
   Alert,
   FormControl,
@@ -10,14 +11,11 @@ import {
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import * as Tone from "tone";
-
 import {
   useAudioDeviceError,
   useAudioDevices,
   useSetAudioDeviceError,
 } from "./atoms";
-
-import type { SelectChangeEvent } from "@mui/material";
 
 // Tone.js の型定義を拡張して、ネイティブのAudioContext に setSinkId メソッドを追加
 type ExtendedRawContext = AudioContext & {

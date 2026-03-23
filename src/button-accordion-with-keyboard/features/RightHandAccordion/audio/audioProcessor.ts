@@ -1,7 +1,6 @@
-import { createPolySynth } from "../../../audio/audioCore";
-
-import type { ReedName } from "../consts";
 import type * as Tone from "tone";
+import { createPolySynth } from "../../../audio/audioCore";
+import type { ReedName } from "../consts";
 
 type Synths = Record<ReedName, Tone.PolySynth>;
 

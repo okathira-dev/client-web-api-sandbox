@@ -2,8 +2,8 @@
  * 仕様書データの読み込み
  */
 
-import { loadXsdFile, parseXsdElement } from "./parsers/xsdParser";
 import { generateElementMappingsFromXsd } from "../mappings/elementMappingFromXsd";
+import { loadXsdFile, parseXsdElement } from "./parsers/xsdParser";
 
 import type {
   FormFieldItem,
@@ -35,12 +35,12 @@ function extractMetadataFromXsd(
     // version：1.1
     // Date：2020年08月31日
     const formNameMatch = text.match(/様式名[：:]\s*(.+)/);
-    if (formNameMatch && formNameMatch[1]) {
+    if (formNameMatch?.[1]) {
       formName = formNameMatch[1].trim();
     }
 
     const versionMatch = text.match(/version[：:]\s*(.+)/);
-    if (versionMatch && versionMatch[1]) {
+    if (versionMatch?.[1]) {
       version = versionMatch[1].trim();
     }
   }

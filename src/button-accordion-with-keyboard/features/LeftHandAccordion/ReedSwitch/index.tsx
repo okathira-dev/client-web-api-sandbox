@@ -1,16 +1,14 @@
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Typography from "@mui/material/Typography";
+import type { FC, MouseEvent } from "react";
 import { useTranslation } from "react-i18next";
-
 import { REED_LABEL_MAP_SHORT } from "../../LeftHandAccordion/consts";
 import {
-  useStradellaReedStatesValue,
   useSetStradellaReedStates,
+  useStradellaReedStatesValue,
 } from "../atoms/register";
-
 import type { ReedName, StradellaSoundType } from "../types";
-import type { FC, MouseEvent } from "react";
 
 const SOUND_TYPES: StradellaSoundType[] = ["chord", "bassNote"];
 

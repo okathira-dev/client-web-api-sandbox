@@ -1,7 +1,7 @@
 import type {
   ReedName,
-  StradellaRegisterName,
   StradellaReedStates,
+  StradellaRegisterName,
 } from "./types";
 
 // リードとそのラベルの定義（フルネーム）

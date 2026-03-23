@@ -16,21 +16,19 @@ import {
 } from "@mui/material";
 import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
 import { TreeItem } from "@mui/x-tree-view/TreeItem";
+import type { JSX, ReactNode, SyntheticEvent } from "react";
 import { useEffect, useMemo, useState } from "react";
-
-import { buildFormData, buildFormTree } from "./formDataBuilder";
 import { getMappingsByTeg } from "../../../mappings/elementMapping";
 import { generateElementMappingsFromXsd } from "../../../mappings/elementMappingFromXsd";
 import { AVAILABLE_TEG_CODES } from "../../../specs/getAvailableTegCodes";
-import { loadKubunMappingsFromProperty } from "../../../specs/parsers/propertyParser";
-import { loadGeneralElementInfo } from "../../../specs/parsers/xsdParser";
-
-import type { FormTreeNode } from "./formDataBuilder";
 import type { KubunMapping } from "../../../specs/parsers/propertyParser";
+import { loadKubunMappingsFromProperty } from "../../../specs/parsers/propertyParser";
 import type { GeneralElementInfo } from "../../../specs/parsers/xsdParser";
+import { loadGeneralElementInfo } from "../../../specs/parsers/xsdParser";
 import type { ElementMapping } from "../../../specs/types";
-import type { XmlNode, ParsedXml } from "../../../types/xml";
-import type { ReactNode, SyntheticEvent, JSX } from "react";
+import type { ParsedXml, XmlNode } from "../../../types/xml";
+import type { FormTreeNode } from "./formDataBuilder";
+import { buildFormData, buildFormTree } from "./formDataBuilder";
 
 type AvailableTegCode = (typeof AVAILABLE_TEG_CODES)[number];
 
@@ -72,7 +70,7 @@ function extractTegCode(node: XmlNode): string | undefined {
 
   // 属性から取得を試みる
   if (node.attributes) {
-    const tegAttr = node.attributes["teg"] || node.attributes["TEG"];
+    const tegAttr = node.attributes.teg || node.attributes.TEG;
     if (isAvailableTegCode(tegAttr)) {
       return tegAttr;
     }
@@ -131,8 +129,8 @@ function RootAttributesSection({
       </Typography>
       <Table>
         <TableBody>
-          {items.map((item, index) => (
-            <TableRow key={index}>
+          {items.map((item) => (
+            <TableRow key={item.label}>
               <TableCell
                 sx={{
                   fontWeight: "medium",

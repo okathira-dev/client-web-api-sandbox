@@ -1,10 +1,8 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
-
-import { combineDateValues, extractElementValues } from "./formDataBuilder";
-import { parseXml } from "../../../utils/xmlParser";
-
 import type { XmlNode } from "../../../types/xml";
+import { parseXml } from "../../../utils/xmlParser";
+import { combineDateValues, extractElementValues } from "./formDataBuilder";
 
 const SAMPLE_DIR = path.resolve(
   process.cwd(),

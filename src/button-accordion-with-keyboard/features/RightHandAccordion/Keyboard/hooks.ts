@@ -1,12 +1,12 @@
-import { useRef, useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 import {
-  useReedActivation,
+  usePlayReedH1,
   usePlayReedL1,
   usePlayReedM1,
   usePlayReedM2,
   usePlayReedM3,
-  usePlayReedH1,
+  useReedActivation,
 } from "../atoms/reeds";
 
 // TODO: 同じ周波数の音が複数なっている場合に、適切に処理できていない。

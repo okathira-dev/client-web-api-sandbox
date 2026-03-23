@@ -29,64 +29,47 @@ async function loadPropertyFile(tegCode: string): Promise<Document | null> {
       );
       const propertyUrl = propertyPath.href;
 
-      let xmlText: string;
-      let errorPath: string;
-
-      // file://プロトコルの場合（テスト環境）はファイルシステムから読み込む
-      if (propertyPath.protocol === "file:") {
-        // Node.js環境: ファイルシステムから読み込む
-        const { fileURLToPath } = await import("node:url");
-        const { readFileSync } = await import("node:fs");
-        const filePath = fileURLToPath(propertyPath);
-        errorPath = filePath;
-        try {
-          xmlText = readFileSync(filePath, "utf-8");
-        } catch (_error) {
+      // Vite 8のクライアントバンドルでNode組み込み警告を出さないため、
+      // ここでは実行環境を分岐せずfetch経路に統一する（file://はJest setupで補完）。
+      const errorPath = propertyUrl;
+      if (process.env.NODE_ENV === "development") {
+        console.debug(
+          `[propertyParser] Attempting to load property file: ${propertyUrl}`,
+        );
+      }
+      const response = await fetch(propertyUrl);
+      if (!response.ok) {
+        if (response.status === 404) {
           // ファイルが見つからない場合は次のバージョンを試す
-          continue;
-        }
-      } else {
-        // ブラウザ環境: fetchを使用
-        errorPath = propertyUrl;
-        if (process.env.NODE_ENV === "development") {
-          console.debug(
-            `[propertyParser] Attempting to load property file: ${propertyUrl}`,
-          );
-        }
-        const response = await fetch(propertyUrl);
-        if (!response.ok) {
-          if (response.status === 404) {
-            // ファイルが見つからない場合は次のバージョンを試す
-            if (process.env.NODE_ENV === "development") {
-              console.debug(
-                `[propertyParser] Property file not found (404): ${propertyUrl}`,
-              );
-            }
-            continue;
-          }
-          // 404以外のエラーは警告を出すが、次のバージョンを試す
           if (process.env.NODE_ENV === "development") {
-            console.warn(
-              `[propertyParser] Failed to load property file: ${propertyUrl} (${response.status} ${response.statusText})`,
+            console.debug(
+              `[propertyParser] Property file not found (404): ${propertyUrl}`,
             );
           }
           continue;
         }
-        xmlText = await response.text();
-        // 読み込んだファイルが正しいXMLファイルか確認（report要素が含まれているか）
-        if (!xmlText.includes("<report") && !xmlText.includes("<DatDefine")) {
-          if (process.env.NODE_ENV === "development") {
-            console.warn(
-              `[propertyParser] Loaded file does not appear to be a valid property file: ${propertyUrl} (first 200 chars: ${xmlText.substring(0, 200)})`,
-            );
-          }
-          continue; // 次のバージョンを試す
-        }
+        // 404以外のエラーは警告を出すが、次のバージョンを試す
         if (process.env.NODE_ENV === "development") {
-          console.debug(
-            `[propertyParser] Successfully loaded property file: ${propertyUrl} (${xmlText.length} bytes)`,
+          console.warn(
+            `[propertyParser] Failed to load property file: ${propertyUrl} (${response.status} ${response.statusText})`,
           );
         }
+        continue;
+      }
+      const xmlText = await response.text();
+      // 読み込んだファイルが正しいXMLファイルか確認（report要素が含まれているか）
+      if (!xmlText.includes("<report") && !xmlText.includes("<DatDefine")) {
+        if (process.env.NODE_ENV === "development") {
+          console.warn(
+            `[propertyParser] Loaded file does not appear to be a valid property file: ${propertyUrl} (first 200 chars: ${xmlText.substring(0, 200)})`,
+          );
+        }
+        continue; // 次のバージョンを試す
+      }
+      if (process.env.NODE_ENV === "development") {
+        console.debug(
+          `[propertyParser] Successfully loaded property file: ${propertyUrl} (${xmlText.length} bytes)`,
+        );
       }
 
       const parser = new DOMParser();
@@ -125,7 +108,6 @@ async function loadPropertyFile(tegCode: string): Promise<Document | null> {
           err,
         );
       }
-      continue;
     }
   }
 
@@ -248,7 +230,7 @@ export async function loadKubunMappingsFromProperty(
     ) {
       // refcolがkubun_CDのカラム番号と一致するか確認
       const kubunCdColumns = kubunCdItems.get(parent);
-      if (kubunCdColumns && kubunCdColumns.has(refcol)) {
+      if (kubunCdColumns?.has(refcol)) {
         // マッピングのキー: {TEGコード}_{親要素ID}_{kubun_CDの値}
         const key = `${reportId}_${parent}_${refval}`;
         mapping.set(key, value);

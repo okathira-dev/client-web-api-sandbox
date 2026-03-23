@@ -4,14 +4,12 @@ import QueueMusicIcon from "@mui/icons-material/QueueMusic";
 import TuneIcon from "@mui/icons-material/Tune";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import { Box } from "@mui/material";
-
+import type { ElementType, ReactNode } from "react";
 import { Keyboard } from "./Keyboard";
 import { PitchControl } from "./PitchControl";
 import { ReedSwitch } from "./ReedSwitch";
 import { RegisterSwitch } from "./RegisterSwitch";
 import { VolumeControl } from "./VolumeControl";
-
-import type { ElementType, ReactNode } from "react";
 
 type ComponentWithIconProps = {
   Icon: ElementType;
