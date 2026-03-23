@@ -2,7 +2,7 @@
 export default {
   testEnvironment: "node",
   // parser実装をfetch統一にしたため、Jestではfile://のみsetupで補完する。
-  setupFiles: ["<rootDir>/jest.setup.cjs"],
+  setupFiles: ["<rootDir>/jest.setup.ts"],
   transform: {
     "^.+.tsx?$": [
       "ts-jest",

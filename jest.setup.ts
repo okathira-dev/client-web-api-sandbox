@@ -1,15 +1,14 @@
-const { extname } = require("node:path");
-const { readFileSync } = require("node:fs");
-const { fileURLToPath } = require("node:url");
+import { readFileSync } from "node:fs";
+import { extname } from "node:path";
+import { fileURLToPath } from "node:url";
 
-// Jest setupはCJSとして読み込まれるため、requireで実装する。
 // parser側は「常にfetchで読む」方針なので、ここでfile://だけを補完する。
 const originalFetch =
   typeof globalThis.fetch === "function"
     ? globalThis.fetch.bind(globalThis)
     : null;
 
-const toRequestUrl = (input) => {
+const toRequestUrl = (input: unknown): string | null => {
   if (typeof input === "string") {
     return input;
   }
@@ -22,7 +21,7 @@ const toRequestUrl = (input) => {
   return null;
 };
 
-const getContentType = (filePath) => {
+const getContentType = (filePath: string): string => {
   switch (extname(filePath).toLowerCase()) {
     case ".xml":
     case ".xsd":
@@ -46,14 +45,14 @@ globalThis.fetch = async (input, init) => {
   const filePath = fileURLToPath(fileUrl);
 
   try {
-    const body = readFileSync(filePath);
-    return new Response(body, {
+    const bodyText = readFileSync(filePath, "utf-8");
+    return new Response(bodyText, {
       status: 200,
       headers: {
         "Content-Type": getContentType(filePath),
       },
     });
-  } catch (_error) {
+  } catch {
     return new Response(null, {
       status: 404,
       statusText: "Not Found",
