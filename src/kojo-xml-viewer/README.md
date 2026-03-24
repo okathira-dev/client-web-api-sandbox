@@ -55,7 +55,7 @@
 - TypeScript 5.7.3
 - MUI 6.4.5
 - fast-xml-parser（XMLパース）
-- @xmldom/xmldom（XSDパース）
+- [@xmldom/xmldom](https://www.npmjs.com/package/@xmldom/xmldom)（XSD・Property の XML パース。[xmldom 公式 README](https://github.com/xmldom/xmldom#readme) では **0.7.0 以降は `xmldom` ではなく `@xmldom/xmldom` として npm 公開**すると明記されており、旧名での公開は続けられない旨が [issue #271](https://github.com/xmldom/xmldom/issues/271) にあります）
 - xpath（XPathクエリ）
 
 ## データソース

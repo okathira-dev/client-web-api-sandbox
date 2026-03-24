@@ -2,7 +2,12 @@
   "$schema": "https://biomejs.dev/schemas/2.4.8/schema.json",
   "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
   "files": {
-    "includes": ["**", "!!**/dist", "!**/Noto_Serif_JP_Bold.json"]
+    "includes": [
+      "**",
+      "!!**/dist",
+      "!**/coverage",
+      "!**/Noto_Serif_JP_Bold.json"
+    ]
   },
   "formatter": {
     "enabled": true,

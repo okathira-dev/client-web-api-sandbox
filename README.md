@@ -6,6 +6,12 @@
 npm run dev
 ```
 
+## `package.json` の `overrides`（`fast-xml-parser`）
+
+[`react-xml-viewer`](https://www.npmjs.com/package/react-xml-viewer) は自身の依存として **古い `fast-xml-parser`**（例: 5.4.x）を指定している一方、本リポジトリでは [`kojo-xml-viewer`](./src/kojo-xml-viewer) の自前パース用にルートで **`fast-xml-parser@^5.5.9`** を直接依存している。
+
+[`overrides`](https://docs.npmjs.com/cli/v10/configuring-npm/package-json#overrides) で `react-xml-viewer` 配下に入る `fast-xml-parser` の解決を **5.5.9 に固定**し、ツリー内の二重バージョンと `npm audit` 上の扱いをルートの直接依存と揃えている。`overrides` を外す・バージョンを変える場合は `package-lock.json` と監査結果を確認すること。
+
 ## プロジェクトフォルダ
 
 ### [./src/shared](./src/shared)
