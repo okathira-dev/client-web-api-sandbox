@@ -2,6 +2,7 @@
  * XSDパーサー
  */
 
+import type { Document, Element } from "@xmldom/xmldom";
 import { DOMParser } from "@xmldom/xmldom";
 
 /**

@@ -2,6 +2,7 @@
  * XSDパーサーのテスト
  */
 
+import type { Element as XmlElement } from "@xmldom/xmldom";
 import {
   loadGeneralElementInfo,
   loadGeneralXsd,
@@ -15,13 +16,20 @@ describe("xsdParser", () => {
     it("XSDファイルを読み込んでDOMに変換できること", async () => {
       const doc = await loadXsdFile("TEG800");
       expect(doc).toBeDefined();
-      expect(doc.documentElement).toBeDefined();
-      expect(doc.documentElement.nodeName).toBe("xsd:schema");
+      const root = doc.documentElement;
+      expect(root).toBeDefined();
+      if (!root) {
+        throw new Error("documentElement is null");
+      }
+      expect(root.nodeName).toBe("xsd:schema");
     });
 
     it("名前空間が正しく処理されること", async () => {
       const doc = await loadXsdFile("TEG800");
       const schema = doc.documentElement;
+      if (!schema) {
+        throw new Error("documentElement is null");
+      }
       expect(schema.getAttribute("targetNamespace")).toBe(
         "http://xml.e-tax.nta.go.jp/XSD/kyotsu",
       );
@@ -76,9 +84,9 @@ describe("xsdParser", () => {
       );
 
       // WCA00000要素を探す
-      let wcaElement: Element | null = null;
+      let wcaElement: XmlElement | null = null;
       for (let i = 0; i < elements.length; i++) {
-        const element = elements[i];
+        const element = elements.item(i) as XmlElement | null;
         if (element && element.getAttribute("name") === "WCA00000") {
           wcaElement = element;
           break;
@@ -101,9 +109,9 @@ describe("xsdParser", () => {
       );
 
       // WCB00000要素（minOccurs="0"）を探す
-      let wcbElement: Element | null = null;
+      let wcbElement: XmlElement | null = null;
       for (let i = 0; i < elements.length; i++) {
-        const element = elements[i];
+        const element = elements.item(i) as XmlElement | null;
         if (element && element.getAttribute("name") === "WCB00000") {
           wcbElement = element;
           break;
@@ -119,9 +127,9 @@ describe("xsdParser", () => {
       expect(elementInfo.isRequired).toBe(false);
 
       // WCE00000要素（maxOccurs="100"）を探す
-      let wceElement: Element | null = null;
+      let wceElement: XmlElement | null = null;
       for (let i = 0; i < elements.length; i++) {
-        const element = elements[i];
+        const element = elements.item(i) as XmlElement | null;
         if (element && element.getAttribute("name") === "WCE00000") {
           wceElement = element;
           break;
@@ -144,20 +152,20 @@ describe("xsdParser", () => {
       );
 
       // WCA00000要素を探す
-      let wcaElement: Element | null = null;
+      let wcaForType: XmlElement | null = null;
       for (let i = 0; i < elements.length; i++) {
-        const element = elements[i];
+        const element = elements.item(i) as XmlElement | null;
         if (element && element.getAttribute("name") === "WCA00000") {
-          wcaElement = element;
+          wcaForType = element;
           break;
         }
       }
 
-      expect(wcaElement).toBeDefined();
-      if (!wcaElement) {
+      expect(wcaForType).toBeDefined();
+      if (!wcaForType) {
         throw new Error("wcaElement is undefined");
       }
-      const elementInfo = parseXsdElement(wcaElement);
+      const elementInfo = parseXsdElement(wcaForType);
       expect(elementInfo.type).toBe("gen:name");
     });
 
@@ -223,13 +231,20 @@ describe("xsdParser", () => {
     it("General.xsdファイルを読み込んでDOMに変換できること", async () => {
       const doc = await loadGeneralXsd();
       expect(doc).toBeDefined();
-      expect(doc.documentElement).toBeDefined();
-      expect(doc.documentElement.nodeName).toBe("xsd:schema");
+      const root = doc.documentElement;
+      expect(root).toBeDefined();
+      if (!root) {
+        throw new Error("documentElement is null");
+      }
+      expect(root.nodeName).toBe("xsd:schema");
     });
 
     it("名前空間が正しく処理されること", async () => {
       const doc = await loadGeneralXsd();
       const schema = doc.documentElement;
+      if (!schema) {
+        throw new Error("documentElement is null");
+      }
       expect(schema.getAttribute("targetNamespace")).toBe(
         "http://xml.e-tax.nta.go.jp/XSD/general",
       );

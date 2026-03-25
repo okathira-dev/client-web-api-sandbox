@@ -14,7 +14,14 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "daily"
+    # open-pull-requests-limit:
+    # - 0 にするとバージョン更新を無効化できる（公式: Disabling Dependabot version updates）
+    #   https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuring-dependabot-version-updates#disabling-dependabot-version-updates
+    # - 大きな整数で実質的にオープン PR 上限を外せる（公式: open-pull-requests-limit）
+    #   https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file#open-pull-requests-limit
+    open-pull-requests-limit: 1000
+    versioning-strategy: "increase"
     groups:
       # react / react-dom / @types/* を同一 PR に（旧 #264 + #261 の分離を解消）
       react-core:
@@ -41,13 +48,6 @@ updates:
           - "i18next"
           - "i18next-*"
           - "react-i18next"
-      eslint:
-        patterns:
-          - "eslint"
-          - "eslint-*"
-          - "@eslint/*"
-          - "@typescript-eslint/*"
-          - "typescript-eslint"
       jest:
         patterns:
           - "jest"
@@ -55,10 +55,16 @@ updates:
           - "ts-jest-*"
           - "@types/jest"
           - "@testing-library/*"
+      biome:
+        patterns:
+          - "@biomejs/biome"
       markuplint:
         patterns:
           - "markuplint"
           - "@markuplint/*"
+      typescript:
+        patterns:
+          - "typescript"
       three:
         patterns:
           - "three"

@@ -3,6 +3,7 @@
  * kubun_CDとkubun_NMの対応付け情報を抽出
  */
 
+import type { Document } from "@xmldom/xmldom";
 import { DOMParser } from "@xmldom/xmldom";
 
 /**

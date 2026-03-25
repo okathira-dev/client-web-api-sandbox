@@ -61,7 +61,10 @@ initial_prompt: ""
 project_name: "client-web-api-sandbox"
 
 # list of tools to include that would otherwise be disabled (particularly optional tools that are disabled by default)
-included_optional_tools: []
+included_optional_tools:
+- think_about_collected_information
+- think_about_task_adherence
+- think_about_whether_you_are_done
 
 # fixed set of tools to use as the base tool set (if non-empty), replacing Serena's default set of tools.
 # This cannot be combined with non-empty excluded_tools or included_optional_tools.

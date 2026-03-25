@@ -2,6 +2,7 @@
  * 仕様書データの読み込み
  */
 
+import type { Document } from "@xmldom/xmldom";
 import { generateElementMappingsFromXsd } from "../mappings/elementMappingFromXsd";
 import { loadXsdFile, parseXsdElement } from "./parsers/xsdParser";
 
@@ -147,6 +148,9 @@ export async function loadTegSpecificationFromXsd(
 
   // 名前空間を取得
   const schema = doc.documentElement;
+  if (!schema) {
+    throw new Error(`XSDにルート要素がありません: ${tegCode}`);
+  }
   const namespace = schema.getAttribute("targetNamespace") || undefined;
 
   // XML構造設計書のメタデータ
