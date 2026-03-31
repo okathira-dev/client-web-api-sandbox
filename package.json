@@ -51,7 +51,7 @@
     "xpath": "^0.0.34"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.4.9",
+    "@biomejs/biome": "2.4.10",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@markuplint/jsx-parser": "^4.7.23",
