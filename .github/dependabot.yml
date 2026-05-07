@@ -22,6 +22,10 @@ updates:
     #   https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file#open-pull-requests-limit
     open-pull-requests-limit: 1000
     versioning-strategy: "increase"
+    cooldown:
+      default-days: 3
+      include:
+        - "*"
     groups:
       # react / react-dom / @types/* を同一 PR に（旧 #264 + #261 の分離を解消）
       react-core:
@@ -69,3 +73,21 @@ updates:
         patterns:
           - "three"
           - "@types/three"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 1000
+    cooldown:
+      default-days: 3
+      include:
+        - "*"
+    groups:
+      github-actions-core:
+        patterns:
+          - "actions/*"
+      github-actions-third-party:
+        patterns:
+          - "flatt-security/*"
+          - "dependabot/*"

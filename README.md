@@ -6,6 +6,17 @@
 npm run dev
 ```
 
+## サプライチェーン対策
+
+- GitHub Actions の外部 `uses:` はタグではなく **コミット SHA（40 桁）** で固定する。
+- CI の依存取得は [`.github/actions/setup-node-npm`](./.github/actions/setup-node-npm) に集約し、その中で [Takumi Guard（匿名モード）](https://github.com/flatt-security/setup-takumi-guard-npm) を有効化したあと `npm ci` を実行する。
+- Dependabot は [`.github/dependabot.yml`](./.github/dependabot.yml) で `npm` と `github-actions` の両方に `cooldown: 3 days` を設定している。
+- Node / npm の想定下限は `package.json` の `engines` を参照する（CI の `actions/setup-node` は `node-version-file: package.json` を使用）。
+
+### Actions の更新ルール
+
+- `uses: owner/repo@<40桁SHA>` のみで指定する。
+
 ## `package.json` の `overrides`（`fast-xml-parser`）
 
 [`react-xml-viewer`](https://www.npmjs.com/package/react-xml-viewer) は自身の依存として **古い `fast-xml-parser`**（例: 5.4.x）を指定している一方、本リポジトリでは [`kojo-xml-viewer`](./src/kojo-xml-viewer) の自前パース用にルートで **`fast-xml-parser@^5.5.9`** を直接依存している。
