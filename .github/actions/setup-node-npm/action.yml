@@ -1,0 +1,17 @@
+name: Setup Node and npm
+description: Enable Takumi Guard (anonymous), install Node from package.json engines, and run npm ci.
+runs:
+  using: composite
+  steps:
+    - name: Setup Takumi Guard registry (anonymous)
+      uses: flatt-security/setup-takumi-guard-npm@8f53b50568e4466f2d92504f349c05b9ffcb8b59
+
+    - name: Setup Node.js
+      uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
+      with:
+        node-version-file: package.json
+        cache: npm
+
+    - name: Install dependencies
+      shell: bash
+      run: npm ci
