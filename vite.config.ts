@@ -10,6 +10,10 @@ export default defineConfig({
   root,
   appType: "mpa", // マルチページアプリケーションとして設定（SPAフォールバックを無効化）。kojo-xml-viewerで404の反応を見る必要があるため。
   plugins: [react()],
+  optimizeDeps: {
+    // quietjs-bundle は CJS (module.exports) のため事前バンドルで ESM 化が必要
+    include: ["quietjs-bundle"],
+  },
   worker: {
     // ビルド時にワーカーを ES モジュール形式で出力（コードスプリット互換）
     format: "es",
@@ -47,6 +51,7 @@ export default defineConfig({
           "index.html",
         ),
         "kojo-xml-viewer": resolve(root, "kojo-xml-viewer", "index.html"),
+        "audio-tone-lab": resolve(root, "audio-tone-lab", "index.html"),
       },
     },
   },
