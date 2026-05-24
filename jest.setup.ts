@@ -34,7 +34,7 @@ const getContentType = (filePath: string): string => {
 globalThis.fetch = async (input, init) => {
   const requestUrl = toRequestUrl(input);
   // file:// 以外は既存fetchに委譲し、副作用を最小化する。
-  if (!requestUrl || !requestUrl.startsWith("file://")) {
+  if (!requestUrl?.startsWith("file://")) {
     if (!originalFetch) {
       throw new Error("globalThis.fetch is not available in this environment.");
     }
