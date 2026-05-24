@@ -82,7 +82,7 @@
       "markuplint"
     ],
     "src/**/*": [
-      "biome check"
+      "biome check --no-errors-on-unmatched"
     ]
   },
   "volta": {
