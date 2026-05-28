@@ -5,25 +5,22 @@
 
 ## 現在のタスク
 
-### Math.random 推測アプリ — 仕様ドキュメント（更新済）
+### Math.random 推測アプリ — アルゴリズム調査・実装計画ドキュメント
 
-- [x] 推論 / デモの 2 モード、系列種別は単一選択
-- [x] 絞り込み状況パネル（観測の追加・編集・削除でリアルタイム、理論近似あり）
-- [x] 利用アルゴリズムはモデル一覧から選択（V8 は Node/Chromium が同一なら統合）
-- [x] デモで `Math.random()` 生成 + 推論アルゴリズム別指定
-- [x] 完全特定は内部状態候補 1 通りと定義
-- [x] Z3 / SharedArrayBuffer / GitHub Pages 制約を実装メモへ整理
-- [x] 初版は厳密観測値のみ（10進入力は JS Number の round-trip 前提）
-- [x] モデルは参照実装に基づく exact モデルとして扱う
-- [x] TDD で core / solver adapter から実装する方針を実装メモへ整理
+- [x] 既存 README / SPEC / IMPLEMENTATION_NOTES を再確認
+- [x] `ALGORITHM_SURVEY.md` に Node.js / Chrome / Edge / Firefox / Safari の `Math.random()` 実装史を整理
+- [x] `IMPLEMENTATION_PLAN.md` に後続実装ロードマップ、TDD 方針、Z3 方針、exact モデル方針を整理
+- [x] 既存ドキュメントとのリンク・表現の整合性を確認
 
-次のステップ（未着手）: UI・アルゴリズム実装、ルート README 追記、Vite エントリ
+今回の範囲: Markdown ドキュメント制作のみ。アプリ実装、依存追加、Vite 登録、solver 実装、UI 実装は行わない。
 
 ## 進捗状況
 
-- 新規: `src/math-random-predictor/README.md`, `SPEC.md`, `IMPLEMENTATION_NOTES.md`
+- 新規: `src/math-random-predictor/ALGORITHM_SURVEY.md`, `IMPLEMENTATION_PLAN.md`
+- 更新: `README.md`, `IMPLEMENTATION_NOTES.md` に新規ドキュメントへの導線を追加
+- 検証: `npm run check` 成功、ReadLints で対象ファイルのエラーなし
 
 ## メモと反省
 
-- 製品仕様は開発詳細より UX・入出力・信頼度表示を優先して記述した
-- 実ブラウザ検証は「生成（実装）」と「想定モデル（推測）」の二層を SPEC で明示
+- V8 は時期・経路によって出力変換や cache/LIFO の扱いが変わるため、差分は別アルゴリズム ID として扱う
+- 調査で確証が弱いバージョン範囲は「未確認」と明記し、推測で exact モデルを固定しない

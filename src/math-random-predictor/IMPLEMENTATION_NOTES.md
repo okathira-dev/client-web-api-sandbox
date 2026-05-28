@@ -1,6 +1,6 @@
 # Math.random 推測・検証ツール — 実装調査メモ
 
-本書は実装時に確認すべき技術メモをまとめる。製品仕様は [SPEC.md](./SPEC.md) を参照する。
+本書は実装時に確認すべき技術メモをまとめる。製品仕様は [SPEC.md](./SPEC.md)、エンジン別 `Math.random()` 実装調査は [ALGORITHM_SURVEY.md](./ALGORITHM_SURVEY.md)、実装全体の流れは [IMPLEMENTATION_PLAN.md](./IMPLEMENTATION_PLAN.md) を参照する。
 
 ## 1. Solver 方針
 

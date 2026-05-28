@@ -70,3 +70,5 @@
 
 - [SPEC.md](./SPEC.md) — 画面構成、モード、リアルタイム表示、入出力、制約
 - [IMPLEMENTATION_NOTES.md](./IMPLEMENTATION_NOTES.md) — Z3 / ブラウザ実行 / GitHub Pages 配信時の調査メモ
+- [ALGORITHM_SURVEY.md](./ALGORITHM_SURVEY.md) — Node.js / 主要ブラウザの `Math.random()` 実装史と exact モデル候補
+- [IMPLEMENTATION_PLAN.md](./IMPLEMENTATION_PLAN.md) — 調査後の実装ロードマップ、TDD / Z3 / UI 統合方針
