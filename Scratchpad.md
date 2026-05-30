@@ -5,7 +5,7 @@
 
 ## 現在のタスク
 
-### Math.random 推測アプリ — 段階完了前のドキュメント整合
+### Math.random 推測アプリ — optimized Z3 inference spike
 
 - [x] cache offset 不明・境界跨ぎを含む solver 挙動をテストで固定
 - [x] raw observations 用 `ConstraintPlan` を domain に抽出
@@ -20,6 +20,14 @@
 - [x] core / solver / CLI 関数に日本語 JSDoc を追加する
 - [x] `src/math-random-predictor/` 用の JSDoc ルールを追加する
 - [x] ドキュメントとコメントを現行 GF(2) raw solver 実装に合わせて整合させる
+- [x] Z3 raw solver を本番 GF(2) solver とは別実装として追加する
+- [x] 代表ケースを `RUN_Z3_RAW_SPIKE=1` の任意実行テストとして追加する
+- [x] Z3 raw spike の timeout / unknown / unique 傾向を実測して記録する
+- [x] 通常の test / check / build が Z3 spike なしで通ることを確認する
+- [x] GF(2) 線形 solver core を共有 helper へ抽出する
+- [x] Z3 raw solver を GF(2) 簡約ベースの optimized strategy に更新する
+- [x] Z3 platform 化と GF(2) 簡約の流れ・意図をドキュメントへ記録する
+- [x] optimized Z3 spike と通常 test / check / build を確認する
 
 ## 進捗状況
 
@@ -46,6 +54,15 @@
 - 作業中: `src/math-random-predictor/` の公開 API と非自明な helper に日本語 JSDoc を追加
 - ルール化: `.cursor/rules/math-random-predictor-jsdoc.mdc` を追加し、同プロジェクト配下の JSDoc 方針を明文化
 - 更新: docs 内の Z3 前提を整理し、現行 raw solver は GF(2) 線形、Z3 は将来の区間制約・非線形モデル候補として扱う方針に修正
+- 実装: `solver/v8CurrentZ3RawSolver.ts` を追加し、Z3 の raw observation solver を spike 用の別実装として隔離
+- テスト: `solver/v8CurrentZ3RawSolver.spec.ts` を追加し、`RUN_Z3_RAW_SPIKE=1` のときだけ代表ケースを実行する構成にした
+- 実測: preview は 1 秒未満、観測 3 個の 4096 全列挙は timeout、観測 1 個の全列挙は Z3 実行前に unknown、64 観測の既知 offset unique は約 16 秒
+- 検証: `RUN_Z3_RAW_SPIKE=1 npm test -- v8CurrentZ3RawSolver --runInBand` 成功、`npm test -- math-random-predictor --runInBand` 成功、`npm run check` 成功、`npm run build` 成功
+- 設計更新: raw exact bit を Z3 に直接投げて blocking clause で全列挙するのではなく、GF(2) で `particular + basis` の reduced candidate space へ簡約してから Z3 residual constraints へ渡す方針にした
+- 実装: `solver/v8CurrentLinearSolver.ts` に GF(2) 線形 solver core を抽出し、GF(2) 本番 solver と Z3 optimized strategy で共有する構造にした
+- 実測: optimized Z3 raw spike は preview 観測3個 9ms、preview 観測4個 17ms、既知 offset 観測4個 9ms、観測3個 4096 全列挙 234ms、観測1個 unknown 3ms、64観測 unique 118ms
+- 検証: `RUN_Z3_RAW_SPIKE=1 npm test -- v8CurrentZ3RawSolver --runInBand` 成功、`npm test -- math-random-predictor --runInBand` 成功、`npm run check` 成功、`npm run build` 成功
+- 比較実測: 同一プロセス内の中央値では GF(2) 本番 solver と optimized Z3 strategy はほぼ同等。観測3 preview は 1.24ms / 1.16ms、観測4 preview は 2.94ms / 2.94ms、既知 offset 観測4 unique は 1.47ms / 1.46ms、観測3 4096 全列挙は 53.11ms / 54.55ms、観測1 unknown は 0.42ms / 0.43ms、既知 offset 64観測 unique は 22.62ms / 22.58ms
 
 ## メモと反省
 
@@ -55,3 +72,6 @@
 - Chrome / Chromium 最新は DevTools 取得列を CLI に貼り付け、同一モデルで説明できない場合は `v8-node-current` / `v8-chromium-current` に分ける
 - cache/LIFO モデルでは、観測列が cache の先頭から始まるとは限らないため、観測開始 offset と境界跨ぎを推論対象に含める
 - UI は core / solver contract と browser solver の動作確認ができるまで作らない
+- raw observation の本番経路は GF(2) solver を正とする。Z3 raw solver は、converted observation や非線形制約へ進む前に実行特性を測る spike として扱う
+- Z3 は raw exact bit を直接全探索する先ではなく、GF(2) 簡約後の residual constraint を記述・判定する platform として扱う。converted observation では reduced candidate space 上に区間制約を追加する
+- optimized Z3 strategy の raw 性能は GF(2) と同等になる。これは Z3 が raw exact bit を解いているのではなく、同じ GF(2) core で reduced candidate space を作っているため。今後の差分は residual constraint（converted / 非線形）を載せたときに評価する
