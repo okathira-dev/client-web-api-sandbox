@@ -1,0 +1,12 @@
+---
+description: math-random-predictor の関数説明ルール
+globs: src/math-random-predictor/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Math.random Predictor JSDoc
+
+- `src/math-random-predictor/` では、公開関数・公開 class method・非自明な内部 helper に日本語 JSDoc を付ける。
+- JSDoc は「何をするか」だけでなく、cache/LIFO、観測値、solver、情報量などのドメイン上の理由が分かる説明にする。
+- 自明な定数、型定義、テスト内の小さな helper には、説明が読みやすさを上げる場合だけ付ける。
+- 実装とずれた将来予定を書かない。未対応の範囲を書く場合は「まだ solver 本体は扱わない」など現状が分かる表現にする。

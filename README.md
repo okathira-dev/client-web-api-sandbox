@@ -49,6 +49,10 @@ npm run dev
 
 線形合同法乱数予測ツール
 
+### [./src/math-random-predictor](./src/math-random-predictor)
+
+`Math.random()` の連続観測値から V8 などの内部状態候補を推定する研究・検証用 core / CLI PoC
+
 ### [./src/computation-of-tears](./src/computation-of-tears)
 
 **WIP** [Tears of Overflowed Bits (by eau. / La Mer ArtWorks)](https://www.youtube.com/watch?v=LRXLwrTHqmY)の再現

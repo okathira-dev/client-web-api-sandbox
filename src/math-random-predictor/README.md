@@ -1,15 +1,17 @@
 # Math.random 推測・検証ツール (Math Random Predictor)
 
-`Math.random()` または `Math.floor(Math.random() * N)` の**連続した観測値**から、内部状態候補を推定し、どれだけ絞り込めているか・完全特定まであと何観測必要かを可視化する研究・検証向けウェブアプリです。
+`Math.random()` または `Math.floor(Math.random() * N)` の**連続した観測値**から、内部状態候補を推定し、どれだけ絞り込めているか・完全特定まであと何観測必要かを調べる研究・検証向けプロジェクトです。
+
+現段階では Web UI を先行せず、TDD で core / solver ロジックを固めています。ブラウザ版 UI は、ブラウザ solver の動作確認や結合検証が必要になったタイミングで最小構成から作ります。
 
 ## 目的
 
 - 観測された乱数列が、どの程度「続きを推測可能」かを調べる。
 - Node.js および主要ブラウザ各系統（V8 / SpiderMonkey / JavaScriptCore）に対応したアルゴリズムモデルを前提に、内部状態候補と一致度を確認する。
 - 観測を追加・編集・削除するたびに、候補数・信頼度・推定残り観測数がどう変わるかをリアルタイムで把握する。
-- デモモードで生成→推測の流れを再現し、推論モードで外部観測値から同様の分析を行う。
+- 将来的にはデモモードで生成→推測の流れを再現し、推論モードで外部観測値から同様の分析を行う。
 
-## できること
+## 目標機能
 
 ### 共通
 
@@ -19,7 +21,7 @@
 - **完全特定の定義**: 内部状態候補が 1 通りに定まること。次の出力が一意に見えるだけでは完全特定とは呼ばない。
 - **逐次推論トグル**: ON のときは観測変更ごとに solver による精密推論を走らせる。OFF のときは理論値のみを更新し、ユーザー操作で精密推論を実行する。
 
-### 推論モード
+### 推論モード（予定）
 
 ユーザーが取得した連続観測値を入力し、選んだアルゴリズムモデルで推定します。
 
@@ -29,7 +31,7 @@
 
 主な表示: 内部状態候補、候補数、残り不確実性（bit）、整合観測数、信頼度、完全特定までの推定残り観測数（次値予測は副）。
 
-### デモモード
+### デモモード（予定）
 
 乱数を生成し、同じ UI で推測・照合します。
 
@@ -38,7 +40,7 @@
 - 観測系列は推論モードと同様、生系列 / 変換系列のどちらか一方
 - 生成源がモデル実装の場合は、正解の内部状態をできるだけ表示する。変換系列を観測対象にしているときも、裏で生成された生の `Math.random()` 値を確認できるようにする。
 
-## 主要モード
+## 主要モード（予定）
 
 | モード | 概要 |
 | --- | --- |
@@ -46,6 +48,17 @@
 | デモ | 選んだ生成源で系列を生成し、同じ手順で推測・照合（生成源に `Math.random()` も可） |
 
 各モードで、観測系列の種類（生 / 変換）と利用アルゴリズムを独立に設定できる。
+
+## CLI PoC
+
+UI 実装前の確認用として、Node.js 上で `v8-node-24-cache-lifo-state0` の生成・推論を試せます。
+
+```bash
+npm run math-random:cli -- generate --seed 1337 --count 5
+npm run math-random:cli -- observe --values "0.9311600617849974 0.3551442693830502 0.7923158995678378 0.7877779424089971" --cache-offset 0
+```
+
+現在の CLI は Node.js 24.16.0 の実測列に合わせた `v8-node-24-cache-lifo-state0` モデルの raw observation のみを対象にします。推論は GF(2) 線形方程式として実装しており、`--cache-offset unknown`（デフォルト）では観測開始位置が cache 内のどこか分からない前提で候補を探索し、`--cache-offset 0..63` を指定すると既知の offset に絞れます。`--max-candidates` は preview 件数の上限です。モデル ID、対象バージョン、実装ソースリンク、Chrome との差分は [ALGORITHM_SURVEY.md](./ALGORITHM_SURVEY.md) に集約しています。
 
 詳細は [SPEC.md](./SPEC.md) を参照してください。
 
@@ -69,6 +82,6 @@
 ## ドキュメント
 
 - [SPEC.md](./SPEC.md) — 画面構成、モード、リアルタイム表示、入出力、制約
-- [IMPLEMENTATION_NOTES.md](./IMPLEMENTATION_NOTES.md) — Z3 / ブラウザ実行 / GitHub Pages 配信時の調査メモ
+- [IMPLEMENTATION_NOTES.md](./IMPLEMENTATION_NOTES.md) — solver 方針 / ブラウザ実行 / GitHub Pages 配信時の調査メモ
 - [ALGORITHM_SURVEY.md](./ALGORITHM_SURVEY.md) — Node.js / 主要ブラウザの `Math.random()` 実装史と exact モデル候補
-- [IMPLEMENTATION_PLAN.md](./IMPLEMENTATION_PLAN.md) — 調査後の実装ロードマップ、TDD / Z3 / UI 統合方針
+- [IMPLEMENTATION_PLAN.md](./IMPLEMENTATION_PLAN.md) — 調査後の実装ロードマップ、TDD / solver / UI 統合方針

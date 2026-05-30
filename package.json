@@ -25,6 +25,7 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:ci": "jest --coverage --watchAll=false",
+    "math-random:cli": "tsx src/math-random-predictor/cli/index.ts",
     "prepare": "husky"
   },
   "dependencies": {
@@ -49,7 +50,8 @@
     "react-xml-viewer": "^3.0.5",
     "three": "^0.184.0",
     "tone": "^15.5.11",
-    "xpath": "^0.0.34"
+    "xpath": "^0.0.34",
+    "z3-solver": "^4.16.0"
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.15",
@@ -74,6 +76,7 @@
     "markuplint": "^4.18.3",
     "ts-jest": "^29.4.6",
     "ts-jest-mock-import-meta": "^1.3.1",
+    "tsx": "^4.22.3",
     "typescript": "^5.9.3",
     "vite": "^8.0.13"
   },
