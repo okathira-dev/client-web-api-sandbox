@@ -1,15 +1,24 @@
-import { parseRawObservations } from "../domain/observations";
-import { estimateRawObservationProgress } from "../domain/theory";
+import {
+  parseConvertedObservations,
+  parseRawObservations,
+} from "../domain/observations";
+import {
+  estimateConvertedObservationProgress,
+  estimateRawObservationProgress,
+} from "../domain/theory";
 import {
   createV8CurrentGeneratorFromSeed,
+  floorRandom,
   V8_CURRENT_MODEL,
 } from "../domain/v8Current";
-import { solveV8CurrentRawObservations } from "../solver/v8CurrentNodeSolver";
+import { solveV8CurrentObservations } from "../solver/v8CurrentSolver";
 
 type CliIo = {
   readonly write: (line: string) => void;
   readonly writeError?: (line: string) => void;
 };
+
+type ObservationSeriesKind = "raw" | "converted";
 
 type ParsedArgs = {
   readonly command?: string;
@@ -95,24 +104,57 @@ const parseCacheOffsetOption = (
 };
 
 /**
+ * `--series` option を raw / converted に変換する。
+ */
+const parseSeriesOption = (
+  value: string | undefined,
+): ObservationSeriesKind => {
+  if (value === undefined || value === "raw") {
+    return "raw";
+  }
+  if (value === "converted") {
+    return "converted";
+  }
+  throw new Error("--series は raw または converted が必要です。");
+};
+
+/**
  * CLI の簡易 usage を出力する。
  */
 const printHelp = (io: CliIo) => {
   io.write("usage:");
   io.write("  npm run math-random:cli -- generate --seed 1337 --count 10");
   io.write(
+    "  npm run math-random:cli -- generate --seed 1337 --count 10 --series converted --n 6",
+  );
+  io.write(
     '  npm run math-random:cli -- observe --values "0.1 0.2 0.3 0.4" --cache-offset unknown',
+  );
+  io.write(
+    '  npm run math-random:cli -- observe --series converted --n 6 --values "5 2 4 4" --cache-offset 0',
   );
 };
 
 /**
- * seed から V8 current モデルの raw `Math.random()` 列を生成して出力する。
+ * seed から V8 current モデルの観測系列を生成して出力する。
  */
 const runGenerate = (options: Record<string, string>, io: CliIo): number => {
   const seed = parseSeedOption(options.seed);
   const count = parsePositiveIntegerOption(options.count, "count", 10);
+  const series = parseSeriesOption(options.series);
   const generator = createV8CurrentGeneratorFromSeed(seed);
   io.write(`model: ${V8_CURRENT_MODEL.id}`);
+  io.write(`series: ${series}`);
+  if (series === "converted") {
+    const n = parsePositiveIntegerOption(options.n, "n", 0);
+    if (n < 2) {
+      throw new Error("--n は 2 以上の整数が必要です。");
+    }
+    for (let i = 0; i < count; i++) {
+      io.write(floorRandom(generator.next(), n).toString());
+    }
+    return 0;
+  }
   for (let i = 0; i < count; i++) {
     io.write(generator.next().toString());
   }
@@ -120,7 +162,7 @@ const runGenerate = (options: Record<string, string>, io: CliIo): number => {
 };
 
 /**
- * raw observation を受け取り、候補数・cache offset・次値予測を CLI 向けに出力する。
+ * 観測値から solver を実行し、候補数・理論値・次値予測を CLI 向けに出力する。
  */
 const runObserve = async (
   options: Record<string, string>,
@@ -130,7 +172,7 @@ const runObserve = async (
   if (valuesText === undefined) {
     throw new Error("--values が必要です。");
   }
-  const observations = parseRawObservations(valuesText);
+  const series = parseSeriesOption(options.series);
   const maxCandidates = parsePositiveIntegerOption(
     options["max-candidates"],
     "max-candidates",
@@ -142,16 +184,62 @@ const runObserve = async (
     10_000,
   );
   const cacheOffset = parseCacheOffsetOption(options["cache-offset"]);
+
+  if (series === "converted") {
+    const n = parsePositiveIntegerOption(options.n, "n", 0);
+    if (n < 2) {
+      throw new Error("--n は 2 以上の整数が必要です。");
+    }
+    const observations = parseConvertedObservations(valuesText, n);
+    const progress = estimateConvertedObservationProgress(
+      observations.length,
+      n,
+      V8_CURRENT_MODEL,
+    );
+    const result = await solveV8CurrentObservations(
+      { kind: "converted", observations, n },
+      { cacheOffset, maxCandidates, timeoutMs },
+    );
+    io.write(`model: ${V8_CURRENT_MODEL.id}`);
+    io.write(`series: converted`);
+    io.write(`n: ${n}`);
+    io.write(`observations: ${observations.length}`);
+    io.write(`cacheOffset: ${cacheOffset}`);
+    io.write(`theoryRemainingBits: ${progress.remainingBits}`);
+    io.write(`theoryCandidateCount: ${progress.estimatedCandidateCount}`);
+    io.write(
+      `theoryRemainingObservations: ${progress.estimatedRemainingRawObservations}`,
+    );
+    io.write(`status: ${result.status}`);
+    io.write(`candidateCount: ${result.candidateCount}`);
+    if (result.candidates.length === 1) {
+      const candidate = result.candidates[0];
+      if (candidate?.cacheOffset !== undefined) {
+        io.write(`matchedCacheOffset: ${candidate.cacheOffset}`);
+      }
+    }
+    if (result.nextPrediction !== undefined) {
+      io.write(`next: ${result.nextPrediction}`);
+    } else if (result.nextPredictions.length > 0) {
+      io.write(`nextCandidates: ${result.nextPredictions.join(" ")}`);
+    }
+    if (result.reason !== undefined && result.reason.length > 0) {
+      io.write(`reason: ${result.reason}`);
+    }
+    return 0;
+  }
+
+  const observations = parseRawObservations(valuesText);
   const progress = estimateRawObservationProgress(
     observations.length,
     V8_CURRENT_MODEL,
   );
-  const result = await solveV8CurrentRawObservations(observations, {
-    cacheOffset,
-    maxCandidates,
-    timeoutMs,
-  });
+  const result = await solveV8CurrentObservations(
+    { kind: "raw", observations },
+    { cacheOffset, maxCandidates, timeoutMs },
+  );
   io.write(`model: ${V8_CURRENT_MODEL.id}`);
+  io.write(`series: raw`);
   io.write(`observations: ${observations.length}`);
   io.write(`cacheOffset: ${cacheOffset}`);
   io.write(`theoryRemainingBits: ${progress.remainingBits}`);
@@ -181,7 +269,7 @@ const runObserve = async (
 /**
  * `math-random-predictor` CLI の entry point。
  *
- * `generate` は観測値生成、`observe` / `predict` は raw observation からの推論を行う。
+ * `generate` は観測値生成、`observe` / `predict` は観測系列に応じた推論を行う。
  */
 export const runMathRandomCli = async (
   argv: readonly string[],

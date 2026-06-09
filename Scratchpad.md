@@ -5,7 +5,16 @@
 
 ## 現在のタスク
 
-### Math.random 推測アプリ — optimized Z3 inference spike
+### Math.random 推測アプリ — 変換系列 Z3 本実装
+
+- [x] `v8CurrentConvertedSolver` を本番 solver として追加（`cacheOffset: unknown` 対応）
+- [x] `v8CurrentSolver` / `SolverAdapter` で raw GF(2) と converted Z3 を切替
+- [x] 共有モジュール（`solverResult`, `v8CacheOffsetPlans`, `z3Platform`）を抽出
+- [x] CLI に `--series converted --n` を追加
+- [x] converted テストを通常 `npm test` で常時実行
+- [x] ドキュメント・README を本実装向けに更新
+
+### Math.random 推測アプリ — optimized Z3 inference spike（完了）
 
 - [x] cache offset 不明・境界跨ぎを含む solver 挙動をテストで固定
 - [x] raw observations 用 `ConstraintPlan` を domain に抽出
@@ -63,6 +72,32 @@
 - 実測: optimized Z3 raw spike は preview 観測3個 9ms、preview 観測4個 17ms、既知 offset 観測4個 9ms、観測3個 4096 全列挙 234ms、観測1個 unknown 3ms、64観測 unique 118ms
 - 検証: `RUN_Z3_RAW_SPIKE=1 npm test -- v8CurrentZ3RawSolver --runInBand` 成功、`npm test -- math-random-predictor --runInBand` 成功、`npm run check` 成功、`npm run build` 成功
 - 比較実測: 同一プロセス内の中央値では GF(2) 本番 solver と optimized Z3 strategy はほぼ同等。観測3 preview は 1.24ms / 1.16ms、観測4 preview は 2.94ms / 2.94ms、既知 offset 観測4 unique は 1.47ms / 1.46ms、観測3 4096 全列挙は 53.11ms / 54.55ms、観測1 unknown は 0.42ms / 0.43ms、既知 offset 64観測 unique は 22.62ms / 22.58ms
+- 実装: `domain/constraints.ts` に `ConvertedObservationConstraintPlan` と mantissa 半開区間 helper を追加
+- 実装: `solver/v8CurrentZ3ConvertedSolver.ts` を Z3-first で追加（GF(2) core は未変更）
+- テスト: `solver/v8CurrentZ3ConvertedSolver.spec.ts` を `RUN_Z3_CONVERTED_SPIKE=1` の任意実行にした
+- 実測: converted spike preview 観測2個 N=6 は約 200ms multiple、観測4個は約 80ms multiple、観測1個 all は 0ms unknown（事前打ち切り）
+- 本実装: `solver/v8CurrentConvertedSolver.ts`、入口 `solver/v8CurrentSolver.ts`、CLI `--series converted`
+- 検証: `npm test -- math-random-predictor --runInBand` 成功（Z3 raw spike のみ skip）
+
+### 変換系列 一意解 fixture 探索（完了）
+
+- [x] `probeV8CurrentConvertedUniqueness`（最大 2 モデル）を追加
+- [x] `convertedUniqueSearch.ts` + `npm run math-random:find-converted-unique`
+- [x] 探索方針: **大きい N を優先**（既定 4096→…）、観測数は **多い方から timeout 時は半分**、**multiple なら増加**、上限確定後 **1..上限で二分探索**
+- [x] fixture: seed 1337, N=4096, 観測 12, cacheOffset 0 → `test-fixtures/convertedUniqueFixture.json`
+- [x] fixture: seed 1337, N=16, 観測 32, cacheOffset 0 → `test-fixtures/convertedUniqueN16Fixture.json`
+- [x] fixture: seed 1337, N=4096, 観測 64, cacheOffset unknown → `test-fixtures/convertedUniqueUnknownOffsetFixture.json`
+- [x] `v8CurrentConvertedSolver.spec.ts` で fixture 回帰テスト
+
+### 変換系列 optimized 本番化（完了）
+
+- [x] `domain/convertedLinearization.ts` — 区間から確定 mantissa bit 抽出
+- [x] `v8CurrentConvertedLinearReduction.ts` + `v8CurrentConvertedIntervalCheck.ts`
+- [x] `v8CurrentConvertedOptimizedSolver.ts` — GF(2)+TS 本番（Z3 不要ケース）
+- [x] `v8CurrentConvertedZ3Solver.ts` — bitvec strategy / z3Fallback
+- [x] facade: 既定 `strategy: optimized`、自由変数過多時 Z3 fallback
+- [x] offset 0 優先、GF(2) unsat plan スキップ
+- [x] ベンチ: fixture 12 観測 optimized ~6.6ms vs bitvec ~1720ms
 
 ## メモと反省
 
@@ -75,3 +110,5 @@
 - raw observation の本番経路は GF(2) solver を正とする。Z3 raw solver は、converted observation や非線形制約へ進む前に実行特性を測る spike として扱う
 - Z3 は raw exact bit を直接全探索する先ではなく、GF(2) 簡約後の residual constraint を記述・判定する platform として扱う。converted observation では reduced candidate space 上に区間制約を追加する
 - optimized Z3 strategy の raw 性能は GF(2) と同等になる。これは Z3 が raw exact bit を解いているのではなく、同じ GF(2) core で reduced candidate space を作っているため。今後の差分は residual constraint（converted / 非線形）を載せたときに評価する
+- 変換系列 PoC は GF(2) 一般化ではなく Z3-first が妥当。区間制約は mantissa 半開区間として domain に置き、solver は xorshift + unsigned 比較を Z3 に直接載せる。短い converted 観測だけでは unique 化は難しく、blocking の先頭候補に真の state が入る保証もない
+- **N が大きいほど区間が狭く推測しやすい**（例: seed 1337 で N=6 は 12 観測でも multiple、N=4096 は 12 観測で 2 モデル probe が unique）。小さい N + 観測数の二分探索だけでは timeout / multiple で失敗しやすい

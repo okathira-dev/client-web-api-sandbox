@@ -1,4 +1,7 @@
-import { estimateRawObservationProgress } from "./theory";
+import {
+  estimateConvertedObservationProgress,
+  estimateRawObservationProgress,
+} from "./theory";
 
 describe("theory", () => {
   it("生系列の理論的な残り不確実性を概算できること", () => {
@@ -22,5 +25,13 @@ describe("theory", () => {
       estimatedCandidateCount: "1",
       estimatedRemainingRawObservations: 0,
     });
+  });
+
+  it("変換系列の理論的な残り不確実性を概算できること", () => {
+    const progress = estimateConvertedObservationProgress(4, 6);
+    expect(progress.n).toBe(6);
+    expect(progress.observationCount).toBe(4);
+    expect(progress.bitsPerObservation).toBeCloseTo(Math.log2(6));
+    expect(progress.remainingBits).toBeGreaterThan(0);
   });
 });

@@ -58,7 +58,12 @@ npm run math-random:cli -- generate --seed 1337 --count 5
 npm run math-random:cli -- observe --values "0.9311600617849974 0.3551442693830502 0.7923158995678378 0.7877779424089971" --cache-offset 0
 ```
 
-現在の CLI は Node.js 24.16.0 の実測列に合わせた `v8-node-24-cache-lifo-state0` モデルの raw observation のみを対象にします。推論は GF(2) 線形方程式として実装しており、`--cache-offset unknown`（デフォルト）では観測開始位置が cache 内のどこか分からない前提で候補を探索し、`--cache-offset 0..63` を指定すると既知の offset に絞れます。`--max-candidates` は preview 件数の上限です。モデル ID、対象バージョン、実装ソースリンク、Chrome との差分は [ALGORITHM_SURVEY.md](./ALGORITHM_SURVEY.md) に集約しています。
+現在の CLI は Node.js 24.16.0 の実測列に合わせた `v8-node-24-cache-lifo-state0` モデルを対象にします。
+
+- **生系列**（デフォルト）: GF(2) 線形 solver。`observe --values "0.1 0.2 ..."`
+- **変換系列**: Z3 区間制約 solver。`observe --series converted --n 6 --values "5 2 4 4"`
+
+`--cache-offset unknown`（デフォルト）では観測開始位置が cache 内のどこか分からない前提で候補を探索し、`--cache-offset 0..63` を指定すると既知の offset に絞れます。`--max-candidates` は preview 件数の上限です。モデル ID、対象バージョン、実装ソースリンク、Chrome との差分は [ALGORITHM_SURVEY.md](./ALGORITHM_SURVEY.md) に集約しています。
 
 詳細は [SPEC.md](./SPEC.md) を参照してください。
 

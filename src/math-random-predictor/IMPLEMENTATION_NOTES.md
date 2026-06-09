@@ -45,6 +45,35 @@ Raw observations
   -> SolverResult
 ```
 
+変換系列 solver（本番: optimized、Z3 は fallback / 比較用）:
+
+- `src/math-random-predictor/solver/v8CurrentConvertedSolver.ts` が入口。既定 `strategy: "optimized"`（GF(2) + TS 区間検証）。
+- `src/math-random-predictor/solver/v8CurrentConvertedOptimizedSolver.ts` が本番経路。`src/math-random-predictor/solver/v8CurrentConvertedZ3Solver.ts` が `strategy: "bitvec"` および自由変数過多時の Z3 fallback。
+- 入口は `solveV8CurrentObservations({ kind: "converted", ... })` または `v8CurrentConvertedSolverAdapter`（[`solver/v8CurrentSolver.ts`](./solver/v8CurrentSolver.ts)）。
+- 生系列は引き続き GF(2) の `v8CurrentNodeSolver` が本番。
+- 設計方針: 区間 `[L, U)` から **確定 mantissa bit だけ** GF(2) 線形行に落とし（[`domain/convertedLinearization.ts`](./domain/convertedLinearization.ts)）、`particular + basis` を列挙し、残りは TS で区間検証（[`solver/v8CurrentConvertedIntervalCheck.ts`](./solver/v8CurrentConvertedIntervalCheck.ts)）。N が大きいほど確定 bit が増え、Z3 不要になりやすい。
+- `cacheOffset: unknown` は offset `0` を優先し、GF(2) 矛盾 plan はスキップ。自由変数が `maxExhaustiveFreeBits`（既定 20）を超える場合は `z3Fallback: true`（既定）で bitvec Z3 へ。
+- 共有: `solver/solverResult.ts`、`solver/v8CacheOffsetPlans.ts`、`solver/v8CurrentLinearSolver.ts`（GF(2) core）、`solver/z3Platform.ts`。
+- CLI: `observe --series converted --n 6 --values "5 2 4 4"`。通常テストは optimized のみ（Z3 WASM 不要）。`RUN_Z3_CONVERTED_BITVEC=1` で bitvec 回帰、`RUN_CONVERTED_BENCH=1` でベンチ。
+- `v8CurrentZ3ConvertedSolver.ts` は後方互換 re-export のみ。
+
+converted solver（optimized）の流れ:
+
+```text
+Converted observations + N
+  -> ConvertedObservationConstraintPlan (mantissa intervals)
+  -> 区間から確定 bit を抽出 -> GF(2) 線形簡約
+  -> 候補 state 列挙 -> TS 区間フィルタ
+  -> (自由変数過多なら) Z3 bitvec fallback
+  -> SolverResult
+```
+
+converted optimized ベンチ（fixture N=4096 観測 12、中央値 5 回）:
+
+- optimized: 約 6.6ms
+- bitvec Z3: 約 1720ms
+- `RUN_CONVERTED_BENCH=1 npm test -- v8CurrentConvertedBenchmark --runInBand` で再現
+
 参考:
 
 - [Z3 JavaScript API documentation](https://z3prover.github.io/api/html/js/index.html)

@@ -23,6 +23,31 @@ export type RawObservationConstraintPlan = {
   readonly constraints: readonly RawObservationConstraint[];
 };
 
+export type ConvertedObservationConstraint = {
+  readonly observationIndex: number;
+  readonly absoluteStep: number;
+  readonly relativeStep: number;
+  readonly observedValue: number;
+  readonly lowerInclusive: bigint;
+  readonly upperExclusive: bigint;
+};
+
+export type ConvertedObservationConstraintPlan = {
+  readonly modelId: string;
+  readonly n: number;
+  readonly cacheOffset: number;
+  readonly cacheSize: number;
+  readonly outputBits: number;
+  readonly rightShiftBits: number;
+  readonly observationCount: number;
+  readonly minAbsoluteStep: number;
+  readonly maxRelativeStep: number;
+  readonly nextAbsoluteStep: number;
+  readonly nextRelativeStep?: number;
+  readonly nextUsesPreStateS0: boolean;
+  readonly constraints: readonly ConvertedObservationConstraint[];
+};
+
 /**
  * 指定されたモデルが cache/LIFO 型の `Math.random()` 実装かを検証する。
  */
@@ -57,6 +82,64 @@ const assertRawObservations = (observations: readonly number[]) => {
       throw new Error("観測値は [0, 1) の範囲である必要があります。");
     }
   }
+};
+
+/**
+ * 変換系列の観測値 `k` と分母 `N` が妥当か検証する。
+ */
+const assertConvertedObservations = (
+  observations: readonly number[],
+  n: number,
+) => {
+  if (!Number.isInteger(n) || n < 2) {
+    throw new Error("N は 2 以上の整数が必要です。");
+  }
+  if (observations.length === 0) {
+    throw new Error("観測値が空です。");
+  }
+  for (const value of observations) {
+    if (!Number.isInteger(value) || value < 0 || value >= n) {
+      throw new Error(`観測値は 0..${n - 1} の整数である必要があります。`);
+    }
+  }
+};
+
+/**
+ * `Math.floor(Math.random() * N) = k` を 53-bit mantissa の半開区間へ変換する。
+ *
+ * 元の生乱数 `r` は `[k/N, (k+1)/N)` に入り、`mantissa = floor(r * 2^outputBits)` として
+ * `[lowerInclusive, upperExclusive)` の整数区間で表す。
+ */
+export const convertedObservationToMantissaInterval = (
+  observedValue: number,
+  n: number,
+  outputBits = 53,
+): { readonly lowerInclusive: bigint; readonly upperExclusive: bigint } => {
+  if (!Number.isInteger(n) || n < 2) {
+    throw new Error("N は 2 以上の整数が必要です。");
+  }
+  if (
+    !Number.isInteger(observedValue) ||
+    observedValue < 0 ||
+    observedValue >= n
+  ) {
+    throw new Error(`観測値は 0..${n - 1} の整数である必要があります。`);
+  }
+  if (!Number.isInteger(outputBits) || outputBits < 1 || outputBits > 53) {
+    throw new Error("outputBits は 1..53 の整数である必要があります。");
+  }
+
+  const scale = 1n << BigInt(outputBits);
+  const k = BigInt(observedValue);
+  const denominator = BigInt(n);
+  const lowerInclusive = (k * scale + denominator - 1n) / denominator;
+  const upperExclusive = ((k + 1n) * scale + denominator - 1n) / denominator;
+
+  if (lowerInclusive >= upperExclusive) {
+    throw new Error("mantissa 区間が空です。");
+  }
+
+  return { lowerInclusive, upperExclusive };
 };
 
 /**
@@ -159,4 +242,71 @@ export const buildV8CacheLifoRawConstraintPlans = (
       model,
     ),
   );
+};
+
+/**
+ * 既知の cache offset から、変換系列観測を mantissa 半開区間の制約計画へ変換する。
+ */
+export const buildV8CacheLifoConvertedConstraintPlanForOffset = (
+  observations: readonly number[],
+  n: number,
+  cacheOffset: number,
+  model: V8ModelMetadata = V8_CURRENT_MODEL,
+): ConvertedObservationConstraintPlan => {
+  assertCacheModel(model);
+  assertConvertedObservations(observations, n);
+  assertCacheOffset(cacheOffset, model.cacheSize);
+
+  const absoluteSteps = observations.map((_, index) =>
+    observedPositionToGeneratedStep(cacheOffset + index, model.cacheSize),
+  );
+  const minAbsoluteStep = Math.min(...absoluteSteps);
+  const nextAbsoluteStep = observedPositionToGeneratedStep(
+    cacheOffset + observations.length,
+    model.cacheSize,
+  );
+  const constraints = observations
+    .map((value, index) => {
+      const absoluteStep = absoluteSteps[index];
+      if (absoluteStep === undefined) {
+        throw new Error("観測値の step 計算に失敗しました。");
+      }
+      const interval = convertedObservationToMantissaInterval(
+        value,
+        n,
+        model.outputBits,
+      );
+      return {
+        observationIndex: index,
+        absoluteStep,
+        relativeStep: absoluteStep - minAbsoluteStep + 1,
+        observedValue: value,
+        lowerInclusive: interval.lowerInclusive,
+        upperExclusive: interval.upperExclusive,
+      };
+    })
+    .sort((a, b) => a.relativeStep - b.relativeStep);
+
+  const nextRelativeStep =
+    nextAbsoluteStep >= minAbsoluteStep
+      ? nextAbsoluteStep - minAbsoluteStep + 1
+      : undefined;
+
+  return {
+    modelId: model.id,
+    n,
+    cacheOffset,
+    cacheSize: model.cacheSize,
+    outputBits: model.outputBits,
+    rightShiftBits: model.lostBitsPerRawObservation,
+    observationCount: observations.length,
+    minAbsoluteStep,
+    maxRelativeStep: Math.max(
+      ...constraints.map((constraint) => constraint.relativeStep),
+    ),
+    nextAbsoluteStep,
+    nextRelativeStep,
+    nextUsesPreStateS0: nextAbsoluteStep === minAbsoluteStep - 1,
+    constraints,
+  };
 };

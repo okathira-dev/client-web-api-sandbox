@@ -26,6 +26,7 @@
     "test:coverage": "jest --coverage",
     "test:ci": "jest --coverage --watchAll=false",
     "math-random:cli": "tsx src/math-random-predictor/cli/index.ts",
+    "math-random:find-converted-unique": "tsx src/math-random-predictor/scripts/findConvertedUniqueObservationCount.ts",
     "prepare": "husky"
   },
   "dependencies": {

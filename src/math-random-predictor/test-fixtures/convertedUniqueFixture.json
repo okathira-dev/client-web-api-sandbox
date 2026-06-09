@@ -1,0 +1,11 @@
+{
+  "n": 4096,
+  "seed": "1337",
+  "cacheOffset": 0,
+  "minObservationCount": 12,
+  "probeAtMin": "unique",
+  "observations": [
+    3814, 1454, 3245, 3226, 1541, 947, 790, 216, 3916, 2773, 968, 1177
+  ],
+  "expectedNext": 3165
+}

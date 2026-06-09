@@ -87,6 +87,50 @@ const rowCoefficient = (row: bigint): bigint => row & COEFFICIENT_MASK;
  */
 const rowRhs = (row: bigint): 0 | 1 => getBit(row, STATE_BITS);
 
+export type StepFixedMantissaBits = {
+  readonly relativeStep: number;
+  readonly fixedBits: readonly {
+    readonly bit: number;
+    readonly value: 0 | 1;
+  }[];
+};
+
+type LinearRowPlanShape = {
+  readonly maxRelativeStep: number;
+  readonly rightShiftBits: number;
+};
+
+/**
+ * 各 step の確定 mantissa bit から GF(2) 線形行を構築する。
+ */
+export const buildLinearRowsFromFixedMantissaBits = (
+  plan: LinearRowPlanShape,
+  steps: readonly StepFixedMantissaBits[],
+): bigint[] => {
+  const constraintsByStep = new Map<
+    number,
+    StepFixedMantissaBits["fixedBits"]
+  >();
+  for (const step of steps) {
+    const values = constraintsByStep.get(step.relativeStep) ?? [];
+    constraintsByStep.set(step.relativeStep, [...values, ...step.fixedBits]);
+  }
+
+  const rows: bigint[] = [];
+  let state = createInitialSymbolicState();
+  for (let step = 1; step <= plan.maxRelativeStep; step++) {
+    state = buildNextSymbolicState(state);
+    for (const fixedBit of constraintsByStep.get(step) ?? []) {
+      const coefficient = state.s0[plan.rightShiftBits + fixedBit.bit];
+      if (coefficient === undefined) {
+        throw new Error("観測値の bit 制約生成に失敗しました。");
+      }
+      rows.push(createLinearRow(coefficient, fixedBit.value));
+    }
+  }
+  return rows;
+};
+
 /**
  * raw observation の制約計画を、GF(2) 線形方程式の行列に変換する。
  *
@@ -94,28 +138,23 @@ const rowRhs = (row: bigint): 0 | 1 => getBit(row, STATE_BITS);
  * bit 単位の等式として展開する。
  */
 const buildLinearRows = (plan: RawObservationConstraintPlan): bigint[] => {
+  const steps: StepFixedMantissaBits[] = [];
   const constraintsByStep = new Map<number, bigint[]>();
   for (const constraint of plan.constraints) {
     const values = constraintsByStep.get(constraint.relativeStep) ?? [];
     values.push(constraint.mantissa);
     constraintsByStep.set(constraint.relativeStep, values);
   }
-
-  const rows: bigint[] = [];
-  let state = createInitialSymbolicState();
-  for (let step = 1; step <= plan.maxRelativeStep; step++) {
-    state = buildNextSymbolicState(state);
-    for (const mantissa of constraintsByStep.get(step) ?? []) {
-      for (let bit = 0; bit < plan.outputBits; bit++) {
-        const coefficient = state.s0[plan.rightShiftBits + bit];
-        if (coefficient === undefined) {
-          throw new Error("観測値の bit 制約生成に失敗しました。");
-        }
-        rows.push(createLinearRow(coefficient, getBit(mantissa, bit)));
-      }
+  for (const [relativeStep, mantissas] of constraintsByStep) {
+    for (const mantissa of mantissas) {
+      const fixedBits = Array.from({ length: plan.outputBits }, (_, bit) => ({
+        bit,
+        value: getBit(mantissa, bit),
+      }));
+      steps.push({ relativeStep, fixedBits });
     }
   }
-  return rows;
+  return buildLinearRowsFromFixedMantissaBits(plan, steps);
 };
 
 /**
@@ -203,9 +242,13 @@ const solveLinearSystem = (
  * Z3 を使う solver でも、raw exact bit 等式はここで先に圧縮してから
  * residual constraint を載せることで、候補列挙の爆発を避ける。
  */
+export const solveV8LinearSystemFromRows = (
+  rows: readonly bigint[],
+): V8RawLinearSolution => solveLinearSystem(rows);
+
 export const solveV8RawObservationLinearSystem = (
   plan: RawObservationConstraintPlan,
-): V8RawLinearSolution => solveLinearSystem(buildLinearRows(plan));
+): V8RawLinearSolution => solveV8LinearSystemFromRows(buildLinearRows(plan));
 
 /**
  * 線形方程式の解空間から、指定数まで state vector を列挙する。

@@ -12,6 +12,7 @@ describe("math-random CLI", () => {
     expect(exitCode).toBe(0);
     expect(stdout).toEqual([
       "model: v8-node-24-cache-lifo-state0",
+      "series: raw",
       "0.9311600617849974",
       "0.3551442693830502",
       "0.7923158995678378",
@@ -39,6 +40,33 @@ describe("math-random CLI", () => {
     expect(stdout).toContain("candidateCount: 1");
     expect(stdout).toContain("matchedCacheOffset: 0");
     expect(stdout).toContain("next: 0.37637226430349113");
+  });
+
+  it("変換系列を observe できること", async () => {
+    const stdout: string[] = [];
+
+    const exitCode = await runMathRandomCli(
+      [
+        "observe",
+        "--series",
+        "converted",
+        "--n",
+        "6",
+        "--values",
+        "5 2 4 4",
+        "--cache-offset",
+        "0",
+        "--max-candidates",
+        "2",
+      ],
+      { write: (line) => stdout.push(line) },
+    );
+
+    expect(exitCode).toBe(0);
+    expect(stdout).toContain("series: converted");
+    expect(stdout).toContain("n: 6");
+    expect(stdout).toContain("status: multiple");
+    expect(stdout.some((line) => line.startsWith("next"))).toBe(true);
   });
 
   it("cache offset 未指定では境界候補ごとの次値候補を表示できること", async () => {

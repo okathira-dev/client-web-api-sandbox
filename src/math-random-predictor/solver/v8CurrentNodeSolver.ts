@@ -2,8 +2,10 @@ import {
   buildV8CacheLifoRawConstraintPlanForOffset,
   type RawObservationConstraintPlan,
 } from "../domain/constraints";
-import { advanceV8State, V8_CURRENT_MODEL } from "../domain/v8Current";
+import { advanceV8State } from "../domain/v8Current";
+import { resolveCandidateLimit, toSolverResult } from "./solverResult";
 import type { SolverCandidate, SolverResult } from "./types";
+import { buildV8CacheOffsetPlans } from "./v8CacheOffsetPlans";
 import {
   enumerateV8RawLinearSolutionVectors,
   solutionVectorToV8State,
@@ -56,100 +58,6 @@ const predictNextObservedValue = (
 };
 
 /**
- * 数値配列から重複を取り除き、出現順を保った配列を返す。
- */
-const uniqueNumbers = (values: readonly number[]): number[] => [
-  ...new Set(values),
-];
-
-/**
- * 次値候補が 1 種類だけなら、その値を単一予測として返す。
- */
-const getSingleNextPrediction = (
-  nextPredictions: readonly number[],
-): number | undefined => {
-  const predictions = uniqueNumbers(nextPredictions);
-  return predictions.length === 1 ? predictions[0] : undefined;
-};
-
-/**
- * `maxCandidates` option を、列挙上限として扱いやすい数値へ変換する。
- */
-const resolveCandidateLimit = (
-  maxCandidates: V8CurrentSolverOptions["maxCandidates"],
-): number => {
-  if (maxCandidates === "all") {
-    return Number.POSITIVE_INFINITY;
-  }
-  return maxCandidates ?? DEFAULT_MAX_CANDIDATES;
-};
-
-/**
- * solver 内部で集めた候補配列を、CLI/UI 共通の `SolverResult` へ整形する。
- */
-const toSolverResult = (
-  status: V8CurrentSolverResult["status"],
-  candidates: readonly V8CurrentSolverCandidate[],
-  maxCandidates: number,
-  exhaustive: boolean,
-  reason?: string,
-): V8CurrentSolverResult => {
-  const unique = status === "unique";
-  const nextPredictions = uniqueNumbers(
-    candidates
-      .map((candidate) => candidate.nextPrediction)
-      .filter((value): value is number => value !== undefined),
-  );
-  return {
-    status,
-    unique,
-    uniqueConfirmed: status !== "unknown" && status !== "timeout",
-    candidateCount: candidates.length,
-    candidatesPreview: candidates.slice(0, maxCandidates),
-    candidates,
-    nextPrediction:
-      status === "unknown" ||
-      status === "timeout" ||
-      (status === "multiple" && !exhaustive)
-        ? undefined
-        : getSingleNextPrediction(nextPredictions),
-    nextPredictions,
-    reason,
-  };
-};
-
-/**
- * cache offset option から、solver が試す制約計画の集合を作る。
- *
- * offset 不明時は cache 先頭 offset と、観測列が境界をまたぎ得る offset を代表として試す。
- */
-const buildPlans = (
-  observations: readonly number[],
-  cacheOffset: number | "unknown",
-): RawObservationConstraintPlan[] => {
-  if (cacheOffset === "unknown") {
-    const firstBoundaryOffset = Math.max(
-      0,
-      V8_CURRENT_MODEL.cacheSize - observations.length,
-    );
-    const boundaryOffsets = Array.from(
-      { length: V8_CURRENT_MODEL.cacheSize - firstBoundaryOffset },
-      (_, index) => firstBoundaryOffset + index,
-    ).sort((left, right) => {
-      const pivot = V8_CURRENT_MODEL.cacheSize - 4;
-      return Math.abs(left - pivot) - Math.abs(right - pivot);
-    });
-    const offsets = new Set([0, ...boundaryOffsets]);
-    return [...offsets].map((offset) =>
-      buildV8CacheLifoRawConstraintPlanForOffset(observations, offset),
-    );
-  }
-  return [
-    buildV8CacheLifoRawConstraintPlanForOffset(observations, cacheOffset),
-  ];
-};
-
-/**
  * 解空間の自由変数数から、今回列挙する候補数を決める。
  *
  * 全列挙モードで候補が多すぎる場合は `undefined` を返し、呼び出し側で `unknown` にする。
@@ -179,9 +87,17 @@ export const solveV8CurrentRawObservations = async (
   options: V8CurrentSolverOptions = {},
 ): Promise<V8CurrentSolverResult> => {
   const exhaustive = options.maxCandidates === "all";
-  const maxCandidates = resolveCandidateLimit(options.maxCandidates);
+  const maxCandidates = resolveCandidateLimit(
+    options.maxCandidates,
+    DEFAULT_MAX_CANDIDATES,
+  );
   const cacheOffset = options.cacheOffset ?? DEFAULT_CACHE_OFFSET;
-  const plans = buildPlans(observations, cacheOffset);
+  const plans = buildV8CacheOffsetPlans(
+    observations.length,
+    cacheOffset,
+    (offset) =>
+      buildV8CacheLifoRawConstraintPlanForOffset(observations, offset),
+  );
 
   const candidates: V8CurrentSolverCandidate[] = [];
 
