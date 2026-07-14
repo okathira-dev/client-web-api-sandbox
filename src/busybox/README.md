@@ -1,0 +1,50 @@
+# Busybox: Web API Explorer
+
+> いつものブラウザが、パズルになる。
+
+ブラウザそのものが鍵となる新感覚パズル。
+
+_A new kind of puzzle game where the browser itself is the key._
+
+## 現在の状態
+
+このブランチは、実装着手前の計画と判断材料を整える段階にある。
+このディレクトリにはまだゲーム本体を置かず、先に仕様、調査手順、ギミック候補、手動確認項目を揃える。
+
+設計意図は、実装を急いで特定の画面構成やAPI構成を固定するのではなく、次の2点を先に共有可能にすることにある。
+
+- 変えてはいけないプロダクト方針
+- 調査や試作を経て決めるべき未確定事項
+
+## ドキュメント
+
+| 文書 | 役割 |
+| --- | --- |
+| [企画・プロダクト仕様](./docs/product-spec.md) | 体験、対象、スコープ、日英コピーを定義する |
+| [アーキテクチャ判断](./docs/architecture-decisions.md) | ローカル保存、Drive連携、配信、ステージ分離の方針を定義する |
+| [実装計画](./docs/implementation-plan.md) | フェーズ、完了条件、コミット方針を定義する |
+| [API調査・採用方針](./docs/api-research-and-adoption.md) | Web APIの母集団、採否、再調査方法を定義する |
+| [ギミックメモ台帳](./docs/gimmick-backlog.md) | 重複を避けながらステージ案を育てる |
+| [人手確認台帳](./docs/human-test-matrix.md) | 自動テストだけでは保証できない環境・権限・機器の確認を管理する |
+| [権限・プライバシー方針](./docs/privacy-and-permissions.md) | センサーデータやGoogle Drive連携の境界を定義する |
+| [決定ログ](./docs/decision-log.md) | 確定事項と未確定事項を混同しないための記録 |
+
+## 作業の隔離
+
+- ブランチ: `codex/busybox-web-api-explorer-plan`
+- worktree: `worktrees.local/busybox-web-api-explorer-plan`
+- 分岐元: `main`
+
+既存の `codex/busybox-implementation`、`codex/busybox-full-game` など、ほかのBusybox関連ブランチは並行作業として扱い、このworktreeから変更しない。
+
+## 実装時のコメント方針
+
+コメントはコードの動作を日本語に言い換えるためではなく、次のような「理由」を残すために使う。
+
+- 権限要求を自動実行せず、明示操作の後に限定している理由
+- `unsupported` と `unknown` を分ける理由
+- 進捗マージを単純上書きにしない理由
+- ブラウザ差を吸収せず、ステージの性質として残している理由
+- Service Worker、OAuth、複数タブなど、見かけ上不要に見える境界処理の理由
+
+関数名や型名から明らかな処理には説明コメントを増やさない。
