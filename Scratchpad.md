@@ -8,13 +8,14 @@
 ### Busybox: Web API Explorer（計画フェーズ）
 
 - [x] リポジトリ状態と並行worktreeを確認
-- [x] 専用ブランチ `codex/busybox-web-api-explorer-plan` を作成
-- [x] 専用worktree `worktrees.local/busybox-web-api-explorer-plan` を作成
+- [x] 専用ブランチ `codex/busybox-web-api-game` を作成
+- [x] 専用worktree `worktrees.local/busybox-web-api-game` を作成
 - [x] プロダクト仕様とアーキテクチャ判断を文書化
 - [x] API調査・採用方針を文書化
 - [x] ギミックメモ台帳と人手確認台帳を作成
 - [x] 権限・プライバシー方針と決定ログを作成
 - [x] 文書間の整合性を確認
+- [x] ステージ／問題箱モデルと初期ステージ候補を明文化
 - [x] 計画フェーズの成果をコミット対象として整理
 
 このworktreeでは、既存のBusybox並行ブランチを変更しない。計画フェーズ完了後は、`src/busybox/docs/implementation-plan.md` のフェーズ順に実装する。
@@ -31,7 +32,7 @@
 ## 進捗状況
 
 - Busyboxは計画専用ブランチ上で、実装前の仕様・調査手順・QA台帳を作成中。
-- Busybox本体コードはまだ追加していない。初期ステージと表現モチーフは、API再調査と試作後に決める。
+- Busybox本体コードはまだ追加していない。箱を中核にするモデルは確定し、最終アートと初期候補の採否はAPI再調査と試作後に決める。
 - `npm run build` / `npm run test` は通過。
 - Vite 8 関連で解消できたもの:
   - `vite:react-swc` の `esbuild` 非推奨警告

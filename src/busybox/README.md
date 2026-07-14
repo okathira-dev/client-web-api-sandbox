@@ -25,14 +25,16 @@ _A new kind of puzzle game where the browser itself is the key._
 | [実装計画](./docs/implementation-plan.md) | フェーズ、完了条件、コミット方針を定義する |
 | [API調査・採用方針](./docs/api-research-and-adoption.md) | Web APIの母集団、採否、再調査方法を定義する |
 | [ギミックメモ台帳](./docs/gimmick-backlog.md) | 重複を避けながらステージ案を育てる |
+| [初期ステージ計画](./docs/initial-stage-plan.md) | 初期候補、問題箱数、採用ゲート、人手確認を対応付ける |
+| [ステージ仕様テンプレート](./docs/stage-spec-template.md) | 各ステージの意図、権限、後片付け、検証を同じ形式で記録する |
 | [人手確認台帳](./docs/human-test-matrix.md) | 自動テストだけでは保証できない環境・権限・機器の確認を管理する |
 | [権限・プライバシー方針](./docs/privacy-and-permissions.md) | センサーデータやGoogle Drive連携の境界を定義する |
 | [決定ログ](./docs/decision-log.md) | 確定事項と未確定事項を混同しないための記録 |
 
 ## 作業の隔離
 
-- ブランチ: `codex/busybox-web-api-explorer-plan`
-- worktree: `worktrees.local/busybox-web-api-explorer-plan`
+- ブランチ: `codex/busybox-web-api-game`
+- worktree: `worktrees.local/busybox-web-api-game`
 - 分岐元: `main`
 
 既存の `codex/busybox-implementation`、`codex/busybox-full-game` など、ほかのBusybox関連ブランチは並行作業として扱い、このworktreeから変更しない。
