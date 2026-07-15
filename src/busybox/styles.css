@@ -303,6 +303,18 @@ input:focus-visible {
   border-color: #9f5365;
   color: #ffd9e1;
 }
+.pwa-status {
+  width: 100%;
+  border: 1px solid #665979;
+  border-radius: 0.7rem;
+  padding: 0.85rem 1rem;
+  color: #f7f3ff;
+  background: #2a2240;
+}
+.pwa-status:not(:disabled) {
+  border-color: #ffd166;
+  cursor: pointer;
+}
 .privacy-note {
   padding: 1rem;
   border-left: 0.25rem solid #7dd3fc;
@@ -469,6 +481,38 @@ input:focus-visible {
   border-top-width: 1.1rem;
   background: #181329;
   font-size: 1.7rem;
+}
+.pwa-orb {
+  display: grid;
+  place-items: center;
+  width: 4rem;
+  height: 4rem;
+  border: 2px solid #66567e;
+  border-radius: 50%;
+  color: #9388a4;
+  font-size: 2rem;
+}
+.pwa-orb--solved {
+  border-color: #34d399;
+  color: #8ff0c9;
+}
+.signal-clue,
+.door-clue,
+.bell-clue {
+  font-size: clamp(7rem, 28vw, 12rem);
+  line-height: 1;
+}
+.signal-clue--offline {
+  color: #fb7185;
+  text-decoration: line-through;
+}
+.door-clue {
+  transform-origin: left center;
+  transition: transform 240ms ease;
+}
+.door-clue--open {
+  transform: perspective(12rem) rotateY(-50deg);
+  color: #ffd166;
 }
 .sr-only {
   position: absolute;

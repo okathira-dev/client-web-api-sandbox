@@ -22,7 +22,10 @@
 | S-040 | Page Visibility | 実装済み・人手確認待ち | cleanup境界、進捗集約 | H-013, H-022 |
 | S-050 | Broadcast Channel | 実装済み・人手確認待ち | URL直接起動、cleanup境界 | H-013 |
 | S-060 | IndexedDB再訪 | 実装済み・人手確認待ち | 観測保存、移行、マージ | H-001, H-018 |
-| S-070〜S-140 | 各計画API | 計画 | 一覧では無効化 | 初期ステージ計画を参照 |
+| S-070 | Service Worker / offline | 実装済み・人手確認待ち | scope付きbuild、offlineイベント | H-005, H-021, H-022 |
+| S-080 | PWA display-mode | 実装済み・人手確認待ち | capability失敗の隔離 | H-005, H-023 |
+| S-090 | Notifications | 実装済み・人手確認待ち | 明示操作、復帰URL | H-005, H-006, H-023 |
+| S-100〜S-140 | 各計画API | 計画 | 一覧では無効化 | 初期ステージ計画を参照 |
 
 ## 共通ランタイムとの対応
 

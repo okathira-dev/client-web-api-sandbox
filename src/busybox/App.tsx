@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { deriveStageProgress } from "./domain/stageRuntime";
 import { stageCatalogue, totalBoxCount } from "./domain/stages";
 import { type ProgressController, useProgress } from "./hooks/useProgress";
+import { useServiceWorker } from "./hooks/useServiceWorker";
 import { detectLocale, messages } from "./i18n";
 import { StageHost } from "./runtime/StageHost";
 import { stageDefinitions } from "./runtime/stageDefinitions";
@@ -21,6 +22,7 @@ function stageIdFromUrl(): string | null {
 
 export function App() {
   const progress = useProgress(detectLocale());
+  const serviceWorker = useServiceWorker();
   const locale = progress.document.settings.locale;
   const [view, setView] = useState<View>("stages");
   const [selectedStageId, setSelectedStageId] = useState(stageIdFromUrl);
@@ -33,6 +35,13 @@ export function App() {
     corrupt: copy.storageCorrupt,
     future: copy.storageFuture,
   }[progress.storageState];
+  const serviceWorkerMessage = {
+    unsupported: copy.pwaUnsupported,
+    registering: copy.pwaRegistering,
+    ready: copy.pwaReady,
+    "update-ready": copy.pwaUpdate,
+    error: copy.pwaError,
+  }[serviceWorker.state];
 
   const exportProgress = () => {
     const blob = new Blob([JSON.stringify(progress.document, null, 2)], {
@@ -187,6 +196,15 @@ export function App() {
                 {copy.resetProgress}
               </button>
             </div>
+            <h3>{copy.pwa}</h3>
+            <button
+              type="button"
+              className="pwa-status"
+              disabled={serviceWorker.state !== "update-ready"}
+              onClick={serviceWorker.applyUpdate}
+            >
+              {serviceWorkerMessage}
+            </button>
             <p className="privacy-note">{copy.privacy}</p>
           </section>
         )}

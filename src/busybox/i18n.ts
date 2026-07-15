@@ -39,6 +39,13 @@ export const messages = {
     resetProgress: "この端末の進捗を初期化",
     resetConfirm:
       "この端末に保存したBusyboxの進捗を削除します。元に戻せません。",
+    pwa: "オフラインとインストール",
+    pwaReady: "オフライン起動の準備ができています。",
+    pwaRegistering: "オフライン起動を準備しています…",
+    pwaUnsupported: "このブラウザはService Workerに対応していません。",
+    pwaError:
+      "オフライン起動を準備できませんでした。HTTPSまたは接続状態を確認してください。",
+    pwaUpdate: "新しい版があります。更新する",
   },
   en: {
     tagline: "Your everyday browser becomes the puzzle.",
@@ -77,6 +84,13 @@ export const messages = {
     resetProgress: "Reset progress on this device",
     resetConfirm:
       "Delete Busybox progress stored on this device? This cannot be undone.",
+    pwa: "Offline and installation",
+    pwaReady: "Offline launch is ready.",
+    pwaRegistering: "Preparing offline launch…",
+    pwaUnsupported: "This browser does not support Service Workers.",
+    pwaError:
+      "Offline launch could not be prepared. Check HTTPS and your connection.",
+    pwaUpdate: "A new version is ready. Update",
   },
 } as const;
 

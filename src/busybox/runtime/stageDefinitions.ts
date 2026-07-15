@@ -14,6 +14,7 @@ function summary(id: keyof typeof summaries) {
 }
 
 const core = () => import("../stages/coreStages");
+const webApp = () => import("../stages/webAppStages");
 
 export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
   "S-000": {
@@ -83,6 +84,40 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
       ),
     component: lazy(() =>
       core().then((module) => ({ default: module.ReturnStage })),
+    ),
+  },
+  "S-070": {
+    summary: summary("S-070"),
+    probe: () =>
+      safeCapabilityProbe(() =>
+        "serviceWorker" in navigator && "caches" in window
+          ? "available"
+          : "unsupported",
+      ),
+    component: lazy(() =>
+      webApp().then((module) => ({ default: module.OfflineStage })),
+    ),
+  },
+  "S-080": {
+    summary: summary("S-080"),
+    probe: () =>
+      safeCapabilityProbe(() =>
+        typeof window.matchMedia === "function" ? "available" : "unsupported",
+      ),
+    component: lazy(() =>
+      webApp().then((module) => ({ default: module.DisplayModeStage })),
+    ),
+  },
+  "S-090": {
+    summary: summary("S-090"),
+    probe: () =>
+      safeCapabilityProbe(() =>
+        "Notification" in window && "serviceWorker" in navigator
+          ? "permission-required"
+          : "unsupported",
+      ),
+    component: lazy(() =>
+      webApp().then((module) => ({ default: module.NotificationStage })),
     ),
   },
 };

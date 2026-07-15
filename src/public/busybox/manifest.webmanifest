@@ -1,0 +1,20 @@
+{
+  "name": "Busybox: Web API Explorer",
+  "short_name": "Busybox",
+  "description": "A browser-powered puzzle game",
+  "lang": "ja",
+  "id": "./index.html",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#100d1d",
+  "theme_color": "#171329",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
