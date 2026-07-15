@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { hasRevisitFlag, setRevisitFlag } from "../infra/synchronousFlags";
 import type { StageComponentProps } from "../runtime/types";
 
 function isSolved(props: StageComponentProps, boxId: string) {
@@ -249,11 +250,16 @@ export function BroadcastStage(props: StageComponentProps) {
 export function ReturnStage(props: StageComponentProps) {
   const boxId = "S-060-B01";
   const observationId = "S-060:entered";
-  const seenBefore = useRef(props.observations[observationId] !== undefined);
+  const seenBefore = useRef(
+    props.observations[observationId] !== undefined || hasRevisitFlag(),
+  );
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (seenBefore.current) props.solve(boxId, ["returned"]);
-    else props.observe(observationId, ["entered"]);
+    else {
+      setRevisitFlag();
+      props.observe(observationId, ["entered"]);
+    }
   }, [props]);
 
   return (

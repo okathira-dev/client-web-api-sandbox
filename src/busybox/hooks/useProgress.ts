@@ -11,6 +11,7 @@ import {
   IndexedDbProgressStore,
   type ProgressStore,
 } from "../infra/progressStore";
+import { clearSynchronousFlags } from "../infra/synchronousFlags";
 
 export type StorageState =
   | "loading"
@@ -109,6 +110,7 @@ export function useProgress(
   const reset = useCallback(async () => {
     const next = createProgressDocument(document.settings.locale);
     await storeRef.current.clear();
+    clearSynchronousFlags();
     await storeRef.current.save(next);
     setDocument(next);
     setStorageState("ready");

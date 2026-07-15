@@ -4,6 +4,8 @@
 
 主進捗はIndexedDBの `busybox-progress` データベースへ保存する。キーは `documents/current`。`localStorage`、Cache Storage、Service Workerのキャッシュは主進捗として使わない。
 
+例外としてS-060の「一度表示した」というbooleanだけは `busybox:S-060:seen` としてlocalStorageにも同期保存する。初回表示直後にタブを閉じると、非同期のIndexedDB transactionがcommit前に破棄されうるためである。このフラグから他の進捗は復元せず、設定画面のローカル初期化でIndexedDBと同時に削除する。
+
 保存するのは箱を解いた時刻、判定に必要な最小限の観測事実、言語設定、インストール単位のランダムIDである。カメラ、マイク、センサー、選択文字列、ファイル内容などの生入力は保存しない。
 
 ## version 1
