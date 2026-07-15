@@ -15,10 +15,11 @@ ProgressDocument
 ├── createdAt: ISO 8601 string
 ├── updatedAt: ISO 8601 string
 ├── boxes: Record<BoxId, { solvedAt, facts[] }>
+├── observations: Record<ObservationId, { observedAt, facts[] }>
 └── settings: { locale: "ja" | "en" }
 ```
 
-ステージ箱の状態は保存せず、各問題箱の解決状況から導出する。`facts` は正解の生入力ではなく、`mouse` や `installed-display-mode` のような非機密の判定結果だけを持つ。
+ステージ箱の状態は保存せず、各問題箱の解決状況から導出する。`observations` は再訪など、未解決のまま次回へ持ち越す事実を保持する。`facts` は正解の生入力ではなく、`mouse` や `installed-display-mode` のような非機密の判定結果だけを持つ。
 
 ## 互換性
 
@@ -30,7 +31,7 @@ ProgressDocument
 
 ## マージ規則
 
-問題箱の解決集合はgrow-only setとして扱う。ローカルとバックアップのどちらかで解決済みなら解決済みを残し、同じ箱の `solvedAt` は早い方、`facts` は和集合を採用する。端末固有の言語設定はローカルを優先する。
+問題箱の解決集合と観測集合はgrow-only setとして扱う。ローカルとバックアップのどちらかで解決・観測済みなら記録を残し、同じ項目の時刻は早い方、`facts` は和集合を採用する。端末固有の言語設定はローカルを優先する。
 
 この規則は端末時計の正確さへクリア可否を依存させないためのものでもある。時刻は表示・診断用で、後の時刻を理由に箱を閉じ直さない。
 

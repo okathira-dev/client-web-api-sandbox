@@ -17,6 +17,7 @@ describe("Busybox progress", () => {
       createdAt: first,
       updatedAt: first,
       boxes: {},
+      observations: {},
       settings: { locale: "ja" },
     });
   });

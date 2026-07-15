@@ -13,6 +13,12 @@ export interface ProgressSettings {
   locale: Locale;
 }
 
+export interface ObservationProgress {
+  [key: string]: unknown;
+  observedAt: string;
+  facts: string[];
+}
+
 export interface ProgressDocument {
   [key: string]: unknown;
   schemaVersion: typeof progressSchemaVersion;
@@ -20,6 +26,7 @@ export interface ProgressDocument {
   createdAt: string;
   updatedAt: string;
   boxes: Record<string, BoxProgress>;
+  observations: Record<string, ObservationProgress>;
   settings: ProgressSettings;
 }
 
@@ -60,6 +67,7 @@ export function createProgressDocument(
     createdAt: now,
     updatedAt: now,
     boxes: {},
+    observations: {},
     settings: { locale },
   };
 }
@@ -82,6 +90,21 @@ function parseBox(value: unknown): BoxProgress | null {
   return { ...value, solvedAt: value.solvedAt, facts };
 }
 
+function parseObservation(value: unknown): ObservationProgress | null {
+  if (
+    !isRecord(value) ||
+    !isIsoDate(value.observedAt) ||
+    !Array.isArray(value.facts)
+  ) {
+    return null;
+  }
+  const facts = value.facts.filter(
+    (fact): fact is string => typeof fact === "string",
+  );
+  if (facts.length !== value.facts.length) return null;
+  return { ...value, observedAt: value.observedAt, facts };
+}
+
 function parseVersionOne(value: Record<string, unknown>): ProgressParseResult {
   if (
     typeof value.installationId !== "string" ||
@@ -101,6 +124,21 @@ function parseVersionOne(value: Record<string, unknown>): ProgressParseResult {
     boxes[boxId] = box;
   }
 
+  const observations: Record<string, ObservationProgress> = {};
+  const rawObservations = value.observations ?? {};
+  if (!isRecord(rawObservations)) {
+    return { status: "corrupt", reason: "observations" };
+  }
+  for (const [observationId, rawObservation] of Object.entries(
+    rawObservations,
+  )) {
+    const observation = parseObservation(rawObservation);
+    if (!observation) {
+      return { status: "corrupt", reason: `observation:${observationId}` };
+    }
+    observations[observationId] = observation;
+  }
+
   return {
     status: "valid",
     migrated: false,
@@ -111,6 +149,7 @@ function parseVersionOne(value: Record<string, unknown>): ProgressParseResult {
       createdAt: value.createdAt,
       updatedAt: value.updatedAt,
       boxes,
+      observations,
       settings: { ...value.settings, locale: value.settings.locale },
     },
   };
@@ -149,6 +188,7 @@ function migrateVersionZero(
       createdAt,
       updatedAt: createdAt,
       boxes,
+      observations: {},
       settings: { locale },
     },
   };
@@ -193,6 +233,28 @@ export function mergeProgressDocuments(
       : remoteBox;
   }
 
+  const observations: Record<string, ObservationProgress> = {
+    ...local.observations,
+  };
+  for (const [observationId, remoteObservation] of Object.entries(
+    remote.observations,
+  )) {
+    const localObservation = observations[observationId];
+    observations[observationId] = localObservation
+      ? {
+          ...remoteObservation,
+          ...localObservation,
+          observedAt: earlierIsoDate(
+            localObservation.observedAt,
+            remoteObservation.observedAt,
+          ),
+          facts: [
+            ...new Set([...localObservation.facts, ...remoteObservation.facts]),
+          ].sort(),
+        }
+      : remoteObservation;
+  }
+
   // Cleared boxes are a grow-only set. Device-local settings stay local; a Drive
   // restore must never silently change the language chosen on this device.
   return {
@@ -205,7 +267,37 @@ export function mergeProgressDocuments(
       laterIsoDate(local.updatedAt, remote.updatedAt),
     ),
     boxes,
+    observations,
     settings: local.settings,
+  };
+}
+
+export function recordObservation(
+  document: ProgressDocument,
+  observationId: string,
+  facts: readonly string[] = [],
+  now = new Date().toISOString(),
+): ProgressDocument {
+  const current = document.observations[observationId];
+  if (current) {
+    const mergedFacts = [...new Set([...current.facts, ...facts])].sort();
+    if (mergedFacts.length === current.facts.length) return document;
+    return {
+      ...document,
+      updatedAt: now,
+      observations: {
+        ...document.observations,
+        [observationId]: { ...current, facts: mergedFacts },
+      },
+    };
+  }
+  return {
+    ...document,
+    updatedAt: now,
+    observations: {
+      ...document.observations,
+      [observationId]: { observedAt: now, facts: [...new Set(facts)].sort() },
+    },
   };
 }
 

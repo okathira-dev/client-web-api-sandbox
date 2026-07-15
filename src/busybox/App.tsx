@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { deriveStageProgress } from "./domain/stageRuntime";
 import { stageCatalogue, totalBoxCount } from "./domain/stages";
-import { useProgress } from "./hooks/useProgress";
+import { type ProgressController, useProgress } from "./hooks/useProgress";
 import { detectLocale, messages } from "./i18n";
+import { StageHost } from "./runtime/StageHost";
+import { stageDefinitions } from "./runtime/stageDefinitions";
 
 type View = "stages" | "settings" | "about";
 
@@ -11,10 +14,16 @@ const headingIds = {
   about: "busybox-about-heading",
 } as const;
 
+function stageIdFromUrl(): string | null {
+  const stageId = new URL(window.location.href).searchParams.get("stage");
+  return stageId && stageDefinitions[stageId] ? stageId : null;
+}
+
 export function App() {
   const progress = useProgress(detectLocale());
   const locale = progress.document.settings.locale;
   const [view, setView] = useState<View>("stages");
+  const [selectedStageId, setSelectedStageId] = useState(stageIdFromUrl);
   const copy = messages[locale];
   const solvedCount = Object.keys(progress.document.boxes).length;
   const storageMessage = {
@@ -40,6 +49,33 @@ export function App() {
   const resetProgress = () => {
     if (window.confirm(copy.resetConfirm)) void progress.reset();
   };
+
+  useEffect(() => {
+    const syncRoute = () => {
+      setSelectedStageId(stageIdFromUrl());
+      setView("stages");
+    };
+    window.addEventListener("popstate", syncRoute);
+    return () => window.removeEventListener("popstate", syncRoute);
+  }, []);
+
+  const openStage = (stageId: string) => {
+    const url = new URL(window.location.href);
+    url.searchParams.set("stage", stageId);
+    window.history.pushState({}, "", url);
+    setSelectedStageId(stageId);
+  };
+
+  const showStageList = () => {
+    const url = new URL(window.location.href);
+    url.searchParams.delete("stage");
+    window.history.pushState({}, "", url);
+    setSelectedStageId(null);
+  };
+
+  const selectedDefinition = selectedStageId
+    ? stageDefinitions[selectedStageId]
+    : undefined;
 
   return (
     <div className="app-shell">
@@ -77,7 +113,16 @@ export function App() {
       </nav>
 
       <main className="content">
-        {view === "stages" && (
+        {view === "stages" &&
+        selectedDefinition &&
+        progress.storageState !== "loading" ? (
+          <StageHost
+            definition={selectedDefinition}
+            locale={locale}
+            progress={progress}
+            onBack={showStageList}
+          />
+        ) : view === "stages" ? (
           <section aria-labelledby={headingIds.stages}>
             <div className="section-heading">
               <h2 id={headingIds.stages}>{copy.stages}</h2>
@@ -87,28 +132,18 @@ export function App() {
             </div>
             <ol className="stage-grid">
               {stageCatalogue.map((stage) => (
-                <li
-                  key={stage.id}
-                  className={`stage-card stage-card--${stage.category}`}
-                >
-                  <div className="gift-box" aria-hidden="true">
-                    <span />
-                  </div>
-                  <div>
-                    <p className="stage-card__id">{stage.id}</p>
-                    <h3>{stage.name[locale]}</h3>
-                    <p>
-                      {stage.boxCount} {copy.boxes} · {copy.planned}
-                    </p>
-                  </div>
-                  <button type="button" disabled>
-                    {copy.start}
-                  </button>
+                <li key={stage.id}>
+                  <StageCard
+                    stage={stage}
+                    locale={locale}
+                    boxes={progress.document.boxes}
+                    onOpen={openStage}
+                  />
                 </li>
               ))}
             </ol>
           </section>
-        )}
+        ) : null}
 
         {view === "settings" && (
           <section className="panel" aria-labelledby={headingIds.settings}>
@@ -167,5 +202,50 @@ export function App() {
         )}
       </main>
     </div>
+  );
+}
+
+interface StageCardProps {
+  stage: (typeof stageCatalogue)[number];
+  locale: "ja" | "en";
+  boxes: ProgressController["document"]["boxes"];
+  onOpen(stageId: string): void;
+}
+
+function StageCard({ stage, locale, boxes, onOpen }: StageCardProps) {
+  const copy = messages[locale];
+  const definition = stageDefinitions[stage.id];
+  const state = deriveStageProgress(stage.boxIds, boxes);
+  const status =
+    state === "solved"
+      ? copy.solved
+      : state === "partial"
+        ? copy.partial
+        : definition
+          ? copy.available
+          : copy.planned;
+
+  return (
+    <article
+      className={`stage-card stage-card--${stage.category} stage-card--${state}`}
+    >
+      <div className="gift-box" aria-hidden="true">
+        <span className="gift-box__ribbon" />
+      </div>
+      <div>
+        <p className="stage-card__id">{stage.id}</p>
+        <h3>{stage.name[locale]}</h3>
+        <p>
+          {stage.boxCount} {copy.boxes} · {status}
+        </p>
+      </div>
+      <button
+        type="button"
+        disabled={!definition}
+        onClick={() => onOpen(stage.id)}
+      >
+        {copy.start}
+      </button>
+    </article>
   );
 }

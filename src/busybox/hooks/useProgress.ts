@@ -3,6 +3,8 @@ import {
   createProgressDocument,
   type ProgressDocument,
   parseProgressDocument,
+  recordObservation,
+  solveBox,
 } from "../domain/progress";
 import type { Locale } from "../i18n";
 import {
@@ -21,6 +23,8 @@ export interface ProgressController {
   document: ProgressDocument;
   storageState: StorageState;
   setLocale(locale: Locale): void;
+  solve(boxId: string, facts?: readonly string[]): void;
+  observe(observationId: string, facts?: readonly string[]): void;
   replaceDocument(
     change: (current: ProgressDocument) => ProgressDocument,
   ): void;
@@ -110,5 +114,29 @@ export function useProgress(
     setStorageState("ready");
   }, [document.settings.locale]);
 
-  return { document, storageState, setLocale, replaceDocument, reset };
+  const solve = useCallback(
+    (boxId: string, facts: readonly string[] = []) => {
+      replaceDocument((current) => solveBox(current, boxId, facts));
+    },
+    [replaceDocument],
+  );
+
+  const observe = useCallback(
+    (observationId: string, facts: readonly string[] = []) => {
+      replaceDocument((current) =>
+        recordObservation(current, observationId, facts),
+      );
+    },
+    [replaceDocument],
+  );
+
+  return {
+    document,
+    storageState,
+    setLocale,
+    solve,
+    observe,
+    replaceDocument,
+    reset,
+  };
 }
