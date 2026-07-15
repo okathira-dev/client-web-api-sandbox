@@ -24,6 +24,18 @@ export const messages = {
     fatalBody:
       "再読み込みしても戻らない場合は、サイトデータを確認してください。",
     reload: "再読み込み",
+    storageReady: "このブラウザに進捗を保存しています。",
+    storageLoading: "進捗を読み込んでいます…",
+    storageUnavailable:
+      "進捗を保存できません。このタブを閉じるまで一時的に遊べます。",
+    storageCorrupt:
+      "保存データを読み取れません。自動では上書きしていません。必要なら進捗を初期化してください。",
+    storageFuture:
+      "新しい版で作られた進捗です。この版では上書きせず読み取り専用にします。",
+    exportProgress: "進捗を書き出す",
+    resetProgress: "この端末の進捗を初期化",
+    resetConfirm:
+      "この端末に保存したBusyboxの進捗を削除します。元に戻せません。",
   },
   en: {
     tagline: "Your everyday browser becomes the puzzle.",
@@ -47,6 +59,18 @@ export const messages = {
     fatalTitle: "The box room could not be opened",
     fatalBody: "If reloading does not help, check this site's stored data.",
     reload: "Reload",
+    storageReady: "Progress is stored in this browser.",
+    storageLoading: "Loading progress…",
+    storageUnavailable:
+      "Progress cannot be saved. You can keep playing temporarily until this tab closes.",
+    storageCorrupt:
+      "Stored data cannot be read and has not been overwritten. Reset progress if you want to recover.",
+    storageFuture:
+      "This progress was created by a newer version. It remains read-only here.",
+    exportProgress: "Export progress",
+    resetProgress: "Reset progress on this device",
+    resetConfirm:
+      "Delete Busybox progress stored on this device? This cannot be undone.",
   },
 } as const;
 

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { stageCatalogue, totalBoxCount } from "./domain/stages";
-import { detectLocale, type Locale, messages } from "./i18n";
+import { useProgress } from "./hooks/useProgress";
+import { detectLocale, messages } from "./i18n";
 
 type View = "stages" | "settings" | "about";
 
@@ -11,9 +12,34 @@ const headingIds = {
 } as const;
 
 export function App() {
-  const [locale, setLocale] = useState<Locale>(() => detectLocale());
+  const progress = useProgress(detectLocale());
+  const locale = progress.document.settings.locale;
   const [view, setView] = useState<View>("stages");
   const copy = messages[locale];
+  const solvedCount = Object.keys(progress.document.boxes).length;
+  const storageMessage = {
+    loading: copy.storageLoading,
+    ready: copy.storageReady,
+    unavailable: copy.storageUnavailable,
+    corrupt: copy.storageCorrupt,
+    future: copy.storageFuture,
+  }[progress.storageState];
+
+  const exportProgress = () => {
+    const blob = new Blob([JSON.stringify(progress.document, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `busybox-progress-${new Date().toISOString().slice(0, 10)}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const resetProgress = () => {
+    if (window.confirm(copy.resetConfirm)) void progress.reset();
+  };
 
   return (
     <div className="app-shell">
@@ -56,7 +82,7 @@ export function App() {
             <div className="section-heading">
               <h2 id={headingIds.stages}>{copy.stages}</h2>
               <p>
-                {copy.progress}: 0 / {totalBoxCount}
+                {copy.progress}: {solvedCount} / {totalBoxCount}
               </p>
             </div>
             <ol className="stage-grid">
@@ -94,7 +120,7 @@ export function App() {
                   type="radio"
                   name="locale"
                   checked={locale === "ja"}
-                  onChange={() => setLocale("ja")}
+                  onChange={() => progress.setLocale("ja")}
                 />{" "}
                 {copy.japanese}
               </label>
@@ -103,11 +129,29 @@ export function App() {
                   type="radio"
                   name="locale"
                   checked={locale === "en"}
-                  onChange={() => setLocale("en")}
+                  onChange={() => progress.setLocale("en")}
                 />{" "}
                 {copy.english}
               </label>
             </fieldset>
+            <div
+              className={`storage-status storage-status--${progress.storageState}`}
+              role="status"
+            >
+              {storageMessage}
+            </div>
+            <div className="settings-actions">
+              <button type="button" onClick={exportProgress}>
+                {copy.exportProgress}
+              </button>
+              <button
+                type="button"
+                className="danger-button"
+                onClick={resetProgress}
+              >
+                {copy.resetProgress}
+              </button>
+            </div>
             <p className="privacy-note">{copy.privacy}</p>
           </section>
         )}
