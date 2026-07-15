@@ -30,6 +30,7 @@ _A new kind of puzzle game where the browser itself is the key._
 | [人手確認台帳](./docs/human-test-matrix.md) | 自動テストだけでは保証できない環境・権限・機器の確認を管理する |
 | [権限・プライバシー方針](./docs/privacy-and-permissions.md) | センサーデータやGoogle Drive連携の境界を定義する |
 | [決定ログ](./docs/decision-log.md) | 確定事項と未確定事項を混同しないための記録 |
+| [添付資料の保存版](./docs/source/README.md) | 企画書ドラフトとDeep Researchメモを非規範の入力資料として保存する |
 
 ## 作業の隔離
 
@@ -37,7 +38,7 @@ _A new kind of puzzle game where the browser itself is the key._
 - worktree: `worktrees.local/busybox-web-api-game`
 - 分岐元: `main`
 
-既存の `codex/busybox-implementation`、`codex/busybox-full-game` など、ほかのBusybox関連ブランチは並行作業として扱い、このworktreeから変更しない。
+過去のBusybox関連ブランチは整理し、このブランチを唯一のBusybox作業線とする。今後並行作業が必要になった場合だけ、このブランチから用途別の短命な子ブランチとworktreeを作る。
 
 ## 実装時のコメント方針
 
