@@ -47,6 +47,7 @@ export default defineConfig({
           "index.html",
         ),
         "kojo-xml-viewer": resolve(root, "kojo-xml-viewer", "index.html"),
+        busybox: resolve(root, "busybox", "index.html"),
       },
     },
   },

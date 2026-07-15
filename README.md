@@ -61,6 +61,10 @@ npm run dev
 
 日本の控除証明書データのXMLファイルを閲覧する読み取り専用のウェブアプリケーション
 
+### [./src/busybox](./src/busybox)
+
+ブラウザや端末の機能そのものを使って解く、日英対応のWeb APIパズルゲーム
+
 ## 開発サポートファイル
 
 ### [./Scratchpad.md](./Scratchpad.md)
