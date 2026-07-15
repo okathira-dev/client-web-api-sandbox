@@ -15,6 +15,7 @@ function summary(id: keyof typeof summaries) {
 
 const core = () => import("../stages/coreStages");
 const webApp = () => import("../stages/webAppStages");
+const device = () => import("../stages/deviceStages");
 
 export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
   "S-000": {
@@ -118,6 +119,54 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
       ),
     component: lazy(() =>
       webApp().then((module) => ({ default: module.NotificationStage })),
+    ),
+  },
+  "S-100": {
+    summary: summary("S-100"),
+    probe: () =>
+      safeCapabilityProbe(() =>
+        "DeviceOrientationEvent" in window
+          ? "permission-required"
+          : "unsupported",
+      ),
+    component: lazy(() =>
+      device().then((module) => ({ default: module.OrientationStage })),
+    ),
+  },
+  "S-110": {
+    summary: summary("S-110"),
+    probe: () =>
+      safeCapabilityProbe(() =>
+        isSecureContext && "mediaDevices" in navigator
+          ? "permission-required"
+          : "unsupported",
+      ),
+    component: lazy(() =>
+      device().then((module) => ({ default: module.CameraLightStage })),
+    ),
+  },
+  "S-120": {
+    summary: summary("S-120"),
+    probe: () =>
+      safeCapabilityProbe(() =>
+        isSecureContext &&
+        "mediaDevices" in navigator &&
+        "AudioContext" in window
+          ? "permission-required"
+          : "unsupported",
+      ),
+    component: lazy(() =>
+      device().then((module) => ({ default: module.SoundShapeStage })),
+    ),
+  },
+  "S-130": {
+    summary: summary("S-130"),
+    probe: () =>
+      safeCapabilityProbe(() =>
+        isSecureContext && crypto.subtle ? "available" : "unsupported",
+      ),
+    component: lazy(() =>
+      device().then((module) => ({ default: module.FileKeyStage })),
     ),
   },
 };

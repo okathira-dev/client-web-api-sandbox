@@ -514,6 +514,64 @@ input:focus-visible {
   transform: perspective(12rem) rotateY(-50deg);
   color: #ffd166;
 }
+.device-status {
+  display: grid;
+  place-items: center;
+  min-width: 4.5rem;
+  min-height: 3rem;
+  border: 1px solid #66567e;
+  border-radius: 0.7rem;
+  color: #a9a0b7;
+  background: #1c172d;
+}
+.device-status--solved {
+  border-color: #34d399;
+  color: #8ff0c9;
+}
+.tilt-clue {
+  color: #ffd166;
+  font-size: clamp(7rem, 28vw, 12rem);
+  line-height: 1;
+  transition: transform 80ms linear;
+}
+.sensor-preview {
+  width: min(22rem, 90%);
+  max-height: 14rem;
+  border: 1px solid #55486a;
+  border-radius: 1rem;
+  background: #090711;
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.2);
+}
+.light-meter {
+  width: min(22rem, 90%);
+  height: 1rem;
+  overflow: hidden;
+  border: 1px solid #66567e;
+  border-radius: 999px;
+}
+.light-meter span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #171329, #fff1a8);
+}
+.sound-ring {
+  width: 6rem;
+  height: 6rem;
+  border: 0.8rem solid #60a5fa;
+  border-radius: 50%;
+  transition: transform 80ms linear;
+}
+.file-action {
+  display: inline-flex;
+}
+.file-action input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
 .sr-only {
   position: absolute;
   width: 1px;
