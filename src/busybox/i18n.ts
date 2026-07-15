@@ -46,6 +46,21 @@ export const messages = {
     pwaError:
       "オフライン起動を準備できませんでした。HTTPSまたは接続状態を確認してください。",
     pwaUpdate: "新しい版があります。更新する",
+    drive: "Google Driveバックアップ（任意）",
+    driveUnconfigured:
+      "公開環境にGoogle OAuth Client IDが設定されていません。ローカル進捗には影響しません。",
+    driveIdle: "アプリ専用の非表示領域だけを使います。接続と同期",
+    driveAuthorizing: "Googleの許可画面を待っています…",
+    driveSyncing: "ローカルとDriveの進捗を統合しています…",
+    driveSuccess: "同期しました。両方で開いた箱を残しています。",
+    driveError:
+      "同期できませんでした。ローカル進捗は変更していません。もう一度試す",
+    driveDisconnect: "Google Driveとの接続を解除",
+    driveDeleted:
+      "Driveのバックアップを削除しました。ローカル進捗は残っています。",
+    driveDelete: "Driveバックアップを削除",
+    driveDeleteConfirm:
+      "Google Driveのアプリ専用バックアップを完全に削除します。ローカル進捗は削除しません。",
   },
   en: {
     tagline: "Your everyday browser becomes the puzzle.",
@@ -91,6 +106,19 @@ export const messages = {
     pwaError:
       "Offline launch could not be prepared. Check HTTPS and your connection.",
     pwaUpdate: "A new version is ready. Update",
+    drive: "Google Drive backup (optional)",
+    driveUnconfigured:
+      "No Google OAuth client ID is configured for this deployment. Local progress is unaffected.",
+    driveIdle: "Only the app's hidden data folder is used. Connect and sync",
+    driveAuthorizing: "Waiting for Google authorization…",
+    driveSyncing: "Merging local and Drive progress…",
+    driveSuccess: "Synced. Boxes opened on both sides were kept.",
+    driveError: "Sync failed. Local progress was not changed. Try again",
+    driveDisconnect: "Disconnect Google Drive",
+    driveDeleted: "The Drive backup was deleted. Local progress remains.",
+    driveDelete: "Delete Drive backup",
+    driveDeleteConfirm:
+      "Permanently delete the app-only Google Drive backup? Local progress will remain.",
   },
 } as const;
 

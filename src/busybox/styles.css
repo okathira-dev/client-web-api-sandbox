@@ -315,6 +315,36 @@ input:focus-visible {
   border-color: #ffd166;
   cursor: pointer;
 }
+.drive-action {
+  width: 100%;
+  border: 1px solid #665979;
+  border-radius: 0.7rem;
+  padding: 0.85rem 1rem;
+  color: #f7f3ff;
+  background: #26203b;
+  cursor: pointer;
+}
+.drive-action:disabled {
+  color: #a49bad;
+  cursor: default;
+}
+.text-button {
+  margin-top: 0.75rem;
+  border: 0;
+  padding: 0.5rem 0;
+  color: #d8c5ff;
+  background: transparent;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.drive-secondary-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.danger-text {
+  color: #ffb6c5;
+}
 .privacy-note {
   padding: 1rem;
   border-left: 0.25rem solid #7dd3fc;
@@ -571,6 +601,12 @@ input:focus-visible {
   height: 1px;
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
+}
+.cloud-clue {
+  color: #dbeafe;
+  font-size: clamp(7rem, 28vw, 12rem);
+  line-height: 1;
+  filter: drop-shadow(0 0 2rem #60a5fa66);
 }
 .sr-only {
   position: absolute;

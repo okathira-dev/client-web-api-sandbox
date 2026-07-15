@@ -29,7 +29,7 @@
 | S-110 | camera / luminance | 実装済み・人手確認待ち | 生映像非保存、track cleanup | H-006, H-007, H-019 |
 | S-120 | microphone / RMS | 実装済み・人手確認待ち | 生音声非保存、AudioContext cleanup | H-006, H-007, H-019 |
 | S-130 | File API / Web Crypto | 実装済み・人手確認待ち | 4KB上限、ハッシュ照合、2箱進捗 | H-014, H-020 |
-| S-140 | Google Drive | 計画 | 一覧では無効化 | H-015〜H-018 |
+| S-140 | Google Drive `appDataFolder` | 実装済み・設定/人手確認待ち | API通信モック、grow-onlyマージ、破損保護 | H-015〜H-018 |
 
 ## 共通ランタイムとの対応
 

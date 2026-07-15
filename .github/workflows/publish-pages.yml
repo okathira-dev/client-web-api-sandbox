@@ -18,6 +18,8 @@ permissions:
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   PAGES_ARTIFACT_NAME: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
+  # Empty/unset keeps Drive optional and shows an unconfigured state in Busybox.
+  VITE_GOOGLE_CLIENT_ID: ${{ vars.BUSYBOX_GOOGLE_CLIENT_ID }}
 
 # 1 つの同時デプロイメントを可能にする
 concurrency:

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { deriveStageProgress } from "./domain/stageRuntime";
 import { stageCatalogue, totalBoxCount } from "./domain/stages";
+import { useDriveBackup } from "./hooks/useDriveBackup";
 import { type ProgressController, useProgress } from "./hooks/useProgress";
 import { useServiceWorker } from "./hooks/useServiceWorker";
 import { detectLocale, messages } from "./i18n";
@@ -23,6 +24,7 @@ function stageIdFromUrl(): string | null {
 export function App() {
   const progress = useProgress(detectLocale());
   const serviceWorker = useServiceWorker();
+  const drive = useDriveBackup(progress);
   const locale = progress.document.settings.locale;
   const [view, setView] = useState<View>("stages");
   const [selectedStageId, setSelectedStageId] = useState(stageIdFromUrl);
@@ -66,6 +68,13 @@ export function App() {
     };
     window.addEventListener("popstate", syncRoute);
     return () => window.removeEventListener("popstate", syncRoute);
+  }, []);
+
+  useEffect(() => {
+    const showSettings = () => setView("settings");
+    window.addEventListener("busybox:show-settings", showSettings);
+    return () =>
+      window.removeEventListener("busybox:show-settings", showSettings);
   }, []);
 
   const openStage = (stageId: string) => {
@@ -205,6 +214,51 @@ export function App() {
             >
               {serviceWorkerMessage}
             </button>
+            <h3>{copy.drive}</h3>
+            <button
+              type="button"
+              className="drive-action"
+              disabled={
+                drive.state === "unconfigured" ||
+                drive.state === "authorizing" ||
+                drive.state === "syncing"
+              }
+              onClick={() => void drive.sync()}
+            >
+              {
+                {
+                  unconfigured: copy.driveUnconfigured,
+                  idle: copy.driveIdle,
+                  authorizing: copy.driveAuthorizing,
+                  syncing: copy.driveSyncing,
+                  success: copy.driveSuccess,
+                  deleted: copy.driveDeleted,
+                  error: copy.driveError,
+                }[drive.state]
+              }
+            </button>
+            {drive.connected && (
+              <div className="drive-secondary-actions">
+                <button
+                  type="button"
+                  className="text-button"
+                  onClick={() => void drive.disconnect()}
+                >
+                  {copy.driveDisconnect}
+                </button>
+                <button
+                  type="button"
+                  className="text-button danger-text"
+                  onClick={() => {
+                    if (window.confirm(copy.driveDeleteConfirm)) {
+                      void drive.removeRemote();
+                    }
+                  }}
+                >
+                  {copy.driveDelete}
+                </button>
+              </div>
+            )}
             <p className="privacy-note">{copy.privacy}</p>
           </section>
         )}

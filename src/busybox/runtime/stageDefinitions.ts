@@ -16,6 +16,7 @@ function summary(id: keyof typeof summaries) {
 const core = () => import("../stages/coreStages");
 const webApp = () => import("../stages/webAppStages");
 const device = () => import("../stages/deviceStages");
+const drive = () => import("../stages/driveStage");
 
 export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
   "S-000": {
@@ -167,6 +168,13 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
       ),
     component: lazy(() =>
       device().then((module) => ({ default: module.FileKeyStage })),
+    ),
+  },
+  "S-140": {
+    summary: summary("S-140"),
+    probe: () => "available",
+    component: lazy(() =>
+      drive().then((module) => ({ default: module.DriveStage })),
     ),
   },
 };
