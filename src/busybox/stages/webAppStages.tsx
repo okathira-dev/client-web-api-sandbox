@@ -1,16 +1,6 @@
 import { useEffect, useState } from "react";
 import type { StageComponentProps } from "../runtime/types";
-
-function SolvedMark({ solved }: { solved: boolean }) {
-  return (
-    <div
-      className={`pwa-orb ${solved ? "pwa-orb--solved" : ""}`}
-      aria-hidden="true"
-    >
-      {solved ? "✓" : "◇"}
-    </div>
-  );
-}
+import { ProblemGiftBox } from "../ui/GiftBox";
 
 export function OfflineStage(props: StageComponentProps) {
   const boxId = "S-070-B01";
@@ -39,7 +29,11 @@ export function OfflineStage(props: StageComponentProps) {
         ⌁
       </div>
       <p role="status">{online ? "•••" : "×"}</p>
-      <SolvedMark solved={props.boxes[boxId] !== undefined} />
+      <ProblemGiftBox
+        boxId={boxId}
+        state={props.problemState(boxId)}
+        locale={props.locale}
+      />
     </div>
   );
 }
@@ -72,7 +66,11 @@ export function DisplayModeStage(props: StageComponentProps) {
         ▯
       </div>
       <p>{props.locale === "ja" ? "別の入口から。" : "Enter another way."}</p>
-      <SolvedMark solved={props.boxes[boxId] !== undefined} />
+      <ProblemGiftBox
+        boxId={boxId}
+        state={props.problemState(boxId)}
+        locale={props.locale}
+      />
     </div>
   );
 }
@@ -122,7 +120,11 @@ export function NotificationStage(props: StageComponentProps) {
         {props.locale === "ja" ? "外へ呼ぶ" : "Call outside"}
       </button>
       <p role="status">{status}</p>
-      <SolvedMark solved={props.boxes[boxId] !== undefined} />
+      <ProblemGiftBox
+        boxId={boxId}
+        state={props.problemState(boxId)}
+        locale={props.locale}
+      />
     </div>
   );
 }

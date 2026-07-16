@@ -1,4 +1,5 @@
 import { stageCatalogue, totalBoxCount } from "../domain/stages";
+import { problemBoxPresentation } from "../ui/problemBoxPresentation";
 import { stageDefinitions } from "./stageDefinitions";
 
 describe("Busybox stage registry", () => {
@@ -15,5 +16,13 @@ describe("Busybox stage registry", () => {
       expect(new Set(stage.boxIds).size).toBe(stage.boxCount);
       expect(stageDefinitions[stage.id]?.summary).toBe(stage);
     }
+  });
+
+  it("gives every problem exactly one color and clue presentation", () => {
+    const plannedBoxIds = stageCatalogue.flatMap((stage) => stage.boxIds);
+    expect(Object.keys(problemBoxPresentation).sort()).toEqual(
+      [...plannedBoxIds].sort(),
+    );
+    expect(new Set(plannedBoxIds).size).toBe(totalBoxCount);
   });
 });

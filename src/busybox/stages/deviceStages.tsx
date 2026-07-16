@@ -1,24 +1,8 @@
 import { type ChangeEvent, useEffect, useRef, useState } from "react";
 import type { StageComponentProps } from "../runtime/types";
+import { ProblemGiftBox } from "../ui/GiftBox";
 
 type InteractionState = "idle" | "active" | "denied" | "unavailable";
-
-function StatusBox({
-  solved,
-  status,
-}: {
-  solved: boolean;
-  status: InteractionState;
-}) {
-  return (
-    <div
-      className={`device-status ${solved ? "device-status--solved" : ""}`}
-      role="status"
-    >
-      {solved ? "✓" : status}
-    </div>
-  );
-}
 
 interface PermissionAwareOrientationEvent {
   requestPermission?: () => Promise<"granted" | "denied">;
@@ -83,7 +67,14 @@ export function OrientationStage(props: StageComponentProps) {
       >
         {props.locale === "ja" ? "姿勢を感じる" : "Sense orientation"}
       </button>
-      <StatusBox solved={props.boxes[boxId] !== undefined} status={status} />
+      <p className="interaction-status" role="status">
+        {status}
+      </p>
+      <ProblemGiftBox
+        boxId={boxId}
+        state={props.problemState(boxId)}
+        locale={props.locale}
+      />
     </div>
   );
 }
@@ -175,7 +166,14 @@ export function CameraLightStage(props: StageComponentProps) {
       >
         {props.locale === "ja" ? "光だけを見る" : "See only light"}
       </button>
-      <StatusBox solved={props.boxes[boxId] !== undefined} status={status} />
+      <p className="interaction-status" role="status">
+        {status}
+      </p>
+      <ProblemGiftBox
+        boxId={boxId}
+        state={props.problemState(boxId)}
+        locale={props.locale}
+      />
     </div>
   );
 }
@@ -258,7 +256,14 @@ export function SoundShapeStage(props: StageComponentProps) {
       >
         {props.locale === "ja" ? "音の形を見る" : "See the sound"}
       </button>
-      <StatusBox solved={props.boxes[boxId] !== undefined} status={status} />
+      <p className="interaction-status" role="status">
+        {status}
+      </p>
+      <ProblemGiftBox
+        boxId={boxId}
+        state={props.problemState(boxId)}
+        locale={props.locale}
+      />
     </div>
   );
 }
@@ -285,12 +290,13 @@ function isKeyFile(
 
 export function FileKeyStage(props: StageComponentProps) {
   const [status, setStatus] = useState("");
-  const keyObservation = props.observations["S-130:key"];
+  const [attemptKeyHash, setAttemptKeyHash] = useState<string | null>(null);
 
   const exportKey = async () => {
     const bytes = crypto.getRandomValues(new Uint8Array(18));
     const token = btoa(String.fromCharCode(...bytes));
     const hash = await hashToken(token);
+    setAttemptKeyHash(hash);
     props.observe("S-130:key", [hash]);
     props.solve("S-130-B01", ["file:exported"]);
     const blob = new Blob(
@@ -318,8 +324,7 @@ export function FileKeyStage(props: StageComponentProps) {
       const value: unknown = JSON.parse(await file.text());
       if (!isKeyFile(value)) throw new Error("invalid key file");
       const hash = await hashToken(value.token);
-      if (!keyObservation?.facts.includes(hash))
-        throw new Error("different key");
+      if (hash !== attemptKeyHash) throw new Error("different key");
       props.solve("S-130-B02", ["file:returned"]);
       setStatus("matched");
     } catch {
@@ -330,13 +335,15 @@ export function FileKeyStage(props: StageComponentProps) {
   return (
     <div className="puzzle puzzle--centered">
       <div className="problem-row">
-        <StatusBox
-          solved={props.boxes["S-130-B01"] !== undefined}
-          status="idle"
+        <ProblemGiftBox
+          boxId="S-130-B01"
+          state={props.problemState("S-130-B01")}
+          locale={props.locale}
         />
-        <StatusBox
-          solved={props.boxes["S-130-B02"] !== undefined}
-          status="idle"
+        <ProblemGiftBox
+          boxId="S-130-B02"
+          state={props.problemState("S-130-B02")}
+          locale={props.locale}
         />
       </div>
       <button

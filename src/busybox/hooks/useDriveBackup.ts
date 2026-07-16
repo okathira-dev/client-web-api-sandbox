@@ -4,6 +4,7 @@ import {
   requestDriveAccessToken,
   revokeDriveAccessToken,
 } from "../drive/googleIdentity";
+import type { DriveStageSyncResult } from "../runtime/types";
 import type { ProgressController } from "./useProgress";
 
 export type DriveState =
@@ -22,8 +23,8 @@ export function useDriveBackup(progress: ProgressController) {
   );
   const [accessToken, setAccessToken] = useState<string | null>(null);
 
-  const sync = useCallback(async () => {
-    if (!clientId) return;
+  const sync = useCallback(async (): Promise<DriveStageSyncResult> => {
+    if (!clientId) return { synced: false, remoteDevice: false };
     try {
       let token = accessToken;
       if (!token) {
@@ -38,18 +39,21 @@ export function useDriveBackup(progress: ProgressController) {
       progress.observe("drive:backup", [
         result.created ? "created" : "updated",
       ]);
-      if (
+      const remoteDevice = Boolean(
         result.remoteInstallationId &&
-        result.remoteInstallationId !== localInstallationId
-      ) {
+          result.remoteInstallationId !== localInstallationId,
+      );
+      if (remoteDevice) {
         progress.observe("drive:remote-device", ["merged"]);
       }
       setState("success");
+      return { synced: true, remoteDevice };
     } catch {
       // A failed remote operation never clears or replaces local progress. Clearing
       // the token makes the next user gesture request a fresh short-lived token.
       setAccessToken(null);
       setState("error");
+      return { synced: false, remoteDevice: false };
     }
   }, [accessToken, progress]);
 
@@ -79,6 +83,7 @@ export function useDriveBackup(progress: ProgressController) {
 
   return {
     state,
+    configured: Boolean(clientId),
     connected: accessToken !== null,
     sync,
     disconnect,

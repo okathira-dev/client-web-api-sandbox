@@ -1,36 +1,18 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { hasRevisitFlag, setRevisitFlag } from "../infra/synchronousFlags";
 import type { StageComponentProps } from "../runtime/types";
-
-function isSolved(props: StageComponentProps, boxId: string) {
-  return props.boxes[boxId] !== undefined;
-}
-
-function ProblemBox({ solved, label }: { solved: boolean; label: string }) {
-  return (
-    <div
-      className={`problem-box ${solved ? "problem-box--solved" : ""}`}
-      role="img"
-      aria-label={label}
-    >
-      <span aria-hidden="true">{solved ? "✓" : "?"}</span>
-    </div>
-  );
-}
+import { ProblemGiftBox } from "../ui/GiftBox";
 
 export function FirstBoxStage(props: StageComponentProps) {
   const boxId = "S-000-B01";
-  const solved = isSolved(props, boxId);
   return (
     <div className="puzzle puzzle--centered">
-      <button
-        type="button"
-        className={`puzzle-gift ${solved ? "puzzle-gift--open" : ""}`}
-        aria-label={props.locale === "ja" ? "箱" : "Box"}
+      <ProblemGiftBox
+        boxId={boxId}
+        state={props.problemState(boxId)}
+        locale={props.locale}
         onClick={() => props.solve(boxId, ["activation"])}
-      >
-        <span aria-hidden="true">{solved ? "✦" : "🎁"}</span>
-      </button>
+      />
     </div>
   );
 }
@@ -42,39 +24,23 @@ const pointerBoxes = {
 } as const;
 
 export function PointerStage(props: StageComponentProps) {
-  const touchStoneRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    const touchStone = touchStoneRef.current;
-    if (!touchStone) return;
-    const handlePointer = (event: PointerEvent) => {
-      const boxId =
-        pointerBoxes[event.pointerType as keyof typeof pointerBoxes];
-      if (boxId) props.solve(boxId, [`pointer:${event.pointerType}`]);
-    };
-    touchStone.addEventListener("pointerdown", handlePointer);
-    return () => touchStone.removeEventListener("pointerdown", handlePointer);
-  }, [props]);
-
   return (
     <div className="puzzle puzzle--centered">
       <div className="problem-row" aria-live="polite">
         {Object.entries(pointerBoxes).map(([pointerType, boxId]) => (
-          <ProblemBox
+          <ProblemGiftBox
             key={boxId}
-            solved={isSolved(props, boxId)}
-            label={`${pointerType} input`}
+            boxId={boxId}
+            state={props.problemState(boxId)}
+            locale={props.locale}
+            onPointerDown={(event) => {
+              if (event.pointerType === pointerType) {
+                props.solve(boxId, [`pointer:${event.pointerType}`]);
+              }
+            }}
           />
         ))}
       </div>
-      <button type="button" ref={touchStoneRef} className="touch-stone">
-        <span aria-hidden="true">☝︎</span>
-        <span className="sr-only">
-          {props.locale === "ja"
-            ? "異なるポインターで触れる"
-            : "Touch with different pointers"}
-        </span>
-      </button>
     </div>
   );
 }
@@ -121,7 +87,11 @@ export function ResizeStage(props: StageComponentProps) {
       <p className="measurement" aria-live="polite">
         {width} → {targetWidth}
       </p>
-      <ProblemBox solved={isSolved(props, boxId)} label="viewport box" />
+      <ProblemGiftBox
+        boxId={boxId}
+        state={props.problemState(boxId)}
+        locale={props.locale}
+      />
     </div>
   );
 }
@@ -151,7 +121,11 @@ export function SelectionStage(props: StageComponentProps) {
       <p>
         [ <strong>{answer}</strong> ]
       </p>
-      <ProblemBox solved={isSolved(props, boxId)} label="selection box" />
+      <ProblemGiftBox
+        boxId={boxId}
+        state={props.problemState(boxId)}
+        locale={props.locale}
+      />
     </div>
   );
 }
@@ -192,7 +166,11 @@ export function VisibilityStage(props: StageComponentProps) {
       <p className="measurement" aria-live="polite">
         {hiddenSeconds || "…"}
       </p>
-      <ProblemBox solved={isSolved(props, boxId)} label="hidden-time box" />
+      <ProblemGiftBox
+        boxId={boxId}
+        state={props.problemState(boxId)}
+        locale={props.locale}
+      />
     </div>
   );
 }
@@ -242,7 +220,11 @@ export function BroadcastStage(props: StageComponentProps) {
       >
         {props.locale === "ja" ? "もう一つ開く" : "Open another"}
       </button>
-      <ProblemBox solved={isSolved(props, boxId)} label="two-window box" />
+      <ProblemGiftBox
+        boxId={boxId}
+        state={props.problemState(boxId)}
+        locale={props.locale}
+      />
     </div>
   );
 }
@@ -255,11 +237,16 @@ export function ReturnStage(props: StageComponentProps) {
   );
 
   useLayoutEffect(() => {
-    if (seenBefore.current) props.solve(boxId, ["returned"]);
-    else {
+    if (!seenBefore.current) {
       setRevisitFlag();
       props.observe(observationId, ["entered"]);
     }
+  }, [props]);
+
+  useEffect(() => {
+    // Returning is itself the replay action, but solve after the first paint so
+    // the shared box visibly transitions from closed to open on every visit.
+    if (seenBefore.current) props.solve(boxId, ["returned"]);
   }, [props]);
 
   return (
@@ -268,7 +255,11 @@ export function ReturnStage(props: StageComponentProps) {
         ↪
       </div>
       <p>{props.locale === "ja" ? "また、ここで。" : "See you here again."}</p>
-      <ProblemBox solved={isSolved(props, boxId)} label="return box" />
+      <ProblemGiftBox
+        boxId={boxId}
+        state={props.problemState(boxId)}
+        locale={props.locale}
+      />
     </div>
   );
 }

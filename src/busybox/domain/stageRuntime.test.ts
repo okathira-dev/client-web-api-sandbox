@@ -1,10 +1,21 @@
-import { deriveStageProgress, safeCapabilityProbe } from "./stageRuntime";
+import {
+  deriveProblemBoxVisualState,
+  deriveStageProgress,
+  safeCapabilityProbe,
+} from "./stageRuntime";
 
 const solved = (id: string) => ({
   [id]: { solvedAt: "2026-01-01T00:00:00.000Z", facts: [] },
 });
 
 describe("Busybox stage runtime", () => {
+  it("separates persistent history from the current attempt", () => {
+    expect(deriveProblemBoxVisualState(false, false)).toBe("ribboned");
+    expect(deriveProblemBoxVisualState(true, false)).toBe("closed");
+    expect(deriveProblemBoxVisualState(false, true)).toBe("open");
+    expect(deriveProblemBoxVisualState(true, true)).toBe("open");
+  });
+
   it("derives untouched, partial, and solved from problem boxes", () => {
     const boxIds = ["one", "two"];
     expect(deriveStageProgress(boxIds, {})).toBe("untouched");

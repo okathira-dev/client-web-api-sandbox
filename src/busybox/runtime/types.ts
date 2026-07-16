@@ -1,20 +1,32 @@
 import type { LazyExoticComponent } from "react";
+import type { ObservationProgress, ProgressDocument } from "../domain/progress";
 import type {
-  BoxProgress,
-  ObservationProgress,
-  ProgressDocument,
-} from "../domain/progress";
-import type { CapabilityState } from "../domain/stageRuntime";
+  CapabilityState,
+  ProblemBoxVisualState,
+} from "../domain/stageRuntime";
 import type { StageSummary } from "../domain/stages";
 import type { Locale } from "../i18n";
 
 export interface StageComponentProps {
   locale: Locale;
-  boxes: Readonly<Record<string, BoxProgress>>;
   observations: Readonly<Record<string, ObservationProgress>>;
   signal: AbortSignal;
+  problemState(boxId: string): ProblemBoxVisualState;
+  services: StageServices;
   solve(boxId: string, facts?: readonly string[]): void;
   observe(observationId: string, facts?: readonly string[]): void;
+}
+
+export interface DriveStageSyncResult {
+  synced: boolean;
+  remoteDevice: boolean;
+}
+
+export interface StageServices {
+  drive?: {
+    configured: boolean;
+    sync(): Promise<DriveStageSyncResult>;
+  };
 }
 
 export type StageComponent = (props: StageComponentProps) => React.JSX.Element;

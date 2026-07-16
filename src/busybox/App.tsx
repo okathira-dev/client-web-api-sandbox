@@ -7,6 +7,7 @@ import { useServiceWorker } from "./hooks/useServiceWorker";
 import { detectLocale, messages } from "./i18n";
 import { StageHost } from "./runtime/StageHost";
 import { stageDefinitions } from "./runtime/stageDefinitions";
+import { GiftBox, type GiftBoxState } from "./ui/GiftBox";
 
 type View = "stages" | "settings" | "about";
 
@@ -28,6 +29,7 @@ export function App() {
   const locale = progress.document.settings.locale;
   const [view, setView] = useState<View>("stages");
   const [selectedStageId, setSelectedStageId] = useState(stageIdFromUrl);
+  const [stageAttemptId, setStageAttemptId] = useState(0);
   const copy = messages[locale];
   const solvedCount = Object.keys(progress.document.boxes).length;
   const storageMessage = {
@@ -64,17 +66,11 @@ export function App() {
   useEffect(() => {
     const syncRoute = () => {
       setSelectedStageId(stageIdFromUrl());
+      setStageAttemptId((current) => current + 1);
       setView("stages");
     };
     window.addEventListener("popstate", syncRoute);
     return () => window.removeEventListener("popstate", syncRoute);
-  }, []);
-
-  useEffect(() => {
-    const showSettings = () => setView("settings");
-    window.addEventListener("busybox:show-settings", showSettings);
-    return () =>
-      window.removeEventListener("busybox:show-settings", showSettings);
   }, []);
 
   const openStage = (stageId: string) => {
@@ -82,6 +78,7 @@ export function App() {
     url.searchParams.set("stage", stageId);
     window.history.pushState({}, "", url);
     setSelectedStageId(stageId);
+    setStageAttemptId((current) => current + 1);
   };
 
   const showStageList = () => {
@@ -135,9 +132,13 @@ export function App() {
         selectedDefinition &&
         progress.storageState !== "loading" ? (
           <StageHost
+            key={`${selectedDefinition.summary.id}:${stageAttemptId}`}
             definition={selectedDefinition}
             locale={locale}
             progress={progress}
+            services={{
+              drive: { configured: drive.configured, sync: drive.sync },
+            }}
             onBack={showStageList}
           />
         ) : view === "stages" ? (
@@ -297,14 +298,19 @@ function StageCard({ stage, locale, boxes, onOpen }: StageCardProps) {
         : definition
           ? copy.available
           : copy.planned;
+  const giftState: GiftBoxState =
+    state === "solved" ? "open" : state === "partial" ? "closed" : "ribboned";
 
   return (
     <article
       className={`stage-card stage-card--${stage.category} stage-card--${state}`}
     >
-      <div className="gift-box" aria-hidden="true">
-        <span className="gift-box__ribbon" />
-      </div>
+      <GiftBox
+        state={giftState}
+        color="var(--accent)"
+        label={`${stage.name[locale]}: ${status}`}
+        size="stage"
+      />
       <div>
         <p className="stage-card__id">{stage.id}</p>
         <h3>{stage.name[locale]}</h3>
@@ -314,6 +320,7 @@ function StageCard({ stage, locale, boxes, onOpen }: StageCardProps) {
       </div>
       <button
         type="button"
+        className="stage-card__open"
         disabled={!definition}
         onClick={() => onOpen(stage.id)}
       >

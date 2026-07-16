@@ -3,18 +3,20 @@ import {
   type ErrorInfo,
   type ReactNode,
   Suspense,
+  useCallback,
   useEffect,
   useState,
 } from "react";
-import { deriveStageProgress } from "../domain/stageRuntime";
+import { deriveProblemBoxVisualState } from "../domain/stageRuntime";
 import type { ProgressController } from "../hooks/useProgress";
 import { type Locale, messages } from "../i18n";
-import type { StageDefinition } from "./types";
+import type { StageDefinition, StageServices } from "./types";
 
 interface Props {
   definition: StageDefinition;
   locale: Locale;
   progress: ProgressController;
+  services: StageServices;
   onBack(): void;
 }
 
@@ -51,13 +53,52 @@ class StageErrorBoundary extends Component<BoundaryProps, { failed: boolean }> {
   }
 }
 
-export function StageHost({ definition, locale, progress, onBack }: Props) {
+export function StageHost({
+  definition,
+  locale,
+  progress,
+  services,
+  onBack,
+}: Props) {
   const [signal, setSignal] = useState<AbortSignal | null>(null);
+  const [solvedBeforeEntry] = useState<ReadonlySet<string>>(
+    () =>
+      new Set(
+        definition.summary.boxIds.filter(
+          (boxId) => progress.document.boxes[boxId] !== undefined,
+        ),
+      ),
+  );
+  const [solvedThisAttempt, setSolvedThisAttempt] = useState<
+    ReadonlySet<string>
+  >(() => new Set());
   const copy = messages[locale];
   const capability = definition.probe();
-  const stageState = deriveStageProgress(
-    definition.summary.boxIds,
-    progress.document.boxes,
+  const attemptSolvedCount = definition.summary.boxIds.filter((boxId) =>
+    solvedThisAttempt.has(boxId),
+  ).length;
+  const attemptComplete = attemptSolvedCount === definition.summary.boxCount;
+
+  const problemState = useCallback(
+    (boxId: string) =>
+      deriveProblemBoxVisualState(
+        solvedBeforeEntry.has(boxId),
+        solvedThisAttempt.has(boxId),
+      ),
+    [solvedBeforeEntry, solvedThisAttempt],
+  );
+
+  const solve = useCallback(
+    (boxId: string, facts: readonly string[] = []) => {
+      // Attempt state is updated even when the grow-only document already has
+      // this box and therefore returns no persistent change on a replay.
+      setSolvedThisAttempt((current) => {
+        if (current.has(boxId)) return current;
+        return new Set([...current, boxId]);
+      });
+      progress.solve(boxId, facts);
+    },
+    [progress.solve],
   );
 
   useEffect(() => {
@@ -74,10 +115,10 @@ export function StageHost({ definition, locale, progress, onBack }: Props) {
       <header className="stage-view__header">
         <p>{definition.summary.id}</p>
         <h2 id={activeStageTitleId}>{definition.summary.name[locale]}</h2>
-        <div className={`stage-state stage-state--${stageState}`}>
-          {stageState === "solved"
-            ? "✓"
-            : `${Object.keys(progress.document.boxes).filter((id) => definition.summary.boxIds.includes(id)).length}/${definition.summary.boxCount}`}
+        <div
+          className={`stage-state ${attemptComplete ? "stage-state--solved" : ""}`}
+        >
+          {attemptSolvedCount}/{definition.summary.boxCount}
         </div>
       </header>
 
@@ -94,10 +135,11 @@ export function StageHost({ definition, locale, progress, onBack }: Props) {
           >
             <definition.component
               locale={locale}
-              boxes={progress.document.boxes}
               observations={progress.document.observations}
               signal={signal}
-              solve={progress.solve}
+              problemState={problemState}
+              services={services}
+              solve={solve}
               observe={progress.observe}
             />
           </Suspense>

@@ -8,6 +8,15 @@ export type CapabilityState =
   | "unknown";
 
 export type StageProgressState = "untouched" | "partial" | "solved";
+export type ProblemBoxVisualState = "ribboned" | "closed" | "open";
+
+export function deriveProblemBoxVisualState(
+  solvedBeforeEntry: boolean,
+  solvedThisAttempt: boolean,
+): ProblemBoxVisualState {
+  if (solvedThisAttempt) return "open";
+  return solvedBeforeEntry ? "closed" : "ribboned";
+}
 
 export function deriveStageProgress(
   boxIds: readonly string[],
