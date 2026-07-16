@@ -6,6 +6,7 @@
 - 日英UI、一覧・設定・About、ステージ直接URL、エラー境界
 - IndexedDB version 1、version 0移行、破損・将来version保護、JSON書き出し、初期化
 - 15ステージ、19問題箱、未着手・部分解決・完全解決の集約
+- 全19問題箱を同じ箱DOM・寸法へ統一し、初回リボン、再入場時の閉箱、今回の開箱を分離
 - ステージ遅延読込、能力状態、AbortSignal、個別エラー隔離
 - Busybox scope限定PWA、実行時キャッシュ、更新導線、通知復帰
 - GIS token modelと `drive.appdata` による任意バックアップ、統合、削除、失敗時のローカル保護
@@ -15,7 +16,7 @@
 
 | 条件 | 現在 | 解除方法 |
 | --- | --- | --- |
-| 必須人手ケース | 未実施 | `human-test-matrix.md` の必須IDへ実施日・環境・結果を記録 |
+| 必須人手ケース | 未実施 | `human-test-matrix.md` の必須ID（全問題箱共通のH-025を含む）へ実施日・環境・結果を記録 |
 | Google OAuth | 未設定 | Cloud設定後、Repository Variable `BUSYBOX_GOOGLE_CLIENT_ID` を登録しH-015〜H-018 |
 | 本番Pages | 未配信 | main統合後のHTTPS・サブパス・直接URL・scopeをH-021で確認 |
 | PWAアイコン互換 | SVGのみ | 対象ブラウザで不足なら192/512 PNGとApple Touch Iconを追加 |
