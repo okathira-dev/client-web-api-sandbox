@@ -237,6 +237,7 @@ export function App() {
                 }[drive.state]
               }
             </button>
+            <p className="privacy-note">{copy.driveMergeNotice}</p>
             {drive.connected && (
               <div className="drive-secondary-actions">
                 <button

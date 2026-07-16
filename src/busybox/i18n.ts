@@ -50,6 +50,8 @@ export const messages = {
     driveUnconfigured:
       "公開環境にGoogle OAuth Client IDが設定されていません。ローカル進捗には影響しません。",
     driveIdle: "アプリ専用の非表示領域だけを使います。接続と同期",
+    driveMergeNotice:
+      "同期時に選んだGoogleアカウントと現在のローカル進捗を統合します。別アカウントを選ぶと、そのクリア情報も混ざります。",
     driveAuthorizing: "Googleの許可画面を待っています…",
     driveSyncing: "ローカルとDriveの進捗を統合しています…",
     driveSuccess: "同期しました。両方で開いた箱を残しています。",
@@ -110,6 +112,8 @@ export const messages = {
     driveUnconfigured:
       "No Google OAuth client ID is configured for this deployment. Local progress is unaffected.",
     driveIdle: "Only the app's hidden data folder is used. Connect and sync",
+    driveMergeNotice:
+      "Sync merges local progress with the Google account you select. Choosing another account mixes its cleared boxes into the same grow-only progress.",
     driveAuthorizing: "Waiting for Google authorization…",
     driveSyncing: "Merging local and Drive progress…",
     driveSuccess: "Synced. Boxes opened on both sides were kept.",

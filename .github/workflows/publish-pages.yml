@@ -18,6 +18,9 @@ permissions:
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   PAGES_ARTIFACT_NAME: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
+  # This browser OAuth Client ID is a public identifier, so a Repository Variable
+  # is intentional. Vite embeds VITE_* values in the public bundle. Never put a
+  # client secret, access token, or refresh token here.
   # Empty/unset keeps Drive optional and shows an unconfigured state in Busybox.
   VITE_GOOGLE_CLIENT_ID: ${{ vars.BUSYBOX_GOOGLE_CLIENT_ID }}
 
