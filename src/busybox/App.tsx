@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { deriveStageProgress } from "./domain/stageRuntime";
-import { stageCatalogue, totalBoxCount } from "./domain/stages";
+import { type StageId, stageCatalogue, totalBoxCount } from "./domain/stages";
 import { useDriveBackup } from "./hooks/useDriveBackup";
 import { type ProgressController, useProgress } from "./hooks/useProgress";
 import { useServiceWorker } from "./hooks/useServiceWorker";
@@ -17,9 +17,13 @@ const headingIds = {
   about: "busybox-about-heading",
 } as const;
 
-function stageIdFromUrl(): string | null {
+function isStageId(value: string): value is StageId {
+  return Object.hasOwn(stageDefinitions, value);
+}
+
+function stageIdFromUrl(): StageId | null {
   const stageId = new URL(window.location.href).searchParams.get("stage");
-  return stageId && stageDefinitions[stageId] ? stageId : null;
+  return stageId && isStageId(stageId) ? stageId : null;
 }
 
 export function App() {
@@ -74,7 +78,7 @@ export function App() {
     return () => window.removeEventListener("popstate", syncRoute);
   }, []);
 
-  const openStage = (stageId: string) => {
+  const openStage = (stageId: StageId) => {
     const url = new URL(window.location.href);
     url.searchParams.set("stage", stageId);
     window.history.pushState({}, "", url);
@@ -133,7 +137,7 @@ export function App() {
         selectedDefinition &&
         progress.storageState !== "loading" ? (
           <StageHost
-            key={`${selectedDefinition.summary.id}:${stageAttemptId}`}
+            key={`${selectedDefinition.stage.id}:${stageAttemptId}`}
             definition={selectedDefinition}
             locale={locale}
             progress={progress}

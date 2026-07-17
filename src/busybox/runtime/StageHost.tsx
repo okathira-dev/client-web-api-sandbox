@@ -15,10 +15,10 @@ import {
 import type { ProblemBoxId } from "../domain/stages";
 import type { ProgressController } from "../hooks/useProgress";
 import { type Locale, messages } from "../i18n";
-import type { StageDefinition, StageServices } from "./types";
+import type { StageRegistration, StageServices } from "./types";
 
 interface Props {
-  definition: StageDefinition;
+  definition: StageRegistration;
   locale: Locale;
   progress: ProgressController;
   services: StageServices;
@@ -69,7 +69,7 @@ export function StageHost({
   const [solvedBeforeEntry] = useState<ReadonlySet<string>>(
     () =>
       new Set(
-        definition.summary.problems
+        definition.stage.problems
           .map((problem) => problem.id)
           .filter((boxId) => progress.document.boxes[boxId] !== undefined),
       ),
@@ -83,11 +83,11 @@ export function StageHost({
   // Keeping these signals separate avoids turning a closed replay box into a
   // misleading loss of previously earned progress.
   const persistentSolvedCount = countSolvedBoxes(
-    definition.summary.problems.map((problem) => problem.id),
+    definition.stage.problems.map((problem) => problem.id),
     progress.document.boxes,
   );
   const persistentlyComplete =
-    persistentSolvedCount === definition.summary.problems.length;
+    persistentSolvedCount === definition.stage.problems.length;
 
   const problemState = useCallback(
     (boxId: string) =>
@@ -114,22 +114,22 @@ export function StageHost({
   const problemSolvers = useMemo(
     () =>
       new Map(
-        definition.summary.problems.map((problemDefinition) => [
+        definition.stage.problems.map((problemDefinition) => [
           problemDefinition.id,
           (facts: readonly string[] = []) => solve(problemDefinition.id, facts),
         ]),
       ),
-    [definition.summary.problems, solve],
+    [definition.stage.problems, solve],
   );
 
   const problem = useCallback(
     (boxId: ProblemBoxId) => {
-      const problemDefinition = definition.summary.problems.find(
+      const problemDefinition = definition.stage.problems.find(
         (candidate) => candidate.id === boxId,
       );
       if (!problemDefinition) {
         throw new Error(
-          `Problem ${boxId} does not belong to stage ${definition.summary.id}`,
+          `Problem ${boxId} does not belong to stage ${definition.stage.id}`,
         );
       }
       const solveProblem = problemSolvers.get(boxId);
@@ -142,7 +142,7 @@ export function StageHost({
         solve: solveProblem,
       };
     },
-    [definition.summary, problemSolvers, problemState],
+    [definition.stage, problemSolvers, problemState],
   );
 
   useEffect(() => {
@@ -157,12 +157,12 @@ export function StageHost({
         ← {copy.back}
       </button>
       <header className="stage-view__header">
-        <p>{definition.summary.id}</p>
-        <h2 id={activeStageTitleId}>{definition.summary.label[locale]}</h2>
+        <p>{definition.stage.id}</p>
+        <h2 id={activeStageTitleId}>{definition.stage.label[locale]}</h2>
         <div
           className={`stage-state ${persistentlyComplete ? "stage-state--solved" : ""}`}
         >
-          {persistentSolvedCount}/{definition.summary.problems.length}
+          {persistentSolvedCount}/{definition.stage.problems.length}
         </div>
       </header>
 
@@ -171,7 +171,7 @@ export function StageHost({
           {copy.unavailable}
         </div>
       ) : signal ? (
-        <StageErrorBoundary stageId={definition.summary.id}>
+        <StageErrorBoundary stageId={definition.stage.id}>
           <Suspense
             fallback={
               <div className="stage-loading">{copy.storageLoading}</div>
@@ -182,9 +182,7 @@ export function StageHost({
               observations={progress.document.observations}
               signal={signal}
               problem={problem}
-              problemState={problemState}
               services={services}
-              solve={solve}
               observe={progress.observe}
             />
           </Suspense>

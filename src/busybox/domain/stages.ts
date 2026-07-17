@@ -12,19 +12,19 @@ type StageIdFormat = `S-${number}`;
 type ProblemBoxIdFormat = `${StageIdFormat}-B${number}`;
 
 export interface ProblemSpec {
-  id: ProblemBoxIdFormat;
-  color: string;
-  clue: ClueIconName;
-  label: Record<Locale, string>;
+  readonly id: ProblemBoxIdFormat;
+  readonly color: string;
+  readonly clue: ClueIconName;
+  readonly label: Readonly<Record<Locale, string>>;
 }
 
 export interface StageSpec {
-  id: StageIdFormat;
+  readonly id: StageIdFormat;
   // Labels are presentation copy only. IDs remain the sole routing, storage,
   // filename, CSS, and test identity so copy edits cannot break compatibility.
-  label: Record<Locale, string>;
-  category: StageCategory;
-  problems: readonly ProblemSpec[];
+  readonly label: Readonly<Record<Locale, string>>;
+  readonly category: StageCategory;
+  readonly problems: readonly ProblemSpec[];
 }
 
 type ProblemFor<TStageId extends StageIdFormat> = Omit<ProblemSpec, "id"> & {

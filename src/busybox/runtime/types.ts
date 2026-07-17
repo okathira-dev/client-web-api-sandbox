@@ -12,14 +12,14 @@ export interface StageComponentProps {
   observations: Readonly<Record<string, ObservationProgress>>;
   signal: AbortSignal;
   problem(boxId: ProblemBoxId): ProblemHandle;
-  /** @deprecated Use problem(boxId).state while grouped stage modules migrate. */
-  problemState(boxId: string): ProblemBoxVisualState;
   services: StageServices;
-  /** @deprecated Use problem(boxId).solve() while grouped stage modules migrate. */
-  solve(boxId: string, facts?: readonly string[]): void;
   observe(observationId: string, facts?: readonly string[]): void;
 }
 
+/**
+ * Entry-scoped view of one static problem definition and its replay state.
+ * `solve` is stable across state changes so stage effects can depend on it.
+ */
 export interface ProblemHandle {
   readonly definition: ProblemSpec;
   readonly state: ProblemBoxVisualState;
@@ -40,8 +40,8 @@ export interface StageServices {
 
 export type StageComponent = (props: StageComponentProps) => React.JSX.Element;
 
-export interface StageDefinition {
-  summary: StageSpec;
+export interface StageRegistration {
+  stage: StageSpec;
   probe(): CapabilityState;
   component: LazyExoticComponent<StageComponent>;
 }

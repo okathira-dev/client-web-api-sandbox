@@ -13,7 +13,7 @@ describe("Busybox stage registry", () => {
     for (const stage of stageCatalogue) {
       const problemIds = stage.problems.map((problem) => problem.id);
       expect(new Set(problemIds).size).toBe(problemIds.length);
-      expect(stageDefinitions[stage.id]?.summary).toBe(stage);
+      expect(stageDefinitions[stage.id]?.stage).toBe(stage);
     }
   });
 
