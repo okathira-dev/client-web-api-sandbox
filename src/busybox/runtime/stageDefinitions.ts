@@ -13,7 +13,6 @@ function summary(id: keyof typeof summaries) {
   return value;
 }
 
-const context = () => import("../stages/contextStages");
 const peripheral = () => import("../stages/peripheralStages");
 
 export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
@@ -189,9 +188,7 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
           ? "permission-required"
           : "unsupported",
       ),
-    component: lazy(() =>
-      context().then((module) => ({ default: module.RecursiveCaptureStage })),
-    ),
+    component: lazy(() => import("../stages/S-190")),
   },
   "S-200": {
     summary: summary("S-200"),
@@ -230,9 +227,7 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
           ? "available"
           : "unsupported",
       ),
-    component: lazy(() =>
-      context().then((module) => ({ default: module.PictureInPictureStage })),
-    ),
+    component: lazy(() => import("../stages/S-230")),
   },
   "S-240": {
     summary: summary("S-240"),
@@ -240,9 +235,7 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
       safeCapabilityProbe(() =>
         "share" in navigator ? "permission-required" : "unsupported",
       ),
-    component: lazy(() =>
-      context().then((module) => ({ default: module.ShareMarkStage })),
-    ),
+    component: lazy(() => import("../stages/S-240")),
   },
   "S-250": {
     summary: summary("S-250"),
@@ -252,9 +245,7 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
           ? "available"
           : "unsupported",
       ),
-    component: lazy(() =>
-      context().then((module) => ({ default: module.WebLockStage })),
-    ),
+    component: lazy(() => import("../stages/S-250")),
   },
   "S-260": {
     summary: summary("S-260"),
@@ -322,9 +313,7 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
       safeCapabilityProbe(() =>
         "launchQueue" in window ? "available" : "unsupported",
       ),
-    component: lazy(() =>
-      context().then((module) => ({ default: module.LaunchHandlerStage })),
-    ),
+    component: lazy(() => import("../stages/S-310")),
   },
   "S-320": {
     summary: summary("S-320"),
@@ -347,9 +336,7 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
           ? "available"
           : "unsupported",
       ),
-    component: lazy(() =>
-      context().then((module) => ({ default: module.WakeLockStage })),
-    ),
+    component: lazy(() => import("../stages/S-330")),
   },
   "S-340": {
     summary: summary("S-340"),
