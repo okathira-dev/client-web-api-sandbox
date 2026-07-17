@@ -1,5 +1,32 @@
 # 検証記録
 
+## 2026-07-17 全ギミック実装の最終確認
+
+### コード・成果物
+
+| 項目 | 結果 | 証跡 |
+| --- | --- | --- |
+| TypeScript | 合格 | `tsc --noEmit` |
+| Biome | 合格 | Busyboxの38ファイルを確認 |
+| markuplint | 合格 | Busybox配下を確認 |
+| Jest | 合格 | 15 suites / 95 tests。35ステージ・42問題箱のID対応、入場状態導出、永続集計、Gamepad入力境界を含む |
+| production build | 合格 | Vite production buildで本体、基礎・複数コンテキスト・周辺機器の遅延chunk、PWA静的ファイルを生成 |
+| 台帳整合 | 合格 | G-001〜G-032をすべて採用済みとして記録し、35ステージ・42問題箱のregistry、表示定義、仕様台帳が一致 |
+
+### ブラウザシナリオ
+
+| シナリオ | 結果 | 観測 |
+| --- | --- | --- |
+| 初回一覧 | 合格 | 全35ステージを番号順に表示し、全42問題箱の永続進捗を集計 |
+| S-200待機状態 | 合格 | Gamepadの遅延chunkが読み込まれ、実入力待ちのリボン付き共通箱として表示 |
+| S-210実行 | 合格 | Badging APIの成功を1→2→3回と数え、3回目に箱が開いてヘッダーが永続1/1へ更新 |
+| S-210再入場 | 合格 | ヘッダーは永続1/1、一覧は1/42を維持しつつ、問題箱はリボンなし閉箱 `closed` へ戻り再挑戦可能 |
+| S-280待機状態 | 合格 | Web Bluetooth対応ブラウザで実API操作を明示ボタンの後にだけ開始する構成を表示。自動確認では機器選択を発火させていない |
+| 共通箱 | 合格 | 新規ステージを含め、ステージ内問題を共通 `ProblemGiftBox` と `data-box-state` で表現 |
+| エラー隔離 | 合格（確認範囲） | 上記画面でエラー境界・alertの可視表示なし。権限UIや実機接続後のエラーは人手ゲートへ残す |
+
+限定提供・実験的APIは、APIの存在だけでクリアさせない。Gamepad、Screen Capture、Picture-in-Picture、Web Locks、EyeDropper、WebGPU、Web Bluetooth、WebHID、WebUSB、Device Posture、Screen Wake Lockは、それぞれ仕様に定めた実イベントまたは実データを観測した場合だけ箱を開く。
+
 ## 2026-07-17 統一問題箱・再挑戦の再検証
 
 ### コード・成果物
@@ -76,6 +103,12 @@ S-060の最初の試行では、問題コンポーネントの遅延読込前に
 - mouse / touch / pen実機
 - Device Orientation実機とiOS許可
 - カメラ・マイクの許可、拒否、機器なし、インジケーター停止、閾値
+- Screen Captureの許可・拒否・共有停止と、共有面からの実フレーム観測
+- Picture-in-Pictureの入退場、Web Shareの共有完了、Web Locksの複数タブ待機順
+- Gamepadの複数ボタン・スティック、Badging、EyeDropper、Screen Wake Lockの実機・OS差
+- WebGPUの対応GPU、デバイス喪失、計算結果readback
+- Web Bluetooth、WebHID、WebUSBの対象機器、選択キャンセル、切断、再接続
+- Device Posture / Viewport Segmentsの折りたたみ実機、Launch Handlerのインストール済みPWA起動
 - ファイルのキャンセル、大容量、別ファイル、ダウンロード制限
 - Google OAuth実アカウント、単一端末、2端末、失効、削除、アカウント切替
 - GitHub Pages本番相当のサブパス、直接URL、Service Worker scope
