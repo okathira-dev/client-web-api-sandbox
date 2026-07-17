@@ -19,7 +19,14 @@ export type ClueIconName =
   | "export"
   | "import"
   | "backup"
-  | "devices";
+  | "devices"
+  | "dom"
+  | "path"
+  | "time"
+  | "copy"
+  | "paste"
+  | "history"
+  | "transition";
 
 export function ClueIcon({ name }: { name: ClueIconName }) {
   const paths = {
@@ -60,6 +67,13 @@ export function ClueIcon({ name }: { name: ClueIconName }) {
       <path d="M7 18H5a4 4 0 0 1 0-8 7 7 0 0 1 13-2 5 5 0 0 1 1 10h-2m-5-7v10m-4-4 4 4 4-4" />
     ),
     devices: <path d="M3 5h12v9H3Zm4 13h4m-6 0h8m4-9h4v10h-6v-5" />,
+    dom: <path d="M4 5h16M4 12h16M4 19h16M7 3v4m5 3v4m5 3v4" />,
+    path: <path d="M4 18c3-10 5 2 8-8s5 2 8-6M4 18h4m8-14h4" />,
+    time: <path d="M12 4a8 8 0 1 0 8 8M12 7v5l3 2M8 2h8" />,
+    copy: <path d="M8 8h11v12H8Zm-3 8H4V4h11v1" />,
+    paste: <path d="M8 5h8v3H8Zm-2 1H4v15h16V6h-2m-6 5v7m-3-3 3 3 3-3" />,
+    history: <path d="M4 5v5h5M5 9a8 8 0 1 1 1 8m6-9v5l3 2" />,
+    transition: <path d="M4 7h11m-3-3 3 3-3 3m8 7H9m3-3-3 3 3 3M6 4v16" />,
   } satisfies Record<ClueIconName, ReactNode>;
 
   return (

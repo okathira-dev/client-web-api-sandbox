@@ -14,12 +14,12 @@
 
 | ギミック | 実装ステージ | 扱い |
 | --- | --- | --- |
-| G-001 DOM | S-150 文書の順番 | 新規。見た目を固定したままDOM順だけを回転する |
+| G-001 DOM | S-150 文書の順番 | 実装済み。見た目を固定したままDOM順だけを回転する |
 | G-002 Resize Observer | S-020 枠に合わせる | 既存 |
 | G-003 Selection | S-030 選ばれた範囲 | 既存 |
-| G-004 Canvas / Pointer | S-010 三つの手、S-160 速さの軌跡 | pointer種別と入力履歴を分担 |
-| G-005 Web Animations | S-170 止まった時間 | 新規。Animationの時刻で判定する |
-| G-006 Clipboard | S-180 見えない受け渡し | 新規。書込み成功と実pasteを2箱にする |
+| G-004 Canvas / Pointer | S-010 三つの手、S-160 速さの軌跡 | 実装済み。pointer種別と入力履歴を分担 |
+| G-005 Web Animations | S-170 止まった時間 | 実装済み。Animationの時刻で判定する |
+| G-006 Clipboard | S-180 見えない受け渡し | 実装済み。書込み成功と実pasteを2箱にする |
 | G-007 File API | S-130 箱の外の鍵 | 既存 |
 | G-008 Web Crypto | S-130 箱の外の鍵 | 既存 |
 | G-009 Device Orientation | S-100 傾けて止める | 既存 |
@@ -32,7 +32,7 @@
 | G-016 Badging | S-210 外側の数字 | 新規。app badgeを段階更新し離脱時に消す |
 | G-017 Broadcast Channel | S-050 二つの窓 | 既存 |
 | G-018 Page Visibility | S-040 見ない時間 | 既存 |
-| G-019 History | S-220 戻る道 | 新規。積んだ同一ステージ履歴をブラウザBackで戻る |
+| G-019 History | S-220 戻る道 | 実装済み。積んだ同一ステージ履歴をブラウザBackで戻る |
 | G-020 Picture-in-Picture | S-230 浮かぶ窓 | 新規。生成映像のPiP入場イベントを読む |
 | G-021 Web Share | S-240 渡した印 | 新規。share promiseが完了した操作だけを採用する |
 | G-022 Web Locks | S-250 一つだけの鍵 | 新規。holderと別タブのblocked状態を2箱にする |
@@ -52,7 +52,7 @@
 | ID | ステージ | API | 一意性 |
 | --- | --- | --- | --- |
 | G-031 | S-330 消えない灯り | Screen Wake Lock | 画面を見せ続ける権利がvisibilityで失われ、再取得される |
-| G-032 | S-340 形をつなぐ | View Transition | DOM更新の前後をブラウザが1つの視覚遷移として結ぶ |
+| G-032 | S-340 形をつなぐ | View Transition | 実装済み。DOM更新の前後をブラウザが1つの視覚遷移として結ぶ |
 
 ## 2026-07-17 現行API確認
 

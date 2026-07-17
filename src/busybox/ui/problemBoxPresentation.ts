@@ -103,6 +103,41 @@ export const problemBoxPresentation = {
     clue: "devices",
     label: { ja: "別端末の箱", en: "Remote-device box" },
   },
+  "S-150-B01": {
+    color: "#c084fc",
+    clue: "dom",
+    label: { ja: "文書構造の箱", en: "Document-structure box" },
+  },
+  "S-160-B01": {
+    color: "#38bdf8",
+    clue: "path",
+    label: { ja: "入力軌跡の箱", en: "Pointer-trace box" },
+  },
+  "S-170-B01": {
+    color: "#fbbf24",
+    clue: "time",
+    label: { ja: "時間の箱", en: "Animation-time box" },
+  },
+  "S-180-B01": {
+    color: "#a78bfa",
+    clue: "copy",
+    label: { ja: "コピーの箱", en: "Copy box" },
+  },
+  "S-180-B02": {
+    color: "#818cf8",
+    clue: "paste",
+    label: { ja: "貼り付けの箱", en: "Paste box" },
+  },
+  "S-220-B01": {
+    color: "#fb7185",
+    clue: "history",
+    label: { ja: "履歴の箱", en: "History box" },
+  },
+  "S-340-B01": {
+    color: "#34d399",
+    clue: "transition",
+    label: { ja: "画面遷移の箱", en: "View-transition box" },
+  },
 } as const satisfies Record<string, ProblemBoxPresentation>;
 
 export type ProblemBoxId = keyof typeof problemBoxPresentation;

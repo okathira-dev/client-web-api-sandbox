@@ -30,8 +30,14 @@
 | S-120 | microphone / RMS | 実装済み・人手確認待ち | 生音声非保存、AudioContext cleanup | H-006, H-007, H-019 |
 | S-130 | File API / Web Crypto | 実装済み・人手確認待ち | 4KB上限、ハッシュ照合、2箱進捗 | H-014, H-020 |
 | S-140 | Google Drive `appDataFolder` | 実装済み・設定/人手確認待ち | API通信モック、grow-onlyマージ、破損保護 | H-015〜H-018 |
+| S-150 | DOM / MutationObserver | 実装済み・人手確認待ち | DOM順と見た目順の分離、observer cleanup | H-001, H-020 |
+| S-160 | Canvas / Pointer Events | 実装済み・人手確認待ち | 距離・時間・速度差の判定、pointer cleanup | H-004, H-020, H-024 |
+| S-170 | Web Animations | 実装済み・人手確認待ち | animation時刻判定、cancel cleanup | H-001, H-002, H-003, H-020 |
+| S-180 | Clipboard | 実装済み・人手確認待ち | write成功と実pasteの2箱、取消保護 | H-006, H-014, H-020 |
+| S-220 | History | 実装済み・人手確認待ち | 同一ステージ3履歴、Back再入場 | H-001, H-002, H-003, H-022 |
+| S-340 | View Transition | 実装済み・人手確認待ち | 3回のtransition完了、非対応隔離 | H-001, H-002, H-003, H-020 |
 
-H-025は全行に共通する公開前ゲートである。コード上は全19問題箱が単一 `ProblemGiftBox` とID別presentationを通り、状態導出の組み合わせを自動テストしている。実API・権限・端末条件を再達成した時に各箱が開くことは、各ステージの既存人手ゲートと合わせて確認する。
+H-025は全行に共通する公開前ゲートである。コード上は全問題箱が単一 `ProblemGiftBox` とID別presentationを通り、状態導出の組み合わせを自動テストしている。実API・権限・端末条件を再達成した時に各箱が開くことは、各ステージの既存人手ゲートと合わせて確認する。
 
 ## 共通ランタイムとの対応
 

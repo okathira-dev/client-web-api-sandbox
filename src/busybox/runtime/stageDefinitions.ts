@@ -17,6 +17,7 @@ const core = () => import("../stages/coreStages");
 const webApp = () => import("../stages/webAppStages");
 const device = () => import("../stages/deviceStages");
 const drive = () => import("../stages/driveStage");
+const foundation = () => import("../stages/foundationStages");
 
 export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
   "S-000": {
@@ -175,6 +176,65 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
     probe: () => "available",
     component: lazy(() =>
       drive().then((module) => ({ default: module.DriveStage })),
+    ),
+  },
+  "S-150": {
+    summary: summary("S-150"),
+    probe: () =>
+      safeCapabilityProbe(() =>
+        "MutationObserver" in window ? "available" : "unsupported",
+      ),
+    component: lazy(() =>
+      foundation().then((module) => ({ default: module.DocumentOrderStage })),
+    ),
+  },
+  "S-160": {
+    summary: summary("S-160"),
+    probe: () =>
+      safeCapabilityProbe(() =>
+        "PointerEvent" in window ? "available" : "unsupported",
+      ),
+    component: lazy(() =>
+      foundation().then((module) => ({ default: module.PointerTraceStage })),
+    ),
+  },
+  "S-170": {
+    summary: summary("S-170"),
+    probe: () =>
+      safeCapabilityProbe(() =>
+        "animate" in Element.prototype ? "available" : "unsupported",
+      ),
+    component: lazy(() =>
+      foundation().then((module) => ({ default: module.AnimationTimeStage })),
+    ),
+  },
+  "S-180": {
+    summary: summary("S-180"),
+    probe: () =>
+      safeCapabilityProbe(() =>
+        isSecureContext && "clipboard" in navigator
+          ? "permission-required"
+          : "unsupported",
+      ),
+    component: lazy(() =>
+      foundation().then((module) => ({ default: module.ClipboardPassStage })),
+    ),
+  },
+  "S-220": {
+    summary: summary("S-220"),
+    probe: () => "available",
+    component: lazy(() =>
+      foundation().then((module) => ({ default: module.HistoryTrailStage })),
+    ),
+  },
+  "S-340": {
+    summary: summary("S-340"),
+    probe: () =>
+      safeCapabilityProbe(() =>
+        "startViewTransition" in document ? "available" : "unsupported",
+      ),
+    component: lazy(() =>
+      foundation().then((module) => ({ default: module.ViewTransitionStage })),
     ),
   },
 };

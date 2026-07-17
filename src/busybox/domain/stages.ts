@@ -121,6 +121,48 @@ export const stageCatalogue = [
     boxIds: ["S-140-B01", "S-140-B02"],
     category: "edge",
   },
+  {
+    id: "S-150",
+    name: { ja: "文書の順番", en: "Document order" },
+    boxCount: 1,
+    boxIds: ["S-150-B01"],
+    category: "page",
+  },
+  {
+    id: "S-160",
+    name: { ja: "速さの軌跡", en: "A trace of speed" },
+    boxCount: 1,
+    boxIds: ["S-160-B01"],
+    category: "page",
+  },
+  {
+    id: "S-170",
+    name: { ja: "止まった時間", en: "Paused time" },
+    boxCount: 1,
+    boxIds: ["S-170-B01"],
+    category: "page",
+  },
+  {
+    id: "S-180",
+    name: { ja: "見えない受け渡し", en: "An invisible handoff" },
+    boxCount: 2,
+    boxIds: ["S-180-B01", "S-180-B02"],
+    category: "transition",
+  },
+  {
+    id: "S-220",
+    name: { ja: "戻る道", en: "The path back" },
+    boxCount: 1,
+    boxIds: ["S-220-B01"],
+    category: "transition",
+  },
+  {
+    id: "S-340",
+    name: { ja: "形をつなぐ", en: "Connect the shapes" },
+    boxCount: 1,
+    boxIds: ["S-340-B01"],
+    category: "page",
+  },
 ] as const satisfies readonly StageSummary[];
 
 export const totalBoxCount = stageCatalogue.reduce(
