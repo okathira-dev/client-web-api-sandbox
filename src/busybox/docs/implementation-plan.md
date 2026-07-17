@@ -274,7 +274,30 @@ Google連携なしの体験を維持したまま、ユーザー自身のDriveへ
 
 プロダクト仕様の完了条件を満たし、人手確認台帳に未処理のリリースブロッカーがない。
 
-## Phase 8: Web API網羅の継続
+## Phase 8: 全ギミック展開
+
+### 目的
+
+ギミックメモG-001〜G-030を実装済みステージへ対応付け、重複しない追加案だけをG-031以降として採用する。詳細な対応は[ギミック実装カバレッジ計画](./gimmick-coverage-plan.md)を正とする。
+
+### 実装順
+
+1. DOM、Canvas、Web Animations、Clipboard、Historyの権限不要基盤
+2. Screen Capture、PiP、Web Share、Web Locksの複数文脈
+3. Gamepad、Badging、EyeDropperの端末入力
+4. WebGPU、Bluetooth、HID、USB、Launch Handler、Postureの限定環境
+5. Wake Lock、View Transitionの追加採用
+
+各バッチでstage catalogue、problem presentation、日英表示、cleanup、自動テスト、実装状況、検証記録を同時に更新する。Limited / Experimentalを自動テストだけで公開合格にしない。
+
+### 完了条件
+
+- G-001〜G-032が実装ステージへ一意に対応している
+- 全追加ステージが共通箱、入場再挑戦、累積進捗へ参加する
+- 非対応・拒否・取消・切断が他ステージを壊さない
+- 自動確認できない条件が人手台帳へ残っている
+
+## Phase 9: Web API網羅の継続
 
 ### 目的
 
