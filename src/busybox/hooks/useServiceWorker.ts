@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 
 export type ServiceWorkerState =
   | "unsupported"
+  | "development"
   | "registering"
   | "ready"
   | "update-ready"
@@ -9,7 +10,11 @@ export type ServiceWorkerState =
 
 export function useServiceWorker() {
   const [state, setState] = useState<ServiceWorkerState>(
-    "serviceWorker" in navigator ? "registering" : "unsupported",
+    "serviceWorker" in navigator
+      ? import.meta.env.DEV
+        ? "development"
+        : "registering"
+      : "unsupported",
   );
   const [registration, setRegistration] =
     useState<ServiceWorkerRegistration | null>(null);
@@ -17,16 +22,28 @@ export function useServiceWorker() {
   useEffect(() => {
     if (!("serviceWorker" in navigator)) return;
     let active = true;
+    // Development still registers a pass-through worker so notification and PWA
+    // stages remain testable without letting Cache Storage hide Vite/HMR updates.
+    const workerUrl = import.meta.env.DEV
+      ? "./service-worker.js?mode=development"
+      : "./service-worker.js";
     void navigator.serviceWorker
-      .register("./service-worker.js", { scope: "./" })
+      .register(workerUrl, { scope: "./", updateViaCache: "none" })
       .then((nextRegistration) => {
         if (!active) return;
         setRegistration(nextRegistration);
-        setState(nextRegistration.waiting ? "update-ready" : "ready");
+        setState(
+          import.meta.env.DEV
+            ? "development"
+            : nextRegistration.waiting
+              ? "update-ready"
+              : "ready",
+        );
         nextRegistration.addEventListener("updatefound", () => {
           const worker = nextRegistration.installing;
           worker?.addEventListener("statechange", () => {
             if (
+              !import.meta.env.DEV &&
               worker.state === "installed" &&
               navigator.serviceWorker.controller
             ) {

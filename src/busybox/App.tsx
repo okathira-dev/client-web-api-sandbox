@@ -41,6 +41,7 @@ export function App() {
   }[progress.storageState];
   const serviceWorkerMessage = {
     unsupported: copy.pwaUnsupported,
+    development: copy.pwaDevelopment,
     registering: copy.pwaRegistering,
     ready: copy.pwaReady,
     "update-ready": copy.pwaUpdate,

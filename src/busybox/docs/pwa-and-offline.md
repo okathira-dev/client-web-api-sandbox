@@ -8,13 +8,18 @@ manifestの `start_url`、`id`、`scope` とアイコンはすべて相対URLに
 
 ## キャッシュ方針
 
-- install時にBusyboxの入口、manifest、アイコンをアプリシェルとして保存する。
-- Busybox scope内で実際に取得した同一originのGETレスポンスを実行時キャッシュへ追加する。
+- 開発サーバーでは `?mode=development` のpass-through Service Workerを登録する。通知などService Worker依存ステージは試せるが、fetchへ介入せず、activate時に古い `busybox-` キャッシュを削除する。
+- 本番のinstall時にBusyboxの入口、manifest、アイコンに加え、生成済みHTMLが参照するcontent hash付きentry script、modulepreload、CSSをアプリシェルとして保存する。ビルドhashをService Workerへ手書きしない。
+- HTML、manifest、アイコンはnetwork-firstとし、オンライン時に古い画面を優先しない。HTMLのオフラインfallbackはquery付きURLを増殖させず、正規化した `index.html` 1件を使う。
+- Viteが生成する `/assets/` 配下のcontent hash付きJS、CSS、JSON、Wasmだけをcache-firstで実行時保存する。hashが変われば別URLになるため、古いchunkを新しいHTMLへ混在させない。
+- ソースコード、HMR、任意のGET、APIレスポンスはキャッシュ対象にしない。
 - 進捗はCache Storageへ置かず、IndexedDBだけを正とする。
-- キャッシュ名は `busybox-shell-v1`。版を上げたactivate時に過去の `busybox-` キャッシュだけを削除する。
+- キャッシュ名は用途別の `busybox-shell-v2` と `busybox-assets-v2`。版を上げたactivate時に過去の `busybox-` キャッシュだけを削除する。
 - 更新待機中は設定画面に明示操作を表示し、プレイ途中に自動再読込しない。
 
-初回訪問前の完全オフライン起動はできない。少なくとも一度オンラインでアプリ本体を読み込んだ後にオフライン確認を行う。
+初回訪問前の完全オフライン起動はできない。少なくとも一度オンラインでアプリ本体を読み込んだ後にオフライン確認を行う。遅延ロードするステージは、そのstage chunkを一度オンラインで読み込んだ後からオフラインで利用できる。
+
+開発環境で旧 `busybox-shell-v1` がすでに制御中の場合は、最初の一度だけ設定画面の「新しい版があります。更新する」を押すか、DevToolsでBusyboxのService Workerを解除して再読み込みする。新しいdevelopment workerが有効になった後はVite更新がCache Storageで隠れない。
 
 ## ステージとの接続
 

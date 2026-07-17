@@ -43,6 +43,8 @@ export const messages = {
     resetConfirm:
       "この端末に保存したBusyboxの進捗を削除します。元に戻せません。",
     pwa: "オフラインとインストール",
+    pwaDevelopment:
+      "開発モードではキャッシュせず、Service Worker機能だけを有効にしています。",
     pwaReady: "オフライン起動の準備ができています。",
     pwaRegistering: "オフライン起動を準備しています…",
     pwaUnsupported: "このブラウザはService Workerに対応していません。",
@@ -108,6 +110,8 @@ export const messages = {
     resetConfirm:
       "Delete Busybox progress stored on this device? This cannot be undone.",
     pwa: "Offline and installation",
+    pwaDevelopment:
+      "Development mode keeps Service Worker APIs active without caching files.",
     pwaReady: "Offline launch is ready.",
     pwaRegistering: "Preparing offline launch…",
     pwaUnsupported: "This browser does not support Service Workers.",

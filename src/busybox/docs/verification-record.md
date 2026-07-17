@@ -1,5 +1,30 @@
 # 検証記録
 
+## 2026-07-18 Service Workerキャッシュ境界の再設計
+
+### コード・成果物
+
+| 項目 | 結果 | 証跡 |
+| --- | --- | --- |
+| 開発モード | 合格 | `?mode=development` workerはfetchへ介入せず、即時activate時に旧 `busybox-` キャッシュを削除 |
+| 本番HTML | 合格 | Busyboxのnavigation、manifest、iconをnetwork-firstで更新し、正規化した `index.html` をオフラインfallbackに使用 |
+| 本番asset | 合格 | `/assets/` のcontent hash付きJS・CSS・JSON・Wasmだけをcache-firstとし、生成HTML参照entry assetsをinstall時に自動precache |
+| 対象外通信 | 合格 | ViteのTSX/HMR、任意のGET、APIレスポンスをCache Storageへ保存しない |
+| TypeScript / Biome | 合格 | `tsc --noEmit`、Busybox 39ファイル |
+| Jest | 合格 | 16 suites / 99 tests。development pass-through、precache抽出、navigation・asset・sourceの振り分けを含む |
+| production build | 合格 | Vite production buildで新しい登録処理、Service Worker、hash付き遅延chunkを生成 |
+
+### ブラウザシナリオ
+
+| シナリオ | 結果 | 観測 |
+| --- | --- | --- |
+| Vite開発サーバー | 合格 | 設定画面に「開発モードではキャッシュせず、Service Worker機能だけを有効」と表示。35ステージを描画し可視エラーなし |
+| production preview | 合格 | 設定画面がオフライン起動readyとなり、development workerと混同しない |
+| 遅延stage online | 合格 | S-200の `peripheralStages` chunkを読み込み、共通問題箱を表示 |
+| 遅延stage offline再訪 | 合格 | production preview停止後、S-200直接URLを再読込してstageと問題箱をService Workerキャッシュから表示。可視エラーなし |
+
+旧cache-first workerがすでに開発originを制御している環境だけは、最初の一度だけ更新操作またはDevToolsからの登録解除が必要になる。以後の開発workerはfetchを処理しないため、Viteの更新を古いCache Storageが隠さない。
+
 ## 2026-07-17 全ギミック実装の最終確認
 
 ### コード・成果物
