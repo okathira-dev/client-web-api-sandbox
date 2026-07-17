@@ -133,6 +133,16 @@ export const problemBoxPresentation = {
     clue: "screen",
     label: { ja: "再帰画面の箱", en: "Recursive-screen box" },
   },
+  "S-200-B01": {
+    color: "#fb7185",
+    clue: "gamepad",
+    label: { ja: "同時入力の箱", en: "Simultaneous-input box" },
+  },
+  "S-210-B01": {
+    color: "#fbbf24",
+    clue: "badge",
+    label: { ja: "外側の数字の箱", en: "Outer-number box" },
+  },
   "S-220-B01": {
     color: "#fb7185",
     clue: "history",
@@ -158,10 +168,40 @@ export const problemBoxPresentation = {
     clue: "wait",
     label: { ja: "鍵を待つ箱", en: "Lock-waiter box" },
   },
+  "S-260-B01": {
+    color: "#a78bfa",
+    clue: "eyedropper",
+    label: { ja: "色を採る箱", en: "Color-picker box" },
+  },
+  "S-270-B01": {
+    color: "#34d399",
+    clue: "gpu",
+    label: { ja: "並列計算の箱", en: "Parallel-compute box" },
+  },
+  "S-280-B01": {
+    color: "#22d3ee",
+    clue: "bluetooth",
+    label: { ja: "近くの電池の箱", en: "Nearby-battery box" },
+  },
+  "S-290-B01": {
+    color: "#60a5fa",
+    clue: "hid",
+    label: { ja: "入力レポートの箱", en: "Input-report box" },
+  },
+  "S-300-B01": {
+    color: "#818cf8",
+    clue: "usb",
+    label: { ja: "USB転送の箱", en: "USB-transfer box" },
+  },
   "S-310-B01": {
     color: "#c084fc",
     clue: "launch",
     label: { ja: "再起動の箱", en: "Launch-handler box" },
+  },
+  "S-320-B01": {
+    color: "#c084fc",
+    clue: "fold",
+    label: { ja: "折れ目の箱", en: "Fold box" },
   },
   "S-330-B01": {
     color: "#facc15",

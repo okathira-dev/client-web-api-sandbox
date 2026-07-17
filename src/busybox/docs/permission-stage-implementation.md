@@ -60,4 +60,32 @@
 - cleanup: WakeLockSentinelをreleaseし、visibility / release listenerを破棄する。LaunchQueueへは同一入場のconsumerだけを登録する。
 - 人手確認: H-005, H-021, H-022, H-023。インストール起動、既存windowへの再起動、タブ非表示、OSの省電力制限を確認する。
 
+## S-200 / S-210 外部表面
+
+- S-200: `navigator.getGamepads()` をAnimation Frameごとに読み、2ボタン以上と絶対値0.65以上の軸入力が同じframeに存在するときだけ判定する。controller ID、mapping、timestampは保存しない。
+- S-210: `setAppBadge(1)`、`setAppBadge(2)`、`setAppBadge(3)` の各promiseが完了した順序を観測し、第3段階で判定する。離脱時は `clearAppBadge()` を呼ぶ。
+- 人手確認: H-005, H-009, H-019, H-023。未接続、複数gamepad、PWA未インストール、OS側badge非表示を確認する。
+
+## S-260 / S-270 画面・GPU
+
+- S-260: 明示操作から `EyeDropper.open()` を呼び、ブラウザが返した `sRGBHex` がステージ上の指定色と完全一致した場合だけ判定する。取消は未クリアとする。
+- S-270: 4096個のu32候補をcompute shaderで64 workgroupへ分配し、GPU bufferからreadbackした正しいindexだけで判定する。CPUでの代替成功は用意しない。
+- cleanup: GPU bufferはfinallyでdestroyし、GPU adapter情報や採取した画面内容は保存しない。
+- 人手確認: H-006, H-019, H-023。色管理差、EyeDropper取消、adapterなし、device lost、GPU実行エラーを確認する。
+
+## S-280〜S-300 外部機器
+
+- S-280: `battery_service` を公開する機器だけをpickerへ出し、GATT接続後に `battery_level` characteristicを実際に読む。選択や接続だけでは判定せず、読取後と離脱時に切断する。
+- S-290: WebHID pickerで選択したdeviceをopenし、byteを含む実 `inputreport` を待つ。product name、vendor/product ID、report本体は保存しない。
+- S-300: WebUSB deviceをopenし、configurationとIN endpointを確認してinterfaceをclaimした後、実 `transferIn()` がbyteを返した場合だけ判定する。受信内容やdevice IDは保存しない。
+- cleanup: HID / USB deviceは離脱時にcloseし、inputreport listenerを解除する。USB転送中の離脱はdevice closeで終了させる。
+- 人手確認: H-006, H-010, H-011, H-019, H-023。picker取消、機器なし、切断、空report、IN endpointなし、再接続を確認する。
+
+## S-320 折れ目をまたぐ
+
+- 観測: `navigator.devicePosture.type` とhorizontal / vertical viewport segmentsのmedia query。
+- 判定: postureが `folded`、またはviewport segmentが2面になった実状態だけを使う。通常viewportの開発用ボタンは用意しない。
+- cleanup: postureとMediaQueryListのchange listenerをすべて解除する。
+- 人手確認: H-023。対応する折りたたみ実機でcontinuous / folded、縦横、折れ目幅、再展開を確認する。
+
 閾値やコピーは実機ゲートの結果で調整できるが、生入力を保存しない境界とユーザージェスチャー内の権限要求は変更しない。

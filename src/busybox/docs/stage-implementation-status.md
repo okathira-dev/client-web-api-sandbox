@@ -35,11 +35,19 @@
 | S-170 | Web Animations | 実装済み・人手確認待ち | animation時刻判定、cancel cleanup | H-001, H-002, H-003, H-020 |
 | S-180 | Clipboard | 実装済み・人手確認待ち | write成功と実pasteの2箱、取消保護 | H-006, H-014, H-020 |
 | S-190 | Screen Capture | 実装済み・人手確認待ち | browser surfaceとframe継続、track cleanup | H-006, H-007, H-012, H-019 |
+| S-200 | Gamepad | 実装済み・人手確認待ち | 2 button + axis同時判定、機器ID非保存 | H-009, H-019 |
+| S-210 | Badging | 実装済み・人手確認待ち | 1→2→3成功、離脱時clear | H-005, H-023 |
 | S-220 | History | 実装済み・人手確認待ち | 同一ステージ3履歴、Back再入場 | H-001, H-002, H-003, H-022 |
 | S-230 | Picture-in-Picture | 実装済み・人手確認待ち | 生成stream、PiP入場event、終了cleanup | H-012, H-023 |
 | S-240 | Web Share | 実装済み・人手確認待ち | share完了と取消の分離 | H-004, H-014 |
 | S-250 | Web Locks | 実装済み・人手確認待ち | holder / blockedの2箱、lock解放 | H-013, H-022 |
+| S-260 | EyeDropper | 実装済み・人手確認待ち | 実画面選択、指定sRGB色との一致 | H-006, H-023 |
+| S-270 | WebGPU | 実装済み・人手確認待ち | compute dispatch、GPU readback、buffer破棄 | H-019, H-023 |
+| S-280 | Web Bluetooth | 実装済み・人手確認待ち | Battery Service実read、GATT切断 | H-006, H-010, H-019 |
+| S-290 | WebHID | 実装済み・人手確認待ち | 選択後の実inputreport、device close | H-006, H-011, H-019 |
+| S-300 | WebUSB | 実装済み・人手確認待ち | claim後の実IN transfer、device close | H-006, H-011, H-019 |
 | S-310 | Launch Handler | 実装済み・人手確認待ち | manifest、LaunchQueue target URL | H-005, H-021, H-023 |
+| S-320 | Device Posture / Viewport Segments | 実装済み・人手確認待ち | folded changeまたは2 segment | H-023 |
 | S-330 | Screen Wake Lock | 実装済み・人手確認待ち | 取得・visibility解放・再取得の2箱 | H-005, H-022, H-023 |
 | S-340 | View Transition | 実装済み・人手確認待ち | 3回のtransition完了、非対応隔離 | H-001, H-002, H-003, H-020 |
 

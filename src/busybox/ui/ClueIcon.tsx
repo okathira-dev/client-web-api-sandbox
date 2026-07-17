@@ -33,7 +33,15 @@ export type ClueIconName =
   | "lock"
   | "wait"
   | "launch"
-  | "wake";
+  | "wake"
+  | "gamepad"
+  | "badge"
+  | "eyedropper"
+  | "gpu"
+  | "bluetooth"
+  | "hid"
+  | "usb"
+  | "fold";
 
 export function ClueIcon({ name }: { name: ClueIconName }) {
   const paths = {
@@ -92,6 +100,22 @@ export function ClueIcon({ name }: { name: ClueIconName }) {
     wake: (
       <path d="M12 4a6 6 0 0 0-3 11v3h6v-3a6 6 0 0 0-3-11Zm-3 17h6M3 5l2 2m16-2-2 2M2 13h3m14 0h3" />
     ),
+    gamepad: (
+      <path d="M8 8h8a5 5 0 0 1 4.5 3l1.3 4.2a3 3 0 0 1-5.1 2.9L15 16H9l-1.7 2.1a3 3 0 0 1-5.1-2.9L3.5 11A5 5 0 0 1 8 8Zm-2 4v4m-2-2h4m9-2h.1m1.9 2h.1" />
+    ),
+    badge: (
+      <path d="M5 4h10a4 4 0 0 1 4 4v11H5Zm3 4h4m-4 4h7m3-9a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z" />
+    ),
+    eyedropper: <path d="m5 19 3-3m1-8 7 7m-9-5 7-7 4 4-7 7-4 1-2 4Z" />,
+    gpu: (
+      <path d="M6 6h12v12H6Zm3 3h6v6H9ZM3 9h3m12 0h3M3 15h3m12 0h3M9 3v3m6-3v3M9 18v3m6-3v3" />
+    ),
+    bluetooth: <path d="m8 6 8 12V6L8 18m4-15v18M4 8l16 8M4 16l16-8" />,
+    hid: <path d="M4 5h16v14H4Zm4 4h2m4 0h2m-8 4h8m-6 3h4" />,
+    usb: (
+      <path d="M12 3v14m0-14-3 3m3-3 3 3m-6 6H6V9m6 8-3 3h6Zm6-8v3h-3m3-3-2-2m2 2 2-2" />
+    ),
+    fold: <path d="M3 4h8v16H3Zm10 0h8v16h-8Zm-2 2 2 2m-2 3 2 2m-2 3 2 2" />,
   } satisfies Record<ClueIconName, ReactNode>;
 
   return (

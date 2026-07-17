@@ -19,6 +19,7 @@ const device = () => import("../stages/deviceStages");
 const drive = () => import("../stages/driveStage");
 const foundation = () => import("../stages/foundationStages");
 const context = () => import("../stages/contextStages");
+const peripheral = () => import("../stages/peripheralStages");
 
 export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
   "S-000": {
@@ -235,6 +236,28 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
       context().then((module) => ({ default: module.RecursiveCaptureStage })),
     ),
   },
+  "S-200": {
+    summary: summary("S-200"),
+    probe: () =>
+      safeCapabilityProbe(() =>
+        "getGamepads" in navigator ? "available" : "unsupported",
+      ),
+    component: lazy(() =>
+      peripheral().then((module) => ({ default: module.GamepadChordStage })),
+    ),
+  },
+  "S-210": {
+    summary: summary("S-210"),
+    probe: () =>
+      safeCapabilityProbe(() =>
+        isSecureContext && "setAppBadge" in navigator
+          ? "available"
+          : "unsupported",
+      ),
+    component: lazy(() =>
+      peripheral().then((module) => ({ default: module.AppBadgeStage })),
+    ),
+  },
   "S-220": {
     summary: summary("S-220"),
     probe: () => "available",
@@ -278,6 +301,66 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
       context().then((module) => ({ default: module.WebLockStage })),
     ),
   },
+  "S-260": {
+    summary: summary("S-260"),
+    probe: () =>
+      safeCapabilityProbe(() =>
+        isSecureContext && "EyeDropper" in window
+          ? "permission-required"
+          : "unsupported",
+      ),
+    component: lazy(() =>
+      peripheral().then((module) => ({ default: module.EyeDropperStage })),
+    ),
+  },
+  "S-270": {
+    summary: summary("S-270"),
+    probe: () =>
+      safeCapabilityProbe(() =>
+        isSecureContext && "gpu" in navigator ? "available" : "unsupported",
+      ),
+    component: lazy(() =>
+      peripheral().then((module) => ({ default: module.WebGpuSearchStage })),
+    ),
+  },
+  "S-280": {
+    summary: summary("S-280"),
+    probe: () =>
+      safeCapabilityProbe(() =>
+        isSecureContext && "bluetooth" in navigator
+          ? "permission-required"
+          : "unsupported",
+      ),
+    component: lazy(() =>
+      peripheral().then((module) => ({
+        default: module.BluetoothBatteryStage,
+      })),
+    ),
+  },
+  "S-290": {
+    summary: summary("S-290"),
+    probe: () =>
+      safeCapabilityProbe(() =>
+        isSecureContext && "hid" in navigator
+          ? "permission-required"
+          : "unsupported",
+      ),
+    component: lazy(() =>
+      peripheral().then((module) => ({ default: module.HidInputStage })),
+    ),
+  },
+  "S-300": {
+    summary: summary("S-300"),
+    probe: () =>
+      safeCapabilityProbe(() =>
+        isSecureContext && "usb" in navigator
+          ? "permission-required"
+          : "unsupported",
+      ),
+    component: lazy(() =>
+      peripheral().then((module) => ({ default: module.UsbTransferStage })),
+    ),
+  },
   "S-310": {
     summary: summary("S-310"),
     probe: () =>
@@ -286,6 +369,19 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
       ),
     component: lazy(() =>
       context().then((module) => ({ default: module.LaunchHandlerStage })),
+    ),
+  },
+  "S-320": {
+    summary: summary("S-320"),
+    probe: () =>
+      safeCapabilityProbe(() =>
+        "devicePosture" in navigator ||
+        CSS.supports("top: env(viewport-segment-top 0 0)")
+          ? "available"
+          : "unsupported",
+      ),
+    component: lazy(() =>
+      peripheral().then((module) => ({ default: module.FoldedViewportStage })),
     ),
   },
   "S-330": {
