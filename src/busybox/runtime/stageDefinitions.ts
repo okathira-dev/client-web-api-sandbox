@@ -13,10 +13,7 @@ function summary(id: keyof typeof summaries) {
   return value;
 }
 
-const core = () => import("../stages/coreStages");
-const webApp = () => import("../stages/webAppStages");
 const device = () => import("../stages/deviceStages");
-const drive = () => import("../stages/driveStage");
 const foundation = () => import("../stages/foundationStages");
 const context = () => import("../stages/contextStages");
 const peripheral = () => import("../stages/peripheralStages");
@@ -25,9 +22,7 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
   "S-000": {
     summary: summary("S-000"),
     probe: () => "available",
-    component: lazy(() =>
-      core().then((module) => ({ default: module.FirstBoxStage })),
-    ),
+    component: lazy(() => import("../stages/S-000")),
   },
   "S-010": {
     summary: summary("S-010"),
@@ -35,9 +30,7 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
       safeCapabilityProbe(() =>
         "PointerEvent" in window ? "available" : "unsupported",
       ),
-    component: lazy(() =>
-      core().then((module) => ({ default: module.PointerStage })),
-    ),
+    component: lazy(() => import("../stages/S-010")),
   },
   "S-020": {
     summary: summary("S-020"),
@@ -45,9 +38,7 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
       safeCapabilityProbe(() =>
         "ResizeObserver" in window ? "available" : "unsupported",
       ),
-    component: lazy(() =>
-      core().then((module) => ({ default: module.ResizeStage })),
-    ),
+    component: lazy(() => import("../stages/S-020")),
   },
   "S-030": {
     summary: summary("S-030"),
@@ -57,9 +48,7 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
           ? "available"
           : "unsupported",
       ),
-    component: lazy(() =>
-      core().then((module) => ({ default: module.SelectionStage })),
-    ),
+    component: lazy(() => import("../stages/S-030")),
   },
   "S-040": {
     summary: summary("S-040"),
@@ -67,9 +56,7 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
       safeCapabilityProbe(() =>
         "visibilityState" in document ? "available" : "unsupported",
       ),
-    component: lazy(() =>
-      core().then((module) => ({ default: module.VisibilityStage })),
-    ),
+    component: lazy(() => import("../stages/S-040")),
   },
   "S-050": {
     summary: summary("S-050"),
@@ -77,9 +64,7 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
       safeCapabilityProbe(() =>
         "BroadcastChannel" in window ? "available" : "unsupported",
       ),
-    component: lazy(() =>
-      core().then((module) => ({ default: module.BroadcastStage })),
-    ),
+    component: lazy(() => import("../stages/S-050")),
   },
   "S-060": {
     summary: summary("S-060"),
@@ -87,9 +72,7 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
       safeCapabilityProbe(() =>
         "indexedDB" in window ? "available" : "unsupported",
       ),
-    component: lazy(() =>
-      core().then((module) => ({ default: module.ReturnStage })),
-    ),
+    component: lazy(() => import("../stages/S-060")),
   },
   "S-070": {
     summary: summary("S-070"),
@@ -99,9 +82,7 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
           ? "available"
           : "unsupported",
       ),
-    component: lazy(() =>
-      webApp().then((module) => ({ default: module.OfflineStage })),
-    ),
+    component: lazy(() => import("../stages/S-070")),
   },
   "S-080": {
     summary: summary("S-080"),
@@ -109,9 +90,7 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
       safeCapabilityProbe(() =>
         typeof window.matchMedia === "function" ? "available" : "unsupported",
       ),
-    component: lazy(() =>
-      webApp().then((module) => ({ default: module.DisplayModeStage })),
-    ),
+    component: lazy(() => import("../stages/S-080")),
   },
   "S-090": {
     summary: summary("S-090"),
@@ -121,9 +100,7 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
           ? "permission-required"
           : "unsupported",
       ),
-    component: lazy(() =>
-      webApp().then((module) => ({ default: module.NotificationStage })),
-    ),
+    component: lazy(() => import("../stages/S-090")),
   },
   "S-100": {
     summary: summary("S-100"),
@@ -176,9 +153,7 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
   "S-140": {
     summary: summary("S-140"),
     probe: () => "available",
-    component: lazy(() =>
-      drive().then((module) => ({ default: module.DriveStage })),
-    ),
+    component: lazy(() => import("../stages/S-140")),
   },
   "S-150": {
     summary: summary("S-150"),

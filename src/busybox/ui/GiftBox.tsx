@@ -1,8 +1,13 @@
 import type { CSSProperties, MouseEventHandler } from "react";
 import { useEffect, useRef } from "react";
 import type { ProblemBoxVisualState } from "../domain/stageRuntime";
-import { type ProblemBoxId, problemById } from "../domain/stages";
+import {
+  type ProblemBoxId,
+  type ProblemSpec,
+  problemById,
+} from "../domain/stages";
 import { type Locale, messages } from "../i18n";
+import type { ProblemHandle } from "../runtime/types";
 import { ClueIcon } from "./ClueIcon";
 
 export type GiftBoxState = "ribboned" | "closed" | "open";
@@ -72,33 +77,48 @@ export function GiftBox({
 }
 
 interface ProblemGiftBoxProps {
-  boxId: ProblemBoxId;
-  state: ProblemBoxVisualState;
+  problem?: ProblemHandle;
+  /** @deprecated Pass a ProblemHandle while grouped stage modules migrate. */
+  boxId?: ProblemBoxId;
+  /** @deprecated Pass a ProblemHandle while grouped stage modules migrate. */
+  state?: ProblemBoxVisualState;
   locale: Locale;
   onClick?: MouseEventHandler<HTMLButtonElement>;
   onPointerDown?: (event: PointerEvent) => void;
 }
 
 export function ProblemGiftBox({
+  problem,
   boxId,
   state,
   locale,
   onClick,
   onPointerDown,
 }: ProblemGiftBoxProps) {
-  const presentation = problemById[boxId];
+  let presentation: ProblemSpec;
+  let resolvedState: ProblemBoxVisualState;
+  if (problem) {
+    presentation = problem.definition;
+    resolvedState = problem.state;
+  } else {
+    if (!boxId || !state) {
+      throw new Error("ProblemGiftBox requires a problem handle");
+    }
+    presentation = problemById[boxId];
+    resolvedState = state;
+  }
   const copy = messages[locale];
   const stateLabel = {
     ribboned: copy.problemNeverSolved,
     closed: copy.problemReplayReady,
     open: copy.problemSolvedThisVisit,
-  }[state];
+  }[resolvedState];
   const label = `${presentation.label[locale]}: ${stateLabel}`;
 
   return (
     <figure className="problem-gift">
       <GiftBox
-        state={state}
+        state={resolvedState}
         color={presentation.color}
         label={label}
         onClick={onClick}

@@ -2,7 +2,19 @@ import { useState } from "react";
 import type { StageComponentProps } from "../runtime/types";
 import { ProblemGiftBox } from "../ui/GiftBox";
 
-export function DriveStage(props: StageComponentProps) {
+/**
+ * S-140
+ *
+ * Gimmick: Grow-only progress crosses devices through Google Drive appDataFolder.
+ * Uses: Google Identity Services and Drive appDataFolder through StageServices.
+ * Success: Complete a fresh sync, then separately observe a remote installation.
+ * Privacy/Permission: Use only the app-private folder and never infer an account identity.
+ * Cleanup: The Drive service owns token and request cleanup outside the stage.
+ * Human verification: H-015, H-016, H-017, H-018
+ */
+export default function S140Stage(props: StageComponentProps) {
+  const backupProblem = props.problem("S-140-B01");
+  const deviceProblem = props.problem("S-140-B02");
   const [status, setStatus] = useState<
     "idle" | "syncing" | "success" | "error"
   >("idle");
@@ -18,9 +30,9 @@ export function DriveStage(props: StageComponentProps) {
       setStatus("error");
       return;
     }
-    props.solve("S-140-B01", ["drive:backup"]);
+    backupProblem.solve(["drive:backup"]);
     if (result.remoteDevice) {
-      props.solve("S-140-B02", ["drive:remote-device"]);
+      deviceProblem.solve(["drive:remote-device"]);
     }
     setStatus("success");
   };
@@ -31,16 +43,8 @@ export function DriveStage(props: StageComponentProps) {
         ☁
       </div>
       <div className="problem-row">
-        <ProblemGiftBox
-          boxId="S-140-B01"
-          state={props.problemState("S-140-B01")}
-          locale={props.locale}
-        />
-        <ProblemGiftBox
-          boxId="S-140-B02"
-          state={props.problemState("S-140-B02")}
-          locale={props.locale}
-        />
+        <ProblemGiftBox problem={backupProblem} locale={props.locale} />
+        <ProblemGiftBox problem={deviceProblem} locale={props.locale} />
       </div>
       <button
         type="button"

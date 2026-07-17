@@ -4,17 +4,26 @@ import type {
   CapabilityState,
   ProblemBoxVisualState,
 } from "../domain/stageRuntime";
-import type { StageSpec } from "../domain/stages";
+import type { ProblemBoxId, ProblemSpec, StageSpec } from "../domain/stages";
 import type { Locale } from "../i18n";
 
 export interface StageComponentProps {
   locale: Locale;
   observations: Readonly<Record<string, ObservationProgress>>;
   signal: AbortSignal;
+  problem(boxId: ProblemBoxId): ProblemHandle;
+  /** @deprecated Use problem(boxId).state while grouped stage modules migrate. */
   problemState(boxId: string): ProblemBoxVisualState;
   services: StageServices;
+  /** @deprecated Use problem(boxId).solve() while grouped stage modules migrate. */
   solve(boxId: string, facts?: readonly string[]): void;
   observe(observationId: string, facts?: readonly string[]): void;
+}
+
+export interface ProblemHandle {
+  readonly definition: ProblemSpec;
+  readonly state: ProblemBoxVisualState;
+  solve(facts?: readonly string[]): void;
 }
 
 export interface DriveStageSyncResult {

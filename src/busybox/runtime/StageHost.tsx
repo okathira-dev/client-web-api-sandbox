@@ -5,12 +5,14 @@ import {
   Suspense,
   useCallback,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import {
   countSolvedBoxes,
   deriveProblemBoxVisualState,
 } from "../domain/stageRuntime";
+import type { ProblemBoxId } from "../domain/stages";
 import type { ProgressController } from "../hooks/useProgress";
 import { type Locale, messages } from "../i18n";
 import type { StageDefinition, StageServices } from "./types";
@@ -109,6 +111,40 @@ export function StageHost({
     [progress.solve],
   );
 
+  const problemSolvers = useMemo(
+    () =>
+      new Map(
+        definition.summary.problems.map((problemDefinition) => [
+          problemDefinition.id,
+          (facts: readonly string[] = []) => solve(problemDefinition.id, facts),
+        ]),
+      ),
+    [definition.summary.problems, solve],
+  );
+
+  const problem = useCallback(
+    (boxId: ProblemBoxId) => {
+      const problemDefinition = definition.summary.problems.find(
+        (candidate) => candidate.id === boxId,
+      );
+      if (!problemDefinition) {
+        throw new Error(
+          `Problem ${boxId} does not belong to stage ${definition.summary.id}`,
+        );
+      }
+      const solveProblem = problemSolvers.get(boxId);
+      if (!solveProblem) {
+        throw new Error(`Missing solver for problem ${boxId}`);
+      }
+      return {
+        definition: problemDefinition,
+        state: problemState(boxId),
+        solve: solveProblem,
+      };
+    },
+    [definition.summary, problemSolvers, problemState],
+  );
+
   useEffect(() => {
     const controller = new AbortController();
     setSignal(controller.signal);
@@ -145,6 +181,7 @@ export function StageHost({
               locale={locale}
               observations={progress.document.observations}
               signal={signal}
+              problem={problem}
               problemState={problemState}
               services={services}
               solve={solve}
