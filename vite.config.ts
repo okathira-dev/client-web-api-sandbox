@@ -10,6 +10,12 @@ export default defineConfig({
   root,
   appType: "mpa", // マルチページアプリケーションとして設定（SPAフォールバックを無効化）。kojo-xml-viewerで404の反応を見る必要があるため。
   plugins: [react()],
+  // 開発時ファイル変更を検知できないなどあればこれを有効にする
+  // server: {
+  //   watch: {
+  //     usePolling: true,
+  //   },
+  // },
   worker: {
     // ビルド時にワーカーを ES モジュール形式で出力（コードスプリット互換）
     format: "es",
