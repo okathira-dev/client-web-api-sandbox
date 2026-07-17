@@ -1,5 +1,34 @@
 # 検証記録
 
+## 2026-07-18 ステージID単位の分割と問題ハンドル抽象化
+
+### コード・成果物
+
+| 項目 | 結果 | 証跡 |
+| --- | --- | --- |
+| モジュール境界 | 合格 | `S-000.tsx`〜`S-340.tsx`を10刻みで35ファイル。runtime registryも35件すべて同じIDの遅延import |
+| 静的定義 | 合格 | 35 `StageSpec` と42 `ProblemSpec`を単一catalogueからregistry、一覧、箱表示、永続集計へ供給 |
+| 入場オブジェクト | 合格 | 全ステージが `ProblemHandle` の定義・今回状態・安定した `solve` を利用し、移行用 `problemState` / ID別 `solve` を削除 |
+| 表示ラベル境界 | 合格 | 日英ラベルは `label` と画面表示だけに残し、ファイル、export、registry、URL、保存、テストの識別はIDへ固定 |
+| JSDoc | 合格 | 全35ファイルに `Gimmick`、`Uses`、`Success`、`Privacy/Permission`、`Cleanup`、`Human verification`。全件を人手台帳H-001〜H-025へ接続 |
+| 共有化 | 合格 | 複数のcaptureステージで意味が同じMediaStream全track停止だけを `stages/shared/media.ts` へ抽出 |
+| TypeScript / Biome / markuplint | 合格 | `tsc --noEmit`、Busybox 64ファイルのBiome、BusyboxのHTML/TSX markup検査 |
+| Jest | 合格 | 16 suites / 99 tests。registry 35件、問題42件、S-200入力境界、Service Worker振り分けを含む |
+| production build | 合格 | Vite buildが35個の `S-xxx` chunkを個別生成。既存の他entryに関するexternal化・500kB警告だけ継続 |
+
+### ブラウザシナリオ
+
+| シナリオ | 結果 | 観測 |
+| --- | --- | --- |
+| 初回一覧 | 合格 | fresh production preview originで35ステージ、42問題箱、推敲可能な日英ラベルを表示 |
+| S-000再挑戦 | 合格 | 初回リボン付き0/1→クリックで開箱1/1→再入場で累積1/1のままリボンなし閉箱 |
+| S-010共通箱 | 合格 | 3箱が同形・同寸法で、直下ヒントはマウス、指、ペン。マウス操作後はB01だけ開き1/3 |
+| S-140複数問題 | 合格 | Drive未設定でもB01/B02の共通箱を表示し、同期操作だけを無効化 |
+| S-200遅延・offline | 合格 | ID単位chunkをonlineで読込後、preview停止中の再読込でもService Workerから問題箱を表示 |
+| S-250入場状態 | 合格 | lock取得でB01だけ今回開箱、B02はリボン付き閉箱、ヘッダーは永続1/2 |
+
+権限プロンプト、実センサー、外部機器、PWAインストール、OAuth実アカウントはこの確認で発火していない。公開合格には引き続き[人手確認台帳](./human-test-matrix.md)の該当ケースが必要である。
+
 ## 2026-07-18 Service Workerキャッシュ境界の再設計
 
 ### コード・成果物
@@ -20,7 +49,7 @@
 | --- | --- | --- |
 | Vite開発サーバー | 合格 | 設定画面に「開発モードではキャッシュせず、Service Worker機能だけを有効」と表示。35ステージを描画し可視エラーなし |
 | production preview | 合格 | 設定画面がオフライン起動readyとなり、development workerと混同しない |
-| 遅延stage online | 合格 | S-200の `peripheralStages` chunkを読み込み、共通問題箱を表示 |
+| 遅延stage online | 合格 | S-200の遅延chunkを読み込み、共通問題箱を表示 |
 | 遅延stage offline再訪 | 合格 | production preview停止後、S-200直接URLを再読込してstageと問題箱をService Workerキャッシュから表示。可視エラーなし |
 
 旧cache-first workerがすでに開発originを制御している環境だけは、最初の一度だけ更新操作またはDevToolsからの登録解除が必要になる。以後の開発workerはfetchを処理しないため、Viteの更新を古いCache Storageが隠さない。

@@ -36,7 +36,7 @@ interface HidNavigator extends Navigator {
  * Success: Receive the first input report whose DataView is non-empty.
  * Privacy/Permission: Retain only the report-arrived fact, never bytes or device identity.
  * Cleanup: Remove the report listener and close the device on success, retry, abort, or exit.
- * Human verification: H-019, H-020, H-034
+ * Human verification: H-006, H-011, H-019, H-025
  */
 export default function S290Stage(props: StageComponentProps) {
   const problem = props.problem("S-290-B01");

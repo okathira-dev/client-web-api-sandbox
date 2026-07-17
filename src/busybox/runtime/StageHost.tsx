@@ -30,7 +30,7 @@ interface BoundaryProps {
   children: ReactNode;
 }
 
-const activeStageTitleId = "busybox-active-stage-title";
+const activeStageHeadingId = "busybox-active-stage-heading";
 
 class StageErrorBoundary extends Component<BoundaryProps, { failed: boolean }> {
   state = { failed: false };
@@ -152,13 +152,13 @@ export function StageHost({
   }, []);
 
   return (
-    <section className="stage-view" aria-labelledby={activeStageTitleId}>
+    <section className="stage-view" aria-labelledby={activeStageHeadingId}>
       <button type="button" className="back-button" onClick={onBack}>
         ← {copy.back}
       </button>
       <header className="stage-view__header">
         <p>{definition.stage.id}</p>
-        <h2 id={activeStageTitleId}>{definition.stage.label[locale]}</h2>
+        <h2 id={activeStageHeadingId}>{definition.stage.label[locale]}</h2>
         <div
           className={`stage-state ${persistentlyComplete ? "stage-state--solved" : ""}`}
         >

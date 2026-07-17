@@ -28,7 +28,7 @@ export function readGamepadGesture(
  * Success: At least two pressed buttons and an absolute axis value of at least 0.65.
  * Privacy/Permission: Retain only the gesture fact, never controller identity or mapping.
  * Cleanup: Cancel the polling frame and detach the abort listener on exit.
- * Human verification: H-019, H-020, H-031
+ * Human verification: H-009, H-019, H-025
  */
 export default function S200Stage(props: StageComponentProps) {
   const problem = props.problem("S-200-B01");

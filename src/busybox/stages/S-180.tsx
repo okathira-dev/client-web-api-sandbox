@@ -14,7 +14,7 @@ import { ProblemGiftBox } from "../ui/GiftBox";
  * Success: Write the token, then paste the exact token into the target.
  * Privacy/Permission: Clipboard write occurs only from the action; pasted text is not retained.
  * Cleanup: The attempt token is discarded with the stage component.
- * Human verification: H-012, H-020, H-028
+ * Human verification: H-006, H-014, H-020, H-025
  */
 export default function S180Stage(props: StageComponentProps) {
   const copyProblem = props.problem("S-180-B01");

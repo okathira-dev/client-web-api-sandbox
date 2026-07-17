@@ -13,7 +13,7 @@ type InteractionState = "idle" | "active" | "denied" | "unavailable";
  * Success: Observe luminance below 55 followed by luminance above 165.
  * Privacy/Permission: Request camera access only from the action; retain no pixels or frames.
  * Cleanup: Stop sampling, every media track, and the video source on retry or exit.
- * Human verification: H-009, H-020, H-025
+ * Human verification: H-006, H-007, H-019, H-025
  */
 export default function S110Stage(props: StageComponentProps) {
   const problem = props.problem("S-110-B01");

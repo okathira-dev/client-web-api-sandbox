@@ -58,7 +58,7 @@ interface UsbNavigator extends Navigator {
  * Success: A transfer returns a non-empty DataView.
  * Privacy/Permission: Retain only the transfer fact, never bytes or device identity.
  * Cleanup: Close the device on success, retry, abort, error, or unmount.
- * Human verification: H-019, H-020, H-035
+ * Human verification: H-006, H-011, H-019, H-025
  */
 export default function S300Stage(props: StageComponentProps) {
   const problem = props.problem("S-300-B01");

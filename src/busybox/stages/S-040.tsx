@@ -10,7 +10,7 @@ import { ProblemGiftBox } from "../ui/GiftBox";
  * Success: Return after the document remained hidden for at least two seconds.
  * Privacy/Permission: No permission; only the threshold fact is retained.
  * Cleanup: Remove visibilitychange listeners on unmount or stage abort.
- * Human verification: H-013, H-022
+ * Human verification: H-013, H-022, H-025
  */
 export default function S040Stage(props: StageComponentProps) {
   const hiddenAt = useRef<number | null>(null);

@@ -21,7 +21,7 @@ function isChannelMessage(value: unknown): value is ChannelMessage {
  * Success: Receive a validated hello or acknowledgement from another sender.
  * Privacy/Permission: No permission; messages contain only an ephemeral sender ID.
  * Cleanup: Close the channel on unmount or stage abort.
- * Human verification: H-013
+ * Human verification: H-013, H-025
  */
 export default function S050Stage(props: StageComponentProps) {
   const sender = useMemo(() => crypto.randomUUID(), []);

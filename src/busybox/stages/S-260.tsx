@@ -26,7 +26,7 @@ const EYEDROPPER_TARGET = "#a78bfa";
  * Success: The normalized sRGB result equals #a78bfa.
  * Privacy/Permission: Open the picker only from an action; retain only the chosen hex value.
  * Cleanup: Abort an open picker automatically when the stage exits.
- * Human verification: H-012, H-020, H-030
+ * Human verification: H-006, H-023, H-025
  */
 export default function S260Stage(props: StageComponentProps) {
   const problem = props.problem("S-260-B01");

@@ -17,7 +17,7 @@ interface BadgeNavigator extends Navigator {
  * Success: Three sequential setAppBadge calls complete in this attempt.
  * Privacy/Permission: No permission or retained badge value.
  * Cleanup: Clear the app badge on abort or unmount.
- * Human verification: H-005, H-020, H-023
+ * Human verification: H-005, H-023, H-025
  */
 export default function S210Stage(props: StageComponentProps) {
   const problem = props.problem("S-210-B01");

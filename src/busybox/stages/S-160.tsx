@@ -25,7 +25,7 @@ function pointOnCanvas(canvas: HTMLCanvasElement, event: PointerEvent) {
  * Success: Draw at least 240px over 450ms with samples below 0.25 and above 0.75 px/ms.
  * Privacy/Permission: No permission; pointer samples exist only during the current gesture.
  * Cleanup: Remove every pointer listener and the abort listener on exit.
- * Human verification: H-004, H-020, H-024
+ * Human verification: H-004, H-020, H-024, H-025
  */
 export default function S160Stage(props: StageComponentProps) {
   const problem = props.problem("S-160-B01");

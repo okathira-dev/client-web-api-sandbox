@@ -10,7 +10,7 @@ import { ProblemGiftBox } from "../ui/GiftBox";
  * Success: Observe navigator.onLine becoming false.
  * Privacy/Permission: No permission; network contents are never inspected.
  * Cleanup: Remove online and offline listeners on unmount.
- * Human verification: H-005, H-021, H-022
+ * Human verification: H-005, H-021, H-022, H-025
  */
 export default function S070Stage(props: StageComponentProps) {
   const problem = props.problem("S-070-B01");

@@ -13,7 +13,7 @@ type InteractionState = "idle" | "active" | "cancelled" | "unavailable";
  * Success: Sample 12 playable frames from a captured browser display surface.
  * Privacy/Permission: The browser picker controls selection; no frame is persisted or sent.
  * Cleanup: Stop the timer, capture tracks, and video source on retry, end, abort, or unmount.
- * Human verification: H-009, H-014, H-020, H-025
+ * Human verification: H-006, H-007, H-012, H-019, H-025
  */
 export default function S190Stage(props: StageComponentProps) {
   const problem = props.problem("S-190-B01");

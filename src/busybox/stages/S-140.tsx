@@ -10,7 +10,7 @@ import { ProblemGiftBox } from "../ui/GiftBox";
  * Success: Complete a fresh sync, then separately observe a remote installation.
  * Privacy/Permission: Use only the app-private folder and never infer an account identity.
  * Cleanup: The Drive service owns token and request cleanup outside the stage.
- * Human verification: H-015, H-016, H-017, H-018
+ * Human verification: H-015, H-016, H-017, H-018, H-025
  */
 export default function S140Stage(props: StageComponentProps) {
   const backupProblem = props.problem("S-140-B01");

@@ -48,7 +48,7 @@ interface BluetoothNavigator extends Navigator {
  * Success: Read at least one byte from the battery-level characteristic.
  * Privacy/Permission: Selection starts from the browser picker; retain no device identity.
  * Cleanup: Disconnect GATT on retry, success, abort, or unmount.
- * Human verification: H-019, H-020, H-033
+ * Human verification: H-006, H-010, H-019, H-025
  */
 export default function S280Stage(props: StageComponentProps) {
   const problem = props.problem("S-280-B01");

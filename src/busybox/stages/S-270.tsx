@@ -152,7 +152,7 @@ async function runGpuSearch(): Promise<number | null> {
  * Success: The GPU reports the seeded sentinel index 2347.
  * Privacy/Permission: Compute only generated stage data; no device details are retained.
  * Cleanup: Destroy every GPU buffer and the device in a finally block.
- * Human verification: H-019, H-020, H-032
+ * Human verification: H-019, H-023, H-025
  */
 export default function S270Stage(props: StageComponentProps) {
   const problem = props.problem("S-270-B01");

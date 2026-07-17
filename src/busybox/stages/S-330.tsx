@@ -10,7 +10,7 @@ import { ProblemGiftBox } from "../ui/GiftBox";
  * Success: Acquire once, then reacquire after a visibility-triggered release.
  * Privacy/Permission: Request wake lock only from the action; retain no device data.
  * Cleanup: Remove visibility listeners and release any held sentinel on abort or unmount.
- * Human verification: H-013, H-020, H-030
+ * Human verification: H-005, H-022, H-023, H-025
  */
 export default function S330Stage(props: StageComponentProps) {
   const acquireProblem = props.problem("S-330-B01");

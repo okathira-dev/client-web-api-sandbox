@@ -10,7 +10,7 @@ import { ProblemGiftBox } from "../ui/GiftBox";
  * Success: Return through the Service Worker notification-click URL.
  * Privacy/Permission: Request notification permission only from the explicit button.
  * Cleanup: Replace the one-shot return query without retaining notification data.
- * Human verification: H-005, H-006, H-023
+ * Human verification: H-005, H-006, H-023, H-025
  */
 export default function S090Stage(props: StageComponentProps) {
   const problem = props.problem("S-090-B01");

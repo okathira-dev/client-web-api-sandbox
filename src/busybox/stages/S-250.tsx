@@ -10,7 +10,7 @@ import { ProblemGiftBox } from "../ui/GiftBox";
  * Success: Hold the named lock and receive a blocked fact from a contender tab.
  * Privacy/Permission: No permission; channel messages are fixed status words only.
  * Cleanup: Release the lock hold, remove the listener, and close the channel on exit.
- * Human verification: H-013, H-020
+ * Human verification: H-013, H-022, H-025
  */
 export default function S250Stage(props: StageComponentProps) {
   const holderProblem = props.problem("S-250-B01");

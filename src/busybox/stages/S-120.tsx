@@ -13,7 +13,7 @@ type InteractionState = "idle" | "active" | "denied" | "unavailable";
  * Success: Observe RMS below 0.05, above 0.2, then below 0.06.
  * Privacy/Permission: Request microphone access only from the action; retain no audio samples.
  * Cleanup: Cancel sampling, disconnect audio, stop tracks, and close AudioContext on exit.
- * Human verification: H-010, H-020, H-025
+ * Human verification: H-006, H-007, H-019, H-025
  */
 export default function S120Stage(props: StageComponentProps) {
   const problem = props.problem("S-120-B01");

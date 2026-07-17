@@ -30,7 +30,7 @@ function isKeyFile(
  * Success: Export the key, then import a valid file whose token hash matches this attempt.
  * Privacy/Permission: Store only the token hash; reject oversized or malformed local files.
  * Cleanup: Revoke the download URL immediately; clear the file input after each read.
- * Human verification: H-011, H-020, H-026
+ * Human verification: H-014, H-020, H-025
  */
 export default function S130Stage(props: StageComponentProps) {
   const exportProblem = props.problem("S-130-B01");

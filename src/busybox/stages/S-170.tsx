@@ -10,7 +10,7 @@ import { ProblemGiftBox } from "../ui/GiftBox";
  * Success: Pause while the iteration progress is within 0.1 of 0.5.
  * Privacy/Permission: No permission or retained timing samples.
  * Cleanup: Cancel the Animation object on unmount.
- * Human verification: H-001, H-020
+ * Human verification: H-001, H-002, H-003, H-020, H-025
  */
 export default function S170Stage(props: StageComponentProps) {
   const problem = props.problem("S-170-B01");

@@ -18,7 +18,7 @@ interface PostureNavigator extends Navigator {
  * Success: Observe posture folded or two horizontal/vertical viewport segments.
  * Privacy/Permission: No permission; retain only the folded-or-segmented fact.
  * Cleanup: Remove posture, media-query, and abort listeners on exit.
- * Human verification: H-019, H-020, H-036
+ * Human verification: H-023, H-025
  */
 export default function S320Stage(props: StageComponentProps) {
   const problem = props.problem("S-320-B01");

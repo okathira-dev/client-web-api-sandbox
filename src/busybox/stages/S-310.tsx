@@ -18,7 +18,7 @@ interface LaunchQueueLike {
  * Success: Consume a target URL carrying both the S-310 stage and busybox launch marker.
  * Privacy/Permission: No permission; inspect only the two expected URL parameters.
  * Cleanup: Disable the non-removable launch consumer callback when the stage unmounts.
- * Human verification: H-005, H-023
+ * Human verification: H-005, H-021, H-023, H-025
  */
 export default function S310Stage(props: StageComponentProps) {
   const problem = props.problem("S-310-B01");

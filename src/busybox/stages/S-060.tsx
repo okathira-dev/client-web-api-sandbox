@@ -11,7 +11,7 @@ import { ProblemGiftBox } from "../ui/GiftBox";
  * Success: Re-enter after the first visit has recorded its observation.
  * Privacy/Permission: No permission; only an entered/returned fact is retained.
  * Cleanup: No external resource.
- * Human verification: H-001, H-018
+ * Human verification: H-001, H-018, H-025
  */
 export default function S060Stage(props: StageComponentProps) {
   const observationId = "S-060:entered";

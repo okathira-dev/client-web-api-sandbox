@@ -12,7 +12,7 @@ type InteractionState = "idle" | "active" | "cancelled" | "unavailable";
  * Success: navigator.share resolves after the user completes the share flow.
  * Privacy/Permission: Share only the displayed attempt mark from an explicit action.
  * Cleanup: The mark is discarded with the component; cancellation is not success.
- * Human verification: H-012, H-020, H-028
+ * Human verification: H-004, H-014, H-025
  */
 export default function S240Stage(props: StageComponentProps) {
   const problem = props.problem("S-240-B01");

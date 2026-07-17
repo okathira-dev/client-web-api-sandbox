@@ -13,7 +13,7 @@ type InteractionState = "idle" | "active" | "cancelled" | "unavailable";
  * Success: Receive enterpictureinpicture for the generated video source.
  * Privacy/Permission: No external media or permission prompt; only generated pixels are used.
  * Cleanup: Stop drawing and media tracks, remove listeners, and close PiP on exit.
- * Human verification: H-001, H-020, H-030
+ * Human verification: H-012, H-023, H-025
  */
 export default function S230Stage(props: StageComponentProps) {
   const problem = props.problem("S-230-B01");

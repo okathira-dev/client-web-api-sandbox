@@ -14,7 +14,7 @@ function isStandalone() {
  * Success: Observe display-mode: standalone from an installed launch.
  * Privacy/Permission: No permission; only the display-mode fact is retained.
  * Cleanup: Remove the media-query listener on unmount.
- * Human verification: H-005, H-023
+ * Human verification: H-005, H-023, H-025
  */
 export default function S080Stage(props: StageComponentProps) {
   const problem = props.problem("S-080-B01");

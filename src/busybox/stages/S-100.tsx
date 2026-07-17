@@ -16,7 +16,7 @@ interface PermissionAwareOrientationEvent {
  * Success: beta is near 45 degrees and gamma near zero continuously for one second.
  * Privacy/Permission: Request permission only from the explicit action; retain no angles.
  * Cleanup: Remove the orientation listener on retry, abort, or unmount.
- * Human verification: H-007, H-008, H-020
+ * Human verification: H-008, H-025
  */
 export default function S100Stage(props: StageComponentProps) {
   const problem = props.problem("S-100-B01");

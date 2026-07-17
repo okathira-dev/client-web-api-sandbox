@@ -10,7 +10,7 @@ import { ProblemGiftBox } from "../ui/GiftBox";
  * Success: Resize within 18px of a target 80px away from the entry width.
  * Privacy/Permission: No permission; only the success fact is retained.
  * Cleanup: Remove the resize listener on unmount or stage abort.
- * Human verification: H-001, H-002, H-003
+ * Human verification: H-001, H-002, H-003, H-025
  */
 export default function S020Stage(props: StageComponentProps) {
   const initialWidth = useRef(window.innerWidth);

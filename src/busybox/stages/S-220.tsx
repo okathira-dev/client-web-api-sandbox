@@ -19,7 +19,7 @@ function currentTrail() {
  * Success: Enter with a ready trail whose depth has returned to zero.
  * Privacy/Permission: No permission; history state contains only depth and readiness.
  * Cleanup: Replace the base URL before adding bounded entries; no listener is retained.
- * Human verification: H-013, H-020, H-029
+ * Human verification: H-001, H-002, H-003, H-022, H-025
  */
 export default function S220Stage(props: StageComponentProps) {
   const problem = props.problem("S-220-B01");

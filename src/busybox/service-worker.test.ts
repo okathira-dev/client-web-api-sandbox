@@ -154,7 +154,7 @@ describe("Busybox service worker strategy", () => {
       request: {
         method: "GET",
         mode: "cors",
-        url: "https://example.test/repo/assets/coreStages-AbCdEf12.js",
+        url: "https://example.test/repo/assets/S-000-AbCdEf12.js",
       },
       respondWith: assetResponse,
     });
@@ -162,7 +162,7 @@ describe("Busybox service worker strategy", () => {
       request: {
         method: "GET",
         mode: "cors",
-        url: "https://example.test/repo/busybox/stages/coreStages.tsx",
+        url: "https://example.test/repo/busybox/stages/S-000.tsx",
       },
       respondWith: sourceResponse,
     });

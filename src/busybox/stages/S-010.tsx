@@ -15,7 +15,7 @@ const problemIds = {
  * Success: Each pointerType opens only its matching problem box.
  * Privacy/Permission: No permission; pointer coordinates are not retained.
  * Cleanup: React removes the pointer handlers with the problem boxes.
- * Human verification: H-004, H-020, H-024
+ * Human verification: H-004, H-020, H-024, H-025
  */
 export default function S010Stage(props: StageComponentProps) {
   return (

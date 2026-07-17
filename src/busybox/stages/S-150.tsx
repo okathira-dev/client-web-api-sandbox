@@ -12,7 +12,7 @@ const visualOrder = { A: 1, B: 2, C: 3 } as const;
  * Success: The actual child text becomes ABC even though the visible strip stays ABC.
  * Privacy/Permission: No permission or retained document content.
  * Cleanup: Disconnect the MutationObserver on unmount.
- * Human verification: H-001, H-020, H-027
+ * Human verification: H-001, H-020, H-025
  */
 export default function S150Stage(props: StageComponentProps) {
   const problem = props.problem("S-150-B01");

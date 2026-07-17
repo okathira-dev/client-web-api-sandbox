@@ -11,7 +11,7 @@ import { ProblemGiftBox } from "../ui/GiftBox";
  * Success: Finish three transitions during the current attempt.
  * Privacy/Permission: No permission or retained transition state.
  * Cleanup: Await each transition; the browser owns transition pseudo-elements.
- * Human verification: H-001, H-020, H-030
+ * Human verification: H-001, H-002, H-003, H-020, H-025
  */
 export default function S340Stage(props: StageComponentProps) {
   const problem = props.problem("S-340-B01");

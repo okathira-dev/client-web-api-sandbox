@@ -10,7 +10,7 @@ import { ProblemGiftBox } from "../ui/GiftBox";
  * Success: Select the localized word rendered between brackets.
  * Privacy/Permission: No permission; selected text is not retained.
  * Cleanup: Remove selectionchange listeners on unmount or stage abort.
- * Human verification: H-001, H-003, H-020
+ * Human verification: H-001, H-003, H-020, H-025
  */
 export default function S030Stage(props: StageComponentProps) {
   const answer = props.locale === "ja" ? "あいだ" : "between";
