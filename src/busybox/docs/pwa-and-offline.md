@@ -21,6 +21,8 @@ manifestの `start_url`、`id`、`scope` とアイコンはすべて相対URLに
 - S-070は `navigator.onLine` とonline/offlineイベントを観測する。ネットワーク疎通の完全な保証には使わない。
 - S-080は `display-mode: standalone` を観測する。インストール可否そのものをAPI存在だけで判定しない。
 - S-090はステージ内ボタンから通知権限を要求し、Service Workerのnotification clickで専用URLへ戻った事実を判定する。
+- S-310はmanifestの `launch_handler` と `window.launchQueue` の実callbackを使い、通常のURL遷移だけではクリアしない。
+- S-330は表示中にだけWake Lockを保持し、visibilityで解放された後の再取得までを観測する。
 
 通知本文やキャッシュには進捗、生入力、端末識別子を含めない。
 

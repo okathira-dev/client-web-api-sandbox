@@ -10,7 +10,7 @@ describe("Busybox stage registry", () => {
   });
 
   it("keeps documented problem-box counts aligned", () => {
-    expect(totalBoxCount).toBe(26);
+    expect(totalBoxCount).toBe(34);
     for (const stage of stageCatalogue) {
       expect(stage.boxIds).toHaveLength(stage.boxCount);
       expect(new Set(stage.boxIds).size).toBe(stage.boxCount);

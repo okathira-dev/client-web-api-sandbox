@@ -26,7 +26,14 @@ export type ClueIconName =
   | "copy"
   | "paste"
   | "history"
-  | "transition";
+  | "transition"
+  | "screen"
+  | "pip"
+  | "share"
+  | "lock"
+  | "wait"
+  | "launch"
+  | "wake";
 
 export function ClueIcon({ name }: { name: ClueIconName }) {
   const paths = {
@@ -74,6 +81,17 @@ export function ClueIcon({ name }: { name: ClueIconName }) {
     paste: <path d="M8 5h8v3H8Zm-2 1H4v15h16V6h-2m-6 5v7m-3-3 3 3 3-3" />,
     history: <path d="M4 5v5h5M5 9a8 8 0 1 1 1 8m6-9v5l3 2" />,
     transition: <path d="M4 7h11m-3-3 3 3-3 3m8 7H9m3-3-3 3 3 3M6 4v16" />,
+    screen: <path d="M3 4h18v13H3Zm5 17h8m-4-4v4M7 8h10v5H7" />,
+    pip: <path d="M3 4h18v16H3Zm10 7h6v6h-6Z" />,
+    share: <path d="M8 12 16 5m-5 0h5v5M6 9H4v11h11v-2" />,
+    lock: <path d="M7 10V7a5 5 0 0 1 10 0v3m-12 0h14v11H5Zm7 4v3" />,
+    wait: (
+      <path d="M6 3h12M6 21h12M8 3c0 5 3 5 4 9-1 4-4 4-4 9m8-18c0 5-3 5-4 9 1 4 4 4 4 9" />
+    ),
+    launch: <path d="M5 5h7v2H7v10h10v-5h2v7H5Zm7-2h9v9m0-9-9 9" />,
+    wake: (
+      <path d="M12 4a6 6 0 0 0-3 11v3h6v-3a6 6 0 0 0-3-11Zm-3 17h6M3 5l2 2m16-2-2 2M2 13h3m14 0h3" />
+    ),
   } satisfies Record<ClueIconName, ReactNode>;
 
   return (

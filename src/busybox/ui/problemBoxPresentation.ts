@@ -128,10 +128,50 @@ export const problemBoxPresentation = {
     clue: "paste",
     label: { ja: "貼り付けの箱", en: "Paste box" },
   },
+  "S-190-B01": {
+    color: "#22d3ee",
+    clue: "screen",
+    label: { ja: "再帰画面の箱", en: "Recursive-screen box" },
+  },
   "S-220-B01": {
     color: "#fb7185",
     clue: "history",
     label: { ja: "履歴の箱", en: "History box" },
+  },
+  "S-230-B01": {
+    color: "#60a5fa",
+    clue: "pip",
+    label: { ja: "小窓の箱", en: "Picture-in-picture box" },
+  },
+  "S-240-B01": {
+    color: "#34d399",
+    clue: "share",
+    label: { ja: "共有の箱", en: "Share box" },
+  },
+  "S-250-B01": {
+    color: "#fbbf24",
+    clue: "lock",
+    label: { ja: "鍵を持つ箱", en: "Lock-holder box" },
+  },
+  "S-250-B02": {
+    color: "#fb7185",
+    clue: "wait",
+    label: { ja: "鍵を待つ箱", en: "Lock-waiter box" },
+  },
+  "S-310-B01": {
+    color: "#c084fc",
+    clue: "launch",
+    label: { ja: "再起動の箱", en: "Launch-handler box" },
+  },
+  "S-330-B01": {
+    color: "#facc15",
+    clue: "wake",
+    label: { ja: "灯りを保つ箱", en: "Wake-lock box" },
+  },
+  "S-330-B02": {
+    color: "#fde68a",
+    clue: "return",
+    label: { ja: "灯りを戻す箱", en: "Wake-lock return box" },
   },
   "S-340-B01": {
     color: "#34d399",

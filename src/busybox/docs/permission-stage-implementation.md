@@ -38,4 +38,26 @@
 - cleanup: Object URLをクリック後に破棄し、選択inputを空にする。
 - 人手確認: H-014, H-020。キャンセル、別ファイル、巨大ファイル、再ダウンロードを確認する。
 
+## S-190 画面の中の画面
+
+- 観測: 明示ボタンから `getDisplayMedia()` を呼び、選択されたvideo trackの `displaySurface` とvideo frameの継続を読む。
+- 判定: browser surfaceが12 frame以上再生された場合だけ開く。共有ダイアログを開いただけでは判定しない。
+- プライバシー: capture frameを解析、保存、送信しない。プレビューは現在のステージ内だけに表示する。
+- cleanup: interval停止、全MediaStreamTrack停止、videoの `srcObject` 解除。
+- 人手確認: H-006, H-007, H-012, H-019。タブ共有、画面共有、取消、ブラウザ側の共有停止を確認する。
+
+## S-230〜S-250 ブラウザ・OS境界
+
+- S-230: canvasから生成した短命なMediaStreamをvideoへ渡し、実際の `enterpictureinpicture` eventで判定する。離脱時は描画timer、track、PiPを終了する。
+- S-240: 毎回生成する印を `navigator.share()` へ渡し、promiseが正常完了した場合だけ判定する。取消は未クリアのままとする。
+- S-250: origin内のexclusive Web Lockを保持する箱と、別タブで `ifAvailable` が取得不能になった事実を受け取る箱に分ける。BroadcastChannelは観測通知だけに使い、離脱時にlockを解放する。
+- 人手確認: H-004, H-012, H-013, H-014, H-022, H-023。PiP終了、共有先なし、共有取消、holder tab終了、同時操作を確認する。
+
+## S-310 / S-330 PWAライフサイクル
+
+- S-310: manifestの `launch_handler.client_mode` を `navigate-existing` とし、`window.launchQueue` の実callbackに渡されたtarget URLだけを判定する。通常のリンククリックだけではクリアしない。
+- S-330: 明示操作からScreen Wake Lockを取得し、visibilityでreleaseされた後、表示復帰時に同じ入場内で再取得できた場合に第2箱を開く。
+- cleanup: WakeLockSentinelをreleaseし、visibility / release listenerを破棄する。LaunchQueueへは同一入場のconsumerだけを登録する。
+- 人手確認: H-005, H-021, H-022, H-023。インストール起動、既存windowへの再起動、タブ非表示、OSの省電力制限を確認する。
+
 閾値やコピーは実機ゲートの結果で調整できるが、生入力を保存しない境界とユーザージェスチャー内の権限要求は変更しない。

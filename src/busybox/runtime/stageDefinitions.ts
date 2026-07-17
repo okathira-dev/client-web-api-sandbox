@@ -18,6 +18,7 @@ const webApp = () => import("../stages/webAppStages");
 const device = () => import("../stages/deviceStages");
 const drive = () => import("../stages/driveStage");
 const foundation = () => import("../stages/foundationStages");
+const context = () => import("../stages/contextStages");
 
 export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
   "S-000": {
@@ -220,11 +221,83 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
       foundation().then((module) => ({ default: module.ClipboardPassStage })),
     ),
   },
+  "S-190": {
+    summary: summary("S-190"),
+    probe: () =>
+      safeCapabilityProbe(() =>
+        isSecureContext &&
+        "mediaDevices" in navigator &&
+        "getDisplayMedia" in navigator.mediaDevices
+          ? "permission-required"
+          : "unsupported",
+      ),
+    component: lazy(() =>
+      context().then((module) => ({ default: module.RecursiveCaptureStage })),
+    ),
+  },
   "S-220": {
     summary: summary("S-220"),
     probe: () => "available",
     component: lazy(() =>
       foundation().then((module) => ({ default: module.HistoryTrailStage })),
+    ),
+  },
+  "S-230": {
+    summary: summary("S-230"),
+    probe: () =>
+      safeCapabilityProbe(() =>
+        document.pictureInPictureEnabled &&
+        "requestPictureInPicture" in HTMLVideoElement.prototype &&
+        "captureStream" in HTMLCanvasElement.prototype
+          ? "available"
+          : "unsupported",
+      ),
+    component: lazy(() =>
+      context().then((module) => ({ default: module.PictureInPictureStage })),
+    ),
+  },
+  "S-240": {
+    summary: summary("S-240"),
+    probe: () =>
+      safeCapabilityProbe(() =>
+        "share" in navigator ? "permission-required" : "unsupported",
+      ),
+    component: lazy(() =>
+      context().then((module) => ({ default: module.ShareMarkStage })),
+    ),
+  },
+  "S-250": {
+    summary: summary("S-250"),
+    probe: () =>
+      safeCapabilityProbe(() =>
+        isSecureContext && "locks" in navigator && "BroadcastChannel" in window
+          ? "available"
+          : "unsupported",
+      ),
+    component: lazy(() =>
+      context().then((module) => ({ default: module.WebLockStage })),
+    ),
+  },
+  "S-310": {
+    summary: summary("S-310"),
+    probe: () =>
+      safeCapabilityProbe(() =>
+        "launchQueue" in window ? "available" : "unsupported",
+      ),
+    component: lazy(() =>
+      context().then((module) => ({ default: module.LaunchHandlerStage })),
+    ),
+  },
+  "S-330": {
+    summary: summary("S-330"),
+    probe: () =>
+      safeCapabilityProbe(() =>
+        isSecureContext && "wakeLock" in navigator
+          ? "available"
+          : "unsupported",
+      ),
+    component: lazy(() =>
+      context().then((module) => ({ default: module.WakeLockStage })),
     ),
   },
   "S-340": {

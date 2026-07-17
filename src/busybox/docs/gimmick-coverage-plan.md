@@ -25,7 +25,7 @@
 | G-009 Device Orientation | S-100 傾けて止める | 既存 |
 | G-010 Camera | S-110 光だけを見る | 既存 |
 | G-011 Web Audio | S-120 音のかたち | 既存 |
-| G-012 Screen Capture | S-190 画面の中の画面 | 新規。capture frameを保存せず再帰表示する |
+| G-012 Screen Capture | S-190 画面の中の画面 | 実装済み。capture frameを保存せず再帰表示する |
 | G-013 Gamepad | S-200 同時に押す | 新規。軸と複数buttonの同時状態を読む |
 | G-014 IndexedDB | S-060 帰ってくる箱 | 既存 |
 | G-015 Service Worker / Cache | S-070 通信のない返事 | 既存 |
@@ -33,14 +33,14 @@
 | G-017 Broadcast Channel | S-050 二つの窓 | 既存 |
 | G-018 Page Visibility | S-040 見ない時間 | 既存 |
 | G-019 History | S-220 戻る道 | 実装済み。積んだ同一ステージ履歴をブラウザBackで戻る |
-| G-020 Picture-in-Picture | S-230 浮かぶ窓 | 新規。生成映像のPiP入場イベントを読む |
-| G-021 Web Share | S-240 渡した印 | 新規。share promiseが完了した操作だけを採用する |
-| G-022 Web Locks | S-250 一つだけの鍵 | 新規。holderと別タブのblocked状態を2箱にする |
+| G-020 Picture-in-Picture | S-230 浮かぶ窓 | 実装済み。生成映像のPiP入場イベントを読む |
+| G-021 Web Share | S-240 渡した印 | 実装済み。share promiseが完了した操作だけを採用する |
+| G-022 Web Locks | S-250 一つだけの鍵 | 実装済み。holderと別タブのblocked状態を2箱にする |
 | G-023 EyeDropper | S-260 画面の一滴 | 新規。画面上から指定色を採る |
 | G-024 WebGPU | S-270 並列の捜索 | 新規。compute shaderのreadback結果で判定する |
 | G-025 Web Bluetooth | S-280 近くの電池 | 新規。標準Battery Serviceの値を実際に読む |
 | G-026 WebHID / WebUSB | S-290 生の入力、S-300 線の向こう | 新規。input reportとIN transferを別ステージにする |
-| G-027 Launch Handler | S-080 別の入口、S-310 もう一度の起動 | display-modeとLaunchQueueを分担 |
+| G-027 Launch Handler | S-080 別の入口、S-310 もう一度の起動 | 実装済み。display-modeとLaunchQueueを分担 |
 | G-028 Device Posture / Viewport Segments | S-320 折れ目をまたぐ | 新規。posture changeまたは2 segmentを読む |
 | G-029 Notifications | S-090 外からの呼び声 | 既存 |
 | G-030 Drive backup | S-140 もう一つの端末 | 既存 |
@@ -51,7 +51,7 @@
 
 | ID | ステージ | API | 一意性 |
 | --- | --- | --- | --- |
-| G-031 | S-330 消えない灯り | Screen Wake Lock | 画面を見せ続ける権利がvisibilityで失われ、再取得される |
+| G-031 | S-330 消えない灯り | Screen Wake Lock | 実装済み。画面を見せ続ける権利がvisibilityで失われ、再取得される |
 | G-032 | S-340 形をつなぐ | View Transition | 実装済み。DOM更新の前後をブラウザが1つの視覚遷移として結ぶ |
 
 ## 2026-07-17 現行API確認

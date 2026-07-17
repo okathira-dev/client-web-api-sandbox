@@ -719,6 +719,38 @@ input:focus-visible {
 .transition-tiles span:nth-child(3) {
   --transition-name: busybox-triangle;
 }
+.capture-preview,
+.pip-preview {
+  width: min(100%, 28rem);
+  aspect-ratio: 16 / 9;
+  border: 1px solid #55486a;
+  border-radius: 1rem;
+  background: #090711;
+  object-fit: cover;
+}
+.pip-preview {
+  width: min(100%, 20rem);
+}
+.launch-url {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  color: #a9a0b8;
+  font-family: ui-monospace, monospace;
+  font-size: 0.75rem;
+}
+.wake-light {
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+  background: #473f2a;
+  transition:
+    background 180ms ease,
+    box-shadow 180ms ease;
+}
+.wake-light[data-active="true"] {
+  background: #facc15;
+  box-shadow: 0 0 3rem #facc1588;
+}
 .sr-only {
   position: absolute;
   width: 1px;
