@@ -18,13 +18,18 @@ export function deriveProblemBoxVisualState(
   return solvedBeforeEntry ? "closed" : "ribboned";
 }
 
+export function countSolvedBoxes(
+  boxIds: readonly string[],
+  solvedBoxes: Readonly<Record<string, BoxProgress>>,
+): number {
+  return boxIds.filter((boxId) => solvedBoxes[boxId] !== undefined).length;
+}
+
 export function deriveStageProgress(
   boxIds: readonly string[],
   solvedBoxes: Readonly<Record<string, BoxProgress>>,
 ): StageProgressState {
-  const solved = boxIds.filter(
-    (boxId) => solvedBoxes[boxId] !== undefined,
-  ).length;
+  const solved = countSolvedBoxes(boxIds, solvedBoxes);
   if (solved === 0) return "untouched";
   if (solved === boxIds.length) return "solved";
   return "partial";

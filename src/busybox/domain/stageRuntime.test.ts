@@ -1,4 +1,5 @@
 import {
+  countSolvedBoxes,
   deriveProblemBoxVisualState,
   deriveStageProgress,
   safeCapabilityProbe,
@@ -23,6 +24,16 @@ describe("Busybox stage runtime", () => {
     expect(
       deriveStageProgress(boxIds, { ...solved("one"), ...solved("two") }),
     ).toBe("solved");
+  });
+
+  it("counts cumulative solves only for the active stage", () => {
+    expect(
+      countSolvedBoxes(["one", "two", "three"], {
+        ...solved("one"),
+        ...solved("two"),
+        ...solved("another-stage"),
+      }),
+    ).toBe(2);
   });
 
   it("contains capability probe failures", () => {

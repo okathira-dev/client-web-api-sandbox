@@ -7,7 +7,10 @@ import {
   useEffect,
   useState,
 } from "react";
-import { deriveProblemBoxVisualState } from "../domain/stageRuntime";
+import {
+  countSolvedBoxes,
+  deriveProblemBoxVisualState,
+} from "../domain/stageRuntime";
 import type { ProgressController } from "../hooks/useProgress";
 import { type Locale, messages } from "../i18n";
 import type { StageDefinition, StageServices } from "./types";
@@ -74,10 +77,15 @@ export function StageHost({
   >(() => new Set());
   const copy = messages[locale];
   const capability = definition.probe();
-  const attemptSolvedCount = definition.summary.boxIds.filter((boxId) =>
-    solvedThisAttempt.has(boxId),
-  ).length;
-  const attemptComplete = attemptSolvedCount === definition.summary.boxCount;
+  // The header is a lifetime record; only the boxes below reset for replay.
+  // Keeping these signals separate avoids turning a closed replay box into a
+  // misleading loss of previously earned progress.
+  const persistentSolvedCount = countSolvedBoxes(
+    definition.summary.boxIds,
+    progress.document.boxes,
+  );
+  const persistentlyComplete =
+    persistentSolvedCount === definition.summary.boxCount;
 
   const problemState = useCallback(
     (boxId: string) =>
@@ -116,9 +124,9 @@ export function StageHost({
         <p>{definition.summary.id}</p>
         <h2 id={activeStageTitleId}>{definition.summary.name[locale]}</h2>
         <div
-          className={`stage-state ${attemptComplete ? "stage-state--solved" : ""}`}
+          className={`stage-state ${persistentlyComplete ? "stage-state--solved" : ""}`}
         >
-          {attemptSolvedCount}/{definition.summary.boxCount}
+          {persistentSolvedCount}/{definition.summary.boxCount}
         </div>
       </header>
 
