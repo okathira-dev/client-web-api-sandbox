@@ -1,4 +1,4 @@
-import { readGamepadGesture } from "./peripheralStages";
+import { readGamepadGesture } from "./S-200";
 
 function gamepad(buttons: readonly number[], axes: readonly number[]): Gamepad {
   return {
@@ -12,7 +12,7 @@ function gamepad(buttons: readonly number[], axes: readonly number[]): Gamepad {
   } as unknown as Gamepad;
 }
 
-describe("gamepad gesture", () => {
+describe("S-200 gamepad gesture", () => {
   it("requires two simultaneous buttons and a displaced axis", () => {
     expect(readGamepadGesture([gamepad([1, 1], [0.7])])).toEqual({
       pressed: 2,

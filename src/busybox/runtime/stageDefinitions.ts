@@ -13,8 +13,6 @@ function summary(id: keyof typeof summaries) {
   return value;
 }
 
-const peripheral = () => import("../stages/peripheralStages");
-
 export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
   "S-000": {
     summary: summary("S-000"),
@@ -196,9 +194,7 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
       safeCapabilityProbe(() =>
         "getGamepads" in navigator ? "available" : "unsupported",
       ),
-    component: lazy(() =>
-      peripheral().then((module) => ({ default: module.GamepadChordStage })),
-    ),
+    component: lazy(() => import("../stages/S-200")),
   },
   "S-210": {
     summary: summary("S-210"),
@@ -208,9 +204,7 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
           ? "available"
           : "unsupported",
       ),
-    component: lazy(() =>
-      peripheral().then((module) => ({ default: module.AppBadgeStage })),
-    ),
+    component: lazy(() => import("../stages/S-210")),
   },
   "S-220": {
     summary: summary("S-220"),
@@ -255,9 +249,7 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
           ? "permission-required"
           : "unsupported",
       ),
-    component: lazy(() =>
-      peripheral().then((module) => ({ default: module.EyeDropperStage })),
-    ),
+    component: lazy(() => import("../stages/S-260")),
   },
   "S-270": {
     summary: summary("S-270"),
@@ -265,9 +257,7 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
       safeCapabilityProbe(() =>
         isSecureContext && "gpu" in navigator ? "available" : "unsupported",
       ),
-    component: lazy(() =>
-      peripheral().then((module) => ({ default: module.WebGpuSearchStage })),
-    ),
+    component: lazy(() => import("../stages/S-270")),
   },
   "S-280": {
     summary: summary("S-280"),
@@ -277,11 +267,7 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
           ? "permission-required"
           : "unsupported",
       ),
-    component: lazy(() =>
-      peripheral().then((module) => ({
-        default: module.BluetoothBatteryStage,
-      })),
-    ),
+    component: lazy(() => import("../stages/S-280")),
   },
   "S-290": {
     summary: summary("S-290"),
@@ -291,9 +277,7 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
           ? "permission-required"
           : "unsupported",
       ),
-    component: lazy(() =>
-      peripheral().then((module) => ({ default: module.HidInputStage })),
-    ),
+    component: lazy(() => import("../stages/S-290")),
   },
   "S-300": {
     summary: summary("S-300"),
@@ -303,9 +287,7 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
           ? "permission-required"
           : "unsupported",
       ),
-    component: lazy(() =>
-      peripheral().then((module) => ({ default: module.UsbTransferStage })),
-    ),
+    component: lazy(() => import("../stages/S-300")),
   },
   "S-310": {
     summary: summary("S-310"),
@@ -324,9 +306,7 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
           ? "available"
           : "unsupported",
       ),
-    component: lazy(() =>
-      peripheral().then((module) => ({ default: module.FoldedViewportStage })),
-    ),
+    component: lazy(() => import("../stages/S-320")),
   },
   "S-330": {
     summary: summary("S-330"),
