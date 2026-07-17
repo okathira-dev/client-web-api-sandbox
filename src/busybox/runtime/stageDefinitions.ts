@@ -13,7 +13,6 @@ function summary(id: keyof typeof summaries) {
   return value;
 }
 
-const device = () => import("../stages/deviceStages");
 const foundation = () => import("../stages/foundationStages");
 const context = () => import("../stages/contextStages");
 const peripheral = () => import("../stages/peripheralStages");
@@ -110,9 +109,7 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
           ? "permission-required"
           : "unsupported",
       ),
-    component: lazy(() =>
-      device().then((module) => ({ default: module.OrientationStage })),
-    ),
+    component: lazy(() => import("../stages/S-100")),
   },
   "S-110": {
     summary: summary("S-110"),
@@ -122,9 +119,7 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
           ? "permission-required"
           : "unsupported",
       ),
-    component: lazy(() =>
-      device().then((module) => ({ default: module.CameraLightStage })),
-    ),
+    component: lazy(() => import("../stages/S-110")),
   },
   "S-120": {
     summary: summary("S-120"),
@@ -136,9 +131,7 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
           ? "permission-required"
           : "unsupported",
       ),
-    component: lazy(() =>
-      device().then((module) => ({ default: module.SoundShapeStage })),
-    ),
+    component: lazy(() => import("../stages/S-120")),
   },
   "S-130": {
     summary: summary("S-130"),
@@ -146,9 +139,7 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
       safeCapabilityProbe(() =>
         isSecureContext && crypto.subtle ? "available" : "unsupported",
       ),
-    component: lazy(() =>
-      device().then((module) => ({ default: module.FileKeyStage })),
-    ),
+    component: lazy(() => import("../stages/S-130")),
   },
   "S-140": {
     summary: summary("S-140"),
