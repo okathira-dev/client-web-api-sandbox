@@ -13,7 +13,6 @@ function summary(id: keyof typeof summaries) {
   return value;
 }
 
-const foundation = () => import("../stages/foundationStages");
 const context = () => import("../stages/contextStages");
 const peripheral = () => import("../stages/peripheralStages");
 
@@ -152,9 +151,7 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
       safeCapabilityProbe(() =>
         "MutationObserver" in window ? "available" : "unsupported",
       ),
-    component: lazy(() =>
-      foundation().then((module) => ({ default: module.DocumentOrderStage })),
-    ),
+    component: lazy(() => import("../stages/S-150")),
   },
   "S-160": {
     summary: summary("S-160"),
@@ -162,9 +159,7 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
       safeCapabilityProbe(() =>
         "PointerEvent" in window ? "available" : "unsupported",
       ),
-    component: lazy(() =>
-      foundation().then((module) => ({ default: module.PointerTraceStage })),
-    ),
+    component: lazy(() => import("../stages/S-160")),
   },
   "S-170": {
     summary: summary("S-170"),
@@ -172,9 +167,7 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
       safeCapabilityProbe(() =>
         "animate" in Element.prototype ? "available" : "unsupported",
       ),
-    component: lazy(() =>
-      foundation().then((module) => ({ default: module.AnimationTimeStage })),
-    ),
+    component: lazy(() => import("../stages/S-170")),
   },
   "S-180": {
     summary: summary("S-180"),
@@ -184,9 +177,7 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
           ? "permission-required"
           : "unsupported",
       ),
-    component: lazy(() =>
-      foundation().then((module) => ({ default: module.ClipboardPassStage })),
-    ),
+    component: lazy(() => import("../stages/S-180")),
   },
   "S-190": {
     summary: summary("S-190"),
@@ -227,9 +218,7 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
   "S-220": {
     summary: summary("S-220"),
     probe: () => "available",
-    component: lazy(() =>
-      foundation().then((module) => ({ default: module.HistoryTrailStage })),
-    ),
+    component: lazy(() => import("../stages/S-220")),
   },
   "S-230": {
     summary: summary("S-230"),
@@ -368,8 +357,6 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
       safeCapabilityProbe(() =>
         "startViewTransition" in document ? "available" : "unsupported",
       ),
-    component: lazy(() =>
-      foundation().then((module) => ({ default: module.ViewTransitionStage })),
-    ),
+    component: lazy(() => import("../stages/S-340")),
   },
 };
