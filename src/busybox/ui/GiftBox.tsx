@@ -1,12 +1,9 @@
 import type { CSSProperties, MouseEventHandler } from "react";
 import { useEffect, useRef } from "react";
 import type { ProblemBoxVisualState } from "../domain/stageRuntime";
+import { type ProblemBoxId, problemById } from "../domain/stages";
 import { type Locale, messages } from "../i18n";
 import { ClueIcon } from "./ClueIcon";
-import {
-  type ProblemBoxId,
-  problemBoxPresentation,
-} from "./problemBoxPresentation";
 
 export type GiftBoxState = "ribboned" | "closed" | "open";
 
@@ -89,7 +86,7 @@ export function ProblemGiftBox({
   onClick,
   onPointerDown,
 }: ProblemGiftBoxProps) {
-  const presentation = problemBoxPresentation[boxId];
+  const presentation = problemById[boxId];
   const copy = messages[locale];
   const stateLabel = {
     ribboned: copy.problemNeverSolved,

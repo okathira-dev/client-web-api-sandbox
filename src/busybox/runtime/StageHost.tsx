@@ -67,9 +67,9 @@ export function StageHost({
   const [solvedBeforeEntry] = useState<ReadonlySet<string>>(
     () =>
       new Set(
-        definition.summary.boxIds.filter(
-          (boxId) => progress.document.boxes[boxId] !== undefined,
-        ),
+        definition.summary.problems
+          .map((problem) => problem.id)
+          .filter((boxId) => progress.document.boxes[boxId] !== undefined),
       ),
   );
   const [solvedThisAttempt, setSolvedThisAttempt] = useState<
@@ -81,11 +81,11 @@ export function StageHost({
   // Keeping these signals separate avoids turning a closed replay box into a
   // misleading loss of previously earned progress.
   const persistentSolvedCount = countSolvedBoxes(
-    definition.summary.boxIds,
+    definition.summary.problems.map((problem) => problem.id),
     progress.document.boxes,
   );
   const persistentlyComplete =
-    persistentSolvedCount === definition.summary.boxCount;
+    persistentSolvedCount === definition.summary.problems.length;
 
   const problemState = useCallback(
     (boxId: string) =>
@@ -122,11 +122,11 @@ export function StageHost({
       </button>
       <header className="stage-view__header">
         <p>{definition.summary.id}</p>
-        <h2 id={activeStageTitleId}>{definition.summary.name[locale]}</h2>
+        <h2 id={activeStageTitleId}>{definition.summary.label[locale]}</h2>
         <div
           className={`stage-state ${persistentlyComplete ? "stage-state--solved" : ""}`}
         >
-          {persistentSolvedCount}/{definition.summary.boxCount}
+          {persistentSolvedCount}/{definition.summary.problems.length}
         </div>
       </header>
 

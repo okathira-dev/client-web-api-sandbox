@@ -290,7 +290,8 @@ interface StageCardProps {
 function StageCard({ stage, locale, boxes, onOpen }: StageCardProps) {
   const copy = messages[locale];
   const definition = stageDefinitions[stage.id];
-  const state = deriveStageProgress(stage.boxIds, boxes);
+  const boxIds = stage.problems.map((problem) => problem.id);
+  const state = deriveStageProgress(boxIds, boxes);
   const status =
     state === "solved"
       ? copy.solved
@@ -309,14 +310,14 @@ function StageCard({ stage, locale, boxes, onOpen }: StageCardProps) {
       <GiftBox
         state={giftState}
         color="var(--accent)"
-        label={`${stage.name[locale]}: ${status}`}
+        label={`${stage.label[locale]}: ${status}`}
         size="stage"
       />
       <div>
         <p className="stage-card__id">{stage.id}</p>
-        <h3>{stage.name[locale]}</h3>
+        <h3>{stage.label[locale]}</h3>
         <p>
-          {stage.boxCount} {copy.boxes} · {status}
+          {stage.problems.length} {copy.boxes} · {status}
         </p>
       </div>
       <button

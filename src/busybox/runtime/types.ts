@@ -4,7 +4,7 @@ import type {
   CapabilityState,
   ProblemBoxVisualState,
 } from "../domain/stageRuntime";
-import type { StageSummary } from "../domain/stages";
+import type { StageSpec } from "../domain/stages";
 import type { Locale } from "../i18n";
 
 export interface StageComponentProps {
@@ -32,7 +32,7 @@ export interface StageServices {
 export type StageComponent = (props: StageComponentProps) => React.JSX.Element;
 
 export interface StageDefinition {
-  summary: StageSummary;
+  summary: StageSpec;
   probe(): CapabilityState;
   component: LazyExoticComponent<StageComponent>;
 }
