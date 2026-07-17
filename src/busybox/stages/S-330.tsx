@@ -47,7 +47,7 @@ export default function S330Stage(props: StageComponentProps) {
           { once: true },
         );
       } catch {
-        setStatus("unavailable");
+        if (activeRef.current) setStatus("unavailable");
       }
     },
     [solveAcquire, solveReturn],

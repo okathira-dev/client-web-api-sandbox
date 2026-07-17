@@ -37,14 +37,26 @@ export default function S120Stage(props: StageComponentProps) {
         audio: true,
         video: false,
       });
-      const context = new AudioContext();
-      const source = context.createMediaStreamSource(stream);
+      let context: AudioContext | null = null;
+      let source: MediaStreamAudioSourceNode | null = null;
+      let animationFrame = 0;
+      cleanupRef.current = () => {
+        cancelAnimationFrame(animationFrame);
+        source?.disconnect();
+        stopMediaStream(stream);
+        if (context) void context.close();
+      };
+      if (props.signal.aborted) {
+        cleanupRef.current();
+        return;
+      }
+      context = new AudioContext();
+      source = context.createMediaStreamSource(stream);
       const analyser = context.createAnalyser();
       analyser.fftSize = 512;
       source.connect(analyser);
       const samples = new Uint8Array(analyser.fftSize);
       let phase = 0;
-      let animationFrame = 0;
       let lastPaint = 0;
 
       const sample = (time: number) => {
@@ -69,14 +81,10 @@ export default function S120Stage(props: StageComponentProps) {
       animationFrame = requestAnimationFrame(sample);
 
       // Only the RMS scalar reaches React state; samples are never persisted or sent.
-      cleanupRef.current = () => {
-        cancelAnimationFrame(animationFrame);
-        source.disconnect();
-        stopMediaStream(stream);
-        void context.close();
-      };
       setStatus("active");
     } catch (error) {
+      cleanupRef.current();
+      if (props.signal.aborted) return;
       setStatus(
         error instanceof DOMException && error.name === "NotAllowedError"
           ? "denied"

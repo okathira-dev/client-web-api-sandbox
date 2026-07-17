@@ -9,12 +9,12 @@ import { ProblemGiftBox } from "../ui/GiftBox";
  * Uses: Notifications API and Service Worker notifications.
  * Success: Return through the Service Worker notification-click URL.
  * Privacy/Permission: Request notification permission only from the explicit button.
- * Cleanup: Replace the one-shot return query without retaining notification data.
+ * Cleanup: Ignore late permission work, close a late notification, and consume the return query.
  * Human verification: H-005, H-006, H-023, H-025
  */
 export default function S090Stage(props: StageComponentProps) {
   const problem = props.problem("S-090-B01");
-  const [status, setStatus] = useState<NotificationPermission>(
+  const [status, setStatus] = useState<NotificationPermission | "unavailable">(
     Notification.permission,
   );
 
@@ -30,18 +30,29 @@ export default function S090Stage(props: StageComponentProps) {
   const sendNotification = async () => {
     // Permission and notification creation stay inside this click handler because
     // browsers require a user gesture and surprise prompts would violate the UX policy.
-    const permission = await Notification.requestPermission();
-    setStatus(permission);
-    if (permission !== "granted") return;
-    const registration = await navigator.serviceWorker.ready;
-    await registration.showNotification("Busybox", {
-      body:
-        props.locale === "ja"
-          ? "箱が外で待っています。"
-          : "A box is waiting outside.",
-      icon: "./icon.svg",
-      tag: "busybox-stage-S-090",
-    });
+    try {
+      const permission = await Notification.requestPermission();
+      if (props.signal.aborted) return;
+      setStatus(permission);
+      if (permission !== "granted") return;
+      const registration = await navigator.serviceWorker.ready;
+      if (props.signal.aborted) return;
+      const tag = "busybox-stage-S-090";
+      await registration.showNotification("Busybox", {
+        body:
+          props.locale === "ja"
+            ? "箱が外で待っています。"
+            : "A box is waiting outside.",
+        icon: "./icon.svg",
+        tag,
+      });
+      if (props.signal.aborted) {
+        const notifications = await registration.getNotifications({ tag });
+        for (const notification of notifications) notification.close();
+      }
+    } catch {
+      if (!props.signal.aborted) setStatus("unavailable");
+    }
   };
 
   return (

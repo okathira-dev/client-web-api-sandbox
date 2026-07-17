@@ -37,6 +37,7 @@ export default function S260Stage(props: StageComponentProps) {
     try {
       const EyeDropperApi = (window as unknown as EyeDropperWindow).EyeDropper;
       const result = await new EyeDropperApi().open({ signal: props.signal });
+      if (props.signal.aborted) return;
       const normalized = result.sRGBHex.toLowerCase();
       setPicked(normalized);
       setStatus("read");
@@ -44,6 +45,7 @@ export default function S260Stage(props: StageComponentProps) {
         problem.solve(["eyedropper:target-color"]);
       }
     } catch (error) {
+      if (props.signal.aborted) return;
       setStatus(
         error instanceof DOMException && error.name === "AbortError"
           ? "cancelled"

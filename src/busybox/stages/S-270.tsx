@@ -85,20 +85,23 @@ async function runGpuSearch(): Promise<number | null> {
   const device = await adapter.requestDevice();
   const candidates = Uint32Array.from({ length: 4096 }, (_, index) => index);
   candidates[GPU_TARGET_INDEX] = GPU_TARGET_VALUE;
-  const input = device.createBuffer({
-    size: candidates.byteLength,
-    usage: GPU_USAGE.storage | GPU_USAGE.copyDst,
-  });
-  const result = device.createBuffer({
-    size: 4,
-    usage: GPU_USAGE.storage | GPU_USAGE.copySrc | GPU_USAGE.copyDst,
-  });
-  const readback = device.createBuffer({
-    size: 4,
-    usage: GPU_USAGE.mapRead | GPU_USAGE.copyDst,
-  });
+  let input: BusyGpuBuffer | undefined;
+  let result: BusyGpuBuffer | undefined;
+  let readback: BusyGpuBuffer | undefined;
 
   try {
+    input = device.createBuffer({
+      size: candidates.byteLength,
+      usage: GPU_USAGE.storage | GPU_USAGE.copyDst,
+    });
+    result = device.createBuffer({
+      size: 4,
+      usage: GPU_USAGE.storage | GPU_USAGE.copySrc | GPU_USAGE.copyDst,
+    });
+    readback = device.createBuffer({
+      size: 4,
+      usage: GPU_USAGE.mapRead | GPU_USAGE.copyDst,
+    });
     device.queue.writeBuffer(input, 0, candidates);
     device.queue.writeBuffer(result, 0, Uint32Array.of(0xffffffff));
     const module = device.createShaderModule({
@@ -137,9 +140,9 @@ async function runGpuSearch(): Promise<number | null> {
     readback.unmap();
     return found ?? null;
   } finally {
-    input.destroy();
-    result.destroy();
-    readback.destroy();
+    input?.destroy();
+    result?.destroy();
+    readback?.destroy();
     device.destroy?.();
   }
 }
@@ -163,13 +166,14 @@ export default function S270Stage(props: StageComponentProps) {
     setStatus("waiting");
     try {
       const index = await runGpuSearch();
+      if (props.signal.aborted) return;
       setFound(index);
       setStatus(index === null ? "unavailable" : "read");
       if (index === GPU_TARGET_INDEX) {
         problem.solve(["webgpu:compute-readback"]);
       }
     } catch {
-      setStatus("unavailable");
+      if (!props.signal.aborted) setStatus("unavailable");
     }
   };
 

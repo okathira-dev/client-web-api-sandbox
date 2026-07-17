@@ -79,9 +79,18 @@ export default function S300Stage(props: StageComponentProps) {
     try {
       const usb = (navigator as unknown as UsbNavigator).usb;
       const device = await usb.requestDevice({ filters: [] });
+      if (props.signal.aborted) return;
       await device.open();
       cleanupRef.current = () => void device.close().catch(() => undefined);
+      if (props.signal.aborted) {
+        cleanupRef.current();
+        return;
+      }
       if (!device.configuration) await device.selectConfiguration(1);
+      if (props.signal.aborted) {
+        cleanupRef.current();
+        return;
+      }
       const selected = device.configuration?.interfaces
         .flatMap((usbInterface) =>
           usbInterface.alternate.endpoints.map((endpoint) => ({
@@ -96,18 +105,24 @@ export default function S300Stage(props: StageComponentProps) {
         );
       if (!selected) throw new Error("No IN endpoint");
       await device.claimInterface(selected.interfaceNumber);
+      if (props.signal.aborted) {
+        cleanupRef.current();
+        return;
+      }
       setStatus("waiting");
       const result = await device.transferIn(
         selected.endpoint.endpointNumber,
         64,
       );
       if (!result.data?.byteLength) throw new Error("Empty USB transfer");
+      if (props.signal.aborted) return;
       setStatus("read");
       problem.solve(["usb:in-transfer"]);
       cleanupRef.current();
     } catch (error) {
       // A failure can occur after open, so the catch path must also close hardware.
       cleanupRef.current();
+      if (props.signal.aborted) return;
       setStatus(
         error instanceof DOMException && error.name === "NotFoundError"
           ? "cancelled"

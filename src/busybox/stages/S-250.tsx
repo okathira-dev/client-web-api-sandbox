@@ -19,18 +19,20 @@ export default function S250Stage(props: StageComponentProps) {
 
   useEffect(() => {
     const channel = new BroadcastChannel("busybox-stage-S-250");
+    let active = true;
     let releaseHold: () => void = () => undefined;
     const hold = new Promise<void>((resolve) => {
       releaseHold = resolve;
     });
     const receive = (event: MessageEvent<unknown>) => {
-      if (event.data === "blocked") {
+      if (active && event.data === "blocked") {
         waiterProblem.solve(["web-lock:peer-blocked"]);
       }
     };
     channel.addEventListener("message", receive);
     void navigator.locks
       .request("busybox-stage-S-250", { ifAvailable: true }, async (lock) => {
+        if (!active) return;
         if (!lock) {
           setStatus("blocked");
           channel.postMessage("blocked");
@@ -41,8 +43,11 @@ export default function S250Stage(props: StageComponentProps) {
         channel.postMessage("holding");
         await hold;
       })
-      .catch(() => setStatus("unavailable"));
+      .catch(() => {
+        if (active) setStatus("unavailable");
+      });
     const cleanup = () => {
+      active = false;
       releaseHold();
       channel.removeEventListener("message", receive);
       channel.close();

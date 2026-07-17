@@ -70,7 +70,11 @@ export default function S230Stage(props: StageComponentProps) {
       const video = videoRef.current;
       if (!video) return;
       await video.requestPictureInPicture();
+      if (props.signal.aborted && document.pictureInPictureElement === video) {
+        await document.exitPictureInPicture();
+      }
     } catch (error) {
+      if (props.signal.aborted) return;
       setStatus(
         error instanceof DOMException && error.name === "NotAllowedError"
           ? "cancelled"

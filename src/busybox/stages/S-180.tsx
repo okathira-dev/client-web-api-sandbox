@@ -28,10 +28,15 @@ export default function S180Stage(props: StageComponentProps) {
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(token);
+      if (props.signal.aborted) return;
       copyProblem.solve(["clipboard:written"]);
       setStatus(props.locale === "ja" ? "外へ渡した" : "Sent outside");
     } catch {
-      setStatus(props.locale === "ja" ? "コピーできない" : "Copy unavailable");
+      if (!props.signal.aborted) {
+        setStatus(
+          props.locale === "ja" ? "コピーできない" : "Copy unavailable",
+        );
+      }
     }
   };
 

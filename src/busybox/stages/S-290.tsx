@@ -57,11 +57,17 @@ export default function S290Stage(props: StageComponentProps) {
     try {
       const hid = (navigator as unknown as HidNavigator).hid;
       const [device] = await hid.requestDevice({ filters: [] });
+      if (props.signal.aborted) return;
       if (!device) {
         setStatus("cancelled");
         return;
       }
       await device.open();
+      cleanupRef.current = () => void device.close().catch(() => undefined);
+      if (props.signal.aborted) {
+        cleanupRef.current();
+        return;
+      }
       let accepted = false;
       const onReport: EventListener = (event) => {
         const report = event as BusyHidInputReportEvent;
@@ -79,6 +85,8 @@ export default function S290Stage(props: StageComponentProps) {
       };
       setStatus("waiting");
     } catch (error) {
+      cleanupRef.current();
+      if (props.signal.aborted) return;
       setStatus(
         error instanceof DOMException && error.name === "NotFoundError"
           ? "cancelled"

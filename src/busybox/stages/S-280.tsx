@@ -75,18 +75,39 @@ export default function S280Stage(props: StageComponentProps) {
       const gatt = device.gatt;
       if (!gatt) throw new Error("GATT unavailable");
       disconnectRef.current = () => gatt.disconnect();
+      if (props.signal.aborted) {
+        disconnectRef.current();
+        return;
+      }
       setStatus("waiting");
       const server = await gatt.connect();
+      if (props.signal.aborted) {
+        gatt.disconnect();
+        return;
+      }
       const service = await server.getPrimaryService("battery_service");
+      if (props.signal.aborted) {
+        gatt.disconnect();
+        return;
+      }
       const characteristic = await service.getCharacteristic("battery_level");
+      if (props.signal.aborted) {
+        gatt.disconnect();
+        return;
+      }
       const data = await characteristic.readValue();
       if (data.byteLength < 1) throw new Error("Empty battery value");
+      if (props.signal.aborted) {
+        gatt.disconnect();
+        return;
+      }
       setBattery(data.getUint8(0));
       setStatus("read");
       problem.solve(["bluetooth:battery-service-read"]);
       gatt.disconnect();
     } catch (error) {
       disconnectRef.current();
+      if (props.signal.aborted) return;
       setStatus(
         error instanceof DOMException && error.name === "NotFoundError"
           ? "cancelled"

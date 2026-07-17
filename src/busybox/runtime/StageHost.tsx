@@ -6,6 +6,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import {
@@ -77,6 +78,12 @@ export function StageHost({
   const [solvedThisAttempt, setSolvedThisAttempt] = useState<
     ReadonlySet<string>
   >(() => new Set());
+  const persistSolveRef = useRef(progress.solve);
+  const persistObserveRef = useRef(progress.observe);
+  // Handles stay referentially stable for long-running stage effects, while
+  // persistence must still use the controller from the latest render.
+  persistSolveRef.current = progress.solve;
+  persistObserveRef.current = progress.observe;
   const copy = messages[locale];
   const capability = definition.probe();
   // The header is a lifetime record; only the boxes below reset for replay.
@@ -98,17 +105,20 @@ export function StageHost({
     [solvedBeforeEntry, solvedThisAttempt],
   );
 
-  const solve = useCallback(
-    (boxId: string, facts: readonly string[] = []) => {
-      // Attempt state is updated even when the grow-only document already has
-      // this box and therefore returns no persistent change on a replay.
-      setSolvedThisAttempt((current) => {
-        if (current.has(boxId)) return current;
-        return new Set([...current, boxId]);
-      });
-      progress.solve(boxId, facts);
-    },
-    [progress.solve],
+  const solve = useCallback((boxId: string, facts: readonly string[] = []) => {
+    // Attempt state is updated even when the grow-only document already has
+    // this box and therefore returns no persistent change on a replay.
+    setSolvedThisAttempt((current) => {
+      if (current.has(boxId)) return current;
+      return new Set([...current, boxId]);
+    });
+    persistSolveRef.current(boxId, facts);
+  }, []);
+
+  const observe = useCallback(
+    (observationId: string, facts: readonly string[] = []) =>
+      persistObserveRef.current(observationId, facts),
+    [],
   );
 
   const problemSolvers = useMemo(
@@ -183,7 +193,7 @@ export function StageHost({
               signal={signal}
               problem={problem}
               services={services}
-              observe={progress.observe}
+              observe={observe}
             />
           </Suspense>
         </StageErrorBoundary>

@@ -42,6 +42,7 @@ export default function S130Stage(props: StageComponentProps) {
     const bytes = crypto.getRandomValues(new Uint8Array(18));
     const token = btoa(String.fromCharCode(...bytes));
     const hash = await hashToken(token);
+    if (props.signal.aborted) return;
     setAttemptKeyHash(hash);
     props.observe("S-130:key", [hash]);
     exportProblem.solve(["file:exported"]);
@@ -68,11 +69,12 @@ export default function S130Stage(props: StageComponentProps) {
       const value: unknown = JSON.parse(await file.text());
       if (!isKeyFile(value)) throw new Error("invalid key file");
       const hash = await hashToken(value.token);
+      if (props.signal.aborted) return;
       if (hash !== attemptKeyHash) throw new Error("different key");
       importProblem.solve(["file:returned"]);
       setStatus("matched");
     } catch {
-      setStatus("invalid");
+      if (!props.signal.aborted) setStatus("invalid");
     }
   };
 

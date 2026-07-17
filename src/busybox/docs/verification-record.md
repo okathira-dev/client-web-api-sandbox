@@ -16,6 +16,17 @@
 | Jest | 合格 | 16 suites / 99 tests。registry 35件、問題42件、S-200入力境界、Service Worker振り分けを含む |
 | production build | 合格 | Vite buildが35個の `S-xxx` chunkを個別生成。既存の他entryに関するexternal化・500kB警告だけ継続 |
 
+### セルフレビュー
+
+| 観点 | 発見事項 | 対応 |
+| --- | --- | --- |
+| 永続化コールバック | 長時間動くstage effectが、保存状態変更前の `solve` / `observe` を保持し得た | `ProblemHandle` の関数identityを保ったまま、実行時は最新の進捗controllerへ委譲 |
+| 非同期離脱 | 権限picker、メディア再生、共有、Drive、周辺機器処理の待機中にstageを離れると、完了後にstateまたは進捗を更新し得た | 各await境界でentryの `AbortSignal` を確認し、離脱後の更新・解決・後続I/Oを停止 |
+| リソース所有権 | camera / microphone / display capture、PiP、通知、Bluetooth / HID / USB、WebGPUの一部確保後に失敗すると解放漏れの余地があった | 確保直後にcleanupを登録し、成功・拒否・例外・離脱・部分確保の全経路で停止、切断、close、destroy |
+| 再検証 | 上記修正による型・表示・chunk境界への影響 | Biome、markuplint、`tsc --noEmit`、16 suites / 99 tests、production build、35 stage / 42 problem / JSDoc台帳整合を修正後に再実行 |
+
+セルフレビュー後の未解決コード指摘はない。権限UI、OS連携、実センサー、実周辺機器、OAuth、PWAについては自動検査で代替せず、下記の人手ゲートを公開判定に残す。
+
 ### ブラウザシナリオ
 
 | シナリオ | 結果 | 観測 |

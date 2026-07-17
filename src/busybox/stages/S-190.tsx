@@ -48,10 +48,25 @@ export default function S190Stage(props: StageComponentProps) {
         return;
       }
       video.srcObject = stream;
+      let timer: number | undefined;
+      const cleanup = () => {
+        if (timer !== undefined) window.clearInterval(timer);
+        stopMediaStream(stream);
+        video.srcObject = null;
+      };
+      cleanupRef.current = cleanup;
+      if (props.signal.aborted) {
+        cleanup();
+        return;
+      }
       await video.play();
+      if (props.signal.aborted) {
+        cleanup();
+        return;
+      }
       const track = stream.getVideoTracks()[0];
       let observedFrames = 0;
-      const timer = window.setInterval(() => {
+      timer = window.setInterval(() => {
         if (video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) return;
         observedFrames += 1;
         setFrames(observedFrames);
@@ -62,15 +77,11 @@ export default function S190Stage(props: StageComponentProps) {
           problem.solve(["display-capture:browser-surface"]);
         }
       }, 120);
-      const cleanup = () => {
-        window.clearInterval(timer);
-        stopMediaStream(stream);
-        video.srcObject = null;
-      };
-      cleanupRef.current = cleanup;
       track?.addEventListener("ended", cleanup, { once: true });
       setStatus("active");
     } catch (error) {
+      cleanupRef.current();
+      if (props.signal.aborted) return;
       setStatus(
         error instanceof DOMException && error.name === "NotAllowedError"
           ? "cancelled"

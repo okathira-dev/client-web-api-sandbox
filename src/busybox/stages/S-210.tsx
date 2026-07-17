@@ -42,12 +42,16 @@ export default function S210Stage(props: StageComponentProps) {
     const next = Math.min(3, levelRef.current + 1);
     try {
       await badge.setAppBadge(next);
+      if (props.signal.aborted) {
+        void badge.clearAppBadge().catch(() => undefined);
+        return;
+      }
       levelRef.current = next;
       setLevel(next);
       setStatus("active");
       if (next === 3) problem.solve(["badge:one-two-three"]);
     } catch {
-      setStatus("unavailable");
+      if (!props.signal.aborted) setStatus("unavailable");
     }
   };
 

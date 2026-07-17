@@ -45,13 +45,27 @@ export default function S110Stage(props: StageComponentProps) {
       video.muted = true;
       video.playsInline = true;
       video.srcObject = stream;
+      let timer: number | undefined;
+      cleanupRef.current = () => {
+        if (timer !== undefined) window.clearInterval(timer);
+        stopMediaStream(stream);
+        video.srcObject = null;
+      };
+      if (props.signal.aborted) {
+        cleanupRef.current();
+        return;
+      }
       await video.play();
+      if (props.signal.aborted) {
+        cleanupRef.current();
+        return;
+      }
       const canvas = document.createElement("canvas");
       canvas.width = 32;
       canvas.height = 24;
       const context = canvas.getContext("2d", { willReadFrequently: true });
       let darkSeen = false;
-      const timer = window.setInterval(() => {
+      timer = window.setInterval(() => {
         if (!context || video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA)
           return;
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -78,13 +92,10 @@ export default function S110Stage(props: StageComponentProps) {
       }, 200);
 
       // Derived luminance exists only for this attempt; no pixel leaves memory.
-      cleanupRef.current = () => {
-        window.clearInterval(timer);
-        stopMediaStream(stream);
-        video.srcObject = null;
-      };
       setStatus("active");
     } catch (error) {
+      cleanupRef.current();
+      if (props.signal.aborted) return;
       setStatus(
         error instanceof DOMException && error.name === "NotAllowedError"
           ? "denied"

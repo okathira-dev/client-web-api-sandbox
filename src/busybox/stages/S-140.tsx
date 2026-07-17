@@ -9,7 +9,7 @@ import { ProblemGiftBox } from "../ui/GiftBox";
  * Uses: Google Identity Services and Drive appDataFolder through StageServices.
  * Success: Complete a fresh sync, then separately observe a remote installation.
  * Privacy/Permission: Use only the app-private folder and never infer an account identity.
- * Cleanup: The Drive service owns token and request cleanup outside the stage.
+ * Cleanup: The Drive service owns token/request cleanup; ignore completion after stage exit.
  * Human verification: H-015, H-016, H-017, H-018, H-025
  */
 export default function S140Stage(props: StageComponentProps) {
@@ -25,16 +25,22 @@ export default function S140Stage(props: StageComponentProps) {
     setStatus("syncing");
     // The stage consumes the fresh result instead of persistent observations so
     // reopening a cleared stage still requires a sync during this attempt.
-    const result = await drive.sync();
-    if (!result.synced) {
+    try {
+      const result = await drive.sync();
+      if (props.signal.aborted) return;
+      if (!result.synced) {
+        setStatus("error");
+        return;
+      }
+      backupProblem.solve(["drive:backup"]);
+      if (result.remoteDevice) {
+        deviceProblem.solve(["drive:remote-device"]);
+      }
+      setStatus("success");
+    } catch {
+      if (props.signal.aborted) return;
       setStatus("error");
-      return;
     }
-    backupProblem.solve(["drive:backup"]);
-    if (result.remoteDevice) {
-      deviceProblem.solve(["drive:remote-device"]);
-    }
-    setStatus("success");
   };
 
   return (

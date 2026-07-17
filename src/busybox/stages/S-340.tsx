@@ -24,6 +24,7 @@ export default function S340Stage(props: StageComponentProps) {
       flushSync(() => setStep(next));
     });
     await transition.finished;
+    if (props.signal.aborted) return;
     if (next >= 3) problem.solve(["view-transition:three-moves"]);
   };
 

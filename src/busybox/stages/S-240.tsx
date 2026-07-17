@@ -28,10 +28,12 @@ export default function S240Stage(props: StageComponentProps) {
             ? `箱の印: ${mark}`
             : `A mark from the box: ${mark}`,
       });
+      if (props.signal.aborted) return;
       // Only a resolved OS flow counts; opening and cancelling the sheet does not.
       problem.solve(["web-share:completed"]);
       setStatus("active");
     } catch (error) {
+      if (props.signal.aborted) return;
       setStatus(
         error instanceof DOMException && error.name === "AbortError"
           ? "cancelled"

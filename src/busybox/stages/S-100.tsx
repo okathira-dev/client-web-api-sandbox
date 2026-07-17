@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { StageComponentProps } from "../runtime/types";
 import { ProblemGiftBox } from "../ui/GiftBox";
 
-type InteractionState = "idle" | "active" | "denied";
+type InteractionState = "idle" | "active" | "denied" | "unavailable";
 
 interface PermissionAwareOrientationEvent {
   requestPermission?: () => Promise<"granted" | "denied">;
@@ -35,34 +35,39 @@ export default function S100Stage(props: StageComponentProps) {
 
   const start = async () => {
     cleanupRef.current();
-    const orientation =
-      DeviceOrientationEvent as unknown as PermissionAwareOrientationEvent;
-    if (orientation.requestPermission) {
-      const permission = await orientation.requestPermission();
-      if (permission !== "granted") {
-        setStatus("denied");
-        return;
+    try {
+      const orientation =
+        DeviceOrientationEvent as unknown as PermissionAwareOrientationEvent;
+      if (orientation.requestPermission) {
+        const permission = await orientation.requestPermission();
+        if (props.signal.aborted) return;
+        if (permission !== "granted") {
+          setStatus("denied");
+          return;
+        }
       }
-    }
 
-    let targetSince: number | null = null;
-    const observe = (event: DeviceOrientationEvent) => {
-      const beta = event.beta ?? 0;
-      const gamma = event.gamma ?? 0;
-      setTilt({ beta, gamma });
-      const onTarget = Math.abs(beta - 45) <= 12 && Math.abs(gamma) <= 12;
-      if (!onTarget) {
-        targetSince = null;
-      } else if (targetSince === null) {
-        targetSince = performance.now();
-      } else if (performance.now() - targetSince >= 1000) {
-        problem.solve(["orientation:held"]);
-      }
-    };
-    window.addEventListener("deviceorientation", observe);
-    cleanupRef.current = () =>
-      window.removeEventListener("deviceorientation", observe);
-    setStatus("active");
+      let targetSince: number | null = null;
+      const observe = (event: DeviceOrientationEvent) => {
+        const beta = event.beta ?? 0;
+        const gamma = event.gamma ?? 0;
+        setTilt({ beta, gamma });
+        const onTarget = Math.abs(beta - 45) <= 12 && Math.abs(gamma) <= 12;
+        if (!onTarget) {
+          targetSince = null;
+        } else if (targetSince === null) {
+          targetSince = performance.now();
+        } else if (performance.now() - targetSince >= 1000) {
+          problem.solve(["orientation:held"]);
+        }
+      };
+      window.addEventListener("deviceorientation", observe);
+      cleanupRef.current = () =>
+        window.removeEventListener("deviceorientation", observe);
+      setStatus("active");
+    } catch {
+      if (!props.signal.aborted) setStatus("unavailable");
+    }
   };
 
   return (
