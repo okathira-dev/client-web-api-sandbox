@@ -1,5 +1,23 @@
 # 検証記録
 
+## 2026-07-20 相談結果の統合とステージ展開計画
+
+Blackbox初期△28件・×1件の対話判断、新規G-033〜G-059、既存ステージ再設計を[ステージ展開計画](./stage-rollout-plan.md)へ統合した。コード実装は行わず、現在のcatalogueと計画値を分離して検証した。
+
+| 確認 | 結果 | 証跡 |
+| --- | --- | --- |
+| 現行catalogue | 合格 | 35ステージ・42問題箱 |
+| 計画台帳 | 合格 | stage status 60行、Gimmick 59件、うち取りやめ2件 |
+| 計画箱数 | 合格 | 既存変更後50箱＋新規47箱＝97箱。S-190-B05採用時のみ98箱 |
+| Blackbox相談 | 合格 | 初期△28件＋×1件の29/29にWeb案または新規問題を作らない理由あり |
+| Markdownリンク | 合格 | `src/busybox`配下の全相対Markdownリンクが実在 |
+| 差分形式 | 合格 | `git diff --check` |
+| 自動test | 合格 | 16 suites / 99 tests |
+| 静的check | 合格 | markuplint、Biome check。既存のBiome schema差異info 2件と`jest.setup.ts` warning 1件のみ |
+| build | 合格 | TypeScriptとVite production build。既存のbrowser external、plugin timing、chunk size warningのみ |
+
+完全なMDN 147ファミリー・1,045インターフェースの機械可読台帳は未作成である。この件数は2026-07-18の調査スナップショットとしてのみ保持し、次のWave 0で母集団を再取得する。
+
 ## 2026-07-18 ステージID単位の分割と問題ハンドル抽象化
 
 ### コード・成果物

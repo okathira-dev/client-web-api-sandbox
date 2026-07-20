@@ -50,6 +50,12 @@
 
 ステージ画面のクリア問題数 `x / n` は、今回開いている箱の数ではなく永続的な累積クリア数を示す。箱の開閉は今回の挑戦、数値はこれまでの実績という別の役割を持たせる。
 
+## ステージ地図
+
+ステージ一覧の最終形は均等なgridではなく、ステージ箱をnode、関係をedgeにしたmind mapとする。中央から5系統のbranchを伸ばし、同じ中心操作やbrowser surfaceを使うstageを近くへ置く。別stageで得た手掛かりが後のstageへ効く場合は、カテゴリ線とは異なる有向edgeで関係を示す。
+
+地図は攻略順を強制せず、edgeだけでstageをhard lockしない。箱nodeは実DOMのlink / buttonとsemantic listを維持し、線は背面SVGで補助表示する。決定的な配置、mobile pan / zoom、keyboard順、screen reader向け関係説明の詳細は[ステージMind Map設計](./stage-map-design.md)を正とする。
+
 ## 体験の柱
 
 ### ブラウザが操作対象になる

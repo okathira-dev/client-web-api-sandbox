@@ -26,8 +26,15 @@ manifestの `start_url`、`id`、`scope` とアイコンはすべて相対URLに
 - S-070は `navigator.onLine` とonline/offlineイベントを観測する。ネットワーク疎通の完全な保証には使わない。
 - S-080は `display-mode: standalone` を観測する。インストール可否そのものをAPI存在だけで判定しない。
 - S-090はステージ内ボタンから通知権限を要求し、Service Workerのnotification clickで専用URLへ戻った事実を判定する。
-- S-310はmanifestの `launch_handler` と `window.launchQueue` の実callbackを使い、通常のURL遷移だけではクリアしない。
+- S-410はnotification actionをService Worker内で処理し、pageを開かず次の通知へ差し替える。完了結果は専用IndexedDB inboxへ置き、通常訪問時に一度だけconsumeする。S-090とはnotification tagで分岐する。
+- S-420はnotification actionを入力列として保存し、本文click時に提出snapshotをcommitしてから金庫pageへ戻す。S-090 / S-410とは別tagとround recordを使い、直接URLでは提出扱いにしない。
+- S-240はmanifestの `share_target` でinstalled BusyboxをOSの共有先として登録し、同じround URLを外から受信した事実を判定する。通常tabでは、stage内と共通設定画面の両方からBusybox自身のインストール手順へ進めるようにする。インストール操作だけでは箱を開かない。
+- S-310はmanifestの `launch_handler` と `window.launchQueue` の実callbackを使う。B01はstage-scoped外部URL、B02はinstalled icon context menuのmanifest shortcut専用URL、B03は`note_taking.new_note_url`専用URLを受ける。通常page内遷移だけでは開かない。
 - S-330は表示中にだけWake Lockを保持し、visibilityで解放された後の再取得までを観測する。
+- S-440はmanifest `file_handlers`で`.busybox`をOSへ関連付け、OSの「開く」からLaunchQueueへ渡された実file handleだけを読む。fileはclient生成し、serverへuploadしない。起動済みpageへの通常dropは判定外とする。
+- S-450はmanifest `protocol_handlers`で`web+busybox`を登録し、custom scheme経由のround payloadを受ける。初回handler確認を拒否した環境では未観測のままとする。
+- S-460はdesktop installed PWAのWindow Controls Overlayがvisibleな時だけtitlebar geometryを盤面にする。
+- S-510はinstalled PWAをsticker source、通常browser windowをreceiverとして使う。共通install導線からsourceの起動とreceiver pageの並べ方を示すが、同一page内dropや通常file uploadはclearにしない。
 
 通知本文やキャッシュには進捗、生入力、端末識別子を含めない。
 
