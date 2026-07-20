@@ -1,5 +1,23 @@
 # 検証記録
 
+## 2026-07-20 合意済みステージの全実装
+
+| 確認 | 結果 | 証跡 |
+| --- | --- | --- |
+| catalogue / registry | 合格 | 60stage・97箱、ID重複なし、全stageにlazy componentとcapability probe |
+| 再設計 | 合格 | S-040 / 180 / 190 / 220 / 240 / 250 / 310を合意仕様へ更新 |
+| Core追加 | 合格 | S-350 / 490 / 500 |
+| 横断context | 合格 | S-190 B03/B04、S-250、S-360、S-510でround分離とcleanup |
+| PWA / OS面 | 合格（コード） | manifest shortcuts、note taking、share/file/protocol handlers、Window Controls Overlay、通知action router、Media Session |
+| WebAuthn / 時計 | 合格（コード） | S-380 Conditional UI 3箱、S-390 no-match / abort 2箱、S-400 monotonic比較2箱 |
+| 端末API | 合格（コード） | Battery、文字倍率、Proximity、LinearAcceleration、AmbientLight、Accelerometer、Gyroscope、RelativeOrientation、SpeechRecognition、距離、高度 |
+| 不採用確定 | 合格 | S-190-B05 notification capture markerはOS通知面を標準APIで選択・検証できず不採用。総数は97箱 |
+| TypeScript / markup / Biome | 合格 | `tsc --noEmit`、markuplint、Biome check |
+| Jest | 合格 | 19 suites / 107 tests。60/97 manifest整合、MDN / BCD全件台帳、通知action状態遷移を含む |
+| MDN / BCD台帳 | 合格 | 2026-07-20再取得で147 family・1,090 interface、未分類0。再生成scriptと全件testを追加 |
+
+権限、実機sensor、PWAインストール関連付け、OS通知action、passkey、system clock変更、cross-window D&Dはコード完成と公開合格を分離し、[人手確認台帳](./human-test-matrix.md)を必須ゲートとして残す。迂回clearやskipは追加していない。
+
 ## 2026-07-20 ステージ地図・機械可読manifest・横断基盤
 
 | 確認 | 結果 | 証跡 |
