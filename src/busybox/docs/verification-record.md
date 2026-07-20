@@ -1,5 +1,19 @@
 # 検証記録
 
+## 2026-07-20 ステージ地図・機械可読manifest・横断基盤
+
+| 確認 | 結果 | 証跡 |
+| --- | --- | --- |
+| 地図catalogue | 合格 | 全35stageに一意なbranch / order。既存`StageCard`をsemantic listとして再利用 |
+| 機械可読manifest | 合格 | 全stageのproblem、gimmick、API、人手確認、map metadataをcatalogueと照合 |
+| 横断round | 合格 | 30分期限、UUID、source stage、channel名の生成・検証test |
+| PWA起動envelope | 合格 | shortcut / note / share / file / protocol / notificationのround URL生成・期限検証test |
+| TypeScript | 合格 | `tsc --noEmit` |
+| Jest | 合格 | 18 suites / 105 tests |
+| ブラウザ目視 | 環境制約で未実施 | in-app browserから127.0.0.1、host.docker.internal、LAN addressのいずれも開発serverへ到達不能。H-020へ残す |
+
+この時点のmanifestは実装済み35stageを対象にする。S-350以降はcatalogueへ追加したコミットで同時にmanifestへ入り、計画だけの項目を実装済みと誤認させない。
+
 ## 2026-07-20 相談結果の統合とステージ展開計画
 
 Blackbox初期△28件・×1件の対話判断、新規G-033〜G-059、既存ステージ再設計を[ステージ展開計画](./stage-rollout-plan.md)へ統合した。コード実装は行わず、現在のcatalogueと計画値を分離して検証した。

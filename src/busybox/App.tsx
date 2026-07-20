@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { deriveStageProgress } from "./domain/stageRuntime";
-import { type StageId, stageCatalogue, totalBoxCount } from "./domain/stages";
+import {
+  type StageId,
+  type stageCatalogue,
+  totalBoxCount,
+} from "./domain/stages";
 import { useDriveBackup } from "./hooks/useDriveBackup";
 import { type ProgressController, useProgress } from "./hooks/useProgress";
 import { useServiceWorker } from "./hooks/useServiceWorker";
@@ -8,6 +12,7 @@ import { detectLocale, messages } from "./i18n";
 import { StageHost } from "./runtime/StageHost";
 import { stageDefinitions } from "./runtime/stageDefinitions";
 import { GiftBox, type GiftBoxState } from "./ui/GiftBox";
+import { StageMap } from "./ui/StageMap";
 
 type View = "stages" | "settings" | "about";
 
@@ -154,18 +159,17 @@ export function App() {
                 {copy.progress}: {solvedCount} / {totalBoxCount}
               </p>
             </div>
-            <ol className="stage-grid">
-              {stageCatalogue.map((stage) => (
-                <li key={stage.id}>
-                  <StageCard
-                    stage={stage}
-                    locale={locale}
-                    boxes={progress.document.boxes}
-                    onOpen={openStage}
-                  />
-                </li>
-              ))}
-            </ol>
+            <StageMap
+              locale={locale}
+              renderStage={(stage) => (
+                <StageCard
+                  stage={stage}
+                  locale={locale}
+                  boxes={progress.document.boxes}
+                  onOpen={openStage}
+                />
+              )}
+            />
           </section>
         ) : null}
 

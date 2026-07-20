@@ -8,6 +8,8 @@ export type StageCategory =
   | "device"
   | "edge";
 
+export type StageMapBranch = "page" | "device" | "storage" | "passage" | "labs";
+
 type StageIdFormat = `S-${number}`;
 type ProblemBoxIdFormat = `${StageIdFormat}-B${number}`;
 
@@ -24,6 +26,12 @@ export interface StageSpec {
   // filename, CSS, and test identity so copy edits cannot break compatibility.
   readonly label: Readonly<Record<Locale, string>>;
   readonly category: StageCategory;
+  readonly map: {
+    readonly branch: StageMapBranch;
+    readonly order: number;
+    readonly relatedStageIds?: readonly StageIdFormat[];
+    readonly clueFromStageIds?: readonly StageIdFormat[];
+  };
   readonly problems: readonly ProblemSpec[];
 }
 
@@ -38,9 +46,30 @@ function defineStage<
   id: TStageId;
   label: Record<Locale, string>;
   category: StageCategory;
+  map?: {
+    branch?: StageMapBranch;
+    order?: number;
+    relatedStageIds?: readonly StageIdFormat[];
+    clueFromStageIds?: readonly StageIdFormat[];
+  };
   problems: TProblems;
 }) {
-  return stage;
+  const branchByCategory: Readonly<Record<StageCategory, StageMapBranch>> = {
+    page: "page",
+    device: "device",
+    storage: "storage",
+    transition: "passage",
+    edge: "labs",
+  };
+  return {
+    ...stage,
+    map: {
+      branch: stage.map?.branch ?? branchByCategory[stage.category],
+      order: stage.map?.order ?? Number(stage.id.slice(2)),
+      relatedStageIds: stage.map?.relatedStageIds,
+      clueFromStageIds: stage.map?.clueFromStageIds,
+    },
+  };
 }
 
 export const stageCatalogue = [

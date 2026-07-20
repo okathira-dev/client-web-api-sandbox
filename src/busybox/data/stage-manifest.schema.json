@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://busybox.invalid/schema/stage-manifest.json",
+  "title": "Busybox stage manifest",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": [
+      "id",
+      "problemIds",
+      "gimmickIds",
+      "apiFeatures",
+      "humanTestIds",
+      "map"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "id": { "type": "string", "pattern": "^S-[0-9]{3}$" },
+      "problemIds": {
+        "type": "array",
+        "items": { "type": "string", "pattern": "^S-[0-9]{3}-B[0-9]{2}$" },
+        "minItems": 1,
+        "uniqueItems": true
+      },
+      "gimmickIds": {
+        "type": "array",
+        "items": { "type": "string", "pattern": "^G-[0-9]{3}$" },
+        "uniqueItems": true
+      },
+      "apiFeatures": {
+        "type": "array",
+        "items": { "type": "string", "minLength": 1 },
+        "minItems": 1,
+        "uniqueItems": true
+      },
+      "humanTestIds": {
+        "type": "array",
+        "items": { "type": "string", "pattern": "^H-[0-9]{3}$" },
+        "minItems": 1,
+        "uniqueItems": true
+      },
+      "map": {
+        "type": "object",
+        "required": ["branch", "order"],
+        "additionalProperties": true,
+        "properties": {
+          "branch": {
+            "enum": ["page", "device", "storage", "passage", "labs"]
+          },
+          "order": { "type": "number" }
+        }
+      }
+    }
+  }
+}
