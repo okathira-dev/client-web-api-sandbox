@@ -7,9 +7,39 @@
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
   "launch_handler": {
     "client_mode": "navigate-existing"
   },
+  "shortcuts": [
+    {
+      "name": "Shortcut box",
+      "short_name": "Shortcut",
+      "url": "./index.html?stage=S-310&source=shortcut",
+      "icons": [{ "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+    }
+  ],
+  "note_taking": {
+    "new_note_url": "./index.html?stage=S-310&source=note"
+  },
+  "share_target": {
+    "action": "./index.html?stage=S-240&share-target=1",
+    "method": "GET",
+    "enctype": "application/x-www-form-urlencoded",
+    "params": { "title": "title", "text": "text", "url": "url" }
+  },
+  "file_handlers": [
+    {
+      "action": "./index.html?stage=S-440",
+      "accept": { "application/x-busybox": [".busybox"] }
+    }
+  ],
+  "protocol_handlers": [
+    {
+      "protocol": "web+busybox",
+      "url": "./index.html?stage=S-450&protocol=%s"
+    }
+  ],
   "background_color": "#100d1d",
   "theme_color": "#171329",
   "icons": [

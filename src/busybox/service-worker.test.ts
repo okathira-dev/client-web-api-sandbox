@@ -36,9 +36,13 @@ function createWorker(scriptUrl: string) {
   const skipWaiting = jest.fn(async () => undefined);
   const claim = jest.fn(async () => undefined);
   const fetcher = jest.fn(async () => new Response("network"));
+  const showNotification = jest.fn(async () => undefined);
   const self = {
     location: new URL(scriptUrl),
-    registration: { scope: "https://example.test/repo/busybox/" },
+    registration: {
+      scope: "https://example.test/repo/busybox/",
+      showNotification,
+    },
     clients: {
       claim,
       matchAll: jest.fn(async () => []),
@@ -68,6 +72,7 @@ function createWorker(scriptUrl: string) {
     fetcher,
     listeners,
     shellCache,
+    showNotification,
     skipWaiting,
   };
 }
@@ -170,5 +175,32 @@ describe("Busybox service worker strategy", () => {
     expect(navigationResponse).toHaveBeenCalledTimes(1);
     expect(assetResponse).toHaveBeenCalledTimes(1);
     expect(sourceResponse).not.toHaveBeenCalled();
+  });
+
+  it("keeps notification action state in the replacement notification", async () => {
+    const worker = createWorker(
+      "https://example.test/repo/busybox/service-worker.js",
+    );
+    let completion: Promise<unknown> | undefined;
+    worker.listeners.get("notificationclick")?.({
+      action: "left",
+      notification: {
+        body: "arrows",
+        close: jest.fn(),
+        data: { stage: "S-410", sequence: "", target: "LRRL" },
+        tag: "busybox-S-410",
+        title: "Busybox",
+      },
+      waitUntil: (promise: Promise<unknown>) => {
+        completion = promise;
+      },
+    });
+    await completion;
+    expect(worker.showNotification).toHaveBeenCalledWith(
+      "Busybox",
+      expect.objectContaining({
+        data: expect.objectContaining({ sequence: "L" }),
+      }),
+    );
   });
 });

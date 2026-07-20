@@ -3,7 +3,7 @@
 const workerUrl = new URL(self.location.href);
 const developmentMode = workerUrl.searchParams.get("mode") === "development";
 const cachePrefix = "busybox-";
-const cacheVersion = "v2";
+const cacheVersion = "v3";
 const shellCacheName = `${cachePrefix}shell-${cacheVersion}`;
 const assetCacheName = `${cachePrefix}assets-${cacheVersion}`;
 const scopeUrl = new URL(self.registration.scope);
@@ -144,23 +144,48 @@ self.addEventListener("fetch", (event) => {
 });
 
 self.addEventListener("notificationclick", (event) => {
+  const data = event.notification.data;
+  if (data?.stage === "S-410" || data?.stage === "S-420") {
+    const actionCode = event.action === "left" ? "L" : event.action === "right" ? "R" : "";
+    event.notification.close();
+    if (actionCode) {
+      let sequence = `${data.sequence || ""}${actionCode}`;
+      if (data.stage === "S-410" && !String(data.target).startsWith(sequence)) sequence = "";
+      if (data.stage === "S-410" && sequence === data.target) {
+        const target = new URL("./index.html?stage=S-410&notification-sequence=S-410-ok", self.registration.scope).href;
+        event.waitUntil(openOrFocus(target));
+        return;
+      }
+      if (data.stage === "S-420" && sequence.length > String(data.target).length) sequence = actionCode;
+      event.waitUntil(self.registration.showNotification(event.notification.title, {
+        body: event.notification.body,
+        tag: event.notification.tag,
+        renotify: true,
+        actions: [{ action: "left", title: "←" }, { action: "right", title: "→" }],
+        data: { ...data, sequence },
+      }));
+      return;
+    }
+    if (data.stage === "S-420") {
+      const target = new URL(`./index.html?stage=S-420&vault-attempt=${encodeURIComponent(data.sequence || "")}`, self.registration.scope).href;
+      event.waitUntil(openOrFocus(target));
+      return;
+    }
+  }
   event.notification.close();
   const target = new URL(
     "./index.html?stage=S-090&notification=1",
     self.registration.scope,
   ).href;
-  event.waitUntil(
-    self.clients
-      .matchAll({ type: "window", includeUncontrolled: true })
-      .then((clients) => {
-        const existing = clients.find((client) =>
-          client.url.startsWith(self.registration.scope),
-        );
-        if (existing) return existing.navigate(target).then(() => existing.focus());
-        return self.clients.openWindow(target);
-      }),
-  );
+  event.waitUntil(openOrFocus(target));
 });
+
+async function openOrFocus(target) {
+  const clients = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+  const existing = clients.find((client) => client.url.startsWith(self.registration.scope));
+  if (existing) { await existing.navigate(target); return existing.focus(); }
+  return self.clients.openWindow(target);
+}
 
 self.addEventListener("message", (event) => {
   if (event.data === "SKIP_WAITING") void self.skipWaiting();
