@@ -310,6 +310,9 @@ function StageCard({ stage, locale, boxes, onOpen }: StageCardProps) {
           : copy.planned;
   const giftState: GiftBoxState =
     state === "solved" ? "open" : state === "partial" ? "closed" : "ribboned";
+  const solvedBoxes = boxIds.filter(
+    (boxId) => boxes[boxId] !== undefined,
+  ).length;
 
   return (
     <article
@@ -319,22 +322,26 @@ function StageCard({ stage, locale, boxes, onOpen }: StageCardProps) {
         state={giftState}
         color="var(--accent)"
         label={`${stage.label[locale]}: ${status}`}
-        size="stage"
+        size="compact"
+        decorative
       />
-      <div>
-        <p className="stage-card__id">{stage.id}</p>
+      <div className="stage-card__text">
+        <div className="stage-card__meta">
+          <p className="stage-card__id">{stage.id}</p>
+          <p className="stage-card__progress">
+            {solvedBoxes}/{boxIds.length}
+          </p>
+        </div>
         <h3>{stage.label[locale]}</h3>
-        <p>
-          {stage.problems.length} {copy.boxes} · {status}
-        </p>
       </div>
       <button
         type="button"
-        className="stage-card__open"
+        className="stage-card__hit-area"
         disabled={!definition}
         onClick={() => onOpen(stage.id)}
+        aria-label={`${stage.label[locale]}、${solvedBoxes}/${boxIds.length}、${status}`}
       >
-        {copy.start}
+        <span className="sr-only">{copy.start}</span>
       </button>
     </article>
   );

@@ -1,31 +1,132 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  type StageId,
-  type StageMapBranch,
-  type StageSpec,
-  stageCatalogue,
-} from "../domain/stages";
+import { type StageId, type StageSpec, stageCatalogue } from "../domain/stages";
 
-const canvasWidth = 2700;
-const canvasHeight = Math.max(
-  1900,
-  ...(["page", "device", "storage", "passage", "labs"] as StageMapBranch[]).map(
-    (branch) =>
-      stageCatalogue.filter((stage) => stage.map.branch === branch).length *
-        225 +
-      520,
-  ),
-);
-const nodeWidth = 260;
-const nodeHeight = 168;
+const canvasWidth = 1480;
+const canvasHeight = 1650;
+const nodeWidth = 196;
+const nodeHeight = 92;
+const nodeGapX = 20;
+const nodeGapY = 16;
+const clusterWidth = nodeWidth * 2 + nodeGapX;
 
-const branchColumns: Readonly<Record<StageMapBranch, number>> = {
-  page: 120,
-  device: 650,
-  storage: 1180,
-  passage: 1710,
-  labs: 2240,
-};
+interface StageMapCluster {
+  id: string;
+  label: Readonly<Record<"ja" | "en", string>>;
+  x: number;
+  y: number;
+  stageIds: readonly StageId[];
+}
+
+export const stageMapClusters: readonly StageMapCluster[] = [
+  {
+    id: "input",
+    label: { ja: "入力と文字", en: "Input & text" },
+    x: 48,
+    y: 230,
+    stageIds: [
+      "S-000",
+      "S-010",
+      "S-020",
+      "S-030",
+      "S-150",
+      "S-160",
+      "S-170",
+      "S-340",
+      "S-480",
+      "S-490",
+      "S-500",
+    ],
+  },
+  {
+    id: "lifecycle",
+    label: { ja: "ページの往来", en: "Page journeys" },
+    x: 534,
+    y: 230,
+    stageIds: [
+      "S-040",
+      "S-050",
+      "S-060",
+      "S-070",
+      "S-090",
+      "S-180",
+      "S-220",
+      "S-250",
+      "S-310",
+      "S-400",
+    ],
+  },
+  {
+    id: "media",
+    label: { ja: "音・映像・通知", en: "Media & notices" },
+    x: 1020,
+    y: 230,
+    stageIds: [
+      "S-110",
+      "S-120",
+      "S-190",
+      "S-230",
+      "S-240",
+      "S-350",
+      "S-360",
+      "S-410",
+      "S-420",
+      "S-430",
+      "S-510",
+      "S-580",
+    ],
+  },
+  {
+    id: "pwa",
+    label: { ja: "PWAと認証", en: "PWA & identity" },
+    x: 48,
+    y: 950,
+    stageIds: [
+      "S-080",
+      "S-130",
+      "S-140",
+      "S-210",
+      "S-330",
+      "S-380",
+      "S-390",
+      "S-440",
+      "S-450",
+      "S-460",
+    ],
+  },
+  {
+    id: "hardware",
+    label: { ja: "端末と周辺機器", en: "Device & hardware" },
+    x: 534,
+    y: 950,
+    stageIds: [
+      "S-100",
+      "S-200",
+      "S-260",
+      "S-270",
+      "S-280",
+      "S-290",
+      "S-300",
+      "S-320",
+      "S-370",
+    ],
+  },
+  {
+    id: "sensors",
+    label: { ja: "位置とセンサー", en: "Location & sensors" },
+    x: 1020,
+    y: 950,
+    stageIds: [
+      "S-520",
+      "S-530",
+      "S-540",
+      "S-550",
+      "S-560",
+      "S-570",
+      "S-590",
+      "S-600",
+    ],
+  },
+];
 
 interface Point {
   x: number;
@@ -33,19 +134,25 @@ interface Point {
 }
 
 function buildPositions(stages: readonly StageSpec[]) {
+  const stageIds = new Set(stages.map((stage) => stage.id));
   const positions = new Map<string, Point>();
-  for (const branch of Object.keys(branchColumns) as StageMapBranch[]) {
-    stages
-      .filter((stage) => stage.map.branch === branch)
-      .sort((a, b) => a.map.order - b.map.order)
-      .forEach((stage, index) => {
-        positions.set(stage.id, {
-          x: branchColumns[branch],
-          y: 230 + index * 225,
-        });
+  for (const cluster of stageMapClusters) {
+    cluster.stageIds.forEach((stageId, index) => {
+      if (!stageIds.has(stageId)) return;
+      positions.set(stageId, {
+        x: cluster.x + (index % 2) * (nodeWidth + nodeGapX),
+        y: cluster.y + Math.floor(index / 2) * (nodeHeight + nodeGapY),
       });
+    });
   }
   return positions;
+}
+
+function clusterRows(cluster: StageMapCluster) {
+  return Array.from(
+    { length: Math.ceil(cluster.stageIds.length / 2) },
+    (_, row) => cluster.stageIds.slice(row * 2, row * 2 + 2),
+  );
 }
 
 interface StageMapProps {
@@ -55,27 +162,11 @@ interface StageMapProps {
 
 export function StageMap({ locale, renderStage }: StageMapProps) {
   const viewportRef = useRef<HTMLDivElement>(null);
-  const [scale, setScale] = useState(1);
+  const [scale, setScale] = useState(0.8);
   const [markerRound, setMarkerRound] = useState<string | null>(null);
   const positions = useMemo(() => buildPositions(stageCatalogue), []);
-  const branchNames: Readonly<Record<StageMapBranch, string>> =
-    locale === "ja"
-      ? {
-          page: "ページ",
-          device: "端末",
-          storage: "記憶",
-          passage: "往来",
-          labs: "外縁",
-        }
-      : {
-          page: "Page",
-          device: "Device",
-          storage: "Memory",
-          passage: "Passage",
-          labs: "Edge",
-        };
+  const center = { x: canvasWidth / 2, y: 76 };
 
-  const center = { x: canvasWidth / 2, y: 82 };
   useEffect(() => {
     const round = new URL(location.href).searchParams.get("map-round");
     if (!round) return;
@@ -90,6 +181,7 @@ export function StageMap({ locale, renderStage }: StageMapProps) {
       channel.close();
     };
   }, []);
+
   const centerOnHub = () => {
     viewportRef.current?.scrollTo({
       left: center.x * scale - (viewportRef.current.clientWidth ?? 0) / 2,
@@ -105,7 +197,7 @@ export function StageMap({ locale, renderStage }: StageMapProps) {
       <div className="stage-map-controls">
         <button
           type="button"
-          onClick={() => setScale((value) => Math.max(0.7, value - 0.15))}
+          onClick={() => setScale((value) => Math.max(0.55, value - 0.1))}
           aria-label={locale === "ja" ? "地図を縮小" : "Zoom map out"}
         >
           −
@@ -113,7 +205,7 @@ export function StageMap({ locale, renderStage }: StageMapProps) {
         <output aria-live="polite">{Math.round(scale * 100)}%</output>
         <button
           type="button"
-          onClick={() => setScale((value) => Math.min(1.3, value + 0.15))}
+          onClick={() => setScale((value) => Math.min(1.3, value + 0.1))}
           aria-label={locale === "ja" ? "地図を拡大" : "Zoom map in"}
         >
           +
@@ -141,7 +233,7 @@ export function StageMap({ locale, renderStage }: StageMapProps) {
           >
             <div
               className="stage-map-hub"
-              style={{ left: center.x - 90, top: center.y - 38 }}
+              style={{ left: center.x - 78, top: center.y - 30 }}
             >
               Busybox
             </div>
@@ -150,21 +242,50 @@ export function StageMap({ locale, renderStage }: StageMapProps) {
               viewBox={`0 0 ${canvasWidth} ${canvasHeight}`}
               aria-hidden="true"
             >
-              {(Object.keys(branchColumns) as StageMapBranch[]).map(
-                (branch) => {
-                  const first = stageCatalogue
-                    .filter((stage) => stage.map.branch === branch)
-                    .sort((a, b) => a.map.order - b.map.order)[0];
-                  const point = first ? positions.get(first.id) : undefined;
-                  return point ? (
-                    <path
-                      key={branch}
-                      className={`stage-map-edge stage-map-edge--${branch}`}
-                      d={`M ${center.x} ${center.y + 38} C ${center.x} 170, ${point.x + nodeWidth / 2} 150, ${point.x + nodeWidth / 2} ${point.y}`}
-                    />
-                  ) : null;
-                },
-              )}
+              {stageMapClusters.flatMap((cluster) => {
+                const clusterCenter = cluster.x + clusterWidth / 2;
+                const rows = clusterRows(cluster);
+                const lastRowY =
+                  cluster.y +
+                  (rows.length - 1) * (nodeHeight + nodeGapY) +
+                  nodeHeight / 2;
+                return [
+                  <path
+                    key={`${cluster.id}-root`}
+                    className="stage-map-edge stage-map-edge--cluster"
+                    d={`M ${center.x} ${center.y + 30} C ${center.x} ${cluster.y - 100}, ${clusterCenter} ${cluster.y - 100}, ${clusterCenter} ${cluster.y - 22}`}
+                  />,
+                  <line
+                    key={`${cluster.id}-trunk`}
+                    className="stage-map-edge stage-map-edge--cluster"
+                    x1={clusterCenter}
+                    y1={cluster.y - 22}
+                    x2={clusterCenter}
+                    y2={lastRowY}
+                  />,
+                  ...rows.map((row, rowIndex) => {
+                    const y =
+                      cluster.y +
+                      rowIndex * (nodeHeight + nodeGapY) +
+                      nodeHeight / 2;
+                    const firstId = row[0];
+                    const lastId = row.at(-1);
+                    if (!firstId || !lastId) return null;
+                    const first = positions.get(firstId);
+                    const last = positions.get(lastId);
+                    return first && last ? (
+                      <line
+                        key={`${cluster.id}-row-${row[0]}`}
+                        className="stage-map-edge stage-map-edge--cluster"
+                        x1={Math.min(clusterCenter, first.x + nodeWidth / 2)}
+                        y1={y}
+                        x2={Math.max(clusterCenter, last.x + nodeWidth / 2)}
+                        y2={y}
+                      />
+                    ) : null;
+                  }),
+                ];
+              })}
               {stageCatalogue.flatMap((stage) => {
                 const to = positions.get(stage.id);
                 if (!to) return [];
@@ -194,13 +315,13 @@ export function StageMap({ locale, renderStage }: StageMapProps) {
                 });
               })}
             </svg>
-            {(Object.keys(branchColumns) as StageMapBranch[]).map((branch) => (
+            {stageMapClusters.map((cluster) => (
               <p
-                key={branch}
-                className={`stage-map-branch stage-map-branch--${branch}`}
-                style={{ left: branchColumns[branch], top: 170 }}
+                key={cluster.id}
+                className="stage-map-cluster"
+                style={{ left: cluster.x, top: cluster.y - 48 }}
               >
-                {branchNames[branch]}
+                {cluster.label[locale]}
               </p>
             ))}
             <ol className="stage-map-list">
@@ -221,7 +342,7 @@ export function StageMap({ locale, renderStage }: StageMapProps) {
             <div
               className={`stage-map-marker-slot ${markerRound ? "stage-map-marker-slot--active" : ""}`}
               data-busybox-map-marker={markerRound ?? "inactive"}
-              style={{ left: canvasWidth - 110, top: canvasHeight - 110 }}
+              style={{ left: canvasWidth - 92, top: canvasHeight - 92 }}
               aria-hidden="true"
             />
           </div>

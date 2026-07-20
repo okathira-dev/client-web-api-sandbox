@@ -1,5 +1,18 @@
 # 検証記録
 
+## 2026-07-20 ステージ一覧のcompact化
+
+| 確認 | 結果 | 証跡 |
+| --- | --- | --- |
+| 一覧操作 | 合格（コード） | 60cardの専用入場buttonを廃止し、card全面を1つのbutton操作領域へ変更。accessible nameにstage名、`x/n`、状態を保持 |
+| 進捗表示 | 合格 | `n 箱 · 状態`を累積値`x/n`へ変更し、箱のリボン・閉箱・開箱表現を維持 |
+| 近接配置 | 合格 | 60stageを入力、ページ往来、メディア、PWA、端末、センサーの6clusterへ重複・欠落なく割当。196×92px node、2列、16px行間 |
+| 回帰test | 合格 | 20 suites / 109 tests。cluster完全性test 2件を追加 |
+| 静的check / build | 合格 | TypeScript、markuplint、変更対象Biome check、Vite production build |
+| ブラウザ目視 | 環境制約で未実施 | host側serverはHTTP 200を確認したが、Codex in-app browserの分離環境から`127.0.0.1:4181`へ接続できなかったため、目視を合格扱いにしない |
+
+実機またはhost browserでは、desktopとmobileの初期80%表示、card hover / focus、長い日英stage名の省略、map pan、S-190外縁markerを人手確認する。
+
 ## 2026-07-20 合意済みステージの全実装
 
 | 確認 | 結果 | 証跡 |

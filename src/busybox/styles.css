@@ -147,7 +147,7 @@ input:focus-visible {
   color: #cfc7db;
 }
 .stage-map-viewport {
-  height: min(68vh, 780px);
+  height: min(72vh, 820px);
   overflow: auto;
   overscroll-behavior: contain;
   border: 1px solid #443a59;
@@ -171,14 +171,14 @@ input:focus-visible {
   z-index: 2;
   display: grid;
   place-items: center;
-  width: 180px;
-  height: 76px;
+  width: 156px;
+  height: 60px;
   border: 1px solid #d8c5ff;
   border-radius: 999px;
   color: #171020;
   background: #f2e8ff;
   font-family: Georgia, serif;
-  font-size: 1.35rem;
+  font-size: 1.15rem;
   font-weight: 700;
 }
 .stage-map-edges {
@@ -193,6 +193,10 @@ input:focus-visible {
   stroke: #58486f;
   stroke-width: 3;
 }
+.stage-map-edge--cluster {
+  stroke: #4f4264;
+  stroke-width: 2;
+}
 .stage-map-edge--related {
   stroke: #8c7aa8;
   stroke-width: 2;
@@ -203,16 +207,17 @@ input:focus-visible {
   stroke-width: 2.5;
   stroke-dasharray: 3 8;
 }
-.stage-map-branch {
+.stage-map-cluster {
   position: absolute;
   z-index: 1;
-  width: 260px;
+  width: 412px;
   margin: 0;
-  color: #aaa0bc;
+  color: #c7bcd8;
   text-align: center;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  font-size: 0.7rem;
+  font-weight: 700;
 }
 .stage-map-list {
   list-style: none;
@@ -222,7 +227,7 @@ input:focus-visible {
 .stage-map-list > li {
   position: absolute;
   z-index: 2;
-  width: 260px;
+  width: 196px;
 }
 .stage-map-marker-slot {
   position: absolute;
@@ -310,22 +315,27 @@ input:focus-visible {
 .stage-card {
   position: relative;
   display: grid;
-  grid-template-columns: 4rem 1fr;
-  gap: 1rem;
-  min-height: 10rem;
-  padding: 1.2rem;
+  grid-template-columns: 2.75rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 5.75rem;
+  padding: 0.7rem 0.75rem;
   overflow: hidden;
   border: 1px solid #443a59;
-  border-radius: 1.2rem;
+  border-radius: 0.85rem;
   background: linear-gradient(145deg, #211a35e6, #171226e6);
+  transition:
+    border-color 140ms ease,
+    transform 140ms ease,
+    background 140ms ease;
 }
 .stage-card::after {
   content: "";
   position: absolute;
-  right: -2rem;
-  bottom: -3rem;
-  width: 8rem;
-  height: 8rem;
+  right: -1.5rem;
+  bottom: -2.5rem;
+  width: 6rem;
+  height: 6rem;
   border-radius: 50%;
   background: var(--accent, #8668be);
   opacity: 0.1;
@@ -346,36 +356,64 @@ input:focus-visible {
 .stage-card--edge {
   --accent: #fbbf24;
 }
+.stage-card:has(.stage-card__hit-area:not(:disabled)):hover {
+  border-color: color-mix(in srgb, var(--accent), #fff 24%);
+  background: linear-gradient(145deg, #2a2140f2, #1b152cf2);
+  transform: translateY(-2px);
+}
+.stage-card:has(.stage-card__hit-area:focus-visible) {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+}
+.stage-card__text {
+  min-width: 0;
+}
+.stage-card__meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.4rem;
+}
 .stage-card h3 {
-  margin: 0.1rem 0 0.45rem;
-  font-size: 1.15rem;
+  margin: 0.2rem 0 0;
+  overflow: hidden;
+  font-size: 0.88rem;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .stage-card p {
   margin: 0;
   color: #aaa0bc;
-  font-size: 0.88rem;
+  font-size: 0.7rem;
 }
 .stage-card p.stage-card__id {
   color: var(--accent);
   font-family: ui-monospace, monospace;
 }
+.stage-card p.stage-card__progress {
+  color: #e6dff0;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
 .stage-map-list .stage-card {
-  min-height: 168px;
+  min-height: 92px;
 }
-.stage-card__open {
-  grid-column: 1 / -1;
-  align-self: end;
+.stage-card__hit-area {
+  position: absolute;
+  z-index: 4;
+  inset: 0;
   width: 100%;
-  border: 1px solid #55496e;
-  border-radius: 0.7rem;
-  padding: 0.65rem;
-  color: #8d849c;
-  background: #171320;
+  border: 0;
+  border-radius: inherit;
+  padding: 0;
+  background: transparent;
 }
-.stage-card__open:not(:disabled) {
-  color: #20172b;
-  background: #f2e8ff;
+.stage-card__hit-area:not(:disabled) {
   cursor: pointer;
+}
+.stage-card__hit-area:focus-visible {
+  outline: 0;
 }
 .gift-box {
   --gift-width: 4.5rem;
@@ -391,6 +429,12 @@ input:focus-visible {
   --gift-height: 2.7rem;
   --gift-lid-height: 0.65rem;
   margin-top: 0.45rem;
+}
+.gift-box--compact {
+  --gift-width: 2.1rem;
+  --gift-height: 1.65rem;
+  --gift-lid-height: 0.42rem;
+  margin-top: -0.15rem;
 }
 .gift-box__visual {
   position: absolute;

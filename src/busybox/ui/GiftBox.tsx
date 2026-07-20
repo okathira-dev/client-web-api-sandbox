@@ -10,7 +10,8 @@ interface GiftBoxProps {
   state: GiftBoxState;
   color: string;
   label: string;
-  size?: "problem" | "stage";
+  size?: "problem" | "stage" | "compact";
+  decorative?: boolean;
   onClick?: MouseEventHandler<HTMLButtonElement>;
   onPointerDown?: (event: PointerEvent) => void;
 }
@@ -20,6 +21,7 @@ export function GiftBox({
   color,
   label,
   size = "problem",
+  decorative = false,
   onClick,
   onPointerDown,
 }: GiftBoxProps) {
@@ -47,11 +49,14 @@ export function GiftBox({
       className={`gift-box gift-box--${state} gift-box--${size}`}
       style={style}
       data-box-state={state}
+      aria-hidden={decorative || undefined}
     >
       {interactive ? (
         <span className="gift-box__visual" aria-hidden="true">
           {visual}
         </span>
+      ) : decorative ? (
+        <span className="gift-box__visual">{visual}</span>
       ) : (
         <span className="gift-box__visual" role="img" aria-label={label}>
           {visual}

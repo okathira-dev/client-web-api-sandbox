@@ -52,9 +52,9 @@
 
 ## ステージ地図
 
-ステージ一覧の最終形は均等なgridではなく、ステージ箱をnode、関係をedgeにしたmind mapとする。中央から5系統のbranchを伸ばし、同じ中心操作やbrowser surfaceを使うstageを近くへ置く。別stageで得た手掛かりが後のstageへ効く場合は、カテゴリ線とは異なる有向edgeで関係を示す。
+ステージ一覧の最終形は均等なgridではなく、ステージ箱をnode、関係をedgeにしたmind mapとする。入力、ページ往来、メディア、PWA、端末、センサーの6つの近接clusterへまとめ、同じ中心操作やbrowser surfaceを使うstageを近くへ置く。別stageで得た手掛かりが後のstageへ効く場合は、cluster線とは異なる有向edgeで関係を示す。
 
-地図は攻略順を強制せず、edgeだけでstageをhard lockしない。箱nodeは実DOMのlink / buttonとsemantic listを維持し、線は背面SVGで補助表示する。決定的な配置、mobile pan / zoom、keyboard順、screen reader向け関係説明の詳細は[ステージMind Map設計](./stage-map-design.md)を正とする。
+地図は攻略順を強制せず、edgeだけでstageをhard lockしない。カード全面を1つのbutton操作領域とし、専用の入場buttonは置かない。カード上の進捗は累積クリア数`x/n`だけを短く表示し、箱の外見でも未着手、一部解決、完全解決を区別する。箱nodeは実DOMのbuttonとsemantic listを維持し、線は背面SVGで補助表示する。決定的な配置、mobile pan / zoom、keyboard順、screen reader向け関係説明の詳細は[ステージMind Map設計](./stage-map-design.md)を正とする。
 
 ## 体験の柱
 
