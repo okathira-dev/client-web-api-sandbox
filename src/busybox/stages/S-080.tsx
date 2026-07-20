@@ -39,7 +39,11 @@ export default function S080Stage(props: StageComponentProps) {
       >
         ▯
       </div>
-      <p>{props.locale === "ja" ? "別の入口から。" : "Enter another way."}</p>
+      <p>
+        {props.locale === "ja"
+          ? "ブラウザの「アプリをインストール」または「ホーム画面に追加」でBusyboxを入れ、そのアイコンから開く。後の起動問題でもこのPWAを使う。"
+          : "Install Busybox with your browser's Install app or Add to Home Screen command, then open its icon. Later launch puzzles use this PWA too."}
+      </p>
       <ProblemGiftBox problem={problem} locale={props.locale} />
     </div>
   );

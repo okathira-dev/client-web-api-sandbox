@@ -74,4 +74,52 @@ interface LaunchQueue {
 
 interface Window {
   readonly launchQueue?: LaunchQueue;
+  readonly SpeechRecognition?: typeof SpeechRecognition;
+  readonly webkitSpeechRecognition?: typeof SpeechRecognition;
+}
+
+interface BatteryManager extends EventTarget {
+  readonly charging: boolean;
+  readonly level: number;
+}
+
+interface WindowControlsOverlay extends EventTarget {
+  readonly visible: boolean;
+  getTitlebarAreaRect(): DOMRect;
+}
+
+interface Navigator {
+  getBattery?: () => Promise<BatteryManager>;
+  readonly windowControlsOverlay?: WindowControlsOverlay;
+}
+
+interface SpeechRecognitionResultAlternative {
+  readonly transcript: string;
+  readonly confidence: number;
+}
+
+interface SpeechRecognitionResult {
+  readonly isFinal: boolean;
+  readonly length: number;
+  [index: number]: SpeechRecognitionResultAlternative;
+}
+
+interface SpeechRecognitionResultList {
+  readonly length: number;
+  [index: number]: SpeechRecognitionResult;
+}
+
+interface SpeechRecognitionEvent extends Event {
+  readonly results: SpeechRecognitionResultList;
+}
+
+declare class SpeechRecognition extends EventTarget {
+  lang: string;
+  continuous: boolean;
+  interimResults: boolean;
+  onresult: ((event: SpeechRecognitionEvent) => void) | null;
+  onerror: ((event: Event) => void) | null;
+  onend: (() => void) | null;
+  start(): void;
+  abort(): void;
 }

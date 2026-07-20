@@ -22,6 +22,8 @@ interface LaunchQueueLike {
  */
 export default function S310Stage(props: StageComponentProps) {
   const problem = props.problem("S-310-B01");
+  const shortcut = props.problem("S-310-B02");
+  const note = props.problem("S-310-B03");
   const [status, setStatus] = useState("waiting");
   const targetUrl = useMemo(() => {
     const url = new URL(window.location.href);
@@ -32,12 +34,11 @@ export default function S310Stage(props: StageComponentProps) {
 
   useEffect(() => {
     let active = true;
-    const queue = (
-      window as unknown as Window & { launchQueue: LaunchQueueLike }
-    ).launchQueue;
-    queue.setConsumer((params) => {
-      if (!active || !params.targetURL) return;
-      const url = new URL(params.targetURL);
+    const inspect = (target: string) => {
+      const url = new URL(target, location.href);
+      const source = url.searchParams.get("source");
+      if (source === "shortcut") shortcut.solve(["pwa:shortcut"]);
+      if (source === "note") note.solve(["pwa:note-taking"]);
       if (
         url.searchParams.get("stage") === "S-310" &&
         url.searchParams.get("launch") === "busybox"
@@ -45,11 +46,19 @@ export default function S310Stage(props: StageComponentProps) {
         setStatus("launched");
         problem.solve(["launch-handler:target-url"]);
       }
+    };
+    inspect(location.href);
+    const queue = (
+      window as unknown as Window & { launchQueue: LaunchQueueLike }
+    ).launchQueue;
+    queue.setConsumer((params) => {
+      if (!active || !params.targetURL) return;
+      inspect(params.targetURL);
     });
     return () => {
       active = false;
     };
-  }, [problem.solve]);
+  }, [note.solve, problem.solve, shortcut.solve]);
 
   return (
     <div className="puzzle puzzle--centered">
@@ -65,7 +74,11 @@ export default function S310Stage(props: StageComponentProps) {
       <p className="interaction-status" role="status">
         {status}
       </p>
-      <ProblemGiftBox problem={problem} locale={props.locale} />
+      <div className="problem-row">
+        <ProblemGiftBox problem={problem} locale={props.locale} />
+        <ProblemGiftBox problem={shortcut} locale={props.locale} />
+        <ProblemGiftBox problem={note} locale={props.locale} />
+      </div>
     </div>
   );
 }

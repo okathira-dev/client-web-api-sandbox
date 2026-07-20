@@ -232,6 +232,81 @@ input:focus-visible {
   border-radius: 0.5rem;
   opacity: 0.35;
 }
+
+.stage-map-marker-slot--active {
+  border: 8px solid #fff;
+  background: conic-gradient(
+    #00ffff 0 25%,
+    #ff00ff 0 50%,
+    #ffff00 0 75%,
+    #000 0
+  );
+  box-shadow:
+    0 0 0 6px #000,
+    0 0 32px #fff;
+}
+
+.stage-video,
+.capture-preview {
+  max-width: min(100%, 640px);
+}
+
+.cipher-text,
+.cipher-result,
+.drop-target,
+.drag-token {
+  max-width: 38rem;
+  padding: 1rem;
+  border: 1px solid var(--line, #51496b);
+  border-radius: 0.75rem;
+  overflow-wrap: anywhere;
+}
+
+.drop-target {
+  min-height: 8rem;
+  display: grid;
+  place-items: center;
+  border-style: dashed;
+}
+
+.rgb-page {
+  min-height: 60vh;
+}
+
+.rgb-page--r {
+  background: #f00;
+}
+.rgb-page--g {
+  background: #0f0;
+}
+.rgb-page--b {
+  background: #00f;
+}
+.rgb-monitor--white {
+  background: #fff;
+  color: #111;
+}
+
+.analog-clock {
+  display: grid;
+  place-items: center;
+  width: 11rem;
+  aspect-ratio: 1;
+  border: 0.5rem solid currentColor;
+  border-radius: 50%;
+  font-variant-numeric: tabular-nums;
+}
+
+.overlay-box {
+  position: fixed;
+  left: env(titlebar-area-x, 1rem);
+  top: env(titlebar-area-y, 1rem);
+  width: env(titlebar-area-width, 5rem);
+  height: env(titlebar-area-height, 4rem);
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
+  z-index: 20;
+}
 .stage-card {
   position: relative;
   display: grid;

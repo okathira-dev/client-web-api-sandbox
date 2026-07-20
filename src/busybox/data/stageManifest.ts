@@ -86,6 +86,99 @@ const stageEvidence = {
   "S-320": [["G-028"], ["Device Posture", "Viewport Segments"], ["H-023"]],
   "S-330": [["G-031"], ["Screen Wake Lock"], ["H-005", "H-022", "H-023"]],
   "S-340": [["G-032"], ["View Transitions"], ["H-001", "H-003", "H-020"]],
+  "S-350": [["G-033"], ["HTMLMediaElement"], ["H-001", "H-020", "H-023"]],
+  "S-360": [
+    ["G-034"],
+    ["WebRTC", "Web Audio", "BroadcastChannel"],
+    ["H-013", "H-019", "H-023"],
+  ],
+  "S-370": [["G-035"], ["Battery Status"], ["H-004", "H-019", "H-023"]],
+  "S-380": [
+    ["G-036"],
+    ["WebAuthn Conditional UI", "Web Crypto"],
+    ["H-006", "H-019", "H-023"],
+  ],
+  "S-390": [
+    ["G-037"],
+    ["WebAuthn", "AbortSignal"],
+    ["H-019", "H-020", "H-023"],
+  ],
+  "S-400": [
+    ["G-038"],
+    ["Date", "performance.now", "Page Visibility"],
+    ["H-004", "H-019", "H-022"],
+  ],
+  "S-410": [
+    ["G-039"],
+    ["Notification actions", "Service Worker", "IndexedDB"],
+    ["H-005", "H-006", "H-023"],
+  ],
+  "S-420": [
+    ["G-040"],
+    ["Notification actions", "notificationclick", "IndexedDB"],
+    ["H-005", "H-006", "H-023"],
+  ],
+  "S-430": [
+    ["G-041"],
+    ["Media Session", "Web Audio"],
+    ["H-004", "H-019", "H-023"],
+  ],
+  "S-440": [
+    ["G-042"],
+    ["File Handling", "LaunchQueue"],
+    ["H-005", "H-006", "H-023"],
+  ],
+  "S-450": [
+    ["G-043"],
+    ["Protocol Handlers", "LaunchQueue"],
+    ["H-005", "H-006", "H-023"],
+  ],
+  "S-460": [
+    ["G-044"],
+    ["Window Controls Overlay"],
+    ["H-005", "H-019", "H-023"],
+  ],
+  "S-480": [
+    ["G-046"],
+    ["CSS Fonts", "devicePixelRatio"],
+    ["H-003", "H-004", "H-023"],
+  ],
+  "S-490": [
+    ["G-047"],
+    ["HTMLInputElement", "InputEvent"],
+    ["H-001", "H-004", "H-020"],
+  ],
+  "S-500": [
+    ["G-048"],
+    ["ClipboardEvent", "Selection"],
+    ["H-004", "H-006", "H-014"],
+  ],
+  "S-510": [
+    ["G-049"],
+    ["HTML Drag and Drop", "DataTransfer", "File"],
+    ["H-004", "H-013", "H-014"],
+  ],
+  "S-520": [["G-050"], ["ProximitySensor"], ["H-006", "H-019", "H-026"]],
+  "S-530": [
+    ["G-051"],
+    ["LinearAccelerationSensor"],
+    ["H-006", "H-019", "H-026"],
+  ],
+  "S-540": [["G-052"], ["AmbientLightSensor"], ["H-006", "H-019", "H-026"]],
+  "S-550": [["G-053"], ["Accelerometer"], ["H-006", "H-019", "H-026"]],
+  "S-560": [["G-054"], ["Gyroscope"], ["H-006", "H-019", "H-026"]],
+  "S-570": [
+    ["G-056"],
+    ["RelativeOrientationSensor"],
+    ["H-006", "H-019", "H-026"],
+  ],
+  "S-580": [["G-057"], ["SpeechRecognition"], ["H-006", "H-007", "H-027"]],
+  "S-590": [
+    ["G-058"],
+    ["Geolocation", "Page Visibility", "sessionStorage"],
+    ["H-004", "H-006", "H-028"],
+  ],
+  "S-600": [["G-059"], ["Geolocation altitude"], ["H-004", "H-006", "H-029"]],
 } as const satisfies Readonly<
   Record<
     StageId,

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { StageComponentProps } from "../runtime/types";
 import { ProblemGiftBox } from "../ui/GiftBox";
 
@@ -16,8 +16,17 @@ type InteractionState = "idle" | "active" | "cancelled" | "unavailable";
  */
 export default function S240Stage(props: StageComponentProps) {
   const problem = props.problem("S-240-B01");
+  const targetProblem = props.problem("S-240-B02");
   const mark = useMemo(() => crypto.randomUUID().slice(0, 6).toUpperCase(), []);
   const [status, setStatus] = useState<InteractionState>("idle");
+  useEffect(() => {
+    const url = new URL(location.href);
+    if (url.searchParams.get("share-target") === "1") {
+      targetProblem.solve(["web-share-target:received"]);
+      url.searchParams.delete("share-target");
+      history.replaceState(history.state, "", url);
+    }
+  }, [targetProblem.solve]);
 
   const share = async () => {
     try {
@@ -55,7 +64,10 @@ export default function S240Stage(props: StageComponentProps) {
       <p className="interaction-status" role="status">
         {status}
       </p>
-      <ProblemGiftBox problem={problem} locale={props.locale} />
+      <div className="problem-row">
+        <ProblemGiftBox problem={problem} locale={props.locale} />
+        <ProblemGiftBox problem={targetProblem} locale={props.locale} />
+      </div>
     </div>
   );
 }

@@ -148,6 +148,12 @@ export const stageCatalogue = [
         clue: "hidden",
         label: { ja: "見ない時間の箱", en: "Hidden-time box" },
       },
+      {
+        id: "S-040-B02",
+        color: "#64748b",
+        clue: "hidden",
+        label: { ja: "長い不在の箱", en: "Long-absence box" },
+      },
     ],
   }),
   defineStage({
@@ -342,12 +348,6 @@ export const stageCatalogue = [
         clue: "copy",
         label: { ja: "コピーの箱", en: "Copy box" },
       },
-      {
-        id: "S-180-B02",
-        color: "#818cf8",
-        clue: "paste",
-        label: { ja: "貼り付けの箱", en: "Paste box" },
-      },
     ],
   }),
   defineStage({
@@ -360,6 +360,24 @@ export const stageCatalogue = [
         color: "#22d3ee",
         clue: "screen",
         label: { ja: "再帰画面の箱", en: "Recursive-screen box" },
+      },
+      {
+        id: "S-190-B02",
+        color: "#38bdf8",
+        clue: "screen",
+        label: { ja: "録画の箱", en: "Recording box" },
+      },
+      {
+        id: "S-190-B03",
+        color: "#818cf8",
+        clue: "windows",
+        label: { ja: "中継の箱", en: "Relay box" },
+      },
+      {
+        id: "S-190-B04",
+        color: "#facc15",
+        clue: "eyedropper",
+        label: { ja: "外縁の印の箱", en: "Edge-marker box" },
       },
     ],
   }),
@@ -400,6 +418,18 @@ export const stageCatalogue = [
         clue: "history",
         label: { ja: "履歴の箱", en: "History box" },
       },
+      {
+        id: "S-220-B02",
+        color: "#f59e0b",
+        clue: "return",
+        label: { ja: "戻る・進むの箱", en: "Back-forward box" },
+      },
+      {
+        id: "S-220-B03",
+        color: "#fbbf24",
+        clue: "transition",
+        label: { ja: "再読込の箱", en: "Reload box" },
+      },
     ],
   }),
   defineStage({
@@ -426,6 +456,12 @@ export const stageCatalogue = [
         clue: "share",
         label: { ja: "共有の箱", en: "Share box" },
       },
+      {
+        id: "S-240-B02",
+        color: "#10b981",
+        clue: "install",
+        label: { ja: "共有先の箱", en: "Share-target box" },
+      },
     ],
   }),
   defineStage({
@@ -437,13 +473,13 @@ export const stageCatalogue = [
         id: "S-250-B01",
         color: "#fbbf24",
         clue: "lock",
-        label: { ja: "鍵を持つ箱", en: "Lock-holder box" },
+        label: { ja: "白になる箱", en: "White-light box" },
       },
       {
         id: "S-250-B02",
         color: "#fb7185",
         clue: "wait",
-        label: { ja: "鍵を待つ箱", en: "Lock-waiter box" },
+        label: { ja: "閉じる順番の箱", en: "Closing-order box" },
       },
     ],
   }),
@@ -523,6 +559,18 @@ export const stageCatalogue = [
         clue: "launch",
         label: { ja: "再起動の箱", en: "Launch-handler box" },
       },
+      {
+        id: "S-310-B02",
+        color: "#a78bfa",
+        clue: "launch",
+        label: { ja: "ショートカットの箱", en: "Shortcut box" },
+      },
+      {
+        id: "S-310-B03",
+        color: "#818cf8",
+        clue: "launch",
+        label: { ja: "新しいメモの箱", en: "New-note box" },
+      },
     ],
   }),
   defineStage({
@@ -567,6 +615,466 @@ export const stageCatalogue = [
         color: "#34d399",
         clue: "transition",
         label: { ja: "画面遷移の箱", en: "View-transition box" },
+      },
+    ],
+  }),
+  defineStage({
+    id: "S-350",
+    label: { ja: "映像の手触り", en: "Touching the timeline" },
+    category: "page",
+    problems: [
+      {
+        id: "S-350-B01",
+        color: "#60a5fa",
+        clue: "time",
+        label: { ja: "シークの箱", en: "Seek box" },
+      },
+      {
+        id: "S-350-B02",
+        color: "#f472b6",
+        clue: "sound",
+        label: { ja: "ミュートの箱", en: "Mute box" },
+      },
+      {
+        id: "S-350-B03",
+        color: "#34d399",
+        clue: "pip",
+        label: { ja: "再生と停止の箱", en: "Play-pause box" },
+      },
+    ],
+  }),
+  defineStage({
+    id: "S-360",
+    label: { ja: "窓を渡る音", en: "Sound across windows" },
+    category: "transition",
+    problems: [
+      {
+        id: "S-360-B01",
+        color: "#22d3ee",
+        clue: "sound",
+        label: { ja: "接続の箱", en: "Connection box" },
+      },
+      {
+        id: "S-360-B02",
+        color: "#fb7185",
+        clue: "windows",
+        label: { ja: "切断の箱", en: "Disconnect box" },
+      },
+    ],
+  }),
+  defineStage({
+    id: "S-370",
+    label: { ja: "電気の境目", en: "Battery boundaries" },
+    category: "device",
+    problems: [
+      {
+        id: "S-370-B01",
+        color: "#34d399",
+        clue: "wake",
+        label: { ja: "接続の箱", en: "Plugged-in box" },
+      },
+      {
+        id: "S-370-B02",
+        color: "#fb7185",
+        clue: "wake",
+        label: { ja: "取り外しの箱", en: "Unplugged box" },
+      },
+      {
+        id: "S-370-B03",
+        color: "#facc15",
+        clue: "badge",
+        label: { ja: "75%以上の箱", en: "75% or more box" },
+      },
+      {
+        id: "S-370-B04",
+        color: "#f59e0b",
+        clue: "badge",
+        label: { ja: "75%未満の箱", en: "Below 75% box" },
+      },
+    ],
+  }),
+  defineStage({
+    id: "S-380",
+    label: { ja: "三つの資格情報", en: "Three credentials" },
+    category: "edge",
+    problems: [
+      {
+        id: "S-380-B01",
+        color: "#a78bfa",
+        clue: "export",
+        label: { ja: "保存の箱", en: "Create box" },
+      },
+      {
+        id: "S-380-B02",
+        color: "#34d399",
+        clue: "lock",
+        label: { ja: "利用成功の箱", en: "Use-success box" },
+      },
+      {
+        id: "S-380-B03",
+        color: "#fb7185",
+        clue: "lock",
+        label: { ja: "利用失敗の箱", en: "Use-failure box" },
+      },
+    ],
+  }),
+  defineStage({
+    id: "S-390",
+    label: { ja: "待つ資格情報", en: "A waiting credential" },
+    category: "edge",
+    problems: [
+      {
+        id: "S-390-B01",
+        color: "#f59e0b",
+        clue: "wait",
+        label: { ja: "一致なしの箱", en: "No-match box" },
+      },
+      {
+        id: "S-390-B02",
+        color: "#94a3b8",
+        clue: "wait",
+        label: { ja: "中断の箱", en: "Abort box" },
+      },
+    ],
+  }),
+  defineStage({
+    id: "S-400",
+    label: { ja: "一時間ずれた時計", en: "A clock one hour away" },
+    category: "device",
+    problems: [
+      {
+        id: "S-400-B01",
+        color: "#818cf8",
+        clue: "time",
+        label: { ja: "巻き戻しの箱", en: "Rewind box" },
+      },
+      {
+        id: "S-400-B02",
+        color: "#34d399",
+        clue: "return",
+        label: { ja: "現在へ戻す箱", en: "Return-to-now box" },
+      },
+    ],
+  }),
+  defineStage({
+    id: "S-410",
+    label: { ja: "通知の迷路", en: "Notification maze" },
+    category: "edge",
+    problems: [
+      {
+        id: "S-410-B01",
+        color: "#f472b6",
+        clue: "notification",
+        label: { ja: "通知操作の箱", en: "Notification-actions box" },
+      },
+    ],
+  }),
+  defineStage({
+    id: "S-420",
+    label: { ja: "通知の金庫", en: "Notification vault" },
+    category: "edge",
+    problems: [
+      {
+        id: "S-420-B01",
+        color: "#fbbf24",
+        clue: "lock",
+        label: { ja: "金庫の箱", en: "Vault box" },
+      },
+    ],
+  }),
+  defineStage({
+    id: "S-430",
+    label: { ja: "外側から止める", en: "Pause from outside" },
+    category: "edge",
+    problems: [
+      {
+        id: "S-430-B01",
+        color: "#22d3ee",
+        clue: "sound",
+        label: { ja: "外部停止の箱", en: "External-pause box" },
+      },
+    ],
+  }),
+  defineStage({
+    id: "S-440",
+    label: { ja: ".busyboxの入口", en: "The .busybox entrance" },
+    category: "edge",
+    problems: [
+      {
+        id: "S-440-B01",
+        color: "#a78bfa",
+        clue: "import",
+        label: { ja: "ファイル起動の箱", en: "File-launch box" },
+      },
+    ],
+  }),
+  defineStage({
+    id: "S-450",
+    label: { ja: "専用の合図", en: "A private signal" },
+    category: "edge",
+    problems: [
+      {
+        id: "S-450-B01",
+        color: "#60a5fa",
+        clue: "launch",
+        label: { ja: "プロトコルの箱", en: "Protocol box" },
+      },
+    ],
+  }),
+  defineStage({
+    id: "S-460",
+    label: { ja: "タイトルバーの内側", en: "Inside the title bar" },
+    category: "edge",
+    problems: [
+      {
+        id: "S-460-B01",
+        color: "#c084fc",
+        clue: "windows",
+        label: { ja: "オーバーレイの箱", en: "Overlay box" },
+      },
+    ],
+  }),
+  defineStage({
+    id: "S-480",
+    label: { ja: "文字の四季", en: "Four text scales" },
+    category: "device",
+    problems: [
+      {
+        id: "S-480-B01",
+        color: "#60a5fa",
+        clue: "resize",
+        label: { ja: "小の箱", en: "Small box" },
+      },
+      {
+        id: "S-480-B02",
+        color: "#34d399",
+        clue: "resize",
+        label: { ja: "標準の箱", en: "Standard box" },
+      },
+      {
+        id: "S-480-B03",
+        color: "#fbbf24",
+        clue: "resize",
+        label: { ja: "大の箱", en: "Large box" },
+      },
+      {
+        id: "S-480-B04",
+        color: "#fb7185",
+        clue: "resize",
+        label: { ja: "特大の箱", en: "Extra-large box" },
+      },
+    ],
+  }),
+  defineStage({
+    id: "S-490",
+    label: { ja: "名前を置く", en: "Place the name" },
+    category: "page",
+    map: { clueFromStageIds: [] },
+    problems: [
+      {
+        id: "S-490-B01",
+        color: "#a78bfa",
+        clue: "dom",
+        label: { ja: "busyboxの箱", en: "busybox box" },
+      },
+    ],
+  }),
+  defineStage({
+    id: "S-500",
+    label: { ja: "暗号の受け渡し", en: "A cipher handoff" },
+    category: "transition",
+    map: { clueFromStageIds: ["S-180", "S-490"] },
+    problems: [
+      {
+        id: "S-500-B01",
+        color: "#818cf8",
+        clue: "selection",
+        label: { ja: "選び出す箱", en: "Select-it box" },
+      },
+    ],
+  }),
+  defineStage({
+    id: "S-510",
+    label: { ja: "窓を越えるファイル", en: "A file across windows" },
+    category: "transition",
+    problems: [
+      {
+        id: "S-510-B01",
+        color: "#34d399",
+        clue: "export",
+        label: { ja: "ドロップの箱", en: "Drop box" },
+      },
+    ],
+  }),
+  defineStage({
+    id: "S-520",
+    label: { ja: "すぐそば", en: "Very near" },
+    category: "device",
+    problems: [
+      {
+        id: "S-520-B01",
+        color: "#f472b6",
+        clue: "devices",
+        label: { ja: "近接の箱", en: "Proximity box" },
+      },
+    ],
+  }),
+  defineStage({
+    id: "S-530",
+    label: { ja: "三方向の加速", en: "Acceleration in three directions" },
+    category: "device",
+    problems: [
+      {
+        id: "S-530-B01",
+        color: "#fb7185",
+        clue: "path",
+        label: { ja: "X軸の箱", en: "X-axis box" },
+      },
+      {
+        id: "S-530-B02",
+        color: "#34d399",
+        clue: "path",
+        label: { ja: "Y軸の箱", en: "Y-axis box" },
+      },
+      {
+        id: "S-530-B03",
+        color: "#60a5fa",
+        clue: "path",
+        label: { ja: "Z軸の箱", en: "Z-axis box" },
+      },
+    ],
+  }),
+  defineStage({
+    id: "S-540",
+    label: { ja: "光の両端", en: "Both ends of light" },
+    category: "device",
+    problems: [
+      {
+        id: "S-540-B01",
+        color: "#0f172a",
+        clue: "light",
+        label: { ja: "暗闇の箱", en: "Darkness box" },
+      },
+      {
+        id: "S-540-B02",
+        color: "#fef08a",
+        clue: "light",
+        label: { ja: "眩光の箱", en: "Bright-light box" },
+      },
+    ],
+  }),
+  defineStage({
+    id: "S-550",
+    label: { ja: "重さが消える瞬間", en: "When weight disappears" },
+    category: "device",
+    problems: [
+      {
+        id: "S-550-B01",
+        color: "#c084fc",
+        clue: "wait",
+        label: { ja: "低加速度の箱", en: "Low-acceleration box" },
+      },
+    ],
+  }),
+  defineStage({
+    id: "S-560",
+    label: { ja: "三軸の一回転", en: "One turn on each axis" },
+    category: "device",
+    problems: [
+      {
+        id: "S-560-B01",
+        color: "#fb7185",
+        clue: "orientation",
+        label: { ja: "X回転の箱", en: "X-turn box" },
+      },
+      {
+        id: "S-560-B02",
+        color: "#34d399",
+        clue: "orientation",
+        label: { ja: "Y回転の箱", en: "Y-turn box" },
+      },
+      {
+        id: "S-560-B03",
+        color: "#60a5fa",
+        clue: "orientation",
+        label: { ja: "Z回転の箱", en: "Z-turn box" },
+      },
+    ],
+  }),
+  defineStage({
+    id: "S-570",
+    label: { ja: "姿勢の巡回", en: "An orientation circuit" },
+    category: "device",
+    problems: [
+      {
+        id: "S-570-B01",
+        color: "#22d3ee",
+        clue: "orientation",
+        label: { ja: "巡回の箱", en: "Circuit box" },
+      },
+    ],
+  }),
+  defineStage({
+    id: "S-580",
+    label: { ja: "箱の名前を呼ぶ", en: "Call the box by name" },
+    category: "device",
+    map: { clueFromStageIds: ["S-490"] },
+    problems: [
+      {
+        id: "S-580-B01",
+        color: "#f472b6",
+        clue: "sound",
+        label: { ja: "発話の箱", en: "Speech box" },
+      },
+    ],
+  }),
+  defineStage({
+    id: "S-590",
+    label: { ja: "出発点から", en: "From the starting point" },
+    category: "device",
+    problems: [
+      {
+        id: "S-590-B01",
+        color: "#34d399",
+        clue: "path",
+        label: { ja: "5mの箱", en: "5 m box" },
+      },
+      {
+        id: "S-590-B02",
+        color: "#fbbf24",
+        clue: "path",
+        label: { ja: "25mの箱", en: "25 m box" },
+      },
+      {
+        id: "S-590-B03",
+        color: "#fb7185",
+        clue: "path",
+        label: { ja: "100mの箱", en: "100 m box" },
+      },
+    ],
+  }),
+  defineStage({
+    id: "S-600",
+    label: { ja: "高さの三層", en: "Three altitude layers" },
+    category: "device",
+    problems: [
+      {
+        id: "S-600-B01",
+        color: "#34d399",
+        clue: "path",
+        label: { ja: "100m未満の箱", en: "Below 100 m box" },
+      },
+      {
+        id: "S-600-B02",
+        color: "#fbbf24",
+        clue: "path",
+        label: { ja: "100〜500mの箱", en: "100–500 m box" },
+      },
+      {
+        id: "S-600-B03",
+        color: "#60a5fa",
+        clue: "path",
+        label: { ja: "500m以上の箱", en: "500 m or more box" },
       },
     ],
   }),

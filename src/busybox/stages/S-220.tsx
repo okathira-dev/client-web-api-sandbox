@@ -23,15 +23,28 @@ function currentTrail() {
  */
 export default function S220Stage(props: StageComponentProps) {
   const problem = props.problem("S-220-B01");
+  const backForward = props.problem("S-220-B02");
+  const reload = props.problem("S-220-B03");
   const [depth, setDepth] = useState(() => currentTrail()?.depth ?? 0);
 
   useEffect(() => {
+    const navigation = performance.getEntriesByType("navigation")[0] as
+      | PerformanceNavigationTiming
+      | undefined;
+    if (navigation?.type === "back_forward")
+      backForward.solve(["navigation:back-forward"]);
+    if (navigation?.type === "reload") reload.solve(["navigation:reload"]);
+    const pageShown = (event: PageTransitionEvent) => {
+      if (event.persisted) backForward.solve(["navigation:bfcache"]);
+    };
+    window.addEventListener("pageshow", pageShown);
     const trail = currentTrail();
     setDepth(trail?.depth ?? 0);
     if (trail?.ready && trail.depth === 0) {
       problem.solve(["history:returned-to-base"]);
     }
-  }, [problem.solve]);
+    return () => window.removeEventListener("pageshow", pageShown);
+  }, [backForward.solve, problem.solve, reload.solve]);
 
   const buildTrail = () => {
     const baseUrl = new URL(window.location.href);
@@ -70,7 +83,11 @@ export default function S220Stage(props: StageComponentProps) {
             : "Use browser Back three times"
           : `${depth} / 3`}
       </p>
-      <ProblemGiftBox problem={problem} locale={props.locale} />
+      <div className="problem-row">
+        <ProblemGiftBox problem={problem} locale={props.locale} />
+        <ProblemGiftBox problem={backForward} locale={props.locale} />
+        <ProblemGiftBox problem={reload} locale={props.locale} />
+      </div>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   type StageId,
   type StageMapBranch,
@@ -7,7 +7,15 @@ import {
 } from "../domain/stages";
 
 const canvasWidth = 2700;
-const canvasHeight = 1900;
+const canvasHeight = Math.max(
+  1900,
+  ...(["page", "device", "storage", "passage", "labs"] as StageMapBranch[]).map(
+    (branch) =>
+      stageCatalogue.filter((stage) => stage.map.branch === branch).length *
+        225 +
+      520,
+  ),
+);
 const nodeWidth = 260;
 const nodeHeight = 168;
 
@@ -48,6 +56,7 @@ interface StageMapProps {
 export function StageMap({ locale, renderStage }: StageMapProps) {
   const viewportRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
+  const [markerRound, setMarkerRound] = useState<string | null>(null);
   const positions = useMemo(() => buildPositions(stageCatalogue), []);
   const branchNames: Readonly<Record<StageMapBranch, string>> =
     locale === "ja"
@@ -67,6 +76,20 @@ export function StageMap({ locale, renderStage }: StageMapProps) {
         };
 
   const center = { x: canvasWidth / 2, y: 82 };
+  useEffect(() => {
+    const round = new URL(location.href).searchParams.get("map-round");
+    if (!round) return;
+    const channel = new BroadcastChannel(`busybox:S-190:marker:${round}`);
+    const receive = (event: MessageEvent<unknown>) => {
+      if (event.data === `arm:${round}`) setMarkerRound(round);
+    };
+    channel.addEventListener("message", receive);
+    channel.postMessage(`hello:${round}`);
+    return () => {
+      channel.removeEventListener("message", receive);
+      channel.close();
+    };
+  }, []);
   const centerOnHub = () => {
     viewportRef.current?.scrollTo({
       left: center.x * scale - (viewportRef.current.clientWidth ?? 0) / 2,
@@ -196,8 +219,8 @@ export function StageMap({ locale, renderStage }: StageMapProps) {
               })}
             </ol>
             <div
-              className="stage-map-marker-slot"
-              data-busybox-map-marker="inactive"
+              className={`stage-map-marker-slot ${markerRound ? "stage-map-marker-slot--active" : ""}`}
+              data-busybox-map-marker={markerRound ?? "inactive"}
               style={{ left: canvasWidth - 110, top: canvasHeight - 110 }}
               aria-hidden="true"
             />
