@@ -1,0 +1,7 @@
+# Project-scoped Codex configuration. Codex loads this file for trusted projects.
+# Keep credentials and personal/global MCP servers out of this repository.
+
+[mcp_servers.serena]
+startup_timeout_sec = 15
+command = "serena"
+args = ["start-mcp-server", "--project-from-cwd", "--context=codex"]

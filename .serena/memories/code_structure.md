@@ -3,7 +3,7 @@
 - ルート
   - `vite.config.ts`: `src` を root とし、複数 HTML を `rollupOptions.input` で指定
   - `tsconfig.json`: strict, bundler 解決, JSX は `react-jsx`
-  - `eslint.config.js`: flat config, type-aware, react/react-hooks/import-x/html, prettier 連携
+  - `biome.json`: lint、format、import整理の設定
   - `jest.config.js`: ts-jest 設定
   - `README.md`, `Scratchpad.md`
 - `src/`

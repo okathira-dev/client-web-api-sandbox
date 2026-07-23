@@ -4,7 +4,7 @@
 
 - 主要目的: Web API・オーディオ・WebCodecs・数理系などの PoC/小アプリの集合
 - 実行方法: `npm run dev`（開発サーバ）、`npm run build`（ビルド）、`npm run preview`（ビルド成果物をローカル確認）
-- 必要環境: Node >= 22.12.0、Windows（PowerShell 7）
+- 必要環境: `package.json`の`engines`を満たすNode、Windows（PowerShell 7）
 
 ## サブプロジェクト一覧（抜粋）
 
@@ -27,4 +27,4 @@ Vite の `rollupOptions.input` で複数 HTML を指定。
 
 - `README.md`: 目次・各プロジェクト説明
 - `Scratchpad.md`: タスク・進捗の管理
-- `.cursor/rules/*.mdc`: ルール（repository/coding-rules/eslint 等）
+- `.cursor/rules/*.mdc`: ルール（repository/coding-rules/biome/verification 等）
