@@ -5,31 +5,29 @@
 
 ## 現在のタスク
 
-### Vite 8 移行時の warn/error 対応（進行中）
+### FSL Skillを公式構成へ移行
 
-- [x] `@vitejs/plugin-react-swc` -> `@vitejs/plugin-react` へ移行
-- [x] `build.rollupOptions` -> `build.rolldownOptions` へ移行
-- [x] `kojo-xml-viewer` パーサーの `node:fs` / `node:url` 依存を除去
-- [x] Jest で `file:` URL を扱う `fetch` セットアップを追加
-- [x] `webcodecs-data-moshing` の Start 多重実行で起きる `DataCloneError` 対策
-- [ ] `@okathira/ghostpdl-wasm` 起因の `module externalized` 警告の upstream 対応方針整理
+- [x] FSL v3.1.0の公式Skill bundleを取得してchecksumを検証
+- [x] 公式Skillを`skills/`へ無改変で配置
+- [x] `.cursor/skills/`をCursor発見用アダプターへ変更
+- [x] `.agents/skills/`をCodex発見用アダプターとして正本へ接続
+- [x] `AGENTS.md`とREADMEの索引を新構成へ更新
+- [x] 上流ハッシュ、アダプター、参照、差分を最終検証
 
 ## 進捗状況
 
-- `npm run build` / `npm run test` は通過。
-- Vite 8 関連で解消できたもの:
-  - `vite:react-swc` の `esbuild` 非推奨警告
-  - `node:fs` / `node:url` externalize 警告
-  - `webcodecs-data-moshing` の `OffscreenCanvas detached` エラー（多重 start）
-- 依存ライブラリ由来で残るもの:
-  - `@okathira/ghostpdl-wasm/dist/gs.js` 由来の `module externalized` 警告
-    - 現行最新 `1.1.0` でも再現
-    - ブラウザ動作は `preview` で `http://localhost:4173/pdf-compressor-wasm/` の 200 応答を確認
+- 公式Releaseの`fsl-skills.tar.gz`を公開SHA-256と照合してから利用した。
+- 配布bundleに含まれる6 Skillだけを導入し、タグのソースツリーにだけ存在する追加Skillは混在させない。
+- portable-installation注記は公式Skill本文からクライアント別アダプターへ移した。
+- 公式bundleの11ファイルは配布アーカイブおよび上流Git blobと一致した。
+- 新規Codexセッションで`$fsl`が`skills/fsl/SKILL.md`を正本として読むことを確認した。
+- ユーザーPython環境のPyYAML 6.0.3を使い、UTF-8モードの公式`quick_validate.py`で正本・Cursor・Codexの全18 Skillが合格した。
 
 ## リポジトリ構造分析結果
 
-- `src/kojo-xml-viewer`配下に仕様書・マッピング・UIが集約
-- XML解析まわりは`utils`/`features/XmlViewer/components`内にコロケーション
-- ルールファイル：`coding-rules.mdc`, `eslint.mdc`, `repository.mdc`
+- Skill本文と参照資料の正本は公式構成と同じ`skills/`とし、`.cursor/skills/`と`.agents/skills/`は発見用アダプターだけにする。
+- 固定的なCursorクライアントバージョンはScratchpadへ記録しない。
 
 ## メモと反省
+
+- ベンダーした公式Skillは無改変で保ち、クライアント固有の発見・パス解釈はアダプターに隔離する。

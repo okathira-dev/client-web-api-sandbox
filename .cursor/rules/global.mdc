@@ -31,7 +31,7 @@ alwaysApply: true
 4. **他のルールファイルとの連携**:
    - プロジェクト全体に関わるルールファイルとの関連性:
      - [coding-rules.mdc](mdc:.cursor/rules/coding-rules.mdc): コード構造、コンポーネント設計、状態管理などの基本的なコーディングルールを提供します。Scratchpadでタスクを計画する際には、これらのルールに従ってください。
-     - [eslint.mdc](mdc:.cursor/rules/eslint.mdc): ESLint設定に関するルールを提供します。コード品質を確保するために参照してください。
+     - [biome.mdc](mdc:.cursor/rules/biome.mdc): Biomeによるlint、format、import整理のルールを提供します。コード品質を確保するために参照してください。
      - [repository.mdc](mdc:.cursor/rules/repository.mdc): リポジトリ全体の構造とプロジェクト概要を提供します。Scratchpadでプロジェクト関連のタスクを記録する際には、この情報を参照してください。
    - 各プロジェクト固有のタスクでは、関連するプロジェクトのルールファイル（例: button-accordion-with-keyboard.mdc, stradella-bass-system.mdc）も参照してください。
    - Scratchpadでの作業はこれらのルールに従って行われるべきです。

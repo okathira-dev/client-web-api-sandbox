@@ -1,0 +1,48 @@
+---
+description: Biomeによるlint、format、import整理の設定と検証方法
+globs: biome.json,package.json,**/*.js,**/*.jsx,**/*.ts,**/*.tsx,**/*.json,**/*.css,**/*.html
+alwaysApply: false
+---
+# Biome設定
+
+このリポジトリでは、JavaScript・TypeScript・JSON・CSS・HTMLのlint、format、import整理にBiomeを使用します。ESLintやPrettierを前提にした設定や依存関係を追加しないでください。
+
+## 正本
+
+- 設定: `biome.json`
+- CLIバージョン: `package.json`の`devDependencies["@biomejs/biome"]`
+- 実行コマンド: `package.json`の`scripts`
+
+設定と実際のコードが食い違う場合は、現在の`biome.json`と`package.json`を優先してください。BiomeのスキーマURLはCLIバージョンと揃え、移行が必要な場合は`biome migrate`の差分を確認してから採用してください。
+
+## 現在の方針
+
+- 推奨lintルールを有効にする
+- Reactドメインの推奨ルールを有効にする
+- MUIの`TextField`、`Slider`、`Select`をラベル対象の入力コンポーネントとして扱う
+- インデントはスペースを使用する
+- JavaScript・TypeScriptではダブルクォート、セミコロン、末尾カンマを使用する
+- import整理はBiome Assistの`organizeImports`を使用する
+- 公開アセット、ビルド成果物、カバレッジ、環境ファイル、ログなど、`biome.json`で除外された対象を無理に整形しない
+
+## コマンド
+
+変更しない検証を先に実行します。
+
+```powershell
+npm run lint
+npm run format
+npm run check-biome
+npm run check
+```
+
+`npm run check`はMarkuplintとBiomeをまとめて実行します。自動修正はユーザーが修正を求めている場合に限り、対象差分を確認しながら実行します。
+
+```powershell
+npm run lint:fix
+npm run format:fix
+npm run check-biome:fix
+npm run check:fix
+```
+
+Biomeが安全でない修正として報告した変更は自動適用せず、意図と挙動を確認して個別に修正してください。

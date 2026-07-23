@@ -71,6 +71,19 @@ npm run dev
 
 プロジェクト内で学んだ教訓や再利用可能な知識は Serena のメモリとして管理します。
 
+### [FSL Agent Skills](./.agents/README.md)
+
+[FSL](https://github.com/ymm-oss/fsl) v3.1.0 の公式Agent Skill bundleは、[`skills/`](./skills/)を無改変の正本として配置しています。Cursorは`.cursor/skills/`、Codexは`.agents/skills/`の薄い発見用アダプターから同じ正本を参照します。
+形式仕様を作成・検証するときは、目的に合うFSL SkillをCodexでは `$fsl`、Cursorでは `/fsl` などで明示的に呼び出せます。
+
+検証CLIは別途インストールした `fslc` を使用します。
+
+```powershell
+fslc --version
+fslc check path/to/spec.fsl
+fslc verify path/to/spec.fsl --depth 8
+```
+
 ## ルールファイル
 
 .cursor/rulesディレクトリには以下のルールファイルがあります。ここではすべてのプロジェクトに関するもののみを記載しています。
@@ -78,4 +91,4 @@ npm run dev
 - **global.mdc**: リポジトリ全体に適用されるルール（Scratchpadの使用方法など）
 - **repository.mdc**: リポジトリ構造とプロジェクト概要
 - **coding-rules.mdc**: コーディングルールとディレクトリ構造
-- **eslint.mdc**: ESLint設定に関するルール
+- **biome.mdc**: Biomeによるlint、format、import整理に関するルール
