@@ -1,6 +1,6 @@
 ---
 description: すべてのプロジェクトの基本となるコーディングルール
-globs: 
+globs: src/**/*.ts,src/**/*.tsx,src/**/*.js,src/**/*.jsx
 alwaysApply: false
 ---
 

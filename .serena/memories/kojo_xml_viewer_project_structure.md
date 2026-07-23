@@ -6,12 +6,14 @@
 
 ### 技術スタック
 
-- React 18.2.0
-- TypeScript 5.7.3
-- MUI 6.4.5
+- React
+- TypeScript
+- MUI
 - fast-xml-parser（XMLパース）
 - @xmldom/xmldom + xpath（XSDパース）
 - Vite（ビルドツール）
+
+正確なバージョンはルートの`package.json`と`package-lock.json`を参照してください。
 
 ### 主要機能
 
