@@ -92,3 +92,4 @@ fslc verify path/to/spec.fsl --depth 8
 - **repository.mdc**: リポジトリ構造とプロジェクト概要
 - **coding-rules.mdc**: コーディングルールとディレクトリ構造
 - **biome.mdc**: Biomeによるlint、format、import整理に関するルール
+- **verification.mdc**: 変更内容に応じた検証と完了条件

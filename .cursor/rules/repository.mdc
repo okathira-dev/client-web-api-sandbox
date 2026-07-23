@@ -30,4 +30,5 @@ alwaysApply: false
 プロジェクト開発をサポートするために以下を使用します：
 
 - [Scratchpad.md](mdc:Scratchpad.md): タスクの計画と進捗状況を追跡するためのスクラッチパッド
+- [verification.mdc](mdc:.cursor/rules/verification.mdc): 変更内容に応じた検証と完了条件
 - Serena memories（`.serena/memories/*.md`）: 教訓・規約・ポリシー等の長期知識の保存

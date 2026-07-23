@@ -1,33 +1,30 @@
 # Scratchpad
 
 このファイルは、タスクの計画と進捗状況を追跡するためのスクラッチパッドとして使用されます。
-（`.cursor/rules/global.mdc`のルールに従って管理されています。長期的な教訓・方針はserenaメモリに保存します）
+（使用条件は`.cursor/rules/global.mdc`、完了条件は`.cursor/rules/verification.mdc`に従います）
 
 ## 現在のタスク
 
-### FSL Skillを公式構成へ移行
+### AIエージェント設定の最適化
 
-- [x] FSL v3.1.0の公式Skill bundleを取得してchecksumを検証
-- [x] 公式Skillを`skills/`へ無改変で配置
-- [x] `.cursor/skills/`をCursor発見用アダプターへ変更
-- [x] `.agents/skills/`をCodex発見用アダプターとして正本へ接続
-- [x] `AGENTS.md`とREADMEの索引を新構成へ更新
-- [x] 上流ハッシュ、アダプター、参照、差分を最終検証
+- [x] Serena memoriesと現在の正本との差異を確認
+- [x] 古いツール・バージョン・検証手順を正本参照へ整理
+- [x] Cursor/Codex共通の検証・完了条件ルールを追加
+- [x] ScratchpadとSerena memoryの利用範囲を限定
+- [x] 参照切れ、矛盾、形式、Git差分を最終検証
 
 ## 進捗状況
 
-- 公式Releaseの`fsl-skills.tar.gz`を公開SHA-256と照合してから利用した。
-- 配布bundleに含まれる6 Skillだけを導入し、タグのソースツリーにだけ存在する追加Skillは混在させない。
-- portable-installation注記は公式Skill本文からクライアント別アダプターへ移した。
-- 公式bundleの11ファイルは配布アーカイブおよび上流Git blobと一致した。
-- 新規Codexセッションで`$fsl`が`skills/fsl/SKILL.md`を正本として読むことを確認した。
-- ユーザーPython環境のPyYAML 6.0.3を使い、UTF-8モードの公式`quick_validate.py`で正本・Cursor・Codexの全18 Skillが合格した。
+- 依存関係とコマンドは`package.json`、品質設定は`biome.json`を正本とする。
+- memoriesには長期間変わりにくい知識と正本への参照だけを残す。
+- 変更しない検証を先に行い、自動修正は依頼範囲内だけで使う。
+- 7個のCursor ruleのfrontmatter、ローカル参照、npm script参照、廃止済み設定の不在、Git差分検査を確認した。
 
 ## リポジトリ構造分析結果
 
-- Skill本文と参照資料の正本は公式構成と同じ`skills/`とし、`.cursor/skills/`と`.agents/skills/`は発見用アダプターだけにする。
-- 固定的なCursorクライアントバージョンはScratchpadへ記録しない。
+- 共通方針は`.cursor/rules/`を正本とし、`AGENTS.md`はCodex向け索引だけを持つ。
+- `verification.mdc`をCursorの自動適用対象かつCodexの明示索引として共有する。
 
 ## メモと反省
 
-- ベンダーした公式Skillは無改変で保ち、クライアント固有の発見・パス解釈はアダプターに隔離する。
+- バージョンやコマンドをmemoryへ複製すると正本とのドリフトが起きるため、参照へ置き換える。
