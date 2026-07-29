@@ -61,6 +61,10 @@ npm run dev
 
 日本の控除証明書データのXMLファイルを閲覧する読み取り専用のウェブアプリケーション
 
+### [./src/encoder-capability-inspector](./src/encoder-capability-inspector)
+
+WebCodecs の映像・音声エンコード設定が実際に使えるかを、実エンコード・デコード・多重化まで通して検査するツール
+
 ## 開発サポートファイル
 
 ### [./Scratchpad.md](./Scratchpad.md)

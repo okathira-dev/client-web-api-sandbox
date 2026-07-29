@@ -5,26 +5,25 @@
 
 ## 現在のタスク
 
-### AIエージェント設定の最適化
+### encoder-capability-inspector の新規追加
 
-- [x] Serena memoriesと現在の正本との差異を確認
-- [x] 古いツール・バージョン・検証手順を正本参照へ整理
-- [x] Cursor/Codex共通の検証・完了条件ルールを追加
-- [x] ScratchpadとSerena memoryの利用範囲を限定
-- [x] 参照切れ、矛盾、形式、Git差分を最終検証
+- [x] 現行Serenaのスキーマへ`.serena/project.yml`を更新（`languages:` → `language_servers:`）
+- [x] 依存追加（mediabunny / @tanstack/react-virtual）とViteエントリ追加
+- [x] `consts` / `domain` / `utils` と単体テスト（59件）
+- [x] 検査ワーカー（エンコード・デコード・多重化）
+- [x] UI（実行制御・進行表示・仮想化テーブル・Sustained test）
+- [x] ドキュメント更新と検証
 
 ## 進捗状況
 
-- 依存関係とコマンドは`package.json`、品質設定は`biome.json`を正本とする。
-- memoriesには長期間変わりにくい知識と正本への参照だけを残す。
-- 変更しない検証を先に行い、自動修正は依頼範囲内だけで使う。
-- 7個のCursor ruleのfrontmatter、ローカル参照、npm script参照、廃止済み設定の不在、Git差分検査を確認した。
-
-## リポジトリ構造分析結果
-
-- 共通方針は`.cursor/rules/`を正本とし、`AGENTS.md`はCodex向け索引だけを持つ。
-- `verification.mdc`をCursorの自動適用対象かつCodexの明示索引として共有する。
+- 全484候補（映像462 + 音声22）の包括検査がブラウザーで完走することを確認した。
+- キャンセル → 再開 → Reset、絞り込み、Sustained test（合成入力）、リロード後の復元を確認した。
+- ライブ入力（`getDisplayMedia`）のSustained testは画面共有の許可が要るため未検証。
 
 ## メモと反省
 
-- バージョンやコマンドをmemoryへ複製すると正本とのドリフトが起きるため、参照へ置き換える。
+- Serenaは起動のたびに`.serena/project.yml`を再保存するため、旧スキーマのままだと
+  未コミット差分が出続ける。設定キーのリネームに追従してコミットしておく。
+- 484候補ぶんのレポートを候補ごとに永続化するとシリアライズで詰まる。
+  実行中はメモリに置き、終端状態でだけ保存する。
+- 進行中のステージ更新で結果配列の参照を差し替えないことが、一覧の再描画を防ぐ鍵になる。

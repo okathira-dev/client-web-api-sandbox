@@ -1,0 +1,236 @@
+/**
+ * 検査の中核となる型定義。
+ *
+ * 映像候補と音声候補は形が大きく異なるため、`kind` を判別子とする Union で表現し、
+ * 「映像だけが持つ情報」（Profile / Level / ハードウェア方針）を音声側から参照できないようにする。
+ */
+
+export const VIDEO_FAMILIES = ["h264", "h265", "vp9", "av1", "vp8"] as const;
+export type VideoFamily = (typeof VIDEO_FAMILIES)[number];
+
+export const AUDIO_FAMILIES = ["aac", "opus"] as const;
+export type AudioFamily = (typeof AUDIO_FAMILIES)[number];
+
+export const HARDWARE_PREFERENCES = [
+  "prefer-hardware",
+  "no-preference",
+  "prefer-software",
+] as const;
+export type HardwarePreference = (typeof HARDWARE_PREFERENCES)[number];
+
+/** mediabunny の `VideoCodec` / `AudioCodec` のうち本検査で使う値。 */
+export type VideoContainerCodec = "avc" | "hevc" | "vp9" | "av1" | "vp8";
+export type AudioContainerCodec = "aac" | "opus";
+export type ContainerFormat = "mp4" | "webm";
+
+/** 1 つの codec string に対する検査条件。ハードウェア方針はまだ含まない。 */
+export type VideoCandidate = {
+  readonly candidateId: string;
+  readonly family: VideoFamily;
+  /** `VideoEncoderConfig.codec` へ渡す文字列。例: `avc1.640028` */
+  readonly codec: string;
+  readonly profile: string;
+  readonly level: string;
+  readonly bitDepth: number;
+  readonly width: number;
+  readonly height: number;
+  readonly fps: number;
+  readonly bitrate: number;
+  readonly container: ContainerFormat;
+  readonly containerCodec: VideoContainerCodec;
+  /** 10bit や Level 6.x など、対応が期待しにくい構成。表示と既定の並びで区別する。 */
+  readonly experimental: boolean;
+  readonly label: string;
+};
+
+export type AudioCandidate = {
+  readonly candidateId: string;
+  readonly family: AudioFamily;
+  readonly codec: string;
+  readonly channels: number;
+  readonly sampleRate: number;
+  readonly bitrate: number;
+  readonly container: ContainerFormat;
+  readonly containerCodec: AudioContainerCodec;
+  readonly label: string;
+};
+
+/** 実際に検査を実行する単位。映像は 1 候補 × ハードウェア方針 3 種へ展開される。 */
+export type VideoInspectionUnit = VideoCandidate & {
+  readonly kind: "video";
+  readonly id: string;
+  readonly hardwareAcceleration: HardwarePreference;
+};
+
+export type AudioInspectionUnit = AudioCandidate & {
+  readonly kind: "audio";
+  readonly id: string;
+};
+
+export type InspectionUnit = VideoInspectionUnit | AudioInspectionUnit;
+
+/** 候補ごとの処理段階。UI の進行表示と失敗箇所の切り分けに使う。 */
+export const INSPECTION_STAGES = [
+  "declared",
+  "output",
+  "decode",
+  "mux",
+  "complete",
+] as const;
+export type InspectionStage = (typeof INSPECTION_STAGES)[number];
+
+export type TestMode = "compatibility" | "sustained";
+export type InputMode = "synthetic" | "live";
+
+/** ライブ入力の素性。画面内容そのものは一切保持しない。 */
+export type LiveSourceInfo = {
+  readonly width: number | null;
+  readonly height: number | null;
+  readonly frameRate: number | null;
+  readonly displaySurface: string | null;
+};
+
+export type LiveSourceStats = LiveSourceInfo & {
+  /** エンコードへ渡せたフレーム数。 */
+  readonly framesReceived: number;
+  /** タイムスタンプ間隔から推定した入力欠落数。 */
+  readonly missingInputFrames: number;
+};
+
+export type PerformanceMetrics = {
+  readonly frameCount: number;
+  /** 入力待ちを除いた実処理時間。 */
+  readonly processingMs: number;
+  readonly averageProcessingMs: number;
+  /** 1 フレームあたりの許容時間 (1000 / fps)。 */
+  readonly frameBudgetMs: number;
+  /** averageProcessingMs / frameBudgetMs をパーセントで表したもの。100 超で予算超過。 */
+  readonly frameTimePercent: number;
+  readonly achievedFps: number;
+  readonly requestedFps: number;
+  readonly outputBytes: number;
+  readonly maxQueueSize: number;
+  /** ライブ入力でフレームが届くのを待った時間。合成入力では 0。 */
+  readonly inputWaitMs: number;
+  readonly sourcePreparationMs: number;
+  readonly decodeMs: number | null;
+  readonly muxMs: number | null;
+};
+
+export type UnitResultBase = {
+  readonly id: string;
+  readonly candidateId: string;
+  readonly label: string;
+  readonly codec: string;
+  readonly testMode: TestMode;
+  readonly inputMode: InputMode;
+  /** `isConfigSupported` が受理したか。 */
+  readonly declared: boolean;
+  readonly encodedChunks: number | null;
+  readonly decodedFrames: number | null;
+  readonly muxedBytes: number | null;
+  /** エンコード・デコード・多重化がすべて通ったか。 */
+  readonly usable: boolean;
+  readonly warning: string | null;
+  readonly error: string | null;
+  /** 失敗した場合に、どの段階で止まったか。 */
+  readonly stage: InspectionStage;
+  readonly performance: PerformanceMetrics | null;
+  readonly startedAt: number;
+  readonly completedAt: number;
+  readonly elapsedMs: number;
+  /** Sustained test を実行済みならその結果。基本検査とは独立に保持する。 */
+  readonly sustained: UnitResult | null;
+};
+
+export type VideoUnitResult = UnitResultBase & {
+  readonly kind: "video";
+  readonly family: VideoFamily;
+  readonly profile: string;
+  readonly level: string;
+  readonly bitDepth: number;
+  readonly experimental: boolean;
+  readonly hardwareAcceleration: HardwarePreference;
+  readonly requestedConfig: VideoEncoderConfig;
+  readonly source: LiveSourceStats | null;
+};
+
+export type AudioUnitResult = UnitResultBase & {
+  readonly kind: "audio";
+  readonly family: AudioFamily;
+  readonly channels: number;
+  readonly sampleRate: number;
+  readonly bitrate: number;
+  readonly requestedConfig: AudioEncoderConfig;
+};
+
+export type UnitResult = VideoUnitResult | AudioUnitResult;
+
+export type EnvironmentInfo = {
+  readonly userAgent: string;
+  readonly browserBrands: string | null;
+  readonly platform: string | null;
+  readonly hardwareConcurrency: number | null;
+  readonly deviceMemoryGb: number | null;
+  readonly gpu: {
+    readonly vendor: string | null;
+    readonly architecture: string | null;
+    readonly device: string | null;
+  } | null;
+  readonly webCodecs: {
+    readonly videoEncoder: boolean;
+    readonly videoDecoder: boolean;
+    readonly audioEncoder: boolean;
+    readonly audioDecoder: boolean;
+    readonly offscreenCanvas: boolean;
+  };
+};
+
+export type ReportStatus = "running" | "complete" | "cancelled" | "failed";
+
+/** 進行中の候補。結果一覧とは別に保持し、これの更新で結果行を再描画しない。 */
+export type CurrentInspection = {
+  readonly id: string;
+  readonly kind: InspectionUnit["kind"];
+  readonly codec: string;
+  readonly label: string;
+  readonly stage: InspectionStage;
+};
+
+export type SustainedRunState = {
+  readonly status: ReportStatus;
+  readonly startedAt: number;
+  readonly updatedAt: number;
+  readonly completedAt: number | null;
+  readonly durationSeconds: number;
+  readonly inputMode: InputMode;
+  readonly source: LiveSourceInfo | null;
+  readonly candidatePauseMs: number;
+  readonly totalUnits: number;
+  readonly completedUnits: number;
+  readonly unitIds: readonly string[];
+  readonly current: CurrentInspection | null;
+  readonly error: string | null;
+};
+
+export type InspectionReport = {
+  readonly version: number;
+  readonly status: ReportStatus;
+  readonly startedAt: number;
+  readonly updatedAt: number;
+  readonly completedAt: number | null;
+  readonly environment: EnvironmentInfo;
+  readonly totalUnits: number;
+  readonly completedUnits: number;
+  readonly candidatePauseMs: number;
+  /** 新しい結果ほど先頭。完了行は参照を保ったまま再利用する。 */
+  readonly results: readonly UnitResult[];
+  readonly current: CurrentInspection | null;
+  readonly error: string | null;
+  /**
+   * 直前に完全完了したレポート。中断された再検査が直前の完全結果を壊さないために保持する。
+   * 完全完了したレポート自身はこれを持たない（入れ子を 1 段に限る）。
+   */
+  readonly previousCompleted: InspectionReport | null;
+  readonly sustained: SustainedRunState | null;
+};
