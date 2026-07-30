@@ -11,6 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   useCandidatePauseMs,
@@ -26,18 +27,14 @@ import {
   MAX_SUSTAINED_DURATION_SECONDS,
   MIN_SUSTAINED_DURATION_SECONDS,
 } from "../../consts/inspection";
+import { useCodeMessage } from "../../utils/messages";
 import { useInspectionControls } from "../InspectionRunner";
 import { useSelectedIds, useSetSelection } from "../ResultTable";
 import { acquireLiveCapture } from "./functions";
 
-const STATUS_LABELS: Record<string, string> = {
-  running: "実行中",
-  complete: "完了",
-  cancelled: "中断",
-  failed: "失敗",
-};
-
 export const SustainedTest = () => {
+  const { t } = useTranslation();
+  const describeCode = useCodeMessage();
   const results = useResults();
   const selectedIds = useSelectedIds();
   const setSelection = useSetSelection();
@@ -93,24 +90,22 @@ export const SustainedTest = () => {
     <Card variant="outlined">
       <CardContent>
         <Typography variant="subtitle1" component="h2" gutterBottom>
-          Sustained test（継続検査）
+          {t("sustained.heading")}
         </Typography>
         <Typography variant="body2" color="text.secondary" mb={2}>
-          選択した具体的な設定を、指定した時間ぶんだけ実出力・デコード・多重化まで通して
-          検査します。単発の少数フレーム結果では分からない継続性能を確認するためのものです。
-          ライブ入力はブラウザーの画面共有ダイアログを開きますが、
-          <strong>録画ファイルは一切作成しません</strong>。
+          {t("sustained.description")}
         </Typography>
 
         {captureError && (
           <Alert severity="error" sx={{ mb: 2 }}>
-            画面キャプチャを取得できませんでした: {captureError}
+            {t("sustained.captureFailed", {
+              reason: describeCode(captureError),
+            })}
           </Alert>
         )}
         {liveWithAudio && (
           <Alert severity="warning" sx={{ mb: 2 }}>
-            ライブ入力は映像フレームしか供給できないため、音声候補は対象外です。
-            音声候補の選択を外すか、入力を「合成パターン」に切り替えてください。
+            {t("sustained.audioNotSupported")}
           </Alert>
         )}
 
@@ -124,7 +119,7 @@ export const SustainedTest = () => {
           <TextField
             select
             size="small"
-            label="入力"
+            label={t("sustained.inputLabel")}
             value={inputMode}
             disabled={running}
             onChange={(event) => {
@@ -134,20 +129,25 @@ export const SustainedTest = () => {
             }}
             sx={{ minWidth: 200 }}
           >
-            <MenuItem value="synthetic">合成パターン（再現可能）</MenuItem>
-            <MenuItem value="live">画面・タブのキャプチャ</MenuItem>
+            <MenuItem value="synthetic">
+              {t("sustained.inputSynthetic")}
+            </MenuItem>
+            <MenuItem value="live">{t("sustained.inputLive")}</MenuItem>
           </TextField>
 
           <TextField
             size="small"
             type="number"
-            label="検査時間（秒）"
+            label={t("sustained.durationLabel")}
             value={durationInput}
             disabled={running}
             error={durationInvalid}
             helperText={
               durationInvalid
-                ? `${MIN_SUSTAINED_DURATION_SECONDS}〜${MAX_SUSTAINED_DURATION_SECONDS} 秒`
+                ? t("sustained.durationInvalid", {
+                    min: MIN_SUSTAINED_DURATION_SECONDS,
+                    max: MAX_SUSTAINED_DURATION_SECONDS,
+                  })
                 : " "
             }
             slotProps={{
@@ -170,7 +170,7 @@ export const SustainedTest = () => {
               void run();
             }}
           >
-            選択した {selectedResults.length} 件を継続検査
+            {t("sustained.run", { count: selectedResults.length })}
           </Button>
 
           <Button
@@ -184,7 +184,7 @@ export const SustainedTest = () => {
               );
             }}
           >
-            成功した映像設定を選択
+            {t("sustained.selectPassedVideo")}
           </Button>
 
           <Button
@@ -194,7 +194,7 @@ export const SustainedTest = () => {
               setSelection([]);
             }}
           >
-            選択を解除
+            {t("sustained.clearSelection")}
           </Button>
         </Stack>
 
@@ -209,12 +209,22 @@ export const SustainedTest = () => {
             >
               <Chip
                 size="small"
-                label={`継続検査 ${STATUS_LABELS[sustained.status] ?? sustained.status}`}
+                label={t("sustained.statusChip", {
+                  status: t(`runStatus.${sustained.status}`, {
+                    defaultValue: sustained.status,
+                  }),
+                })}
               />
               <Typography variant="body2" color="text.secondary">
-                {sustained.completedUnits} / {sustained.totalUnits} 件 ·{" "}
-                {sustained.durationSeconds} 秒 ·{" "}
-                {sustained.inputMode === "live" ? "ライブ入力" : "合成入力"}
+                {t("sustained.statusDetail", {
+                  completed: sustained.completedUnits,
+                  total: sustained.totalUnits,
+                  seconds: sustained.durationSeconds,
+                  input:
+                    sustained.inputMode === "live"
+                      ? t("sustained.inputLive")
+                      : t("sustained.inputSynthetic"),
+                })}
               </Typography>
               {sustained.current && (
                 <Typography variant="body2" fontFamily="monospace">
@@ -224,7 +234,7 @@ export const SustainedTest = () => {
             </Stack>
             {sustained.error && (
               <Typography variant="body2" color="error" mt={0.5}>
-                {sustained.error}
+                {describeCode(sustained.error)}
               </Typography>
             )}
             {sustained.source && (
@@ -234,10 +244,11 @@ export const SustainedTest = () => {
                 display="block"
                 mt={0.5}
               >
-                入力: {sustained.source.width ?? "?"}×
-                {sustained.source.height ?? "?"}
-                {" @ "}
-                {sustained.source.frameRate ?? "?"} fps
+                {t("sustained.sourceLine", {
+                  width: sustained.source.width ?? "?",
+                  height: sustained.source.height ?? "?",
+                  fps: sustained.source.frameRate ?? "?",
+                })}
                 {sustained.source.displaySurface &&
                   ` · ${sustained.source.displaySurface}`}
               </Typography>

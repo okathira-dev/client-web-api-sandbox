@@ -1,17 +1,8 @@
 import { Box, Checkbox, MenuItem, TextField, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 import type { ResultFilters } from "../../domain/filters";
 import { RESULT_GRID_TEMPLATE } from "./consts";
-
-const FAMILY_LABELS: Record<string, string> = {
-  h264: "H.264",
-  h265: "H.265",
-  vp9: "VP9",
-  av1: "AV1",
-  vp8: "VP8",
-  aac: "AAC",
-  opus: "Opus",
-};
 
 const HeaderCell = ({
   label,
@@ -29,12 +20,12 @@ const HeaderCell = ({
 );
 
 const FilterSelect = ({
-  label,
+  allLabel,
   value,
   options,
   onChange,
 }: {
-  label: string;
+  allLabel: string;
   value: string;
   options: readonly { value: string; label: string }[];
   onChange: (value: string) => void;
@@ -42,7 +33,6 @@ const FilterSelect = ({
   <TextField
     select
     size="small"
-    label={label}
     value={value}
     onChange={(event) => {
       onChange(event.target.value);
@@ -50,7 +40,7 @@ const FilterSelect = ({
     slotProps={{ inputLabel: { shrink: true } }}
     sx={{ "& .MuiInputBase-root": { fontSize: 12 } }}
   >
-    <MenuItem value="">すべて</MenuItem>
+    <MenuItem value="">{allLabel}</MenuItem>
     {options.map((option) => (
       <MenuItem key={option.value} value={option.value}>
         {option.label}
@@ -79,130 +69,139 @@ export const ResultTableHeader = ({
   selectionDisabled,
   onFilterChange,
   onToggleAll,
-}: ResultTableHeaderProps) => (
-  <Box
-    role="row"
-    sx={{
-      position: "sticky",
-      top: 0,
-      zIndex: 2,
-      display: "grid",
-      gridTemplateColumns: RESULT_GRID_TEMPLATE,
-      alignItems: "end",
-      columnGap: 1,
-      px: 1,
-      py: 1,
-      bgcolor: "background.paper",
-      borderBottom: 2,
-      borderColor: "divider",
-    }}
-  >
-    <Box>
-      <Checkbox
-        size="small"
-        checked={allSelected}
-        indeterminate={someSelected}
-        disabled={selectionDisabled}
-        inputProps={{ "aria-label": "表示中の候補をまとめて選択" }}
-        onChange={onToggleAll}
-      />
+}: ResultTableHeaderProps) => {
+  const { t } = useTranslation();
+  const allLabel = t("table.filterAll");
+
+  return (
+    <Box
+      role="row"
+      sx={{
+        position: "sticky",
+        top: 0,
+        zIndex: 2,
+        display: "grid",
+        gridTemplateColumns: RESULT_GRID_TEMPLATE,
+        alignItems: "end",
+        columnGap: 1,
+        px: 1,
+        py: 1,
+        bgcolor: "background.paper",
+        borderBottom: 2,
+        borderColor: "divider",
+      }}
+    >
+      <Box>
+        <Checkbox
+          size="small"
+          checked={allSelected}
+          indeterminate={someSelected}
+          disabled={selectionDisabled}
+          inputProps={{ "aria-label": t("table.selectAll") }}
+          onChange={onToggleAll}
+        />
+      </Box>
+
+      <HeaderCell label={t("table.columnFamily")}>
+        <FilterSelect
+          allLabel={allLabel}
+          value={filters.family}
+          options={familyOptions.map((family) => ({
+            value: family,
+            label: t(`family.${family}`, { defaultValue: family }),
+          }))}
+          onChange={(value) => {
+            onFilterChange("family", value);
+          }}
+        />
+      </HeaderCell>
+
+      <HeaderCell label={t("table.columnCodec")}>
+        <TextField
+          size="small"
+          placeholder={t("table.filterCodecPlaceholder")}
+          value={filters.codec}
+          slotProps={{
+            htmlInput: { "aria-label": t("table.columnCodec") },
+          }}
+          onChange={(event) => {
+            onFilterChange("codec", event.target.value);
+          }}
+          sx={{ "& .MuiInputBase-root": { fontSize: 12 } }}
+        />
+      </HeaderCell>
+
+      <HeaderCell label={t("table.columnVariant")}>
+        <FilterSelect
+          allLabel={allLabel}
+          value={filters.variant}
+          options={variantOptions.map((variant) => ({
+            value: variant,
+            label: variant,
+          }))}
+          onChange={(value) => {
+            onFilterChange("variant", value);
+          }}
+        />
+      </HeaderCell>
+
+      <HeaderCell label={t("table.columnStatus")}>
+        <FilterSelect
+          allLabel={allLabel}
+          value={filters.status}
+          options={[
+            { value: "pass", label: t("table.statusPass") },
+            { value: "warning", label: t("table.statusWarning") },
+            { value: "fail", label: t("table.statusFail") },
+          ]}
+          onChange={(value) => {
+            onFilterChange("status", value);
+          }}
+        />
+      </HeaderCell>
+
+      <HeaderCell label={t("table.columnDetails")}>
+        <TextField
+          size="small"
+          placeholder={t("table.filterDetailsPlaceholder")}
+          value={filters.details}
+          slotProps={{
+            htmlInput: { "aria-label": t("table.filterDetailsPlaceholder") },
+          }}
+          onChange={(event) => {
+            onFilterChange("details", event.target.value);
+          }}
+          sx={{ "& .MuiInputBase-root": { fontSize: 12 } }}
+        />
+      </HeaderCell>
+
+      <HeaderCell label={t("table.columnBudget")}>
+        <FilterSelect
+          allLabel={allLabel}
+          value={filters.budget}
+          options={[
+            { value: "sustained", label: t("table.budgetSustained") },
+            { value: "over", label: t("table.budgetOver") },
+          ]}
+          onChange={(value) => {
+            onFilterChange("budget", value);
+          }}
+        />
+      </HeaderCell>
+
+      <HeaderCell label={t("table.columnTime")}>
+        <FilterSelect
+          allLabel={allLabel}
+          value={filters.time}
+          options={[
+            { value: "quick", label: t("table.timeQuick") },
+            { value: "slow", label: t("table.timeSlow") },
+          ]}
+          onChange={(value) => {
+            onFilterChange("time", value);
+          }}
+        />
+      </HeaderCell>
     </Box>
-
-    <HeaderCell label="ファミリー">
-      <FilterSelect
-        label=""
-        value={filters.family}
-        options={familyOptions.map((family) => ({
-          value: family,
-          label: FAMILY_LABELS[family] ?? family,
-        }))}
-        onChange={(value) => {
-          onFilterChange("family", value);
-        }}
-      />
-    </HeaderCell>
-
-    <HeaderCell label="codec string">
-      <TextField
-        size="small"
-        placeholder="avc1.64…"
-        value={filters.codec}
-        slotProps={{ htmlInput: { "aria-label": "codec string で絞り込む" } }}
-        onChange={(event) => {
-          onFilterChange("codec", event.target.value);
-        }}
-        sx={{ "& .MuiInputBase-root": { fontSize: 12 } }}
-      />
-    </HeaderCell>
-
-    <HeaderCell label="方針 / ch">
-      <FilterSelect
-        label=""
-        value={filters.variant}
-        options={variantOptions.map((variant) => ({
-          value: variant,
-          label: variant,
-        }))}
-        onChange={(value) => {
-          onFilterChange("variant", value);
-        }}
-      />
-    </HeaderCell>
-
-    <HeaderCell label="結果">
-      <FilterSelect
-        label=""
-        value={filters.status}
-        options={[
-          { value: "pass", label: "成功" },
-          { value: "warning", label: "成功/警告" },
-          { value: "fail", label: "失敗" },
-        ]}
-        onChange={(value) => {
-          onFilterChange("status", value);
-        }}
-      />
-    </HeaderCell>
-
-    <HeaderCell label="詳細">
-      <TextField
-        size="small"
-        placeholder="エラー・警告で絞り込む"
-        value={filters.details}
-        slotProps={{ htmlInput: { "aria-label": "詳細で絞り込む" } }}
-        onChange={(event) => {
-          onFilterChange("details", event.target.value);
-        }}
-        sx={{ "& .MuiInputBase-root": { fontSize: 12 } }}
-      />
-    </HeaderCell>
-
-    <HeaderCell label="フレーム予算">
-      <FilterSelect
-        label=""
-        value={filters.budget}
-        options={[
-          { value: "sustained", label: "継続検査済み" },
-          { value: "over", label: "100% 超" },
-        ]}
-        onChange={(value) => {
-          onFilterChange("budget", value);
-        }}
-      />
-    </HeaderCell>
-
-    <HeaderCell label="実行時間">
-      <FilterSelect
-        label=""
-        value={filters.time}
-        options={[
-          { value: "quick", label: "1 秒未満" },
-          { value: "slow", label: "1 秒以上" },
-        ]}
-        onChange={(value) => {
-          onFilterChange("time", value);
-        }}
-      />
-    </HeaderCell>
-  </Box>
-);
+  );
+};

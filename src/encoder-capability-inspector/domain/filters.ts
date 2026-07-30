@@ -62,9 +62,16 @@ export const EMPTY_RESULT_FILTERS: ResultFilters = {
 /** 「実行時間が長い」の境界。1 秒未満なら概ね即座に判定できた候補とみなす。 */
 const SLOW_RESULT_THRESHOLD_MS = 1000;
 
+/**
+ * 詳細列の照合に使う文字列を差し替えられるようにしておく。
+ * UI では訳文も検索対象にしたいが、この層は表示言語を知らないでいたい。
+ */
+export type DetailsTextResolver = (result: UnitResult) => string;
+
 export const matchesFilters = (
   result: UnitResult,
   filters: ResultFilters,
+  detailsText: DetailsTextResolver = getResultDetails,
 ): boolean => {
   if (filters.family && result.family !== filters.family) return false;
 
@@ -84,7 +91,7 @@ export const matchesFilters = (
   const detailsFilter = filters.details.trim().toLowerCase();
   if (
     detailsFilter &&
-    !getResultDetails(result).toLowerCase().includes(detailsFilter)
+    !detailsText(result).toLowerCase().includes(detailsFilter)
   ) {
     return false;
   }
@@ -110,7 +117,9 @@ export const matchesFilters = (
 export const filterResults = (
   results: readonly UnitResult[],
   filters: ResultFilters,
-): UnitResult[] => results.filter((result) => matchesFilters(result, filters));
+  detailsText: DetailsTextResolver = getResultDetails,
+): UnitResult[] =>
+  results.filter((result) => matchesFilters(result, filters, detailsText));
 
 export const isFiltersEmpty = (filters: ResultFilters): boolean =>
   filters.family === "" &&

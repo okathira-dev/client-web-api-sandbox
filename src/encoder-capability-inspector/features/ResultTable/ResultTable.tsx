@@ -1,11 +1,13 @@
 import { Box, Paper, Stack, Typography } from "@mui/material";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useCallback, useLayoutEffect, useMemo, useRef } from "react";
+import { useTranslation } from "react-i18next";
 
 import { useSustainedInputMode } from "../../atoms/preferences";
 import { useResults } from "../../atoms/report";
 import type { ResultFilters } from "../../domain/filters";
 import type { UnitResult } from "../../domain/types";
+import { useDetailsSearchText } from "../../utils/messages";
 import {
   filterResults,
   getFilterOptions,
@@ -20,6 +22,8 @@ import { ResultRow } from "./ResultRow";
 import { ResultTableHeader } from "./ResultTableHeader";
 
 export const ResultTable = () => {
+  const { t } = useTranslation();
+  const detailsSearchText = useDetailsSearchText();
   const results = useResults();
   const filters = useResultFilters();
   const setFilter = useSetResultFilter();
@@ -33,8 +37,8 @@ export const ResultTable = () => {
   const previousLengthRef = useRef(0);
 
   const filtered = useMemo(
-    () => filterResults(results, filters),
-    [results, filters],
+    () => filterResults(results, filters, detailsSearchText),
+    [results, filters, detailsSearchText],
   );
   const options = useMemo(() => getFilterOptions(results), [results]);
 
@@ -104,15 +108,19 @@ export const ResultTable = () => {
   return (
     <Stack spacing={1}>
       <Typography variant="body2" color="text.secondary">
-        {results.length} 件中 {filtered.length} 件を表示
-        {selectedIds.size > 0 && ` · ${selectedIds.size} 件を選択中`}
+        {t("table.summary", {
+          total: results.length,
+          shown: filtered.length,
+        })}
+        {selectedIds.size > 0 &&
+          t("table.selectedSuffix", { count: selectedIds.size })}
       </Typography>
 
       <Paper variant="outlined" sx={{ overflow: "hidden" }}>
         <Box
           ref={scrollRef}
           role="table"
-          aria-label="検査結果"
+          aria-label={t("table.label")}
           sx={{ height: 560, overflow: "auto", position: "relative" }}
         >
           <ResultTableHeader
@@ -131,9 +139,7 @@ export const ResultTable = () => {
           {filtered.length === 0 ? (
             <Box sx={{ p: 4, textAlign: "center" }}>
               <Typography variant="body2" color="text.secondary">
-                {results.length === 0
-                  ? "まだ結果がありません。包括検査を開始してください。"
-                  : "この絞り込みに一致する結果はありません。"}
+                {results.length === 0 ? t("table.empty") : t("table.noMatch")}
               </Typography>
             </Box>
           ) : (

@@ -8,6 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   useCurrentInspection,
@@ -17,40 +18,16 @@ import {
   useResultCounts,
 } from "../../atoms/report";
 import { useIsRunning } from "../../atoms/runState";
-import type { VideoFamily } from "../../domain/types";
 import { formatDuration } from "../../utils/format";
 
-const FAMILY_LABELS: Record<VideoFamily, string> = {
-  h264: "H.264 / AVC",
-  h265: "H.265 / HEVC",
-  vp9: "VP9",
-  av1: "AV1",
-  vp8: "VP8",
-};
-
-const STATUS_LABELS: Record<string, string> = {
-  running: "実行中",
-  complete: "完了",
-  cancelled: "中断",
-  failed: "失敗",
-};
-
 /** 候補を処理していないときの状態表示。未開始・待機・完了・中断・失敗を区別する（仕様 3.4）。 */
-const IDLE_MESSAGES: Record<string, string> = {
-  idle: "包括検査を開始すると、候補ごとの結果がここに表示されます",
-  waiting: "次の候補を待機しています",
-  running: "次の候補を待機しています",
-  complete: "すべての候補を処理しました",
-  cancelled: "検査を中断しました。再開すると残りの候補から続けられます",
-  failed: "検査が完了前に停止しました",
-};
-
-const STAGE_LABELS: Record<string, string> = {
-  declared: "設定の受理を確認中",
-  output: "エンコード中",
-  decode: "デコード検証中",
-  mux: "多重化中",
-  complete: "完了",
+const IDLE_KEYS: Record<string, string> = {
+  idle: "idle",
+  waiting: "waiting",
+  running: "waiting",
+  complete: "complete",
+  cancelled: "cancelled",
+  failed: "failed",
 };
 
 /** 経過時間を秒単位で進めるためだけの時計。結果一覧とは別コンポーネントに閉じる。 */
@@ -69,6 +46,7 @@ const useTicker = (active: boolean) => {
 };
 
 export const InspectionProgress = () => {
+  const { t } = useTranslation();
   const progress = useProgress();
   const current = useCurrentInspection();
   const counts = useResultCounts();
@@ -99,11 +77,16 @@ export const InspectionProgress = () => {
         >
           <Typography variant="subtitle1" component="h2">
             {progress.status
-              ? (STATUS_LABELS[progress.status] ?? progress.status)
-              : "未実行"}
+              ? t(`runStatus.${progress.status}`, {
+                  defaultValue: progress.status,
+                })
+              : t("runStatus.notStarted")}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {progress.completedUnits} / {progress.totalUnits || "—"} 候補
+            {t("progress.unitCount", {
+              completed: progress.completedUnits,
+              total: progress.totalUnits || "—",
+            })}
           </Typography>
         </Stack>
 
@@ -118,18 +101,35 @@ export const InspectionProgress = () => {
         />
 
         <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap mb={1.5}>
-          <Chip size="small" label={`経過 ${formatDuration(elapsedMs)}`} />
           <Chip
             size="small"
-            label={`残り見込み ${etaMs === null ? "—" : formatDuration(etaMs)}`}
+            label={t("progress.elapsed", { value: formatDuration(elapsedMs) })}
           />
-          <Chip size="small" color="success" label={`成功 ${counts.pass}`} />
-          <Chip size="small" color="warning" label={`警告 ${counts.warning}`} />
-          <Chip size="small" color="error" label={`失敗 ${counts.fail}`} />
+          <Chip
+            size="small"
+            label={t("progress.eta", {
+              value: etaMs === null ? "—" : formatDuration(etaMs),
+            })}
+          />
+          <Chip
+            size="small"
+            color="success"
+            label={t("progress.pass", { count: counts.pass })}
+          />
+          <Chip
+            size="small"
+            color="warning"
+            label={t("progress.warning", { count: counts.warning })}
+          />
+          <Chip
+            size="small"
+            color="error"
+            label={t("progress.fail", { count: counts.fail })}
+          />
           <Chip
             size="small"
             variant="outlined"
-            label={`候補間待機 ${progress.candidatePauseMs} ms`}
+            label={t("progress.pause", { value: progress.candidatePauseMs })}
           />
         </Stack>
 
@@ -154,7 +154,9 @@ export const InspectionProgress = () => {
             >
               <Chip
                 size="small"
-                label={STAGE_LABELS[current.stage] ?? current.stage}
+                label={t(`progress.stage.${current.stage}`, {
+                  defaultValue: current.stage,
+                })}
               />
               <Typography variant="body2" fontFamily="monospace">
                 {current.codec}
@@ -165,13 +167,19 @@ export const InspectionProgress = () => {
             </Stack>
           ) : (
             <Typography variant="body2" color="text.secondary">
-              {IDLE_MESSAGES[running ? "waiting" : (progress.status ?? "idle")]}
+              {t(
+                `progress.idle.${
+                  IDLE_KEYS[
+                    running ? "waiting" : (progress.status ?? "idle")
+                  ] ?? "idle"
+                }`,
+              )}
             </Typography>
           )}
         </Box>
 
         <Typography variant="subtitle2" component="h3" gutterBottom>
-          コーデックファミリー
+          {t("progress.familyHeading")}
         </Typography>
         <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap mb={1}>
           {families.map((family) => (
@@ -188,15 +196,20 @@ export const InspectionProgress = () => {
               }
               label={
                 family.complete
-                  ? `${FAMILY_LABELS[family.family]}: ${family.usableCount} / ${family.totalCount}`
-                  : `${FAMILY_LABELS[family.family]}: 未検査`
+                  ? t("progress.familyRatio", {
+                      family: t(`family.${family.family}`),
+                      usable: family.usableCount,
+                      total: family.totalCount,
+                    })
+                  : t("progress.familyUntested", {
+                      family: t(`family.${family.family}`),
+                    })
               }
             />
           ))}
         </Stack>
         <Typography variant="caption" color="text.secondary" display="block">
-          分母は experimental 扱い（10bit・Level 6.x など）を除いた codec string
-          の数です。 完全に完了した検査の結果だけを集計します。
+          {t("progress.familyNote")}
         </Typography>
 
         {environment && (
@@ -206,7 +219,8 @@ export const InspectionProgress = () => {
             display="block"
             mt={1.5}
           >
-            実行環境: {environment.browserBrands ?? environment.userAgent}
+            {t("progress.environment")}:{" "}
+            {environment.browserBrands ?? environment.userAgent}
             {environment.platform && ` · ${environment.platform}`}
             {environment.gpu?.vendor &&
               ` · GPU ${environment.gpu.vendor}${
@@ -215,7 +229,9 @@ export const InspectionProgress = () => {
                   : ""
               }`}
             {environment.hardwareConcurrency &&
-              ` · ${environment.hardwareConcurrency} 論理コア`}
+              ` · ${t("progress.cores", {
+                count: environment.hardwareConcurrency,
+              })}`}
           </Typography>
         )}
       </CardContent>

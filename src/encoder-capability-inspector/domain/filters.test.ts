@@ -136,6 +136,31 @@ describe("matchesFilters", () => {
     );
   });
 
+  it("searches the supplied details text so translated messages can be matched", () => {
+    const failed = videoResultFixture({
+      usable: false,
+      error: "isConfigSupported-false",
+    });
+    // UI は訳文とコードの両方を渡す。どちらの語でも引けること。
+    const detailsText = () =>
+      "この設定は宣言の時点で拒否されました (isConfigSupported-false)";
+
+    expect(
+      matchesFilters(failed, withFilters({ details: "拒否" }), detailsText),
+    ).toBe(true);
+    expect(
+      matchesFilters(
+        failed,
+        withFilters({ details: "configsup" }),
+        detailsText,
+      ),
+    ).toBe(true);
+    // 既定の照合対象はコードだけなので、訳文では引けない。
+    expect(matchesFilters(failed, withFilters({ details: "拒否" }))).toBe(
+      false,
+    );
+  });
+
   it("can narrow to candidates that have a sustained measurement", () => {
     expect(matchesFilters(result, withFilters({ budget: "sustained" }))).toBe(
       false,

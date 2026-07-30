@@ -1,29 +1,17 @@
 import { Box, Checkbox, Chip, Tooltip, Typography } from "@mui/material";
 import { memo } from "react";
+import { useTranslation } from "react-i18next";
 
-import {
-  getResultDetails,
-  getResultStatus,
-  getResultVariant,
-} from "../../domain/filters";
-import type { UnitResult, VideoFamily } from "../../domain/types";
+import { getResultStatus, getResultVariant } from "../../domain/filters";
+import type { UnitResult } from "../../domain/types";
 import { formatFrameBudget, formatMilliseconds } from "../../utils/format";
+import { useResultDetails } from "../../utils/messages";
 import { RESULT_GRID_TEMPLATE, RESULT_ROW_HEIGHT } from "./consts";
 
-const FAMILY_LABELS: Record<string, string> = {
-  h264: "H.264",
-  h265: "H.265",
-  vp9: "VP9",
-  av1: "AV1",
-  vp8: "VP8",
-  aac: "AAC",
-  opus: "Opus",
-} satisfies Record<VideoFamily | string, string>;
-
 const STATUS_CHIP = {
-  pass: { label: "成功", color: "success" },
-  warning: { label: "成功/警告", color: "warning" },
-  fail: { label: "失敗", color: "error" },
+  pass: { key: "table.statusPass", color: "success" },
+  warning: { key: "table.statusWarning", color: "warning" },
+  fail: { key: "table.statusFail", color: "error" },
 } as const;
 
 const CellText = ({
@@ -60,6 +48,7 @@ type ResultRowProps = {
 /**
  * 完了した行は結果オブジェクトが差し替わらない限り再描画しない。
  * ステージ更新のたびに 480 行ぶんの再計算が走ると、検査中の操作が重くなる。
+ * 言語切り替えは `useTranslation` 側の購読で全行に伝わるので、memo と両立する。
  */
 export const ResultRow = memo(
   ({
@@ -69,9 +58,11 @@ export const ResultRow = memo(
     onToggle,
     style,
   }: ResultRowProps) => {
+    const { t } = useTranslation();
+    const describeDetails = useResultDetails();
     const status = getResultStatus(result);
     const chip = STATUS_CHIP[status];
-    const details = getResultDetails(result);
+    const details = describeDetails(result);
     const sustained = result.sustained;
 
     return (
@@ -99,7 +90,7 @@ export const ResultRow = memo(
             checked={selected}
             disabled={selectionDisabled}
             inputProps={{
-              "aria-label": `${result.codec} を Sustained test の対象にする`,
+              "aria-label": t("table.selectOne", { codec: result.codec }),
             }}
             onChange={() => {
               onToggle(result.id);
@@ -107,7 +98,9 @@ export const ResultRow = memo(
           />
         </Box>
         <Box role="cell">
-          <CellText>{FAMILY_LABELS[result.family] ?? result.family}</CellText>
+          <CellText>
+            {t(`family.${result.family}`, { defaultValue: result.family })}
+          </CellText>
         </Box>
         <Box role="cell">
           <CellText mono title={result.codec}>
@@ -126,7 +119,7 @@ export const ResultRow = memo(
           <CellText>{getResultVariant(result)}</CellText>
         </Box>
         <Box role="cell">
-          <Chip size="small" color={chip.color} label={chip.label} />
+          <Chip size="small" color={chip.color} label={t(chip.key)} />
         </Box>
         <Box role="cell">
           <Tooltip title={details || ""} placement="top">
@@ -141,12 +134,16 @@ export const ResultRow = memo(
               noWrap
               display="block"
             >
-              設定は受理されたが {result.stage} で失敗
+              {t("table.declaredButFailed", { stage: result.stage })}
             </Typography>
           )}
         </Box>
         <Box role="cell" sx={{ overflow: "hidden" }}>
-          <CellText>基本: {formatFrameBudget(result.performance)}</CellText>
+          <CellText>
+            {t("table.basicBudget", {
+              value: formatFrameBudget(result.performance),
+            })}
+          </CellText>
           {sustained ? (
             <Typography
               variant="caption"
@@ -154,8 +151,12 @@ export const ResultRow = memo(
               noWrap
               display="block"
             >
-              継続 {sustained.usable ? "成功" : "失敗"}:{" "}
-              {formatFrameBudget(sustained.performance)}
+              {t("table.sustainedBudget", {
+                status: sustained.usable
+                  ? t("table.statusPass")
+                  : t("table.statusFail"),
+                value: formatFrameBudget(sustained.performance),
+              })}
             </Typography>
           ) : (
             result.kind === "video" &&
@@ -166,9 +167,12 @@ export const ResultRow = memo(
                 noWrap
                 display="block"
               >
-                入力 {result.source.width ?? "?"}×{result.source.height ?? "?"}{" "}
-                @ {result.source.frameRate ?? "?"} fps · 欠落{" "}
-                {result.source.missingInputFrames}
+                {t("table.sourceLine", {
+                  width: result.source.width ?? "?",
+                  height: result.source.height ?? "?",
+                  fps: result.source.frameRate ?? "?",
+                  missing: result.source.missingInputFrames,
+                })}
               </Typography>
             )
           )}

@@ -7,6 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   useCandidatePauseInput,
@@ -20,10 +21,13 @@ import {
   MAX_CANDIDATE_PAUSE_MS,
 } from "../../consts/inspection";
 import { isResumableReport } from "../../domain/report";
+import { useCodeMessage } from "../../utils/messages";
 import { subscribeReportChanged } from "../../utils/reportStore";
 import { useInspectionControls } from "./hooks";
 
 export const InspectionRunner = () => {
+  const { t } = useTranslation();
+  const describeCode = useCodeMessage();
   const report = useReport();
   const running = useIsRunning();
   const runKind = useRunKind();
@@ -53,34 +57,28 @@ export const InspectionRunner = () => {
     <Stack spacing={2}>
       <Box>
         <Typography variant="h5" component="h1" gutterBottom>
-          エンコーダー実用可否検査
+          {t("app.title")}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          列挙したすべての codec string / Profile / Level
-          について、実際にエンコード・
-          デコード・多重化まで通して実用可否を確認します。`isConfigSupported`
-          が受理しただけの設定は「利用可能」として扱いません。結果はこの環境
-          （ブラウザー・OS・GPU・ドライバーの組み合わせ）に固有のもので、
-          すべての録画条件での成功を保証するものではありません。
+          {t("app.description")}
         </Typography>
       </Box>
 
-      {error && <Alert severity="error">{error}</Alert>}
+      {error && <Alert severity="error">{describeCode(error)}</Alert>}
 
       {report?.status === "complete" && (
-        <Alert severity="success">
-          包括検査が完了しました。この結果はこの環境で一度実出力まで到達したことを示します。
-        </Alert>
+        <Alert severity="success">{t("runner.completed")}</Alert>
       )}
       {report?.status === "cancelled" && (
-        <Alert severity="info">
-          検査を中断しました。途中結果は環境の結論としては扱われません。
-          直前に完全完了した結果があればそちらが有効なままです。
-        </Alert>
+        <Alert severity="info">{t("runner.cancelled")}</Alert>
       )}
       {report?.status === "failed" && (
         <Alert severity="warning">
-          検査が完了前に停止しました: {report.error ?? "不明な理由"}
+          {t("runner.failed", {
+            reason: report.error
+              ? describeCode(report.error)
+              : t("runner.unknownReason"),
+          })}
         </Alert>
       )}
 
@@ -93,7 +91,7 @@ export const InspectionRunner = () => {
             void startFull({ candidatePauseMs, resume: false });
           }}
         >
-          {report ? "すべて再検査" : "包括検査を開始"}
+          {report ? t("runner.rerun") : t("runner.start")}
         </Button>
 
         {resumable && (
@@ -105,13 +103,17 @@ export const InspectionRunner = () => {
               void startFull({ candidatePauseMs, resume: true });
             }}
           >
-            途中から再開（残り {report.totalUnits - report.completedUnits} 件）
+            {t("runner.resume", {
+              count: report.totalUnits - report.completedUnits,
+            })}
           </Button>
         )}
 
         {running && (
           <Button color="error" variant="outlined" onClick={cancel}>
-            {runKind === "sustained" ? "Sustained test を中止" : "検査を中止"}
+            {runKind === "sustained"
+              ? t("runner.cancelSustained")
+              : t("runner.cancelFull")}
           </Button>
         )}
 
@@ -122,11 +124,11 @@ export const InspectionRunner = () => {
             void reset();
           }}
         >
-          結果を破棄
+          {t("runner.reset")}
         </Button>
 
         <TextField
-          label="候補間の待機 (ms)"
+          label={t("runner.pauseLabel")}
           size="small"
           type="number"
           disabled={running}
@@ -134,8 +136,8 @@ export const InspectionRunner = () => {
           error={pauseInvalid}
           helperText={
             pauseInvalid
-              ? `0〜${MAX_CANDIDATE_PAUSE_MS} の整数で指定してください`
-              : `既定 ${DEFAULT_CANDIDATE_PAUSE_MS} ms。0 のとき待機処理を行いません`
+              ? t("runner.pauseInvalid", { max: MAX_CANDIDATE_PAUSE_MS })
+              : t("runner.pauseHelp", { default: DEFAULT_CANDIDATE_PAUSE_MS })
           }
           slotProps={{
             htmlInput: { min: 0, max: MAX_CANDIDATE_PAUSE_MS, step: 50 },
