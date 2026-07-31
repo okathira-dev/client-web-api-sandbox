@@ -1,4 +1,4 @@
-/** 結果一覧の絞り込みと、Sustained test の対象選択。 */
+/** 結果一覧の絞り込み・並べ替えと、Sustained test の対象選択。 */
 
 import { atom, useAtomValue, useSetAtom } from "jotai";
 
@@ -8,9 +8,16 @@ import {
   getResultVariant,
   type ResultFilters,
 } from "../../domain/filters";
+import {
+  cycleSort,
+  type ResultSort,
+  type SortField,
+  sortResults,
+} from "../../domain/sorting";
 import type { UnitResult } from "../../domain/types";
 
 const filtersAtom = atom<ResultFilters>(EMPTY_RESULT_FILTERS);
+const sortAtom = atom<ResultSort | null>(null);
 const selectedIdsAtom = atom<ReadonlySet<string>>(new Set<string>());
 
 /**
@@ -35,6 +42,15 @@ const clearFiltersAtom = atom(null, (_get, set) => {
 
 export const useSetResultFilter = () => useSetAtom(setFilterAtom);
 export const useClearResultFilters = () => useSetAtom(clearFiltersAtom);
+
+export const useResultSort = () => useAtomValue(sortAtom);
+
+/** 見出しを押すたびに 昇順 → 降順 → 解除 と一巡させる。 */
+const cycleSortAtom = atom(null, (get, set, field: SortField) => {
+  set(sortAtom, cycleSort(get(sortAtom), field));
+});
+
+export const useCycleResultSort = () => useSetAtom(cycleSortAtom);
 
 export const useSelectedIds = () => useAtomValue(selectedIdsAtom);
 
@@ -71,4 +87,4 @@ export const getFilterOptions = (results: readonly UnitResult[]) => ({
   variants: [...new Set(results.map(getResultVariant))].sort(),
 });
 
-export { filterResults };
+export { filterResults, sortResults };

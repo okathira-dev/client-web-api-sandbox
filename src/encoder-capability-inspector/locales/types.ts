@@ -104,20 +104,22 @@ export type TableTranslations = {
   columnStatus: string;
   columnDetails: string;
   columnBudget: string;
+  columnSustained: string;
   columnTime: string;
   filterAll: string;
   filterCodecPlaceholder: string;
   filterDetailsPlaceholder: string;
-  budgetSustained: string;
   budgetOver: string;
+  budgetUnder: string;
+  sustainedDone: string;
+  sustainedNone: string;
+  sustainedFrames: string;
   timeQuick: string;
   timeSlow: string;
   statusPass: string;
   statusWarning: string;
   statusFail: string;
   declaredButFailed: string;
-  basicBudget: string;
-  sustainedBudget: string;
   sourceLine: string;
 };
 
@@ -159,6 +161,8 @@ export type CodeTranslations = {
   "capability-report-not-found": string;
   "no-units-selected": string;
   "inspection-already-running": string;
+  "inspection-worker-crashed": string;
+  "inspection-worker-busy": string;
   "indexeddb-open-failed": string;
   "indexeddb-request-failed": string;
   "indexeddb-transaction-aborted": string;

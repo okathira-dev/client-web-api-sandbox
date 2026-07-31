@@ -6,10 +6,11 @@ import {
 import {
   EMPTY_RESULT_FILTERS,
   filterResults,
-  getPeakFrameTimePercent,
+  getBasicFrameTimePercent,
   getResultDetails,
   getResultStatus,
   getResultVariant,
+  getSustainedFrameTimePercent,
   isFiltersEmpty,
   matchesFilters,
   type ResultFilters,
@@ -61,8 +62,8 @@ describe("getResultDetails", () => {
   });
 });
 
-describe("getPeakFrameTimePercent", () => {
-  it("takes the worse of the basic and sustained measurements", () => {
+describe("frame budget accessors", () => {
+  it("reads the basic and sustained measurements independently", () => {
     const result = videoResultFixture({
       performance: performanceFixture({ frameTimePercent: 40 }),
       sustained: videoResultFixture({
@@ -70,13 +71,14 @@ describe("getPeakFrameTimePercent", () => {
         performance: performanceFixture({ frameTimePercent: 130 }),
       }),
     });
-    expect(getPeakFrameTimePercent(result)).toBe(130);
+    expect(getBasicFrameTimePercent(result)).toBe(40);
+    expect(getSustainedFrameTimePercent(result)).toBe(130);
   });
 
   it("returns 0 when no measurement was recorded", () => {
-    expect(
-      getPeakFrameTimePercent(videoResultFixture({ performance: null })),
-    ).toBe(0);
+    const noMeasurement = videoResultFixture({ performance: null });
+    expect(getBasicFrameTimePercent(noMeasurement)).toBe(0);
+    expect(getSustainedFrameTimePercent(noMeasurement)).toBe(0);
   });
 });
 
@@ -161,26 +163,62 @@ describe("matchesFilters", () => {
     );
   });
 
-  it("can narrow to candidates that have a sustained measurement", () => {
-    expect(matchesFilters(result, withFilters({ budget: "sustained" }))).toBe(
+  it("can narrow to candidates with or without a sustained measurement", () => {
+    expect(matchesFilters(result, withFilters({ sustained: "done" }))).toBe(
       false,
     );
+    expect(matchesFilters(result, withFilters({ sustained: "none" }))).toBe(
+      true,
+    );
+
     const withSustained = videoResultFixture({
       sustained: videoResultFixture({ testMode: "sustained" }),
     });
     expect(
-      matchesFilters(withSustained, withFilters({ budget: "sustained" })),
+      matchesFilters(withSustained, withFilters({ sustained: "done" })),
     ).toBe(true);
+    expect(
+      matchesFilters(withSustained, withFilters({ sustained: "none" })),
+    ).toBe(false);
   });
 
-  it("can narrow to candidates that blew the frame budget", () => {
+  it("splits the basic frame budget at 100 percent in both directions", () => {
+    // 既定のフィクスチャは予算内。
     expect(matchesFilters(result, withFilters({ budget: "over" }))).toBe(false);
+    expect(matchesFilters(result, withFilters({ budget: "under" }))).toBe(true);
+
     const overBudget = videoResultFixture({
       performance: performanceFixture({ frameTimePercent: 145 }),
     });
     expect(matchesFilters(overBudget, withFilters({ budget: "over" }))).toBe(
       true,
     );
+    expect(matchesFilters(overBudget, withFilters({ budget: "under" }))).toBe(
+      false,
+    );
+  });
+
+  it("keeps the sustained budget filters off candidates that were never run", () => {
+    // 未実施は予算比 0 なので、しきい値だけで見ると「100% 以下」に紛れてしまう。
+    expect(matchesFilters(result, withFilters({ sustained: "under" }))).toBe(
+      false,
+    );
+    expect(matchesFilters(result, withFilters({ sustained: "over" }))).toBe(
+      false,
+    );
+
+    const slowSustained = videoResultFixture({
+      sustained: videoResultFixture({
+        testMode: "sustained",
+        performance: performanceFixture({ frameTimePercent: 145 }),
+      }),
+    });
+    expect(
+      matchesFilters(slowSustained, withFilters({ sustained: "over" })),
+    ).toBe(true);
+    expect(
+      matchesFilters(slowSustained, withFilters({ sustained: "under" })),
+    ).toBe(false);
   });
 
   it("splits results at the one second mark", () => {

@@ -6,12 +6,16 @@ import { useTranslation } from "react-i18next";
 import { useSustainedInputMode } from "../../atoms/preferences";
 import { useResults } from "../../atoms/report";
 import type { ResultFilters } from "../../domain/filters";
+import type { SortField } from "../../domain/sorting";
 import type { UnitResult } from "../../domain/types";
 import { useDetailsSearchText } from "../../utils/messages";
 import {
   filterResults,
   getFilterOptions,
+  sortResults,
+  useCycleResultSort,
   useResultFilters,
+  useResultSort,
   useSelectedIds,
   useSetResultFilter,
   useToggleManySelection,
@@ -27,6 +31,8 @@ export const ResultTable = () => {
   const results = useResults();
   const filters = useResultFilters();
   const setFilter = useSetResultFilter();
+  const sort = useResultSort();
+  const cycleSort = useCycleResultSort();
   const selectedIds = useSelectedIds();
   const toggleSelection = useToggleSelection();
   const toggleMany = useToggleManySelection();
@@ -37,8 +43,13 @@ export const ResultTable = () => {
   const previousLengthRef = useRef(0);
 
   const filtered = useMemo(
-    () => filterResults(results, filters, detailsSearchText),
-    [results, filters, detailsSearchText],
+    () =>
+      sortResults(
+        filterResults(results, filters, detailsSearchText),
+        sort,
+        detailsSearchText,
+      ),
+    [results, filters, sort, detailsSearchText],
   );
   const options = useMemo(() => getFilterOptions(results), [results]);
 
@@ -70,13 +81,15 @@ export const ResultTable = () => {
   });
 
   /**
-   * 結果は新しいものから先頭に積まれる。利用者が下へスクロールしている最中に
-   * 行が挿入されると、見ていた行が下へずれてしまうので、その分だけ補正する。
+   * 既定の並びでは結果が新しいものから先頭に積まれる。利用者が下へスクロール
+   * している最中に行が挿入されると、見ていた行が下へずれてしまうので補正する。
+   * 並べ替え中は行がどこに入るか分からないため、補正しない。
    */
   useLayoutEffect(() => {
     const element = scrollRef.current;
     const topId = filtered[0]?.id ?? null;
     const insertedAtTop =
+      sort === null &&
       element !== null &&
       filtered.length === previousLengthRef.current + 1 &&
       topId !== previousTopIdRef.current &&
@@ -87,7 +100,7 @@ export const ResultTable = () => {
     }
     previousTopIdRef.current = topId;
     previousLengthRef.current = filtered.length;
-  }, [filtered]);
+  }, [filtered, sort]);
 
   // 絞り込みを変えたら一覧の先頭へ戻す。ずれた位置に留まると何が出ているか分からない。
   useLayoutEffect(() => {
@@ -97,12 +110,21 @@ export const ResultTable = () => {
     previousLengthRef.current = 0;
   }, []);
 
-  const handleFilterChange = (field: keyof ResultFilters, value: string) => {
-    setFilter({ field, value });
+  const scrollToTop = () => {
     const element = scrollRef.current;
     if (element) element.scrollTop = 0;
     previousTopIdRef.current = null;
     previousLengthRef.current = 0;
+  };
+
+  const handleFilterChange = (field: keyof ResultFilters, value: string) => {
+    setFilter({ field, value });
+    scrollToTop();
+  };
+
+  const handleSort = (field: SortField) => {
+    cycleSort(field);
+    scrollToTop();
   };
 
   return (
@@ -125,6 +147,8 @@ export const ResultTable = () => {
         >
           <ResultTableHeader
             filters={filters}
+            sort={sort}
+            onSort={handleSort}
             familyOptions={options.families}
             variantOptions={options.variants}
             allSelected={allSelected}

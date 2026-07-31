@@ -90,8 +90,17 @@ export const InspectionProgress = () => {
           </Typography>
         </Stack>
 
+        {/*
+          未実行のうちは 0% の determinate で止めておく。総数が分からないからと
+          indeterminate にすると、何も走っていないのに動いて見えてしまう。
+          動かすのは、実行中でまだ総数を受け取れていない一瞬だけ。
+        */}
         <LinearProgress
-          variant={progress.totalUnits > 0 ? "determinate" : "indeterminate"}
+          variant={
+            running && progress.totalUnits === 0
+              ? "indeterminate"
+              : "determinate"
+          }
           value={
             progress.totalUnits > 0
               ? (progress.completedUnits / progress.totalUnits) * 100

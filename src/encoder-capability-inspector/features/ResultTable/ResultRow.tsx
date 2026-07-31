@@ -139,42 +139,44 @@ export const ResultRow = memo(
           )}
         </Box>
         <Box role="cell" sx={{ overflow: "hidden" }}>
-          <CellText>
-            {t("table.basicBudget", {
-              value: formatFrameBudget(result.performance),
-            })}
-          </CellText>
-          {sustained ? (
+          <CellText>{formatFrameBudget(result.performance)}</CellText>
+          {result.kind === "video" && result.source && (
             <Typography
               variant="caption"
               color="text.secondary"
               noWrap
               display="block"
             >
-              {t("table.sustainedBudget", {
-                status: sustained.usable
-                  ? t("table.statusPass")
-                  : t("table.statusFail"),
-                value: formatFrameBudget(sustained.performance),
+              {t("table.sourceLine", {
+                width: result.source.width ?? "?",
+                height: result.source.height ?? "?",
+                fps: result.source.frameRate ?? "?",
+                missing: result.source.missingInputFrames,
               })}
             </Typography>
-          ) : (
-            result.kind === "video" &&
-            result.source && (
+          )}
+        </Box>
+        <Box role="cell" sx={{ overflow: "hidden" }}>
+          {sustained ? (
+            <>
+              <CellText>{formatFrameBudget(sustained.performance)}</CellText>
               <Typography
                 variant="caption"
-                color="text.secondary"
+                color={sustained.usable ? "success.main" : "error.main"}
                 noWrap
                 display="block"
               >
-                {t("table.sourceLine", {
-                  width: result.source.width ?? "?",
-                  height: result.source.height ?? "?",
-                  fps: result.source.frameRate ?? "?",
-                  missing: result.source.missingInputFrames,
-                })}
+                {sustained.usable
+                  ? t("table.statusPass")
+                  : t("table.statusFail")}
+                {sustained.performance &&
+                  ` · ${t("table.sustainedFrames", {
+                    count: sustained.performance.frameCount,
+                  })}`}
               </Typography>
-            )
+            </>
+          ) : (
+            <CellText>—</CellText>
           )}
         </Box>
         <Box role="cell">

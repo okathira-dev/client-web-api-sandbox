@@ -1,20 +1,55 @@
-import { Box, Checkbox, MenuItem, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Checkbox,
+  MenuItem,
+  TableSortLabel,
+  TextField,
+} from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import type { ResultFilters } from "../../domain/filters";
+import type { ResultSort, SortField } from "../../domain/sorting";
 import { RESULT_GRID_TEMPLATE } from "./consts";
 
 const HeaderCell = ({
   label,
+  field,
+  sort,
+  onSort,
   children,
 }: {
   label: string;
+  field: SortField;
+  sort: ResultSort | null;
+  onSort: (field: SortField) => void;
   children?: React.ReactNode;
 }) => (
   <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5, minWidth: 0 }}>
-    <Typography variant="caption" color="text.secondary" noWrap>
-      {label}
-    </Typography>
+    <TableSortLabel
+      active={sort?.field === field}
+      direction={sort?.field === field ? sort.direction : "asc"}
+      onClick={() => {
+        onSort(field);
+      }}
+      sx={{
+        fontSize: 12,
+        color: "text.secondary",
+        alignSelf: "flex-start",
+        maxWidth: "100%",
+        "& .MuiTableSortLabel-icon": { fontSize: 16 },
+      }}
+    >
+      <Box
+        component="span"
+        sx={{
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {label}
+      </Box>
+    </TableSortLabel>
     {children}
   </Box>
 );
@@ -51,27 +86,32 @@ const FilterSelect = ({
 
 export type ResultTableHeaderProps = {
   readonly filters: ResultFilters;
+  readonly sort: ResultSort | null;
   readonly familyOptions: readonly string[];
   readonly variantOptions: readonly string[];
   readonly allSelected: boolean;
   readonly someSelected: boolean;
   readonly selectionDisabled: boolean;
   readonly onFilterChange: (field: keyof ResultFilters, value: string) => void;
+  readonly onSort: (field: SortField) => void;
   readonly onToggleAll: () => void;
 };
 
 export const ResultTableHeader = ({
   filters,
+  sort,
   familyOptions,
   variantOptions,
   allSelected,
   someSelected,
   selectionDisabled,
   onFilterChange,
+  onSort,
   onToggleAll,
 }: ResultTableHeaderProps) => {
   const { t } = useTranslation();
   const allLabel = t("table.filterAll");
+  const sortProps = { sort, onSort };
 
   return (
     <Box
@@ -102,7 +142,7 @@ export const ResultTableHeader = ({
         />
       </Box>
 
-      <HeaderCell label={t("table.columnFamily")}>
+      <HeaderCell label={t("table.columnFamily")} field="family" {...sortProps}>
         <FilterSelect
           allLabel={allLabel}
           value={filters.family}
@@ -116,7 +156,7 @@ export const ResultTableHeader = ({
         />
       </HeaderCell>
 
-      <HeaderCell label={t("table.columnCodec")}>
+      <HeaderCell label={t("table.columnCodec")} field="codec" {...sortProps}>
         <TextField
           size="small"
           placeholder={t("table.filterCodecPlaceholder")}
@@ -131,7 +171,11 @@ export const ResultTableHeader = ({
         />
       </HeaderCell>
 
-      <HeaderCell label={t("table.columnVariant")}>
+      <HeaderCell
+        label={t("table.columnVariant")}
+        field="variant"
+        {...sortProps}
+      >
         <FilterSelect
           allLabel={allLabel}
           value={filters.variant}
@@ -145,7 +189,7 @@ export const ResultTableHeader = ({
         />
       </HeaderCell>
 
-      <HeaderCell label={t("table.columnStatus")}>
+      <HeaderCell label={t("table.columnStatus")} field="status" {...sortProps}>
         <FilterSelect
           allLabel={allLabel}
           value={filters.status}
@@ -160,7 +204,11 @@ export const ResultTableHeader = ({
         />
       </HeaderCell>
 
-      <HeaderCell label={t("table.columnDetails")}>
+      <HeaderCell
+        label={t("table.columnDetails")}
+        field="details"
+        {...sortProps}
+      >
         <TextField
           size="small"
           placeholder={t("table.filterDetailsPlaceholder")}
@@ -175,13 +223,13 @@ export const ResultTableHeader = ({
         />
       </HeaderCell>
 
-      <HeaderCell label={t("table.columnBudget")}>
+      <HeaderCell label={t("table.columnBudget")} field="budget" {...sortProps}>
         <FilterSelect
           allLabel={allLabel}
           value={filters.budget}
           options={[
-            { value: "sustained", label: t("table.budgetSustained") },
             { value: "over", label: t("table.budgetOver") },
+            { value: "under", label: t("table.budgetUnder") },
           ]}
           onChange={(value) => {
             onFilterChange("budget", value);
@@ -189,7 +237,27 @@ export const ResultTableHeader = ({
         />
       </HeaderCell>
 
-      <HeaderCell label={t("table.columnTime")}>
+      <HeaderCell
+        label={t("table.columnSustained")}
+        field="sustained"
+        {...sortProps}
+      >
+        <FilterSelect
+          allLabel={allLabel}
+          value={filters.sustained}
+          options={[
+            { value: "done", label: t("table.sustainedDone") },
+            { value: "none", label: t("table.sustainedNone") },
+            { value: "over", label: t("table.budgetOver") },
+            { value: "under", label: t("table.budgetUnder") },
+          ]}
+          onChange={(value) => {
+            onFilterChange("sustained", value);
+          }}
+        />
+      </HeaderCell>
+
+      <HeaderCell label={t("table.columnTime")} field="time" {...sortProps}>
         <FilterSelect
           allLabel={allLabel}
           value={filters.time}
