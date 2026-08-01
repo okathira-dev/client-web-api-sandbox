@@ -57,7 +57,10 @@ const PatternColumn = ({
 /**
  * 検査へ渡す合成パターンを、実物と同じ生成コードで再生してみせる。
  *
- * 既定では畳んでおく。開いているあいだだけ描画するので、閉じていれば負荷は無い。
+ * 既定では畳んでおく。畳んでいるあいだは中身を丸ごと外し、音声バッファの生成も
+ * 波形の描画も走らせない。Accordion は既定だと畳んでも子を DOM に残すため、
+ * 開いた覚えのない利用者にも負荷がかかり、再生中に畳んでも音が鳴り続けてしまう。
+ *
  * 検査中は描画も再生も止め、メインスレッドを検査の進行表示へ譲る。
  */
 export const SyntheticPreview = () => {
@@ -72,6 +75,7 @@ export const SyntheticPreview = () => {
     <Accordion
       variant="outlined"
       expanded={expanded}
+      slotProps={{ transition: { unmountOnExit: true } }}
       onChange={(_event, next) => {
         setExpanded(next);
       }}

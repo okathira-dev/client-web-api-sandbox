@@ -4,6 +4,7 @@ import {
   Button,
   Stack,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { useEffect } from "react";
@@ -110,11 +111,20 @@ export const InspectionRunner = () => {
         )}
 
         {running && (
-          <Button color="error" variant="outlined" onClick={cancel}>
-            {runKind === "sustained"
-              ? t("runner.cancelSustained")
-              : t("runner.cancelFull")}
-          </Button>
+          /*
+            一括検査の中断は再開できる一時停止で、実用継続検査の中断は再開機構が無い。
+            同じ「中止」に見えないよう文言を分け、再開できるほうにだけ補足を添える。
+          */
+          <Tooltip
+            title={runKind === "sustained" ? "" : t("runner.cancelHint")}
+            placement="top"
+          >
+            <Button color="error" variant="outlined" onClick={cancel}>
+              {runKind === "sustained"
+                ? t("runner.cancelSustained")
+                : t("runner.cancelFull")}
+            </Button>
+          </Tooltip>
         )}
 
         <Button

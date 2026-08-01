@@ -10,19 +10,21 @@ const translation: TranslationResource = {
     languageEn: "English",
   },
   runner: {
-    start: "Start full inspection",
+    start: "Start full capability inspection",
     rerun: "Rerun everything",
     resume: "Resume ({{count}} left)",
-    cancelFull: "Cancel inspection",
-    cancelSustained: "Cancel sustained test",
+    cancelFull: "Pause inspection",
+    cancelHint:
+      "This only pauses. Results so far are kept and the remaining candidates can be resumed later.",
+    cancelSustained: "Stop sustained load test",
     reset: "Discard results",
     pauseLabel: "Pause between candidates (ms)",
     pauseInvalid: "Enter an integer from 0 to {{max}}",
     pauseHelp: "Default {{default}} ms. At 0 no pause is performed at all.",
     completed:
-      "Full inspection finished. These results show what reached real output once in this environment.",
+      "The full capability inspection finished. These results show what reached real output once in this environment.",
     cancelled:
-      "Inspection was interrupted. Partial results are not treated as a conclusion about this environment; the last fully completed report stays in effect.",
+      'The inspection is paused. Results so far are kept, and "Resume" continues from the remaining candidates. Partial results are not treated as a conclusion about this environment; the last fully completed report stays in effect.',
     failed: "Inspection stopped before completing: {{reason}}",
     unknownReason: "unknown reason",
   },
@@ -56,16 +58,16 @@ const translation: TranslationResource = {
       complete: "Done",
     },
     idle: {
-      idle: "Start a full inspection to see per-candidate results here",
+      idle: "Start a full capability inspection to see per-candidate results here",
       waiting: "Waiting for the next candidate",
       complete: "All candidates have been processed",
       cancelled:
-        "Inspection was interrupted. Resuming continues from the remaining candidates.",
+        "The inspection is paused. Resuming continues from the remaining candidates.",
       failed: "Inspection stopped before completing",
     },
   },
   sustained: {
-    heading: "Sustained test",
+    heading: "Sustained load test",
     description:
       "Re-runs the selected exact settings through real output, decode, and mux for the chosen duration. It reveals sustained performance that a single short burst cannot show. Live input opens the browser's screen sharing dialog but never creates a recording file.",
     captureFailed: "Could not acquire the screen capture: {{reason}}",
@@ -79,11 +81,14 @@ const translation: TranslationResource = {
     inputSynthetic: "Synthetic pattern (reproducible)",
     inputLive: "Screen or tab capture",
     durationLabel: "Duration (seconds)",
-    durationInvalid: "{{min}}–{{max}} seconds",
-    run: "Run sustained test on {{count}} selected",
+    durationInvalid: "{{min}} seconds or more",
+    durationHelp: "No upper limit. A long run can be interrupted at any time.",
+    memoryCaution:
+      "The inspection holds one candidate's whole output until it finishes, so these settings need up to about {{size}} of memory. You can interrupt at any time, but running out can take the tab down with it.",
+    run: "Run the sustained load test on {{count}} selected",
     selectPassedVideo: "Select passing video settings",
     clearSelection: "Clear selection",
-    statusChip: "Sustained test {{status}}",
+    statusChip: "Sustained load test {{status}}",
     statusDetail: "{{completed}} / {{total}} · {{seconds}} s · {{input}}",
     sourceLine: "Input: {{width}}×{{height}} @ {{fps}} fps",
   },
@@ -114,11 +119,11 @@ const translation: TranslationResource = {
   table: {
     summary: "Showing {{shown}} of {{total}}",
     selectedSuffix: " · {{count}} selected",
-    empty: "No results yet. Start a full inspection.",
+    empty: "No results yet. Start a full capability inspection.",
     noMatch: "No results match these filters.",
     label: "Inspection results",
     selectAll: "Select all visible candidates",
-    selectOne: "Include {{codec}} in the sustained test",
+    selectOne: "Include {{codec}} in the sustained load test",
     columnFamily: "Family",
     columnCodec: "Codec string",
     columnVariant: "Preference / ch",
@@ -210,7 +215,8 @@ const translation: TranslationResource = {
     "media-stream-track-processor-unavailable":
       "MediaStreamTrackProcessor is unavailable",
     "display-capture-unavailable": "The screen capture API is unavailable",
-    "capability-report-not-found": "Complete a full inspection first",
+    "capability-report-not-found":
+      "Complete a full capability inspection first",
     "no-units-selected": "Nothing is selected",
     "inspection-already-running":
       "An inspection is already running in another tab or window",

@@ -24,9 +24,11 @@ import {
 import { useResults, useSustainedState } from "../../atoms/report";
 import { useIsRunning } from "../../atoms/runState";
 import {
-  MAX_SUSTAINED_DURATION_SECONDS,
   MIN_SUSTAINED_DURATION_SECONDS,
+  SUSTAINED_MEMORY_CAUTION_BYTES,
 } from "../../consts/inspection";
+import { estimateRetainedBytes } from "../../domain/sustained";
+import { formatBytes } from "../../utils/format";
 import { useCodeMessage } from "../../utils/messages";
 import { useInspectionControls } from "../InspectionRunner";
 import { useSelectedIds, useSetSelection } from "../ResultTable";
@@ -63,6 +65,17 @@ export const SustainedTest = () => {
     selectedResults.length > 0 &&
     !durationInvalid &&
     candidatePauseMs !== null;
+
+  /*
+    検査時間に上限は設けていない。中断はいつでも効くが、デコード検証と多重化のために
+    1 候補ぶんの出力を最後まで抱えるので、長く回すとメモリだけは伸びる。
+    抱える量を見積もって、大きいときだけ注意を出す。
+  */
+  const retainedBytes = estimateRetainedBytes(
+    selectedResults,
+    durationSeconds ?? 0,
+  );
+  const memoryCaution = retainedBytes > SUSTAINED_MEMORY_CAUTION_BYTES;
 
   const run = async () => {
     if (!canRun || durationSeconds === null || candidatePauseMs === null)
@@ -113,6 +126,13 @@ export const SustainedTest = () => {
             {t("sustained.liveAudioMono")}
           </Alert>
         )}
+        {memoryCaution && (
+          <Alert severity="warning" sx={{ mb: 2 }}>
+            {t("sustained.memoryCaution", {
+              size: formatBytes(retainedBytes),
+            })}
+          </Alert>
+        )}
 
         <Stack
           direction="row"
@@ -151,14 +171,12 @@ export const SustainedTest = () => {
               durationInvalid
                 ? t("sustained.durationInvalid", {
                     min: MIN_SUSTAINED_DURATION_SECONDS,
-                    max: MAX_SUSTAINED_DURATION_SECONDS,
                   })
-                : " "
+                : t("sustained.durationHelp")
             }
             slotProps={{
               htmlInput: {
                 min: MIN_SUSTAINED_DURATION_SECONDS,
-                max: MAX_SUSTAINED_DURATION_SECONDS,
                 step: 1,
               },
             }}

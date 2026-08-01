@@ -50,6 +50,11 @@ describe("parseSustainedDurationSeconds", () => {
     );
   });
 
+  it("accepts long runs, since the inspection can always be interrupted", () => {
+    expect(parseSustainedDurationSeconds(600)).toBe(600);
+    expect(parseSustainedDurationSeconds(3600)).toBe(3600);
+  });
+
   it("allows fractional durations inside the range", () => {
     expect(parseSustainedDurationSeconds("2.5")).toBe(2.5);
   });

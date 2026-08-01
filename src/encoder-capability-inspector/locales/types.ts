@@ -16,6 +16,7 @@ export type RunnerTranslations = {
   rerun: string;
   resume: string;
   cancelFull: string;
+  cancelHint: string;
   cancelSustained: string;
   reset: string;
   pauseLabel: string;
@@ -85,6 +86,8 @@ export type SustainedTranslations = {
   inputLive: string;
   durationLabel: string;
   durationInvalid: string;
+  durationHelp: string;
+  memoryCaution: string;
   run: string;
   selectPassedVideo: string;
   clearSelection: string;

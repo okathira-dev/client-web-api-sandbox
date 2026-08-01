@@ -22,10 +22,19 @@ export const INSPECTION_LOCK_NAME = "encoder-capability-inspector/inspection";
 export const DEFAULT_CANDIDATE_PAUSE_MS = 0;
 export const MAX_CANDIDATE_PAUSE_MS = 2000;
 
-/** Sustained test の検査時間。 */
+/**
+ * 実用継続検査の検査時間。
+ *
+ * 上限は設けない。長く回したいのは正当な使い方で、中断はいつでも効く。
+ * ただし出力を抱えるぶんメモリは伸びるので、見積りを出して注意を促す。
+ * `MAX` は打ち間違いを弾くためだけの歯止め（24 時間）。
+ */
 export const MIN_SUSTAINED_DURATION_SECONDS = 1;
-export const MAX_SUSTAINED_DURATION_SECONDS = 10;
+export const MAX_SUSTAINED_DURATION_SECONDS = 86_400;
 export const DEFAULT_SUSTAINED_DURATION_SECONDS = 2;
+
+/** 保持する出力がこれを超えるなら、メモリを抱えることを伝える。 */
+export const SUSTAINED_MEMORY_CAUTION_BYTES = 512 * 1024 * 1024;
 
 /** 互換性確認に必要な最小限のフレーム数（仕様 3.2）。 */
 export const COMPATIBILITY_VIDEO_FRAME_COUNT = 2;
