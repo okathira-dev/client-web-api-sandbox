@@ -48,21 +48,21 @@ export const SustainedTest = () => {
   const durationSeconds = useSustainedDurationSeconds();
   const { startSustained } = useInspectionControls();
   const [captureError, setCaptureError] = useState<string | null>(null);
+  /** 直前のライブ入力で実際に取れた音声の素性。モノラルに落ちていないかを見せる。 */
+  const capturedAudio = sustained?.source?.audio ?? null;
 
   const selectedResults = results.filter((result) =>
     selectedIds.has(result.id),
   );
   const hasAudioSelection = selectedResults.some(
-    (result) => result.kind !== "video",
+    (result) => result.kind === "audio",
   );
-  const liveWithAudio = inputMode === "live" && hasAudioSelection;
   const durationInvalid = durationSeconds === null;
   const canRun =
     !running &&
     selectedResults.length > 0 &&
     !durationInvalid &&
-    candidatePauseMs !== null &&
-    !liveWithAudio;
+    candidatePauseMs !== null;
 
   const run = async () => {
     if (!canRun || durationSeconds === null || candidatePauseMs === null)
@@ -103,9 +103,14 @@ export const SustainedTest = () => {
             })}
           </Alert>
         )}
-        {liveWithAudio && (
+        {inputMode === "live" && hasAudioSelection && (
+          <Alert severity="info" sx={{ mb: 2 }}>
+            {t("sustained.liveAudioNote")}
+          </Alert>
+        )}
+        {capturedAudio && capturedAudio.channelCount === 1 && (
           <Alert severity="warning" sx={{ mb: 2 }}>
-            {t("sustained.audioNotSupported")}
+            {t("sustained.liveAudioMono")}
           </Alert>
         )}
 
@@ -251,6 +256,13 @@ export const SustainedTest = () => {
                 })}
                 {sustained.source.displaySurface &&
                   ` · ${sustained.source.displaySurface}`}
+                {" · "}
+                {capturedAudio
+                  ? t("sustained.audioSourceLine", {
+                      channels: capturedAudio.channelCount ?? "?",
+                      sampleRate: capturedAudio.sampleRate ?? "?",
+                    })
+                  : t("sustained.audioSourceNone")}
               </Typography>
             )}
           </Box>

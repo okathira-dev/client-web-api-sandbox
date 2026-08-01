@@ -78,12 +78,21 @@ export const runFullInspection = async ({
     );
     const pending = plan.filter((unit) => !completedIds.has(unit.id));
 
+    /*
+      経過時間は「実際に検査していた時間」で数える。
+      中断して再開すると `startedAt` からの経過には止まっていた時間が入ってしまい、
+      経過表示も、そこから割り出す残り見込みも狂う。
+    */
+    const runStartedAt = Date.now();
+    const activeMsBefore = existing?.activeMs ?? 0;
+
     let report: InspectionReport = {
       version: REPORT_VERSION,
       status: "running",
-      startedAt: existing?.startedAt ?? Date.now(),
-      updatedAt: Date.now(),
+      startedAt: existing?.startedAt ?? runStartedAt,
+      updatedAt: runStartedAt,
       completedAt: null,
+      activeMs: activeMsBefore,
       environment: {
         ...collectMainEnvironment(),
         gpu: null,
@@ -107,22 +116,30 @@ export const runFullInspection = async ({
     const emit = () => {
       onProgress(report);
     };
+    /** `updatedAt` と実働時間は必ず同じ時刻で更新する。UI が両者の差分を足すため。 */
+    const touch = (next: InspectionReport): InspectionReport => {
+      const at = Date.now();
+      return {
+        ...next,
+        updatedAt: at,
+        activeMs: activeMsBefore + (at - runStartedAt),
+      };
+    };
 
     let client: InspectionWorkerClient | null = null;
     try {
       client = createInspectionWorkerClient();
       const workerEnvironment = await client.getEnvironment(signal);
-      report = {
+      report = touch({
         ...report,
         environment: { ...report.environment, ...workerEnvironment },
-        updatedAt: Date.now(),
-      };
+      });
       emit();
 
       for (const [index, unit] of pending.entries()) {
         if (signal.aborted) throw new DOMException("cancelled", "AbortError");
 
-        report = {
+        report = touch({
           ...report,
           current: {
             id: unit.id,
@@ -131,8 +148,7 @@ export const runFullInspection = async ({
             label: unit.label,
             stage: "declared",
           },
-          updatedAt: Date.now(),
-        };
+        });
         emit();
 
         const result = await client.runUnit({
@@ -150,39 +166,35 @@ export const runFullInspection = async ({
           },
         });
 
-        report = {
+        report = touch({
           ...report,
           results: [result, ...report.results],
           completedUnits: report.completedUnits + 1,
           current: null,
-          updatedAt: Date.now(),
-        };
+        });
         emit();
 
         await pauseBetweenCandidates(candidatePauseMs, index, pending.length);
       }
 
-      const completedAt = Date.now();
-      report = {
+      report = touch({
         ...report,
         status: "complete",
-        completedAt,
-        updatedAt: completedAt,
+        completedAt: Date.now(),
         current: null,
         // 完全完了したので、これ以上前のレポートを持ち回る必要がない。
         previousCompleted: null,
-      };
+      });
       await saveReport(report);
       emit();
       return report;
     } catch (error) {
-      report = {
+      report = touch({
         ...report,
         status: terminalStatusFor(error),
         error: describe(error),
         current: null,
-        updatedAt: Date.now(),
-      };
+      });
       await saveReport(report);
       emit();
       throw error;
@@ -196,7 +208,8 @@ export const runFullInspection = async ({
 // ---------------------------------------------------------------------------
 
 export type LiveCapture = {
-  readonly readable: ReadableStream<VideoFrame>;
+  readonly video: ReadableStream<VideoFrame>;
+  readonly audio: ReadableStream<AudioData> | null;
   readonly info: LiveSourceInfo;
 };
 
@@ -230,11 +243,11 @@ export const runSustainedInspection = async ({
     const units: InspectionUnit[] = findInspectionUnits(unitIds);
     if (units.length === 0) throw new Error("no-units-selected");
     if (inputMode === "live") {
-      // ライブ入力は映像フレームしか供給できないため、音声候補は扱えない。
-      if (units.some((unit) => unit.kind !== "video")) {
-        throw new Error("live-sustained-inspection-is-video-only");
-      }
       if (!liveCapture) throw new Error("live-capture-unavailable");
+      // 音声の共有は利用者が選ぶもの。選ばなかったなら音声候補は検査できない。
+      if (!liveCapture.audio && units.some((unit) => unit.kind === "audio")) {
+        throw new Error("live-capture-audio-track-unavailable");
+      }
     }
 
     const stored = await loadReport();
@@ -276,11 +289,12 @@ export const runSustainedInspection = async ({
     try {
       client = createInspectionWorkerClient();
       if (inputMode === "live" && liveCapture) {
-        await client.setupLiveSource(
-          liveCapture.readable,
-          liveCapture.info,
+        await client.setupLiveSource({
+          video: liveCapture.video,
+          audio: liveCapture.audio,
+          source: liveCapture.info,
           signal,
-        );
+        });
       }
 
       for (const [index, unit] of units.entries()) {

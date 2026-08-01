@@ -3,7 +3,9 @@ import { reportFixture, videoResultFixture } from "./__fixtures__/results";
 import { getVideoCandidatesForFamily } from "./plan";
 import {
   countResults,
+  getActiveElapsedMs,
   getEffectiveReport,
+  getRemainingMs,
   isCompleteReport,
   isResumableReport,
   summarizeFamilies,
@@ -181,5 +183,80 @@ describe("countResults", () => {
 
   it("returns zeroes for an empty list", () => {
     expect(countResults([])).toEqual({ pass: 0, warning: 0, fail: 0 });
+  });
+});
+
+describe("getActiveElapsedMs", () => {
+  it("keeps counting from the last update while the inspection runs", () => {
+    expect(
+      getActiveElapsedMs({
+        activeMs: 30_000,
+        updatedAt: 1_000_000,
+        running: true,
+        now: 1_002_500,
+      }),
+    ).toBe(32_500);
+  });
+
+  it("does not count the time spent interrupted", () => {
+    // 30 秒ぶん検査したところで中断し、その後 10 分眺めていた。
+    expect(
+      getActiveElapsedMs({
+        activeMs: 30_000,
+        updatedAt: 1_000_000,
+        running: false,
+        now: 1_600_000,
+      }),
+    ).toBe(30_000);
+  });
+
+  it("carries the earlier run's time into the resumed run", () => {
+    // 中断時点で 30 秒。再開して 5 秒経ったところ。
+    const resumed = getActiveElapsedMs({
+      activeMs: 35_000,
+      updatedAt: 2_000_000,
+      running: true,
+      now: 2_000_000,
+    });
+    expect(resumed).toBe(35_000);
+  });
+
+  it("does not go backwards when the clock is behind the last update", () => {
+    expect(
+      getActiveElapsedMs({
+        activeMs: 30_000,
+        updatedAt: 1_000_000,
+        running: true,
+        now: 999_000,
+      }),
+    ).toBe(30_000);
+  });
+});
+
+describe("getRemainingMs", () => {
+  it("estimates from the time actually spent per candidate", () => {
+    expect(
+      getRemainingMs({
+        elapsedMs: 20_000,
+        completedUnits: 100,
+        totalUnits: 484,
+      }),
+    ).toBe(76_800);
+  });
+
+  it("gives no estimate before the first candidate finishes", () => {
+    expect(
+      getRemainingMs({ elapsedMs: 5_000, completedUnits: 0, totalUnits: 484 }),
+    ).toBeNull();
+  });
+
+  it("gives no estimate once everything is done", () => {
+    expect(
+      getRemainingMs({
+        elapsedMs: 40_000,
+        completedUnits: 484,
+        totalUnits: 484,
+      }),
+    ).toBeNull();
   });
 });

@@ -15,11 +15,12 @@ export type InspectionWorkerClient = {
   readonly getEnvironment: (
     signal: AbortSignal,
   ) => Promise<Pick<EnvironmentInfo, "gpu" | "webCodecs">>;
-  readonly setupLiveSource: (
-    readable: ReadableStream<VideoFrame>,
-    source: LiveSourceInfo,
-    signal: AbortSignal,
-  ) => Promise<void>;
+  readonly setupLiveSource: (options: {
+    video: ReadableStream<VideoFrame>;
+    audio: ReadableStream<AudioData> | null;
+    source: LiveSourceInfo;
+    signal: AbortSignal;
+  }) => Promise<void>;
   readonly closeLiveSource: () => Promise<void>;
   readonly runUnit: (options: {
     unit: InspectionUnit;
@@ -124,11 +125,11 @@ export const createInspectionWorkerClient = (): InspectionWorkerClient => {
             : null,
       }),
 
-    setupLiveSource: (readable, source, signal) =>
+    setupLiveSource: ({ video, audio, source, signal }) =>
       send<void>({
-        request: { type: "setup-live-source", readable, source },
+        request: { type: "setup-live-source", video, audio, source },
         // ReadableStream は転送しないとワーカー側から読めない。
-        transfer: [readable],
+        transfer: audio ? [video, audio] : [video],
         signal,
         resolveFrom: (response) =>
           response.type === "ack" ? { value: undefined } : null,

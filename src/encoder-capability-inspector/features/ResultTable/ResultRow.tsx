@@ -40,7 +40,6 @@ const CellText = ({
 type ResultRowProps = {
   readonly result: UnitResult;
   readonly selected: boolean;
-  readonly selectionDisabled: boolean;
   readonly onToggle: (unitId: string) => void;
   readonly style: React.CSSProperties;
 };
@@ -51,13 +50,7 @@ type ResultRowProps = {
  * 言語切り替えは `useTranslation` 側の購読で全行に伝わるので、memo と両立する。
  */
 export const ResultRow = memo(
-  ({
-    result,
-    selected,
-    selectionDisabled,
-    onToggle,
-    style,
-  }: ResultRowProps) => {
+  ({ result, selected, onToggle, style }: ResultRowProps) => {
     const { t } = useTranslation();
     const describeDetails = useResultDetails();
     const status = getResultStatus(result);
@@ -88,7 +81,6 @@ export const ResultRow = memo(
           <Checkbox
             size="small"
             checked={selected}
-            disabled={selectionDisabled}
             inputProps={{
               "aria-label": t("table.selectOne", { codec: result.codec }),
             }}

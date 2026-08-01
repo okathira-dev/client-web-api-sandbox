@@ -82,12 +82,26 @@ export type InspectionStage = (typeof INSPECTION_STAGES)[number];
 export type TestMode = "compatibility" | "sustained";
 export type InputMode = "synthetic" | "live";
 
+/**
+ * キャプチャした音声トラックの素性。
+ *
+ * 音声候補をライブ入力で検査するとき、実際に何 ch で取れたかが結果の意味を左右する。
+ * 画面共有の音声は、実装によってはモノラルに落ちてくることがあり、
+ * その状態で 2ch 候補を通しても「2ch を実際に扱えた」ことにはならない。
+ */
+export type LiveAudioInfo = {
+  readonly channelCount: number | null;
+  readonly sampleRate: number | null;
+};
+
 /** ライブ入力の素性。画面内容そのものは一切保持しない。 */
 export type LiveSourceInfo = {
   readonly width: number | null;
   readonly height: number | null;
   readonly frameRate: number | null;
   readonly displaySurface: string | null;
+  /** 音声トラックを共有しなかった場合は null。 */
+  readonly audio: LiveAudioInfo | null;
 };
 
 export type LiveSourceStats = LiveSourceInfo & {
@@ -167,6 +181,8 @@ export type AudioUnitResult = UnitResultBase & {
   readonly sampleRate: number;
   readonly bitrate: number;
   readonly requestedConfig: AudioEncoderConfig;
+  /** ライブ入力で検査したときの、実際に取れた音声の素性。 */
+  readonly source: LiveAudioInfo | null;
 };
 
 export type UnitResult = VideoUnitResult | AudioUnitResult;
@@ -221,9 +237,16 @@ export type SustainedRunState = {
 export type InspectionReport = {
   readonly version: number;
   readonly status: ReportStatus;
+  /** 最初の実行を始めた時刻。再開しても引き継ぐ。 */
   readonly startedAt: number;
   readonly updatedAt: number;
   readonly completedAt: number | null;
+  /**
+   * 実際に検査していた時間の累計。`updatedAt` の時点までの値。
+   * 中断して再開すると `startedAt` からの経過には止まっていた時間が入ってしまうので、
+   * 経過表示と残り見込みはこちらを使う。
+   */
+  readonly activeMs: number;
   readonly environment: EnvironmentInfo;
   readonly totalUnits: number;
   readonly completedUnits: number;

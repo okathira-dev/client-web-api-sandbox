@@ -21,7 +21,9 @@ export type WorkerRequest =
   | {
       readonly type: "setup-live-source";
       readonly requestId: string;
-      readonly readable: ReadableStream<VideoFrame>;
+      readonly video: ReadableStream<VideoFrame>;
+      /** 音声を共有しなかった場合は null。音声候補は検査できない。 */
+      readonly audio: ReadableStream<AudioData> | null;
       readonly source: LiveSourceInfo;
     }
   | { readonly type: "close-live-source"; readonly requestId: string }

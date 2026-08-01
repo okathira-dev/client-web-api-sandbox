@@ -69,8 +69,12 @@ const translation: TranslationResource = {
     description:
       "Re-runs the selected exact settings through real output, decode, and mux for the chosen duration. It reveals sustained performance that a single short burst cannot show. Live input opens the browser's screen sharing dialog but never creates a recording file.",
     captureFailed: "Could not acquire the screen capture: {{reason}}",
-    audioNotSupported:
-      "Live input supplies video frames only, so audio candidates are out of scope. Deselect the audio candidates or switch the input to the synthetic pattern.",
+    liveAudioNote:
+      "To inspect audio candidates with live input, enable audio sharing in the share dialog. Audio candidates cannot be inspected when no audio track is shared.",
+    liveAudioMono:
+      "The captured audio was 1ch. Two-channel candidates are padded by duplicating that channel, which does not confirm that 2ch is really handled. Check whether the shared source is stereo.",
+    audioSourceLine: "Audio {{channels}}ch @ {{sampleRate}} Hz",
+    audioSourceNone: "no audio shared",
     inputLabel: "Input",
     inputSynthetic: "Synthetic pattern (reproducible)",
     inputLive: "Screen or tab capture",
@@ -173,8 +177,10 @@ const translation: TranslationResource = {
     "live-capture-unavailable": "Live input could not be acquired",
     "live-capture-video-track-unavailable":
       "The capture contains no video track",
-    "live-sustained-inspection-is-video-only":
-      "Sustained tests with live input cover video candidates only",
+    "live-capture-audio-track-unavailable":
+      "No audio was shared, so audio candidates cannot be inspected",
+    "live-audio-captured-as-mono":
+      "The captured audio was 1ch, so the second channel was filled by duplication",
     "media-stream-track-processor-unavailable":
       "MediaStreamTrackProcessor is unavailable",
     "display-capture-unavailable": "The screen capture API is unavailable",

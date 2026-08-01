@@ -29,6 +29,8 @@ const progressAtom = atom((get) => {
     status: report?.status ?? null,
     startedAt: report?.startedAt ?? null,
     completedAt: report?.completedAt ?? null,
+    updatedAt: report?.updatedAt ?? 0,
+    activeMs: report?.activeMs ?? 0,
     completedUnits: report?.completedUnits ?? 0,
     totalUnits: report?.totalUnits ?? 0,
     candidatePauseMs: report?.candidatePauseMs ?? 0,

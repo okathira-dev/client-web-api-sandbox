@@ -33,6 +33,7 @@ import type {
   AudioUnitResult,
   EnvironmentInfo,
   InspectionStage,
+  LiveAudioInfo,
   LiveSourceInfo,
   PerformanceMetrics,
   TestMode,
@@ -51,6 +52,12 @@ import {
   wait,
   withDeadline,
 } from "./async";
+import {
+  createPlanarQueue,
+  createResampler,
+  mapChannels,
+  type Resampler,
+} from "./liveAudio";
 import {
   type AudioChunkEntry,
   muxAudioChunks,
@@ -264,6 +271,7 @@ const verifyVideoDecode = async (
 
 type LiveSource = {
   reader: ReadableStreamDefaultReader<VideoFrame>;
+  audioReader: ReadableStreamDefaultReader<AudioData> | null;
   info: LiveSourceInfo;
 };
 
@@ -696,6 +704,83 @@ const verifyAudioDecode = async (
   }
 };
 
+/**
+ * キャプチャした音声を、候補の設定どおりの並びで取り出せるようにする。
+ *
+ * `AudioEncoder` は設定に合った `AudioData` しか受け取らないので、
+ * チャンネル数とサンプルレートをここで合わせ、1 チャンクぶん貯まるまで待つ。
+ */
+const createLiveAudioFeed = ({
+  reader,
+  channels,
+  sampleRate,
+  signal,
+}: {
+  reader: ReadableStreamDefaultReader<AudioData>;
+  channels: number;
+  sampleRate: number;
+  signal: AbortSignal;
+}) => {
+  const queue = createPlanarQueue(channels);
+  let resampler: Resampler | null = null;
+  let capturedChannels: number | null = null;
+  let capturedSampleRate: number | null = null;
+
+  const consume = (data: AudioData): void => {
+    try {
+      // 取り出しは f32-planar へ揃える。s16 などで来ても同じ扱いにできる。
+      const source = Array.from(
+        { length: data.numberOfChannels },
+        (_unused, planeIndex) => {
+          const plane = new Float32Array(data.numberOfFrames);
+          data.copyTo(plane, { planeIndex, format: "f32-planar" });
+          return plane;
+        },
+      );
+      capturedChannels ??= data.numberOfChannels;
+      capturedSampleRate ??= data.sampleRate;
+
+      const mapped = mapChannels(source, channels);
+      if (data.sampleRate === sampleRate) {
+        queue.push(mapped);
+        return;
+      }
+      resampler ??= createResampler({
+        sourceRate: data.sampleRate,
+        targetRate: sampleRate,
+        channels,
+      });
+      queue.push(resampler.push(mapped));
+    } finally {
+      data.close();
+    }
+  };
+
+  return {
+    /** 1 チャンクぶん貯まるまで読み進めて `target` を埋める。戻り値は入力待ち時間。 */
+    fill: async (target: Float32Array, frames: number): Promise<number> => {
+      const waitStartedAt = performance.now();
+      while (queue.size() < frames) {
+        throwIfAborted(signal);
+        const entry = await withDeadline(
+          reader.read(),
+          LIVE_FRAME_TIMEOUT_MS,
+          signal,
+          "live-audio",
+        );
+        if (entry.done || !entry.value) throw new Error("live-capture-ended");
+        consume(entry.value);
+      }
+      queue.take(target, frames);
+      return performance.now() - waitStartedAt;
+    },
+    getCaptured: (): LiveAudioInfo => ({
+      channelCount: capturedChannels,
+      sampleRate: capturedSampleRate,
+    }),
+  };
+};
+
 const getAudioChunkCount = (
   unit: AudioInspectionUnit,
   testMode: TestMode,
@@ -717,11 +802,13 @@ const runAudioUnit = async (
     onStage,
     testMode,
     durationMs,
+    liveSource,
   }: {
     signal: AbortSignal;
     onStage: StageReporter;
     testMode: TestMode;
     durationMs: number;
+    liveSource: LiveSource | null;
   },
 ): Promise<AudioUnitResult> => {
   const startedAtMs = performance.now();
@@ -739,12 +826,21 @@ const runAudioUnit = async (
   let decodedFrames: number | null = null;
   let muxedBytes: number | null = null;
   let usable = false;
+  let warning: string | null = null;
   let error: string | null = null;
   let metrics: PerformanceMetrics | null = null;
+  let sourceInfo: LiveAudioInfo | null = null;
 
   let encoder: AudioEncoder | null = null;
   let encoderError: Error | null = null;
   let entries: AudioChunkEntry[] = [];
+
+  /*
+    ライブ入力は音声トラックを共有したときだけ使える。
+    映像候補と違い、音声はキャプチャ側のチャンネル数がそのまま検査の意味を左右する。
+  */
+  const liveAudioReader =
+    testMode === "sustained" ? (liveSource?.audioReader ?? null) : null;
 
   try {
     throwIfAborted(signal);
@@ -785,25 +881,41 @@ const runAudioUnit = async (
       一括実用検査は同じ 1 チャンクを繰り返す。周波数を 50Hz の倍数に揃えてあるので、
       繰り返しても継ぎ目が出ない。
     */
-    const generator: SyntheticAudioGenerator | null = isSustained
-      ? createSustainedAudioGenerator({
+    const liveFeed = liveAudioReader
+      ? createLiveAudioFeed({
+          reader: liveAudioReader,
           channels: unit.channels,
           sampleRate: unit.sampleRate,
+          signal,
         })
       : null;
-    const samples = generator
-      ? new Float32Array(AUDIO_FRAMES_PER_CHUNK * unit.channels)
-      : createCompatibilityAudioSamples({
-          channels: unit.channels,
-          sampleRate: unit.sampleRate,
-          frames: AUDIO_FRAMES_PER_CHUNK,
-        });
+    const generator: SyntheticAudioGenerator | null =
+      isSustained && !liveFeed
+        ? createSustainedAudioGenerator({
+            channels: unit.channels,
+            sampleRate: unit.sampleRate,
+          })
+        : null;
+    const samples =
+      generator || liveFeed
+        ? new Float32Array(AUDIO_FRAMES_PER_CHUNK * unit.channels)
+        : createCompatibilityAudioSamples({
+            channels: unit.channels,
+            sampleRate: unit.sampleRate,
+            frames: AUDIO_FRAMES_PER_CHUNK,
+          });
 
     let sourcePreparationMs = 0;
+    let inputWaitMs = 0;
     const encodeStartedAt = performance.now();
     for (let index = 0; index < chunkCount; index += 1) {
       throwIfAborted(signal);
       const sourceStartedAt = performance.now();
+      // ライブ入力ではサンプルが届くのを待つ。待ち時間は用意の手間とは別に数える。
+      const waitedMs = liveFeed
+        ? await liveFeed.fill(samples, AUDIO_FRAMES_PER_CHUNK)
+        : 0;
+      inputWaitMs += waitedMs;
       generator?.fill(samples, AUDIO_FRAMES_PER_CHUNK);
       const data = createAudioData({
         samples,
@@ -814,7 +926,7 @@ const runAudioUnit = async (
           (index * AUDIO_FRAMES_PER_CHUNK * 1_000_000) / unit.sampleRate,
         ),
       });
-      sourcePreparationMs += performance.now() - sourceStartedAt;
+      sourcePreparationMs += performance.now() - sourceStartedAt - waitedMs;
       try {
         encoder.encode(data);
       } finally {
@@ -836,10 +948,10 @@ const runAudioUnit = async (
     const chunkBudgetMs = (AUDIO_FRAMES_PER_CHUNK * 1000) / unit.sampleRate;
     metrics = buildPerformance({
       frameCount: chunkCount,
-      // 映像と同じく、入力の用意にかかった時間はエンコーダーの実力に数えない。
+      // 映像と同じく、入力の用意と入力待ちはエンコーダーの実力に数えない。
       processingMs: Math.max(
         0,
-        performance.now() - encodeStartedAt - sourcePreparationMs,
+        performance.now() - encodeStartedAt - sourcePreparationMs - inputWaitMs,
       ),
       frameBudgetMs: chunkBudgetMs,
       requestedFps: unit.sampleRate / AUDIO_FRAMES_PER_CHUNK,
@@ -848,9 +960,20 @@ const runAudioUnit = async (
         0,
       ),
       maxQueueSize: 0,
-      inputWaitMs: 0,
+      inputWaitMs,
       sourcePreparationMs,
     });
+
+    if (liveFeed) {
+      sourceInfo = liveFeed.getCaptured();
+      /*
+        2ch を要求したのにキャプチャが 1ch だった場合、複製して形だけ合わせている。
+        エンコードは通るが「2ch を実際に扱えた」ことにはならないので、警告として残す。
+      */
+      if (unit.channels > 1 && (sourceInfo.channelCount ?? 0) === 1) {
+        warning = "live-audio-captured-as-mono";
+      }
+    }
 
     stage = "decode";
     onStage("decode");
@@ -908,14 +1031,15 @@ const runAudioUnit = async (
     sampleRate: unit.sampleRate,
     bitrate: unit.bitrate,
     requestedConfig,
+    source: sourceInfo,
     testMode,
-    inputMode: "synthetic",
+    inputMode: liveAudioReader ? "live" : "synthetic",
     declared,
     encodedChunks,
     decodedFrames,
     muxedBytes,
     usable,
-    warning: null,
+    warning,
     error,
     stage,
     performance: metrics,
@@ -938,15 +1062,18 @@ const closeLiveSource = async (): Promise<void> => {
   const current = liveSource;
   liveSource = null;
   if (!current) return;
-  try {
-    await current.reader.cancel();
-  } catch {
-    // 既に閉じたストリーム。トラック停止は呼び出し元が行う。
-  }
-  try {
-    current.reader.releaseLock();
-  } catch {
-    // cancel() 済みならロックは解放されている。
+  for (const reader of [current.reader, current.audioReader]) {
+    if (!reader) continue;
+    try {
+      await reader.cancel();
+    } catch {
+      // 既に閉じたストリーム。トラック停止は呼び出し元が行う。
+    }
+    try {
+      reader.releaseLock();
+    } catch {
+      // cancel() 済みならロックは解放されている。
+    }
   }
 };
 
@@ -973,6 +1100,7 @@ const handleRunUnit = async (
             onStage,
             testMode: request.testMode,
             durationMs: request.durationMs,
+            liveSource,
           });
     post({ type: "unit-result", requestId: request.requestId, result });
   } catch (thrown) {
@@ -1004,7 +1132,8 @@ workerScope.addEventListener(
         try {
           await closeLiveSource();
           liveSource = {
-            reader: request.readable.getReader(),
+            reader: request.video.getReader(),
+            audioReader: request.audio?.getReader() ?? null,
             info: request.source,
           };
           post({ type: "ack", requestId: request.requestId });

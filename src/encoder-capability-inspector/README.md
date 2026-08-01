@@ -48,10 +48,27 @@
 入力は 2 モード。
 
 - **合成パターン**: 再現可能な性能検査
-- **画面・タブのキャプチャ**: `getDisplayMedia` + `MediaStreamTrackProcessor` で実映像を流す。
-  **録画ファイルは一切作成しない。** 映像フレームしか供給できないため音声候補は対象外。
+- **画面・タブのキャプチャ**: `getDisplayMedia` + `MediaStreamTrackProcessor` で実映像・実音声を流す。
+  **録画ファイルは一切作成しない。**
 
 実効 FPS が要求 FPS の 75% を下回ると、成功でも警告として記録する。
+
+#### キャプチャ音声の扱い
+
+共有ダイアログで音声を共有すると、音声候補もキャプチャした実音声で検査できる。
+共有しなかった場合、音声候補を選んでいると `live-capture-audio-track-unavailable` で止まる。
+
+`AudioEncoder` は設定どおりのサンプルレートとチャンネル数の `AudioData` しか受け取らないので、
+チャンネルの割り当てと線形補間のリサンプルを挟んで形を合わせる（[workers/liveAudio.ts](workers/liveAudio.ts)）。
+音質のためではなく、環境が違っても検査を通すための処置。
+
+音声処理（エコーキャンセル・ノイズ抑制・自動ゲイン）を有効にすると、処理系がモノラル前提のために
+トラックが 1ch へ落ちてくることがある。そのため制約ですべて切ってから要求する。
+ただしこれで必ず 2ch になるわけではない（共有元が本当にモノラルのこともある）。
+実際に何 ch で取れたかは `getSettings()` で確かめ、結果へ残す。
+2ch 候補を 1ch のキャプチャで通した場合は複製で形を合わせたうえで
+`live-audio-captured-as-mono` を警告として記録する。エンコードは通るが、
+2ch を実際に扱えたことの確認にはならないため。
 
 ## 合成パターン
 
@@ -139,6 +156,13 @@ UI 側は候補を 1 つずつ投げて進捗を受け取るだけ。
 結果は新しいものから先頭に積まれるので、利用者がスクロール中なら挿入ぶんだけ位置を補正する。
 並べ替え中は行がどこに入るか分からないため、この補正は行わない。
 
+### 経過時間は実働で数える
+
+中断して再開できる以上、最初に開始した時刻からの経過には「止まっていた時間」が入ってしまう。
+そこでレポートは実際に検査していた時間の累計（`activeMs`）を持ち、経過表示と残り見込みはこれを使う。
+`activeMs` は `updatedAt` の時点までの値なので、実行中の表示はそこからの差分を足して出す。
+実用継続検査を回しているあいだは一括検査の時計を進めない。
+
 ### 保存は終端状態だけ
 
 実行中の結果はメモリ（jotai）にだけ置き、IndexedDB へ書くのは `complete` / `cancelled` / `failed` に
@@ -190,6 +214,7 @@ WebCodecs は Node で動かないため、単体テストの対象は純粋関�
 
 - [domain/plan.test.ts](domain/plan.test.ts): 候補行列の件数・ID の一意性・codec string の形式
 - [domain/synthetic.test.ts](domain/synthetic.test.ts): 合成パターンの決定性・位相の連続・クリップしないこと
+- [workers/liveAudio.test.ts](workers/liveAudio.test.ts): キャプチャ音声のチャンネル割り当て・リサンプル・詰め替え
 - [domain/report.test.ts](domain/report.test.ts): 完了判定・`previousCompleted` フォールバック・ファミリー集計
 - [domain/filters.test.ts](domain/filters.test.ts): 絞り込み述語
 - [utils/preferences.test.ts](utils/preferences.test.ts): 設定値の検証

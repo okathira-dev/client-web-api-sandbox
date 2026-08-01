@@ -68,8 +68,12 @@ const translation: TranslationResource = {
     description:
       "選択した具体的な設定を、指定した時間ぶんだけ実出力・デコード・多重化まで通して検査します。単発の少数フレーム結果では分からない継続性能を確認するためのものです。ライブ入力はブラウザーの画面共有ダイアログを開きますが、録画ファイルは一切作成しません。",
     captureFailed: "画面キャプチャを取得できませんでした: {{reason}}",
-    audioNotSupported:
-      "ライブ入力は映像フレームしか供給できないため、音声候補は対象外です。音声候補の選択を外すか、入力を「合成パターン」に切り替えてください。",
+    liveAudioNote:
+      "音声候補をライブ入力で検査するには、共有ダイアログで音声の共有を有効にしてください。共有されなかった場合は音声候補を検査できません。",
+    liveAudioMono:
+      "キャプチャした音声が 1ch でした。2ch の候補は複製して形だけ合わせているため、2ch を実際に扱えたことの確認にはなりません。共有元の音声がステレオか確認してください。",
+    audioSourceLine: "音声 {{channels}}ch @ {{sampleRate}} Hz",
+    audioSourceNone: "音声の共有なし",
     inputLabel: "入力",
     inputSynthetic: "合成パターン（再現可能）",
     inputLive: "画面・タブのキャプチャ",
@@ -167,8 +171,10 @@ const translation: TranslationResource = {
     "live-capture-unavailable": "ライブ入力を取得できません",
     "live-capture-video-track-unavailable":
       "キャプチャに映像トラックが含まれていません",
-    "live-sustained-inspection-is-video-only":
-      "ライブ入力の継続検査は映像候補のみが対象です",
+    "live-capture-audio-track-unavailable":
+      "音声が共有されていないため音声候補を検査できません",
+    "live-audio-captured-as-mono":
+      "キャプチャした音声が 1ch のため、2ch は複製で埋めました",
     "media-stream-track-processor-unavailable":
       "MediaStreamTrackProcessor が利用できません",
     "display-capture-unavailable": "画面キャプチャ API が利用できません",

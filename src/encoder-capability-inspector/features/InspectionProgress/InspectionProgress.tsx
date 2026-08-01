@@ -17,7 +17,8 @@ import {
   useProgress,
   useResultCounts,
 } from "../../atoms/report";
-import { useIsRunning } from "../../atoms/runState";
+import { useIsRunning, useRunKind } from "../../atoms/runState";
+import { getActiveElapsedMs, getRemainingMs } from "../../domain/report";
 import { formatDuration } from "../../utils/format";
 
 /** 候補を処理していないときの状態表示。未開始・待機・完了・中断・失敗を区別する（仕様 3.4）。 */
@@ -53,18 +54,27 @@ export const InspectionProgress = () => {
   const families = useFamilySummaries();
   const environment = useEnvironment();
   const running = useIsRunning();
+  const runKind = useRunKind();
   const now = useTicker(running);
 
-  const elapsedMs = progress.startedAt
-    ? (progress.completedAt ?? now) - progress.startedAt
-    : 0;
-  const averageMs =
-    progress.completedUnits > 0 ? elapsedMs / progress.completedUnits : 0;
-  const remainingUnits = Math.max(
-    0,
-    progress.totalUnits - progress.completedUnits,
-  );
-  const etaMs = running && averageMs > 0 ? averageMs * remainingUnits : null;
+  /*
+    一括検査が動いているあいだだけ時計を進める。
+    中断していた時間や、実用継続検査を回していた時間はここへ数えない。
+  */
+  const counting = running && runKind === "full";
+  const elapsedMs = getActiveElapsedMs({
+    activeMs: progress.activeMs,
+    updatedAt: progress.updatedAt,
+    running: counting,
+    now,
+  });
+  const etaMs = counting
+    ? getRemainingMs({
+        elapsedMs,
+        completedUnits: progress.completedUnits,
+        totalUnits: progress.totalUnits,
+      })
+    : null;
 
   return (
     <Card variant="outlined">

@@ -90,6 +90,42 @@ export const summarizeFamilies = (
   });
 };
 
+/**
+ * 経過時間。中断していた時間は数えない。
+ *
+ * `activeMs` はレポートを更新した時点までの累計なので、実行中はそこからの差分を足す。
+ * 実行中でないときに足すと、中断して眺めているあいだも時間が進んでしまう。
+ */
+export const getActiveElapsedMs = ({
+  activeMs,
+  updatedAt,
+  running,
+  now,
+}: {
+  activeMs: number;
+  updatedAt: number;
+  running: boolean;
+  now: number;
+}): number => (running ? activeMs + Math.max(0, now - updatedAt) : activeMs);
+
+/**
+ * 残りの候補にかかる見込み。1 候補あたりの実働時間から出す。
+ * まだ 1 件も終わっていない、または残りが無いときは出さない。
+ */
+export const getRemainingMs = ({
+  elapsedMs,
+  completedUnits,
+  totalUnits,
+}: {
+  elapsedMs: number;
+  completedUnits: number;
+  totalUnits: number;
+}): number | null => {
+  const remainingUnits = totalUnits - completedUnits;
+  if (completedUnits <= 0 || remainingUnits <= 0) return null;
+  return (elapsedMs / completedUnits) * remainingUnits;
+};
+
 export type ResultCounts = {
   readonly pass: number;
   readonly warning: number;

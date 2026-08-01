@@ -1,13 +1,11 @@
 import { Box, Paper, Stack, Typography } from "@mui/material";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { useCallback, useLayoutEffect, useMemo, useRef } from "react";
+import { useLayoutEffect, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useSustainedInputMode } from "../../atoms/preferences";
 import { useResults } from "../../atoms/report";
 import type { ResultFilters } from "../../domain/filters";
 import type { SortField } from "../../domain/sorting";
-import type { UnitResult } from "../../domain/types";
 import { useDetailsSearchText } from "../../utils/messages";
 import {
   filterResults,
@@ -36,7 +34,6 @@ export const ResultTable = () => {
   const selectedIds = useSelectedIds();
   const toggleSelection = useToggleSelection();
   const toggleMany = useToggleManySelection();
-  const inputMode = useSustainedInputMode();
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const previousTopIdRef = useRef<string | null>(null);
@@ -53,17 +50,10 @@ export const ResultTable = () => {
   );
   const options = useMemo(() => getFilterOptions(results), [results]);
 
-  // ライブ入力の Sustained test は映像フレームしか供給できないため、音声候補は選べない。
-  const isSelectable = useCallback(
-    (kind: UnitResult["kind"]) => inputMode !== "live" || kind === "video",
-    [inputMode],
-  );
+  // ライブ入力でも音声トラックを共有すれば音声候補を検査できるので、種別では絞らない。
   const selectableIds = useMemo(
-    () =>
-      filtered
-        .filter((result) => isSelectable(result.kind))
-        .map((result) => result.id),
-    [filtered, isSelectable],
+    () => filtered.map((result) => result.id),
+    [filtered],
   );
   const selectedVisibleCount = selectableIds.filter((id) =>
     selectedIds.has(id),
@@ -183,7 +173,6 @@ export const ResultTable = () => {
                     key={virtualRow.key}
                     result={result}
                     selected={selectedIds.has(result.id)}
-                    selectionDisabled={!isSelectable(result.kind)}
                     onToggle={toggleSelection}
                     style={{ transform: `translateY(${virtualRow.start}px)` }}
                   />

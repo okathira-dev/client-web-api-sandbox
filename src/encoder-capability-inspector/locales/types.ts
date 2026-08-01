@@ -76,7 +76,10 @@ export type SustainedTranslations = {
   heading: string;
   description: string;
   captureFailed: string;
-  audioNotSupported: string;
+  liveAudioNote: string;
+  liveAudioMono: string;
+  audioSourceLine: string;
+  audioSourceNone: string;
   inputLabel: string;
   inputSynthetic: string;
   inputLive: string;
@@ -176,7 +179,8 @@ export type CodeTranslations = {
   "live-capture-ended": string;
   "live-capture-unavailable": string;
   "live-capture-video-track-unavailable": string;
-  "live-sustained-inspection-is-video-only": string;
+  "live-capture-audio-track-unavailable": string;
+  "live-audio-captured-as-mono": string;
   "media-stream-track-processor-unavailable": string;
   "display-capture-unavailable": string;
   "capability-report-not-found": string;

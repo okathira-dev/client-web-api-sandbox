@@ -81,7 +81,11 @@ export const useInspectionControls = () => {
           candidatePauseMs,
           inputMode,
           liveCapture: liveCapture
-            ? { readable: liveCapture.readable, info: liveCapture.info }
+            ? {
+                video: liveCapture.video,
+                audio: liveCapture.audio,
+                info: liveCapture.info,
+              }
             : null,
           signal: controller.signal,
           onProgress: setReport,
