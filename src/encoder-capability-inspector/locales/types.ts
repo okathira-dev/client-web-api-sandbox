@@ -90,6 +90,27 @@ export type SustainedTranslations = {
   sourceLine: string;
 };
 
+/** 合成パターンのプレビュー。検査へ渡す入力そのものを見せる。 */
+export type PreviewTranslations = {
+  heading: string;
+  description: string;
+  compatibilityHeading: string;
+  compatibilityNote: string;
+  sustainedHeading: string;
+  sustainedNote: string;
+  compatibilityVideoLabel: string;
+  sustainedVideoLabel: string;
+  compatibilityAudioLabel: string;
+  sustainedAudioLabel: string;
+  playVideo: string;
+  pauseVideo: string;
+  play: string;
+  stop: string;
+  volumeNote: string;
+  runningNote: string;
+  unavailable: string;
+};
+
 export type TableTranslations = {
   summary: string;
   selectedSuffix: string;
@@ -174,6 +195,7 @@ export type TranslationResource = {
   runStatus: RunStatusTranslations;
   progress: ProgressTranslations;
   sustained: SustainedTranslations;
+  preview: PreviewTranslations;
   table: TableTranslations;
   family: FamilyTranslations;
   codes: CodeTranslations;

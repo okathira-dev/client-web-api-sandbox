@@ -2,9 +2,10 @@
 
 /**
  * レポート形式の版数。候補行列や結果の構造を変えたら上げる。
+ * 合成パターンや計測方法のように、値の意味が変わる変更でも上げる。
  * 版が違う保存済みレポートは、設定の判断材料として使わない。
  */
-export const REPORT_VERSION = 2;
+export const REPORT_VERSION = 3;
 
 export const REPORT_DB_NAME = "encoder-capability-inspector";
 export const REPORT_DB_VERSION = 1;

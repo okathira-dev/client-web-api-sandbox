@@ -21,6 +21,13 @@ import {
   SUPPORT_CHECK_TIMEOUT_MS,
   SUSTAINED_THROUGHPUT_WARNING_RATIO,
 } from "../consts/inspection";
+import {
+  createCompatibilityAudioSamples,
+  createSustainedAudioGenerator,
+  getCompatibilityFrameOps,
+  getSustainedFrameOps,
+  type SyntheticAudioGenerator,
+} from "../domain/synthetic";
 import type {
   AudioInspectionUnit,
   AudioUnitResult,
@@ -32,6 +39,10 @@ import type {
   VideoInspectionUnit,
   VideoUnitResult,
 } from "../domain/types";
+import {
+  createNoiseTileCanvases,
+  drawFrameOps,
+} from "../utils/syntheticCanvas";
 import {
   createAbortError,
   describeError,
@@ -163,25 +174,15 @@ const buildPerformance = ({
 // 映像
 // ---------------------------------------------------------------------------
 
-/** 圧縮しやすい単色にならないよう、フレームごとに色と位置を動かす。 */
-const drawSyntheticFrame = (
-  context: OffscreenCanvasRenderingContext2D,
-  width: number,
-  height: number,
-  index: number,
-): void => {
-  const hue = (index * 19) % 360;
-  context.fillStyle = `hsl(${hue}, 65%, 35%)`;
-  context.fillRect(0, 0, width, height);
-  context.fillStyle = `hsl(${(hue + 150) % 360}, 75%, 65%)`;
-  const boxWidth = Math.max(8, Math.floor(width / 8));
-  const boxHeight = Math.max(8, Math.floor(height / 8));
-  context.fillRect(
-    (index * boxWidth) % Math.max(boxWidth, width - boxWidth),
-    (index * boxHeight) % Math.max(boxHeight, height - boxHeight),
-    boxWidth,
-    boxHeight,
-  );
+/**
+ * ノイズタイルは候補をまたいで同じものを使うので、ワーカーの生存期間で 1 度だけ作る。
+ * 候補ごとに作り直すと、484 回ぶんの生成が丸ごと計測に乗ってしまう。
+ */
+let noiseTiles: OffscreenCanvas[] | null = null;
+
+const getNoiseTiles = (): OffscreenCanvas[] => {
+  noiseTiles ??= createNoiseTileCanvases();
+  return noiseTiles;
 };
 
 const getVideoFrameCount = (
@@ -407,9 +408,18 @@ const runVideoUnit = async (
     let missingInputFrames = 0;
     let previousInputTimestamp: number | null = null;
 
-    // 互換性検査の合成入力は内容が変わらないので、描画は 1 回で足りる。
+    /*
+      一括実用検査の合成入力は 1 枚を使い回す。
+      全候補を 1 周する検査なので、入力生成は軽いほどよく、
+      フレーム予算の比較も入力生成の揺れに左右されないほうがいい。
+      動きと情報量が要るのは、エンコーダーの実力を測る実用継続検査のほう。
+    */
     if (!liveSource && !isSustained) {
-      drawSyntheticFrame(context, unit.width, unit.height, 0);
+      drawFrameOps(
+        context,
+        getCompatibilityFrameOps(unit.width, unit.height),
+        getNoiseTiles(),
+      );
     }
 
     const encodeStartedAt = performance.now();
@@ -449,7 +459,11 @@ const runVideoUnit = async (
         });
       } else {
         if (isSustained) {
-          drawSyntheticFrame(context, unit.width, unit.height, index);
+          drawFrameOps(
+            context,
+            getSustainedFrameOps(index, unit.width, unit.height),
+            getNoiseTiles(),
+          );
         }
         frame = new VideoFrame(canvas, {
           timestamp: index * frameDurationUs,
@@ -483,9 +497,14 @@ const runVideoUnit = async (
     if (entries.length === 0) throw new Error("encoder-no-output");
     encodedChunks = entries.length;
 
+    /*
+      入力の用意にかかった時間は差し引き、エンコーダーが捌けた速さだけを見る。
+      合成パターンの生成もライブフレームの拡縮も検査治具の都合であって、
+      実際の録画では既にできているフレームが渡ってくる。
+    */
     const processingMs = Math.max(
       0,
-      performance.now() - encodeStartedAt - inputWaitMs,
+      performance.now() - encodeStartedAt - inputWaitMs - sourcePreparationMs,
     );
     metrics = buildPerformance({
       frameCount,
@@ -599,30 +618,24 @@ const runVideoUnit = async (
 // 音声
 // ---------------------------------------------------------------------------
 
+/**
+ * `AudioData` は構築時にサンプルを取り込むので、同じ配列を渡し続けてよい。
+ * 一括実用検査では 1 チャンクぶんを作って使い回し、生成の負荷を検査へ持ち込まない。
+ */
 const createAudioData = ({
+  samples,
   channels,
   sampleRate,
   frames,
   timestamp,
-  phase,
 }: {
+  samples: Float32Array<ArrayBuffer>;
   channels: number;
   sampleRate: number;
   frames: number;
   timestamp: number;
-  phase: number;
-}): AudioData => {
-  const samples = new Float32Array(frames * channels);
-  for (let channel = 0; channel < channels; channel += 1) {
-    // チャンネルごとに違う周波数を入れ、多チャンネルが潰れていないか分かるようにする。
-    const frequency = 440 + channel * 110;
-    for (let index = 0; index < frames; index += 1) {
-      samples[channel * frames + index] =
-        Math.sin((2 * Math.PI * frequency * (index + phase)) / sampleRate) *
-        0.15;
-    }
-  }
-  return new AudioData({
+}): AudioData =>
+  new AudioData({
     format: "f32-planar",
     sampleRate,
     numberOfFrames: frames,
@@ -630,7 +643,6 @@ const createAudioData = ({
     timestamp,
     data: samples,
   });
-};
 
 const verifyAudioDecode = async (
   entries: readonly AudioChunkEntry[],
@@ -766,18 +778,43 @@ const runAudioUnit = async (
     encoder.configure(support.config ?? requestedConfig);
 
     const chunkCount = getAudioChunkCount(unit, testMode, durationMs);
+    const isSustained = testMode === "sustained";
+    /*
+      実用継続検査は掃引と微小ノイズでチャンクごとに中身が変わる。位相は生成器が
+      持ち回るので、チャンクの境界で波形が飛ばない。
+      一括実用検査は同じ 1 チャンクを繰り返す。周波数を 50Hz の倍数に揃えてあるので、
+      繰り返しても継ぎ目が出ない。
+    */
+    const generator: SyntheticAudioGenerator | null = isSustained
+      ? createSustainedAudioGenerator({
+          channels: unit.channels,
+          sampleRate: unit.sampleRate,
+        })
+      : null;
+    const samples = generator
+      ? new Float32Array(AUDIO_FRAMES_PER_CHUNK * unit.channels)
+      : createCompatibilityAudioSamples({
+          channels: unit.channels,
+          sampleRate: unit.sampleRate,
+          frames: AUDIO_FRAMES_PER_CHUNK,
+        });
+
+    let sourcePreparationMs = 0;
     const encodeStartedAt = performance.now();
     for (let index = 0; index < chunkCount; index += 1) {
       throwIfAborted(signal);
+      const sourceStartedAt = performance.now();
+      generator?.fill(samples, AUDIO_FRAMES_PER_CHUNK);
       const data = createAudioData({
+        samples,
         channels: unit.channels,
         sampleRate: unit.sampleRate,
         frames: AUDIO_FRAMES_PER_CHUNK,
         timestamp: Math.round(
           (index * AUDIO_FRAMES_PER_CHUNK * 1_000_000) / unit.sampleRate,
         ),
-        phase: index * AUDIO_FRAMES_PER_CHUNK,
       });
+      sourcePreparationMs += performance.now() - sourceStartedAt;
       try {
         encoder.encode(data);
       } finally {
@@ -799,7 +836,11 @@ const runAudioUnit = async (
     const chunkBudgetMs = (AUDIO_FRAMES_PER_CHUNK * 1000) / unit.sampleRate;
     metrics = buildPerformance({
       frameCount: chunkCount,
-      processingMs: performance.now() - encodeStartedAt,
+      // 映像と同じく、入力の用意にかかった時間はエンコーダーの実力に数えない。
+      processingMs: Math.max(
+        0,
+        performance.now() - encodeStartedAt - sourcePreparationMs,
+      ),
       frameBudgetMs: chunkBudgetMs,
       requestedFps: unit.sampleRate / AUDIO_FRAMES_PER_CHUNK,
       outputBytes: entries.reduce(
@@ -808,7 +849,7 @@ const runAudioUnit = async (
       ),
       maxQueueSize: 0,
       inputWaitMs: 0,
-      sourcePreparationMs: 0,
+      sourcePreparationMs,
     });
 
     stage = "decode";

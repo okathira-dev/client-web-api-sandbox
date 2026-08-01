@@ -99,7 +99,11 @@ export type LiveSourceStats = LiveSourceInfo & {
 
 export type PerformanceMetrics = {
   readonly frameCount: number;
-  /** 入力待ちを除いた実処理時間。 */
+  /**
+   * エンコードに要した時間。入力待ちと入力の用意（合成パターンの生成・ライブ
+   * フレームの拡縮）は差し引いてある。実際の録画では既にできているフレームが
+   * 渡ってくるので、検査治具の都合をエンコーダーの実力に混ぜない。
+   */
   readonly processingMs: number;
   readonly averageProcessingMs: number;
   /** 1 フレームあたりの許容時間 (1000 / fps)。 */
@@ -112,6 +116,7 @@ export type PerformanceMetrics = {
   readonly maxQueueSize: number;
   /** ライブ入力でフレームが届くのを待った時間。合成入力では 0。 */
   readonly inputWaitMs: number;
+  /** 入力を用意するのにかかった時間。`processingMs` からは除いてある。 */
   readonly sourcePreparationMs: number;
   readonly decodeMs: number | null;
   readonly muxMs: number | null;

@@ -53,6 +53,53 @@
 
 実効 FPS が要求 FPS の 75% を下回ると、成功でも警告として記録する。
 
+## 合成パターン
+
+2 種類の検査は入力に求めるものが違うので、パターンも 2 系統に分ける
+（[domain/synthetic.ts](domain/synthetic.ts)）。
+
+| | 包括検査 | 継続検査 |
+| --- | --- | --- |
+| 映像 | 1 枚を作って全フレームで使い回す | フレームごとに作り直す |
+| 音声 | 1 チャンクを作って繰り返す | チャンクごとに作り直す |
+| 狙い | 生成負荷を検査へ持ち込まない | 圧縮が効きすぎない絵と音にする |
+
+包括検査は 484 候補を 1 周するので、入力生成は軽いほど結果が揺れない。
+一方、継続検査で単色の静止画や単一の正弦波を流すと、圧縮が効きすぎてエンコーダーの実力が測れない。
+継続検査のパターンには、色相が回る背景・横スクロールする縞・速度の違う矩形・移動するノイズタイルと、
+多重波形の対数掃引・振幅掃引・微小ノイズを入れてある。
+
+計測にあたっては、入力の用意にかかった時間（合成パターンの生成、ライブフレームの拡縮）を
+`processingMs` から差し引く。実際の録画では既にできているフレームが渡ってくるので、
+検査治具の都合をエンコーダーの実力に混ぜない。
+
+パターンはすべてフレーム番号・サンプル位置から決まるので、何度実行しても同じ列が出る。
+乱数はシード付きの線形合同法で、`Math.random` は使わない。
+
+### 目と耳で確かめる
+
+アプリ上の「合成パターンを確認」（既定は折りたたみ）で、検査へ渡すのと同じ生成コードから
+映像を再生し、音声を波形付きで鳴らせる。検査の実行中は止まる。
+
+ファイルとしても書き出せる。出力は [samples](samples) に置いて git 管理する。
+
+```bash
+npm run inspector:samples        # 生成しなおす
+npm run inspector:samples:check  # 現在のパターンと一致しているか確かめる
+```
+
+- `video/compatibility.png`: 包括検査の 1 枚
+- `video/sustained.png`: 継続検査の動き（APNG。ブラウザーでそのまま再生される）
+- `audio/*.wav`: 48kHz/16bit
+- `manifest.json`: 生成条件と、圧縮前の生データの SHA-256
+
+書き出しは Node の `zlib` だけで PNG / APNG / WAV を組み立てる（[scripts](scripts)）。
+ffmpeg も追加の依存も要らない。`--check` は生データのハッシュだけを見るので、
+zlib の実装差でファイルのバイト列が変わっても誤検出しない。
+
+Canvas 側と Node 側で同じ画素になるよう、描画命令は整数座標の矩形塗りとタイルの等倍貼りだけに限り、
+色は `hsl()` 文字列を経由せず RGB の整数で持つ。
+
 ## 使い方
 
 ```bash
@@ -142,6 +189,7 @@ npm run test:ci
 WebCodecs は Node で動かないため、単体テストの対象は純粋関数のみ。
 
 - [domain/plan.test.ts](domain/plan.test.ts): 候補行列の件数・ID の一意性・codec string の形式
+- [domain/synthetic.test.ts](domain/synthetic.test.ts): 合成パターンの決定性・位相の連続・クリップしないこと
 - [domain/report.test.ts](domain/report.test.ts): 完了判定・`previousCompleted` フォールバック・ファミリー集計
 - [domain/filters.test.ts](domain/filters.test.ts): 絞り込み述語
 - [utils/preferences.test.ts](utils/preferences.test.ts): 設定値の検証

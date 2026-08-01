@@ -13,6 +13,7 @@ import { InspectionProgress } from "./features/InspectionProgress";
 import { InspectionRunner } from "./features/InspectionRunner";
 import { ResultTable } from "./features/ResultTable";
 import { SustainedTest } from "./features/SustainedTest";
+import { SyntheticPreview } from "./features/SyntheticPreview";
 
 const GITHUB_URL =
   "https://github.com/okathira-dev/client-web-api-sandbox/tree/main/src/encoder-capability-inspector";
@@ -51,6 +52,7 @@ export const App = () => {
         <InspectionRunner />
         <InspectionProgress />
         <SustainedTest />
+        <SyntheticPreview />
         <ResultTable />
       </Stack>
     </Container>

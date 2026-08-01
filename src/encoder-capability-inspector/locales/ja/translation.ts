@@ -82,6 +82,29 @@ const translation: TranslationResource = {
     statusDetail: "{{completed}} / {{total}} 件 · {{seconds}} 秒 · {{input}}",
     sourceLine: "入力: {{width}}×{{height}} @ {{fps}} fps",
   },
+  preview: {
+    heading: "合成パターンを確認",
+    description:
+      "検査へ渡している入力そのものを、同じ生成コードで再生します。表示は {{width}}×{{height}} ですが、実際の検査は候補ごとの解像度で同じパターンを描きます。音声は {{seconds}} 秒ぶんを繰り返し再生します。",
+    compatibilityHeading: "一括実用検査の入力",
+    compatibilityNote:
+      "1 枚・1 チャンクだけ作って使い回します。全候補を 1 周する検査なので、入力生成は軽いほど結果が揺れません。動かないのが正しい状態です。",
+    sustainedHeading: "実用継続検査の入力",
+    sustainedNote:
+      "フレームごと・チャンクごとに作り直します。動きと情報量が無いと圧縮が効きすぎ、エンコーダーの実力を測れないためです。",
+    compatibilityVideoLabel: "一括実用検査の映像パターン",
+    sustainedVideoLabel: "実用継続検査の映像パターン",
+    compatibilityAudioLabel: "一括実用検査の音声パターンの波形",
+    sustainedAudioLabel: "実用継続検査の音声パターンの波形",
+    playVideo: "映像を再生",
+    pauseVideo: "映像を停止",
+    play: "音声を再生",
+    stop: "音声を停止",
+    volumeNote:
+      "合成パターンはほぼフルスケールのため、プレビューは音量を下げて再生します。実際の振幅は samples/ の WAV で確認できます。",
+    runningNote: "検査の実行中はプレビューを止めています。",
+    unavailable: "この環境ではプレビューを描画できません。",
+  },
   table: {
     summary: "{{total}} 件中 {{shown}} 件を表示",
     selectedSuffix: " · {{count}} 件を選択中",
