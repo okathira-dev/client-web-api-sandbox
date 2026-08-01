@@ -10,6 +10,7 @@
 import type {
   AudioCandidate,
   ContainerFormat,
+  ExperimentalReason,
   VideoCandidate,
   VideoFamily,
 } from "../domain/types";
@@ -23,6 +24,18 @@ type LevelRow = readonly [
   fps: number,
   bitrate: number,
   experimental?: boolean,
+];
+
+/**
+ * 候補 1 件の experimental 理由をまとめる。
+ * Level 由来の理由は行の真偽値から起こし、Profile 由来の理由と重複させない。
+ */
+const collectExperimentalReasons = (
+  levelExperimental: boolean | undefined,
+  profileReasons: readonly ExperimentalReason[] = [],
+): readonly ExperimentalReason[] => [
+  ...profileReasons,
+  ...(levelExperimental ? (["level-6x"] as const) : []),
 ];
 
 const H264_LEVELS: readonly LevelRow[] = [
@@ -40,19 +53,19 @@ const H264_LEVELS: readonly LevelRow[] = [
   ["3E", "6.2", 3840, 2160, 60, 60_000_000, true],
 ];
 
-/** [profile_idc + constraint flags, 表示名, 対応が期待しにくいか, ビット深度] */
+/** [profile_idc + constraint flags, 表示名, experimental の理由, ビット深度] */
 const H264_PROFILES: readonly (readonly [
   prefix: string,
   profile: string,
-  experimental?: boolean,
+  reasons: readonly ExperimentalReason[],
   bitDepth?: number,
 ])[] = [
-  ["42E0", "Constrained Baseline"],
-  ["4D40", "Main"],
-  ["6400", "High"],
-  ["6E00", "High 10", true, 10],
-  ["7A00", "High 4:2:2", true, 10],
-  ["F400", "High 4:4:4 Predictive", true, 10],
+  ["42E0", "Constrained Baseline", []],
+  ["4D40", "Main", []],
+  ["6400", "High", []],
+  ["6E00", "High 10", ["bit-depth-10"], 10],
+  ["7A00", "High 4:2:2", ["chroma-422", "bit-depth-10"], 10],
+  ["F400", "High 4:4:4 Predictive", ["chroma-444", "bit-depth-10"], 10],
 ];
 
 const HEVC_LEVELS: readonly LevelRow[] = [
@@ -132,10 +145,14 @@ const CONTAINER_BY_FAMILY: Record<VideoFamily, ContainerFormat> = {
 };
 
 const buildH264Candidates = (): VideoCandidate[] =>
-  H264_PROFILES.flatMap(([prefix, profile, profileExperimental, bitDepth]) =>
+  H264_PROFILES.flatMap(([prefix, profile, profileReasons, bitDepth]) =>
     H264_LEVELS.map(
       ([levelCode, level, width, height, fps, bitrate, levelExperimental]) => {
         const codec = `avc1.${prefix}${levelCode}`;
+        const experimentalReasons = collectExperimentalReasons(
+          levelExperimental,
+          profileReasons,
+        );
         return {
           candidateId: codec,
           family: "h264",
@@ -149,7 +166,8 @@ const buildH264Candidates = (): VideoCandidate[] =>
           bitrate,
           container: CONTAINER_BY_FAMILY.h264,
           containerCodec: "avc",
-          experimental: Boolean(levelExperimental ?? profileExperimental),
+          experimental: experimentalReasons.length > 0,
+          experimentalReasons,
           label: `${profile} · Level ${level}`,
         } satisfies VideoCandidate;
       },
@@ -162,6 +180,10 @@ const buildHevcCandidates = (): VideoCandidate[] =>
       HEVC_LEVELS.map(
         ([levelIdc, level, width, height, fps, bitrate, levelExperimental]) => {
           const codec = `${sampleEntry}.${profileId}.${compatibility}.L${levelIdc}.B0`;
+          const experimentalReasons = collectExperimentalReasons(
+            levelExperimental,
+            bitDepth > 8 ? ["bit-depth-10"] : [],
+          );
           return {
             candidateId: codec,
             family: "h265",
@@ -175,7 +197,8 @@ const buildHevcCandidates = (): VideoCandidate[] =>
             bitrate,
             container: CONTAINER_BY_FAMILY.h265,
             containerCodec: "hevc",
-            experimental: Boolean(levelExperimental) || bitDepth > 8,
+            experimental: experimentalReasons.length > 0,
+            experimentalReasons,
             label: `${profile} ${sampleEntry} · Level ${level}`,
           } satisfies VideoCandidate;
         },
@@ -189,6 +212,10 @@ const buildVp9Candidates = (): VideoCandidate[] =>
       ([levelCode, level, width, height, fps, bitrate, levelExperimental]) => {
         const codec = `vp09.${profileCode}.${levelCode}.${String(bitDepth).padStart(2, "0")}`;
         const profile = `Profile ${Number(profileCode)} · ${bitDepth}-bit`;
+        const experimentalReasons = collectExperimentalReasons(
+          levelExperimental,
+          bitDepth > 8 ? ["bit-depth-10"] : [],
+        );
         return {
           candidateId: codec,
           family: "vp9",
@@ -202,7 +229,8 @@ const buildVp9Candidates = (): VideoCandidate[] =>
           bitrate,
           container: CONTAINER_BY_FAMILY.vp9,
           containerCodec: "vp9",
-          experimental: Boolean(levelExperimental) || bitDepth > 8,
+          experimental: experimentalReasons.length > 0,
+          experimentalReasons,
           label: `${profile} · Level ${level}`,
         } satisfies VideoCandidate;
       },
@@ -215,6 +243,13 @@ const buildAv1Candidates = (): VideoCandidate[] =>
       ([levelCode, level, width, height, fps, bitrate, levelExperimental]) => {
         const codec = `av01.${profileCode}.${levelCode}M.${String(bitDepth).padStart(2, "0")}`;
         const profileLabel = `${profile} · ${bitDepth}-bit`;
+        const experimentalReasons = collectExperimentalReasons(
+          levelExperimental,
+          [
+            ...(profileCode !== "0" ? (["high-profile"] as const) : []),
+            ...(bitDepth > 8 ? (["bit-depth-10"] as const) : []),
+          ],
+        );
         return {
           candidateId: codec,
           family: "av1",
@@ -228,8 +263,8 @@ const buildAv1Candidates = (): VideoCandidate[] =>
           bitrate,
           container: CONTAINER_BY_FAMILY.av1,
           containerCodec: "av1",
-          experimental:
-            Boolean(levelExperimental) || bitDepth > 8 || profileCode !== "0",
+          experimental: experimentalReasons.length > 0,
+          experimentalReasons,
           label: `${profileLabel} · Level ${level}`,
         } satisfies VideoCandidate;
       },
@@ -250,6 +285,7 @@ const VP8_CANDIDATE: VideoCandidate = {
   container: CONTAINER_BY_FAMILY.vp8,
   containerCodec: "vp8",
   experimental: false,
+  experimentalReasons: [],
   label: "VP8",
 };
 

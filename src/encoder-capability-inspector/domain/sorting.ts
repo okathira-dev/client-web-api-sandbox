@@ -1,5 +1,6 @@
 /** 結果一覧の並べ替え。絞り込みと同じく UI から切り離しておき、単体テストで担保する。 */
 
+import { getFamilyOrder } from "./families";
 import {
   type DetailsTextResolver,
   getBasicFrameTimePercent,
@@ -48,7 +49,8 @@ const getComparator = (
 ): Comparator => {
   switch (field) {
     case "family":
-      return byText((result) => result.family);
+      // 名前順だと映像と音声が混ざるので、種別でまとめてから並べる。
+      return byNumber((result) => getFamilyOrder(result.family));
     case "codec":
       return byText((result) => result.codec);
     case "variant":

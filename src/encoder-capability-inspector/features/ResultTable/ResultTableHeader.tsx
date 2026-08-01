@@ -1,58 +1,87 @@
+import UnfoldMoreIcon from "@mui/icons-material/UnfoldMore";
 import {
   Box,
   Checkbox,
   MenuItem,
   TableSortLabel,
   TextField,
+  Tooltip,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
+import { getFamilyKind } from "../../domain/families";
 import type { ResultFilters } from "../../domain/filters";
 import type { ResultSort, SortField } from "../../domain/sorting";
 import { RESULT_GRID_TEMPLATE } from "./consts";
 
+/**
+ * 見出しのセル。
+ *
+ * 並べ替えられることが伝わるよう、未ソートのときも中立の矢印を薄く出しておく。
+ * 既定の `TableSortLabel` は押すまでアイコンを隠すので、押せると気づけない。
+ */
 const HeaderCell = ({
   label,
   field,
   sort,
   onSort,
+  hint,
   children,
 }: {
   label: string;
   field: SortField;
   sort: ResultSort | null;
   onSort: (field: SortField) => void;
+  /** 見出しに補足がある列だけ渡す。 */
+  hint?: string;
   children?: React.ReactNode;
-}) => (
-  <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5, minWidth: 0 }}>
-    <TableSortLabel
-      active={sort?.field === field}
-      direction={sort?.field === field ? sort.direction : "asc"}
-      onClick={() => {
-        onSort(field);
-      }}
-      sx={{
-        fontSize: 12,
-        color: "text.secondary",
-        alignSelf: "flex-start",
-        maxWidth: "100%",
-        "& .MuiTableSortLabel-icon": { fontSize: 16 },
-      }}
+}) => {
+  const { t } = useTranslation();
+  const active = sort?.field === field;
+
+  return (
+    <Box
+      sx={{ display: "flex", flexDirection: "column", gap: 0.5, minWidth: 0 }}
     >
-      <Box
-        component="span"
-        sx={{
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
-        }}
+      <Tooltip
+        title={[hint, t("table.sortHint")].filter(Boolean).join(" / ")}
+        placement="top"
       >
-        {label}
-      </Box>
-    </TableSortLabel>
-    {children}
-  </Box>
-);
+        <TableSortLabel
+          active={active}
+          direction={active ? sort.direction : "asc"}
+          IconComponent={active ? undefined : UnfoldMoreIcon}
+          onClick={() => {
+            onSort(field);
+          }}
+          sx={{
+            fontSize: 12,
+            color: "text.secondary",
+            alignSelf: "flex-start",
+            maxWidth: "100%",
+            "& .MuiTableSortLabel-icon": {
+              fontSize: 16,
+              // 未ソートでも薄く出し続ける。既定では opacity 0 で隠れてしまう。
+              opacity: active ? 1 : 0.45,
+            },
+          }}
+        >
+          <Box
+            component="span"
+            sx={{
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {label}
+          </Box>
+        </TableSortLabel>
+      </Tooltip>
+      {children}
+    </Box>
+  );
+};
 
 const FilterSelect = ({
   allLabel,
@@ -148,7 +177,11 @@ export const ResultTableHeader = ({
           value={filters.family}
           options={familyOptions.map((family) => ({
             value: family,
-            label: t(`family.${family}`, { defaultValue: family }),
+            // 映像と音声が同じ並びに出るので、どちらの検査か分かるようにする。
+            label: `${t(`kind.${getFamilyKind(family)}`)} · ${t(
+              `family.${family}`,
+              { defaultValue: family },
+            )}`,
           }))}
           onChange={(value) => {
             onFilterChange("family", value);
@@ -223,7 +256,12 @@ export const ResultTableHeader = ({
         />
       </HeaderCell>
 
-      <HeaderCell label={t("table.columnBudget")} field="budget" {...sortProps}>
+      <HeaderCell
+        label={t("table.columnBudget")}
+        field="budget"
+        hint={t("table.budgetHint")}
+        {...sortProps}
+      >
         <FilterSelect
           allLabel={allLabel}
           value={filters.budget}

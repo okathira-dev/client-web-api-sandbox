@@ -1,10 +1,18 @@
-import { Box, Paper, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Paper,
+  Stack,
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography,
+} from "@mui/material";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useLayoutEffect, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useResults } from "../../atoms/report";
-import type { ResultFilters } from "../../domain/filters";
+import { inferNoPreferenceBackends } from "../../domain/backendInference";
+import type { ExperimentalFilter, ResultFilters } from "../../domain/filters";
 import type { SortField } from "../../domain/sorting";
 import { useDetailsSearchText } from "../../utils/messages";
 import {
@@ -49,6 +57,11 @@ export const ResultTable = () => {
     [results, filters, sort, detailsSearchText],
   );
   const options = useMemo(() => getFilterOptions(results), [results]);
+  /*
+    `no-preference` が実際にどちらで動いたかは API から取れない。
+    同じ codec string の prefer-hardware / prefer-software と出力を突き合わせて推定する。
+  */
+  const backends = useMemo(() => inferNoPreferenceBackends(results), [results]);
 
   // ライブ入力でも音声トラックを共有すれば音声候補を検査できるので、種別では絞らない。
   const selectableIds = useMemo(
@@ -119,13 +132,44 @@ export const ResultTable = () => {
 
   return (
     <Stack spacing={1}>
-      <Typography variant="body2" color="text.secondary">
-        {t("table.summary", {
-          total: results.length,
-          shown: filtered.length,
-        })}
-        {selectedIds.size > 0 &&
-          t("table.selectedSuffix", { count: selectedIds.size })}
+      <Stack
+        direction="row"
+        spacing={2}
+        alignItems="center"
+        flexWrap="wrap"
+        useFlexGap
+      >
+        <Typography variant="body2" color="text.secondary">
+          {t("table.summary", {
+            total: results.length,
+            shown: filtered.length,
+          })}
+          {selectedIds.size > 0 &&
+            t("table.selectedSuffix", { count: selectedIds.size })}
+        </Typography>
+
+        {/* 列の見出しは既に絞り込みで埋まっているので、実験的構成の扱いはここへ出す。 */}
+        <ToggleButtonGroup
+          size="small"
+          exclusive
+          value={filters.experimental}
+          aria-label={t("table.experimentalFilterLabel")}
+          onChange={(_event, next: ExperimentalFilter | null) => {
+            handleFilterChange("experimental", next ?? "");
+          }}
+        >
+          <ToggleButton value="">{t("table.experimentalAll")}</ToggleButton>
+          <ToggleButton value="exclude">
+            {t("table.experimentalExclude")}
+          </ToggleButton>
+          <ToggleButton value="only">
+            {t("table.experimentalOnly")}
+          </ToggleButton>
+        </ToggleButtonGroup>
+      </Stack>
+
+      <Typography variant="caption" color="text.secondary">
+        {t("table.budgetHint")}
       </Typography>
 
       <Paper variant="outlined" sx={{ overflow: "hidden" }}>
@@ -173,6 +217,7 @@ export const ResultTable = () => {
                     key={virtualRow.key}
                     result={result}
                     selected={selectedIds.has(result.id)}
+                    backend={backends.get(result.id)}
                     onToggle={toggleSelection}
                     style={{ transform: `translateY(${virtualRow.start}px)` }}
                   />

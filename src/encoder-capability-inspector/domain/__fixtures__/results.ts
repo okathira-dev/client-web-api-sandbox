@@ -58,6 +58,7 @@ export const videoResultFixture = (
   level: "4.0",
   bitDepth: 8,
   experimental: false,
+  experimentalReasons: [],
   hardwareAcceleration: "prefer-hardware",
   requestedConfig: {
     codec: "avc1.640028",

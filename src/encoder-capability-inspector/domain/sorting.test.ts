@@ -140,3 +140,28 @@ describe("cycleSort", () => {
     });
   });
 });
+
+describe("sorting by family", () => {
+  it("groups video before audio instead of ordering by name", () => {
+    // 名前順なら aac < av1 < h264 < opus と混ざる。種別でまとまることを見る。
+    const mixed = [
+      audioResultFixture({ id: "opus", family: "opus" }),
+      videoResultFixture({ id: "h264", family: "h264" }),
+      audioResultFixture({ id: "aac", family: "aac" }),
+      videoResultFixture({ id: "av1", family: "av1" }),
+    ];
+    expect(
+      ids(sortResults(mixed, { field: "family", direction: "asc" })),
+    ).toEqual(["h264", "av1", "aac", "opus"]);
+  });
+
+  it("reverses the whole order when descending", () => {
+    const mixed = [
+      videoResultFixture({ id: "h264", family: "h264" }),
+      audioResultFixture({ id: "aac", family: "aac" }),
+    ];
+    expect(
+      ids(sortResults(mixed, { field: "family", direction: "desc" })),
+    ).toEqual(["aac", "h264"]);
+  });
+});

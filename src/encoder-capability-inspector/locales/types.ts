@@ -133,8 +133,21 @@ export type TableTranslations = {
   filterAll: string;
   filterCodecPlaceholder: string;
   filterDetailsPlaceholder: string;
+  sortHint: string;
+  budgetHint: string;
   budgetOver: string;
   budgetUnder: string;
+  experimentalBadge: string;
+  experimentalFilterLabel: string;
+  experimentalAll: string;
+  experimentalExclude: string;
+  experimentalOnly: string;
+  backendHint: string;
+  backendMatched: string;
+  backendLikely: string;
+  backendUnknown: string;
+  backend_hardware: string;
+  backend_software: string;
   sustainedDone: string;
   sustainedNone: string;
   sustainedFrames: string;
@@ -155,6 +168,21 @@ export type FamilyTranslations = {
   vp8: string;
   aac: string;
   opus: string;
+};
+
+/** 映像・音声の別。ファミリー名だけでは読み取れないので併記する。 */
+export type KindTranslations = {
+  video: string;
+  audio: string;
+};
+
+/** 対応が期待しにくい構成と判断した理由。 */
+export type ExperimentalTranslations = {
+  "bit-depth-10": string;
+  "chroma-422": string;
+  "chroma-444": string;
+  "high-profile": string;
+  "level-6x": string;
 };
 
 /**
@@ -202,5 +230,7 @@ export type TranslationResource = {
   preview: PreviewTranslations;
   table: TableTranslations;
   family: FamilyTranslations;
+  kind: KindTranslations;
+  experimental: ExperimentalTranslations;
   codes: CodeTranslations;
 };

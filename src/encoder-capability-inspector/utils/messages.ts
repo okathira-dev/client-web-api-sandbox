@@ -9,7 +9,7 @@
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
-import { getResultDetails } from "../domain/filters";
+import { getResultDetailCodes, getResultDetails } from "../domain/filters";
 import type { UnitResult } from "../domain/types";
 
 export type DescribeCode = (code: string) => string;
@@ -25,19 +25,49 @@ export const useCodeMessage = (): DescribeCode => {
   );
 };
 
-const collectDetailCodes = (result: UnitResult): string[] =>
-  [
-    result.error,
-    result.warning,
-    result.sustained?.error,
-    result.sustained?.warning,
-  ].filter((detail): detail is string => Boolean(detail));
+export type ResultDetailLines = {
+  /** ワーカーが返したコードそのもの。訳を持たないものはこの行にだけ出る。 */
+  readonly codes: string;
+  /** コードの意味と、どの段階で止まったか。 */
+  readonly explanation: string;
+};
+
+/**
+ * 結果 1 行の詳細を、コードの行と解釈の行に分ける。
+ *
+ * 訳のあるコードは「訳 (コード)」の 1 行、訳の無い生メッセージは素のまま、と
+ * 形が割れていて読みにくかった。どちらも同じ 2 行構成へ揃える。
+ */
+export const useResultDetailLines = (): ((
+  result: UnitResult,
+) => ResultDetailLines) => {
+  const { t } = useTranslation();
+  return useCallback(
+    (result) => {
+      const codes = getResultDetailCodes(result);
+      const explanations = codes
+        .map((code) => t(`codes.${code}`, { defaultValue: "" }))
+        .filter((message) => message !== "");
+      // 宣言は通ったのに実出力で落ちた場合、どの段階かが切り分けの手掛かりになる。
+      if (result.declared && !result.usable) {
+        explanations.push(
+          t("table.declaredButFailed", { stage: result.stage }),
+        );
+      }
+      return {
+        codes: codes.join(" · "),
+        explanation: explanations.join(" · "),
+      };
+    },
+    [t],
+  );
+};
 
 /** 結果 1 行に表示する失敗・警告の説明。 */
 export const useResultDetails = (): ((result: UnitResult) => string) => {
   const describeCode = useCodeMessage();
   return useCallback(
-    (result) => collectDetailCodes(result).map(describeCode).join(" · "),
+    (result) => getResultDetailCodes(result).map(describeCode).join(" · "),
     [describeCode],
   );
 };
