@@ -34,10 +34,6 @@ export const getResultDetailCodes = (result: UnitResult): string[] =>
 export const getResultDetails = (result: UnitResult): string =>
   getResultDetailCodes(result).join(" · ");
 
-/** 音声候補に experimental の概念は無いので、常に実用構成として扱う。 */
-export const isExperimentalResult = (result: UnitResult): boolean =>
-  result.kind === "video" && result.experimental;
-
 /** 基本検査のフレーム予算比。未計測は 0 として扱う。 */
 export const getBasicFrameTimePercent = (result: UnitResult): number =>
   result.performance?.frameTimePercent ?? 0;
@@ -51,9 +47,6 @@ export type BudgetFilter = "" | "over" | "under";
 /** Sustained test 列の絞り込み。実施の有無とフレーム予算比を同じ列で扱う。 */
 export type SustainedFilter = "" | "done" | "none" | "over" | "under";
 export type TimeFilter = "" | "quick" | "slow";
-/** 実験的な構成（10bit・4:2:2・4:4:4・High profile・Level 6.x）の扱い。 */
-export type ExperimentalFilter = "" | "only" | "exclude";
-
 export type ResultFilters = {
   readonly family: VideoFamily | string;
   readonly codec: string;
@@ -63,7 +56,6 @@ export type ResultFilters = {
   readonly budget: BudgetFilter;
   readonly sustained: SustainedFilter;
   readonly time: TimeFilter;
-  readonly experimental: ExperimentalFilter;
 };
 
 export const EMPTY_RESULT_FILTERS: ResultFilters = {
@@ -75,7 +67,6 @@ export const EMPTY_RESULT_FILTERS: ResultFilters = {
   budget: "",
   sustained: "",
   time: "",
-  experimental: "",
 };
 
 /** 「実行時間が長い」の境界。1 秒未満なら概ね即座に判定できた候補とみなす。 */
@@ -139,12 +130,6 @@ export const matchesFilters = (
     return false;
   }
 
-  if (filters.experimental) {
-    const experimental = isExperimentalResult(result);
-    if (filters.experimental === "only" && !experimental) return false;
-    if (filters.experimental === "exclude" && experimental) return false;
-  }
-
   return true;
 };
 
@@ -163,5 +148,4 @@ export const isFiltersEmpty = (filters: ResultFilters): boolean =>
   filters.details.trim() === "" &&
   filters.budget === "" &&
   filters.sustained === "" &&
-  filters.time === "" &&
-  filters.experimental === "";
+  filters.time === "";

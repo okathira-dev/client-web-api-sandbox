@@ -51,7 +51,6 @@ const translation: TranslationResource = {
     familyRatio: "{{family}}: {{usable}} / {{total}}",
     familyNote:
       "Video is counted per codec string; audio is counted per setting including bitrate and channel count, because AAC keeps the same codec string across settings. Only fully completed inspections are counted.",
-    familyIncludeExperimental: "Include experimental configurations",
     environment: "Environment",
     cores: "{{count}} logical cores",
     stage: {
@@ -139,11 +138,6 @@ const translation: TranslationResource = {
     sortHint: "Click to sort (ascending → descending → off)",
     budgetHint:
       "The full capability inspection encodes only two frames, so start-up cost lands directly on the frame budget ratio. Going over 100% there does not mean a practical problem. Judge sustained performance from the sustained load test instead.",
-    experimentalBadge: "Experimental",
-    experimentalFilterLabel: "Experimental configurations",
-    experimentalAll: "All",
-    experimentalExclude: "Production only",
-    experimentalOnly: "Experimental only",
     backendHint:
       "WebCodecs exposes no API for the implementation actually used. This is inferred by matching the output byte count and chunk count against prefer-hardware and prefer-software for the same codec string.",
     backendShort: "≈ {{backend}}",
@@ -205,13 +199,6 @@ const translation: TranslationResource = {
   kind: {
     video: "Video",
     audio: "Audio",
-  },
-  experimental: {
-    "bit-depth-10": "10-bit",
-    "chroma-422": "4:2:2 chroma subsampling",
-    "chroma-444": "4:4:4 chroma subsampling",
-    "high-profile": "higher profile",
-    "level-6x": "Level 6.x",
   },
   codes: {
     "isConfigSupported-false": "This configuration was rejected up front",

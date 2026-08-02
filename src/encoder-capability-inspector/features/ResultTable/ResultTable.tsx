@@ -1,18 +1,11 @@
-import {
-  Box,
-  Paper,
-  Stack,
-  ToggleButton,
-  ToggleButtonGroup,
-  Typography,
-} from "@mui/material";
+import { Box, Paper, Stack, Typography } from "@mui/material";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useLayoutEffect, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useResults } from "../../atoms/report";
 import { inferNoPreferenceBackends } from "../../domain/backendInference";
-import type { ExperimentalFilter, ResultFilters } from "../../domain/filters";
+import type { ResultFilters } from "../../domain/filters";
 import type { SortField } from "../../domain/sorting";
 import { useDetailsSearchText } from "../../utils/messages";
 import {
@@ -147,25 +140,6 @@ export const ResultTable = () => {
           {selectedIds.size > 0 &&
             t("table.selectedSuffix", { count: selectedIds.size })}
         </Typography>
-
-        {/* 列の見出しは既に絞り込みで埋まっているので、実験的構成の扱いはここへ出す。 */}
-        <ToggleButtonGroup
-          size="small"
-          exclusive
-          value={filters.experimental}
-          aria-label={t("table.experimentalFilterLabel")}
-          onChange={(_event, next: ExperimentalFilter | null) => {
-            handleFilterChange("experimental", next ?? "");
-          }}
-        >
-          <ToggleButton value="">{t("table.experimentalAll")}</ToggleButton>
-          <ToggleButton value="exclude">
-            {t("table.experimentalExclude")}
-          </ToggleButton>
-          <ToggleButton value="only">
-            {t("table.experimentalOnly")}
-          </ToggleButton>
-        </ToggleButtonGroup>
       </Stack>
 
       <Typography variant="caption" color="text.secondary">

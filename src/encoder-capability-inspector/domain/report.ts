@@ -74,12 +74,9 @@ export type FamilySummary = {
  * 音声は codec string が設定を区別しない（AAC はどのビットレートでも `mp4a.40.2`）ため、
  * ビットレートとチャンネル数まで含んだ候補単位で数える。
  *
- * `includeExperimental` を立てると、10bit や Level 6.x なども分母に入れる。
- * 既定で除いているのは、対応が期待しにくい構成で割合が下がると実態を読み違えるため。
  */
 export const summarizeFamilies = (
   report: InspectionReport | null | undefined,
-  { includeExperimental = false }: { includeExperimental?: boolean } = {},
 ): FamilySummary[] => {
   const effective = getEffectiveReport(report);
   const results = effective?.results ?? [];
@@ -110,9 +107,7 @@ export const summarizeFamilies = (
 
   return [
     ...VIDEO_FAMILIES.map((family) => {
-      const candidates = getVideoCandidatesForFamily(family).filter(
-        (candidate) => includeExperimental || !candidate.experimental,
-      );
+      const candidates = getVideoCandidatesForFamily(family);
       return summarize(
         family,
         "video",

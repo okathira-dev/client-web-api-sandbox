@@ -11,21 +11,6 @@ export type VideoFamily = (typeof VIDEO_FAMILIES)[number];
 export const AUDIO_FAMILIES = ["aac", "opus"] as const;
 export type AudioFamily = (typeof AUDIO_FAMILIES)[number];
 
-/**
- * 対応が期待しにくい構成の理由。
- *
- * 「実験的」とだけ出しても何が理由か分からないので、理由を機械可読で持ち回り、
- * 表示とファミリー要約の分母の両方から参照できるようにする。
- */
-export const EXPERIMENTAL_REASONS = [
-  "bit-depth-10",
-  "chroma-422",
-  "chroma-444",
-  "high-profile",
-  "level-6x",
-] as const;
-export type ExperimentalReason = (typeof EXPERIMENTAL_REASONS)[number];
-
 export const HARDWARE_PREFERENCES = [
   "prefer-hardware",
   "no-preference",
@@ -53,10 +38,6 @@ export type VideoCandidate = {
   readonly bitrate: number;
   readonly container: ContainerFormat;
   readonly containerCodec: VideoContainerCodec;
-  /** 10bit や Level 6.x など、対応が期待しにくい構成。表示と既定の並びで区別する。 */
-  readonly experimental: boolean;
-  /** `experimental` と判断した理由。空なら実用構成。 */
-  readonly experimentalReasons: readonly ExperimentalReason[];
   readonly label: string;
 };
 
@@ -185,8 +166,6 @@ export type VideoUnitResult = UnitResultBase & {
   readonly profile: string;
   readonly level: string;
   readonly bitDepth: number;
-  readonly experimental: boolean;
-  readonly experimentalReasons: readonly ExperimentalReason[];
   readonly hardwareAcceleration: HardwarePreference;
   readonly requestedConfig: VideoEncoderConfig;
   readonly source: LiveSourceStats | null;

@@ -145,14 +145,11 @@ describe("summarizeFamilies", () => {
     expect(h264?.unavailable).toBe(false);
   });
 
-  it("excludes experimental variants from the denominator", () => {
+  it("includes every video candidate in the denominator", () => {
     const h264 = summarizeFamilies(reportFixture()).find(
       (summary) => summary.family === "h264",
     );
-    const productionCount = getVideoCandidatesForFamily("h264").filter(
-      (candidate) => !candidate.experimental,
-    ).length;
-    expect(h264?.totalCount).toBe(productionCount);
+    expect(h264?.totalCount).toBe(getVideoCandidatesForFamily("h264").length);
   });
 
   it("marks a family unavailable only when a complete report found nothing usable", () => {
@@ -299,29 +296,5 @@ describe("summarizeFamilies with audio", () => {
     );
     expect(aac?.totalCount).toBe(getAudioCandidatesForFamily("aac").length);
     expect(aac?.usableCount).toBe(1);
-  });
-
-  it("puts the experimental variants back into the denominator on request", () => {
-    const withoutExperimental = summarizeFamilies(reportFixture()).find(
-      (summary) => summary.family === "h264",
-    );
-    const withExperimental = summarizeFamilies(reportFixture(), {
-      includeExperimental: true,
-    }).find((summary) => summary.family === "h264");
-
-    expect(withExperimental?.totalCount).toBe(
-      getVideoCandidatesForFamily("h264").length,
-    );
-    expect(withExperimental?.totalCount).toBeGreaterThan(
-      withoutExperimental?.totalCount ?? 0,
-    );
-  });
-
-  it("leaves audio denominators untouched by the experimental toggle", () => {
-    const find = (includeExperimental: boolean) =>
-      summarizeFamilies(reportFixture(), { includeExperimental }).find(
-        (summary) => summary.family === "opus",
-      );
-    expect(find(true)?.totalCount).toBe(find(false)?.totalCount);
   });
 });

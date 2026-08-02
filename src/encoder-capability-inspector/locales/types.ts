@@ -69,7 +69,6 @@ export type ProgressTranslations = {
   familyUntested: string;
   familyRatio: string;
   familyNote: string;
-  familyIncludeExperimental: string;
   environment: string;
   cores: string;
   stage: StageTranslations;
@@ -143,11 +142,6 @@ export type TableTranslations = {
   budgetHint: string;
   budgetOver: string;
   budgetUnder: string;
-  experimentalBadge: string;
-  experimentalFilterLabel: string;
-  experimentalAll: string;
-  experimentalExclude: string;
-  experimentalOnly: string;
   backendHint: string;
   backendShort: string;
   backendUnknownShort: string;
@@ -199,15 +193,6 @@ export type KindTranslations = {
   audio: string;
 };
 
-/** 対応が期待しにくい構成と判断した理由。 */
-export type ExperimentalTranslations = {
-  "bit-depth-10": string;
-  "chroma-422": string;
-  "chroma-444": string;
-  "high-profile": string;
-  "level-6x": string;
-};
-
 /**
  * ワーカー・実行制御が返す失敗コードの説明。
  * コードはそのまま表示にも残すため、ここでは補足文だけを持つ。
@@ -255,6 +240,5 @@ export type TranslationResource = {
   references: ReferencesTranslations;
   family: FamilyTranslations;
   kind: KindTranslations;
-  experimental: ExperimentalTranslations;
   codes: CodeTranslations;
 };

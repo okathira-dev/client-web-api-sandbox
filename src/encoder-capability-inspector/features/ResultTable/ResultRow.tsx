@@ -78,10 +78,6 @@ export const ResultRow = memo(
     const chip = STATUS_CHIP[status];
     const details = describeDetails(result);
     const sustained = result.sustained;
-    const experimentalReasons =
-      result.kind === "video" && result.experimental
-        ? result.experimentalReasons
-        : [];
 
     return (
       <Box
@@ -127,22 +123,6 @@ export const ResultRow = memo(
             <CellText mono title={result.codec}>
               {result.codec}
             </CellText>
-            {experimentalReasons.length > 0 && (
-              <Tooltip
-                title={experimentalReasons
-                  .map((reason) => t(`experimental.${reason}`))
-                  .join(" · ")}
-                placement="top"
-              >
-                <Chip
-                  size="small"
-                  variant="outlined"
-                  color="warning"
-                  label={t("table.experimentalBadge")}
-                  sx={{ height: 18, "& .MuiChip-label": { px: 0.75 } }}
-                />
-              </Tooltip>
-            )}
           </Stack>
           <CaptionText>{result.label}</CaptionText>
         </Box>

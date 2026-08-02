@@ -40,14 +40,7 @@ const progressAtom = atom((get) => {
 
 const countsAtom = atom((get) => countResults(get(resultsAtom)));
 
-/** ファミリー要約の分母に experimental を含めるか。表示上の選択なので保存しない。 */
-const includeExperimentalAtom = atom(false);
-
-const familySummariesAtom = atom((get) =>
-  summarizeFamilies(get(reportAtom), {
-    includeExperimental: get(includeExperimentalAtom),
-  }),
-);
+const familySummariesAtom = atom((get) => summarizeFamilies(get(reportAtom)));
 
 const environmentAtom = atom((get) => get(reportAtom)?.environment ?? null);
 
@@ -59,8 +52,4 @@ export const useSustainedState = () => useAtomValue(sustainedAtom);
 export const useProgress = () => useAtomValue(progressAtom);
 export const useResultCounts = () => useAtomValue(countsAtom);
 export const useFamilySummaries = () => useAtomValue(familySummariesAtom);
-export const useIncludeExperimental = () =>
-  useAtomValue(includeExperimentalAtom);
-export const useSetIncludeExperimental = () =>
-  useSetAtom(includeExperimentalAtom);
 export const useEnvironment = () => useAtomValue(environmentAtom);

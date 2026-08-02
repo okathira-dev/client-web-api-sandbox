@@ -600,8 +600,6 @@ const runVideoUnit = async (
     profile: unit.profile,
     level: unit.level,
     bitDepth: unit.bitDepth,
-    experimental: unit.experimental,
-    experimentalReasons: unit.experimentalReasons,
     hardwareAcceleration: unit.hardwareAcceleration,
     requestedConfig,
     source: sourceStats,

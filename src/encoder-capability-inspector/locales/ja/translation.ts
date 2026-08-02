@@ -51,7 +51,6 @@ const translation: TranslationResource = {
     familyRatio: "{{family}}: {{usable}} / {{total}}",
     familyNote:
       "映像は codec string の数、音声はビットレートとチャンネル数まで含んだ設定の数を分母にします（AAC はどの設定でも codec string が同じため）。完全に完了した検査の結果だけを集計します。",
-    familyIncludeExperimental: "実験的な構成も分母に含める",
     environment: "実行環境",
     cores: "{{count}} 論理コア",
     stage: {
@@ -143,11 +142,6 @@ const translation: TranslationResource = {
       "一括実用検査は 2 フレームだけの互換性確認なので、フレーム予算比には初期化のコストがそのまま乗ります。100% を超えていても実用上の問題を意味しません。継続的な性能は実用継続検査の値で判断してください。",
     budgetOver: "100% 超",
     budgetUnder: "100% 以下",
-    experimentalBadge: "実験的",
-    experimentalFilterLabel: "実験的な構成の扱い",
-    experimentalAll: "すべて",
-    experimentalExclude: "実用構成のみ",
-    experimentalOnly: "実験的のみ",
     backendHint:
       "WebCodecs には実際に使われた実装を返す API がありません。同じ codec string の prefer-hardware / prefer-software と出力バイト数・チャンク数を突き合わせた推定です。",
     backendShort: "≈ {{backend}}",
@@ -202,13 +196,6 @@ const translation: TranslationResource = {
   kind: {
     video: "映像",
     audio: "音声",
-  },
-  experimental: {
-    "bit-depth-10": "10bit",
-    "chroma-422": "4:2:2 クロマサブサンプリング",
-    "chroma-444": "4:4:4 クロマサブサンプリング",
-    "high-profile": "上位 Profile",
-    "level-6x": "Level 6.x",
   },
   codes: {
     "isConfigSupported-false": "この設定は宣言の時点で拒否されました",

@@ -54,23 +54,6 @@ describe("candidate matrix", () => {
     }
   });
 
-  it("marks 10-bit and Level 6.x variants as experimental", () => {
-    const highTenLevelThree = VIDEO_CANDIDATES.find(
-      (candidate) => candidate.codec === "avc1.6E001F",
-    );
-    expect(highTenLevelThree?.experimental).toBe(true);
-
-    const highLevelSix = VIDEO_CANDIDATES.find(
-      (candidate) => candidate.codec === "avc1.64003C",
-    );
-    expect(highLevelSix?.experimental).toBe(true);
-
-    const highLevelFourZero = VIDEO_CANDIDATES.find(
-      (candidate) => candidate.codec === "avc1.640028",
-    );
-    expect(highLevelFourZero?.experimental).toBe(false);
-  });
-
   it("covers both AAC and Opus across channel counts and bitrates", () => {
     expect(AUDIO_CANDIDATES).toHaveLength(5 * 2 + 6 * 2);
     expect(

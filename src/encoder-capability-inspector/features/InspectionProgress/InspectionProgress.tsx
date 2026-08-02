@@ -2,9 +2,7 @@ import {
   Box,
   Card,
   CardContent,
-  Checkbox,
   Chip,
-  FormControlLabel,
   LinearProgress,
   Stack,
   Typography,
@@ -16,10 +14,8 @@ import {
   useCurrentInspection,
   useEnvironment,
   useFamilySummaries,
-  useIncludeExperimental,
   useProgress,
   useResultCounts,
-  useSetIncludeExperimental,
 } from "../../atoms/report";
 import { useIsRunning, useRunKind } from "../../atoms/runState";
 import { MediaKindIcon } from "../../components/MediaKindIcon";
@@ -57,8 +53,6 @@ export const InspectionProgress = () => {
   const current = useCurrentInspection();
   const counts = useResultCounts();
   const families = useFamilySummaries();
-  const includeExperimental = useIncludeExperimental();
-  const setIncludeExperimental = useSetIncludeExperimental();
   const environment = useEnvironment();
   const running = useIsRunning();
   const runKind = useRunKind();
@@ -215,23 +209,6 @@ export const InspectionProgress = () => {
           <Typography variant="subtitle2" component="h3">
             {t("progress.familyHeading")}
           </Typography>
-          {/* 実験的な構成を分母に含めるかで割合の意味が変わるので、その場で切り替えられるようにする。 */}
-          <FormControlLabel
-            control={
-              <Checkbox
-                size="small"
-                checked={includeExperimental}
-                onChange={(event) => {
-                  setIncludeExperimental(event.target.checked);
-                }}
-              />
-            }
-            label={
-              <Typography variant="caption">
-                {t("progress.familyIncludeExperimental")}
-              </Typography>
-            }
-          />
         </Stack>
         {/* 映像と音声で数え方が違うので、同じ並びに混ぜず段を分ける。 */}
         {(["video", "audio"] as const).map((kind) => (
