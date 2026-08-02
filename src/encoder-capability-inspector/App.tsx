@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import { SocialIcons } from "../shared/components/SocialIcons";
 import { InspectionProgress } from "./features/InspectionProgress";
 import { InspectionRunner } from "./features/InspectionRunner";
+import { References } from "./features/References";
 import { ResultTable } from "./features/ResultTable";
 import { SustainedTest } from "./features/SustainedTest";
 import { SyntheticPreview } from "./features/SyntheticPreview";
@@ -54,6 +55,7 @@ export const App = () => {
         <SustainedTest />
         <SyntheticPreview />
         <ResultTable />
+        <References />
       </Stack>
     </Container>
   );

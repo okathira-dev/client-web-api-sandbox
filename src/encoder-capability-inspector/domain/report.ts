@@ -1,8 +1,14 @@
 /** レポートの完了判定と、表示用の集計。 */
 
 import { REPORT_VERSION } from "../consts/inspection";
-import { getVideoCandidatesForFamily } from "./plan";
+import type { MediaKind } from "./families";
 import {
+  getAudioCandidatesForFamily,
+  getVideoCandidatesForFamily,
+} from "./plan";
+import {
+  AUDIO_FAMILIES,
+  type AudioFamily,
   type InspectionReport,
   type UnitResult,
   VIDEO_FAMILIES,
@@ -49,10 +55,11 @@ export const isVideoResult = (result: UnitResult): result is VideoUnitResult =>
   result.kind === "video";
 
 export type FamilySummary = {
-  readonly family: VideoFamily;
+  readonly family: VideoFamily | AudioFamily;
+  readonly kind: MediaKind;
   /** 完全レポートに基づく集計かどうか。false のときは「未検査」として扱う。 */
   readonly complete: boolean;
-  /** experimental を除いた codec string のうち、どれか 1 つでも通ったものの数。 */
+  /** 数え上げの対象のうち、どれか 1 つでも通ったものの数。 */
   readonly usableCount: number;
   readonly totalCount: number;
   /** 完全レポートがあり、実用可能な構成が 1 つも無い状態。 */
@@ -61,33 +68,72 @@ export type FamilySummary = {
 
 /**
  * ファミリー単位の要約。ファミリーで一律に可否を決めず、
- * 「具体的な codec string のうち何件が通ったか」を数える。
+ * 「具体的な設定のうち何件が通ったか」を数える。
+ *
+ * 映像は codec string 単位で数える（ハードウェア方針が違っても 1 件）。
+ * 音声は codec string が設定を区別しない（AAC はどのビットレートでも `mp4a.40.2`）ため、
+ * ビットレートとチャンネル数まで含んだ候補単位で数える。
+ *
+ * `includeExperimental` を立てると、10bit や Level 6.x なども分母に入れる。
+ * 既定で除いているのは、対応が期待しにくい構成で割合が下がると実態を読み違えるため。
  */
 export const summarizeFamilies = (
   report: InspectionReport | null | undefined,
+  { includeExperimental = false }: { includeExperimental?: boolean } = {},
 ): FamilySummary[] => {
   const effective = getEffectiveReport(report);
+  const results = effective?.results ?? [];
   const usableCodecs = new Set(
-    (effective?.results ?? [])
+    results
       .filter((result) => isVideoResult(result) && result.usable)
       .map((result) => result.codec.toLowerCase()),
   );
+  const usableAudioCandidates = new Set(
+    results
+      .filter((result) => result.kind === "audio" && result.usable)
+      .map((result) => result.candidateId),
+  );
 
-  return VIDEO_FAMILIES.map((family) => {
-    const production = getVideoCandidatesForFamily(family).filter(
-      (candidate) => !candidate.experimental,
-    );
-    const usableCount = production.filter((candidate) =>
-      usableCodecs.has(candidate.codec.toLowerCase()),
-    ).length;
-    return {
-      family,
-      complete: effective !== null,
-      usableCount,
-      totalCount: production.length,
-      unavailable: effective !== null && usableCount === 0,
-    };
+  const summarize = (
+    family: VideoFamily | AudioFamily,
+    kind: MediaKind,
+    usableCount: number,
+    totalCount: number,
+  ): FamilySummary => ({
+    family,
+    kind,
+    complete: effective !== null,
+    usableCount,
+    totalCount,
+    unavailable: effective !== null && usableCount === 0,
   });
+
+  return [
+    ...VIDEO_FAMILIES.map((family) => {
+      const candidates = getVideoCandidatesForFamily(family).filter(
+        (candidate) => includeExperimental || !candidate.experimental,
+      );
+      return summarize(
+        family,
+        "video",
+        candidates.filter((candidate) =>
+          usableCodecs.has(candidate.codec.toLowerCase()),
+        ).length,
+        candidates.length,
+      );
+    }),
+    ...AUDIO_FAMILIES.map((family) => {
+      const candidates = getAudioCandidatesForFamily(family);
+      return summarize(
+        family,
+        "audio",
+        candidates.filter((candidate) =>
+          usableAudioCandidates.has(candidate.candidateId),
+        ).length,
+        candidates.length,
+      );
+    }),
+  ];
 };
 
 /**

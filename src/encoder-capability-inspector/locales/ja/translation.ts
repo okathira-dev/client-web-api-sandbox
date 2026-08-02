@@ -18,6 +18,9 @@ const translation: TranslationResource = {
       "一時中断です。ここまでの結果は残り、あとで残りの候補から再開できます",
     cancelSustained: "実用継続検査を中断",
     reset: "結果を破棄",
+    export: "結果をJSONで保存",
+    exportHint:
+      "全結果と実行環境の概要（ブラウザー・OS・GPU）を書き出します。画面内容や音声サンプルは含みません。共有するときは環境の情報が入っていることに注意してください。",
     pauseLabel: "候補間の待機 (ms)",
     pauseInvalid: "0〜{{max}} の整数で指定してください",
     pauseHelp: "既定 {{default}} ms。0 のとき待機処理を行いません",
@@ -47,7 +50,8 @@ const translation: TranslationResource = {
     familyUntested: "{{family}}: 未検査",
     familyRatio: "{{family}}: {{usable}} / {{total}}",
     familyNote:
-      "分母は experimental 扱い（10bit・Level 6.x など）を除いた codec string の数です。完全に完了した検査の結果だけを集計します。",
+      "映像は codec string の数、音声はビットレートとチャンネル数まで含んだ設定の数を分母にします（AAC はどの設定でも codec string が同じため）。完全に完了した検査の結果だけを集計します。",
+    familyIncludeExperimental: "実験的な構成も分母に含める",
     environment: "実行環境",
     cores: "{{count}} 論理コア",
     stage: {
@@ -161,6 +165,25 @@ const translation: TranslationResource = {
     statusFail: "失敗",
     declaredButFailed: "設定は受理されたが {{stage}} で失敗",
     sourceLine: "入力 {{width}}×{{height}} @ {{fps}} fps · 欠落 {{missing}}",
+  },
+  references: {
+    heading: "参考文献",
+    description:
+      "codec string の書き方や、この検査が何を確かめているのかを追える資料です。",
+    group: {
+      spec: "WebCodecs の仕様",
+      "codec-string": "codec string の書式",
+      codec: "各コーデックの仕様",
+      implementation: "実装と利用ライブラリ",
+    },
+    groupNote: {
+      spec: "エンコーダーの設定と、対応判定がどう定義されているか。",
+      "codec-string":
+        "`avc1.640028` のような文字列の組み立て方。候補行列はここに従って作っています。",
+      codec: "Profile・Level・ビット深度そのものの定義。",
+      implementation:
+        "ブラウザー実装の使い方と、多重化に使っているライブラリ。",
+    },
   },
   family: {
     h264: "H.264 / AVC",

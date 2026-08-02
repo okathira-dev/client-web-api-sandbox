@@ -19,6 +19,8 @@ export type RunnerTranslations = {
   cancelHint: string;
   cancelSustained: string;
   reset: string;
+  export: string;
+  exportHint: string;
   pauseLabel: string;
   pauseInvalid: string;
   pauseHelp: string;
@@ -67,6 +69,7 @@ export type ProgressTranslations = {
   familyUntested: string;
   familyRatio: string;
   familyNote: string;
+  familyIncludeExperimental: string;
   environment: string;
   cores: string;
   stage: StageTranslations;
@@ -173,6 +176,21 @@ export type FamilyTranslations = {
   opus: string;
 };
 
+/** 参考文献。題名は原典のまま英語で持ち、ここでは見出しと補足だけを訳す。 */
+export type ReferenceSectionTranslations = {
+  spec: string;
+  "codec-string": string;
+  codec: string;
+  implementation: string;
+};
+
+export type ReferencesTranslations = {
+  heading: string;
+  description: string;
+  group: ReferenceSectionTranslations;
+  groupNote: ReferenceSectionTranslations;
+};
+
 /** 映像・音声の別。ファミリー名だけでは読み取れないので併記する。 */
 export type KindTranslations = {
   video: string;
@@ -232,6 +250,7 @@ export type TranslationResource = {
   sustained: SustainedTranslations;
   preview: PreviewTranslations;
   table: TableTranslations;
+  references: ReferencesTranslations;
   family: FamilyTranslations;
   kind: KindTranslations;
   experimental: ExperimentalTranslations;

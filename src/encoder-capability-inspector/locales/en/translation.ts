@@ -18,6 +18,9 @@ const translation: TranslationResource = {
       "This only pauses. Results so far are kept and the remaining candidates can be resumed later.",
     cancelSustained: "Stop sustained load test",
     reset: "Discard results",
+    export: "Save results as JSON",
+    exportHint:
+      "Writes out every result plus a summary of this environment (browser, OS, GPU). Screen contents and audio samples are never included. Keep the environment details in mind before sharing the file.",
     pauseLabel: "Pause between candidates (ms)",
     pauseInvalid: "Enter an integer from 0 to {{max}}",
     pauseHelp: "Default {{default}} ms. At 0 no pause is performed at all.",
@@ -47,7 +50,8 @@ const translation: TranslationResource = {
     familyUntested: "{{family}}: untested",
     familyRatio: "{{family}}: {{usable}} / {{total}}",
     familyNote:
-      "The denominator counts codec strings excluding experimental ones (10-bit, Level 6.x, and similar). Only fully completed inspections are counted.",
+      "Video is counted per codec string; audio is counted per setting including bitrate and channel count, because AAC keeps the same codec string across settings. Only fully completed inspections are counted.",
+    familyIncludeExperimental: "Include experimental configurations",
     environment: "Environment",
     cores: "{{count}} logical cores",
     stage: {
@@ -163,6 +167,26 @@ const translation: TranslationResource = {
     declaredButFailed: "Config accepted but failed at {{stage}}",
     sourceLine:
       "Input {{width}}×{{height}} @ {{fps}} fps · missing {{missing}}",
+  },
+  references: {
+    heading: "References",
+    description:
+      "Material for following how codec strings are written and what this inspection actually checks.",
+    group: {
+      spec: "WebCodecs specifications",
+      "codec-string": "Codec string syntax",
+      codec: "Codec specifications",
+      implementation: "Implementations and libraries",
+    },
+    groupNote: {
+      spec: "How encoder configuration and support detection are defined.",
+      "codec-string":
+        "How strings such as `avc1.640028` are assembled. The candidate matrix follows these.",
+      codec:
+        "The definitions of the profiles, levels, and bit depths themselves.",
+      implementation:
+        "Using the browser implementation, and the library used for muxing.",
+    },
   },
   family: {
     h264: "H.264 / AVC",

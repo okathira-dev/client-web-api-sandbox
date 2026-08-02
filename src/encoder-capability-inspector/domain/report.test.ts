@@ -1,6 +1,13 @@
 import { REPORT_VERSION } from "../consts/inspection";
-import { reportFixture, videoResultFixture } from "./__fixtures__/results";
-import { getVideoCandidatesForFamily } from "./plan";
+import {
+  audioResultFixture,
+  reportFixture,
+  videoResultFixture,
+} from "./__fixtures__/results";
+import {
+  getAudioCandidatesForFamily,
+  getVideoCandidatesForFamily,
+} from "./plan";
 import {
   countResults,
   getActiveElapsedMs,
@@ -10,6 +17,7 @@ import {
   isResumableReport,
   summarizeFamilies,
 } from "./report";
+import { AUDIO_FAMILIES, VIDEO_FAMILIES } from "./types";
 
 describe("isCompleteReport", () => {
   it("accepts a report that processed every unit", () => {
@@ -107,7 +115,9 @@ describe("isResumableReport", () => {
 describe("summarizeFamilies", () => {
   it("treats every family as untested when no complete report exists", () => {
     const summaries = summarizeFamilies(null);
-    expect(summaries).toHaveLength(5);
+    expect(summaries).toHaveLength(
+      VIDEO_FAMILIES.length + AUDIO_FAMILIES.length,
+    );
     for (const summary of summaries) {
       expect(summary.complete).toBe(false);
       expect(summary.unavailable).toBe(false);
@@ -258,5 +268,60 @@ describe("getRemainingMs", () => {
         totalUnits: 484,
       }),
     ).toBeNull();
+  });
+});
+
+describe("summarizeFamilies with audio", () => {
+  it("covers audio families as well as video", () => {
+    const kinds = summarizeFamilies(null).map((summary) => summary.kind);
+    expect(kinds.filter((kind) => kind === "video")).toHaveLength(
+      VIDEO_FAMILIES.length,
+    );
+    expect(kinds.filter((kind) => kind === "audio")).toHaveLength(
+      AUDIO_FAMILIES.length,
+    );
+  });
+
+  it("counts audio per setting, since the codec string does not distinguish them", () => {
+    // AAC はどのビットレート・チャンネル数でも codec string が mp4a.40.2 のまま。
+    const report = reportFixture({
+      results: [
+        audioResultFixture({
+          id: "audio:aac:2:128000",
+          candidateId: "aac:2:128000",
+          codec: "mp4a.40.2",
+          family: "aac",
+        }),
+      ],
+    });
+    const aac = summarizeFamilies(report).find(
+      (summary) => summary.family === "aac",
+    );
+    expect(aac?.totalCount).toBe(getAudioCandidatesForFamily("aac").length);
+    expect(aac?.usableCount).toBe(1);
+  });
+
+  it("puts the experimental variants back into the denominator on request", () => {
+    const withoutExperimental = summarizeFamilies(reportFixture()).find(
+      (summary) => summary.family === "h264",
+    );
+    const withExperimental = summarizeFamilies(reportFixture(), {
+      includeExperimental: true,
+    }).find((summary) => summary.family === "h264");
+
+    expect(withExperimental?.totalCount).toBe(
+      getVideoCandidatesForFamily("h264").length,
+    );
+    expect(withExperimental?.totalCount).toBeGreaterThan(
+      withoutExperimental?.totalCount ?? 0,
+    );
+  });
+
+  it("leaves audio denominators untouched by the experimental toggle", () => {
+    const find = (includeExperimental: boolean) =>
+      summarizeFamilies(reportFixture(), { includeExperimental }).find(
+        (summary) => summary.family === "opus",
+      );
+    expect(find(true)?.totalCount).toBe(find(false)?.totalCount);
   });
 });

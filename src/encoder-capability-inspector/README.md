@@ -194,6 +194,32 @@ WebCodecs には「実際に使われた実装」を返す API が無い。`isCo
 入力が違えば出力も変わるため、突き合わせるのは合成入力の一括実用検査の結果だけに限る。
 あくまで推定であって、断定はできない。
 
+### ファミリー要約
+
+ファミリーで一律に可否を決めず、「具体的な設定のうち何件が通ったか」を数える。
+映像と音声で数え方が違うので、段を分けて出す。
+
+- 映像は codec string 単位。ハードウェア方針が違っても 1 件として数える
+- 音声は候補単位。AAC はどのビットレート・チャンネル数でも codec string が `mp4a.40.2` のままで、
+  codec string では設定を区別できない
+
+既定では実験的な構成を分母から除く。対応が期待しにくい構成で割合が下がると実態を読み違えるため。
+分母に含めるかはチェックボックスで切り替えられる。
+
+### 結果の書き出し
+
+「結果をJSONで保存」で、全結果と実行環境の概要を書き出せる。環境をまたいで突き合わせたり、
+報告に添えたりするためのもの。
+
+`previousCompleted` は落とす（直前の完全レポートを丸ごと抱えているので、外へ出すと二重になる）。
+画面内容・音声サンプル・デバイス固有 ID は元々レポートに入れていない。
+ブラウザー・OS・GPU の概要は入るので、共有するときはそのつもりで。
+
+### 参考文献
+
+codec string の書き方や、この検査が何を確かめているのかを追える資料を
+[features/References](features/References) にまとめてある。既定では畳んである。
+
 ## 設計上の要点
 
 ### メインスレッドを止めない
@@ -269,6 +295,7 @@ WebCodecs は Node で動かないため、単体テストの対象は純粋関�
 - [domain/filters.test.ts](domain/filters.test.ts): 絞り込み述語
 - [domain/backendInference.test.ts](domain/backendInference.test.ts): `no-preference` の実体推定
 - [domain/sustained.test.ts](domain/sustained.test.ts): 実用継続検査が抱えるメモリの見積り
+- [domain/export.test.ts](domain/export.test.ts): 書き出しの封筒と持ち出さない項目
 - [utils/preferences.test.ts](utils/preferences.test.ts): 設定値の検証
 
 エンコード・デコード・多重化の実処理はブラウザーでの手動確認による。

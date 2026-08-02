@@ -2,6 +2,7 @@
 
 import { AUDIO_CANDIDATES, VIDEO_CANDIDATES } from "../consts/candidates";
 import {
+  type AudioFamily,
   type AudioInspectionUnit,
   HARDWARE_PREFERENCES,
   type InspectionUnit,
@@ -50,3 +51,6 @@ export const findInspectionUnits = (
 
 export const getVideoCandidatesForFamily = (family: VideoFamily) =>
   VIDEO_CANDIDATES.filter((candidate) => candidate.family === family);
+
+export const getAudioCandidatesForFamily = (family: AudioFamily) =>
+  AUDIO_CANDIDATES.filter((candidate) => candidate.family === family);

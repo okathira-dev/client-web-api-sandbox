@@ -21,7 +21,9 @@ import {
   DEFAULT_CANDIDATE_PAUSE_MS,
   MAX_CANDIDATE_PAUSE_MS,
 } from "../../consts/inspection";
+import { buildExportFileName, buildReportExport } from "../../domain/export";
 import { isResumableReport } from "../../domain/report";
+import { downloadJson } from "../../utils/download";
 import { useCodeMessage } from "../../utils/messages";
 import { subscribeReportChanged } from "../../utils/reportStore";
 import { useInspectionControls } from "./hooks";
@@ -126,6 +128,25 @@ export const InspectionRunner = () => {
             </Button>
           </Tooltip>
         )}
+
+        <Tooltip title={t("runner.exportHint")} placement="top">
+          <span>
+            <Button
+              variant="outlined"
+              disabled={!report}
+              onClick={() => {
+                if (report) {
+                  downloadJson(
+                    buildExportFileName(),
+                    buildReportExport(report),
+                  );
+                }
+              }}
+            >
+              {t("runner.export")}
+            </Button>
+          </span>
+        </Tooltip>
 
         <Button
           variant="outlined"
