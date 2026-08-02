@@ -85,7 +85,7 @@
     "*.{jsx,tsx,html}": [
       "markuplint"
     ],
-    "src/**/*": [
+    "src/**/*.{js,jsx,ts,tsx,json,css,html}": [
       "biome check"
     ]
   },
