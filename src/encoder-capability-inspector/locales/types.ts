@@ -131,6 +131,7 @@ export type TableTranslations = {
   selectOne: string;
   columnFamily: string;
   columnCodec: string;
+  columnBitrateMode: string;
   columnVariant: string;
   columnStatus: string;
   columnDetails: string;
@@ -138,11 +139,7 @@ export type TableTranslations = {
   columnSustained: string;
   columnTime: string;
   probeBitrate: string;
-  knownDiscreteBitrates: string;
-  knownDiscreteBitratesShort: string;
-  bitrateSource: {
-    "chromium-windows-mf-aac": string;
-  };
+  probeQuantizer: string;
   filterAll: string;
   filterCodecPlaceholder: string;
   filterDetailsPlaceholder: string;
@@ -168,6 +165,51 @@ export type TableTranslations = {
   statusFail: string;
   declaredButFailed: string;
   sourceLine: string;
+};
+
+export type BitrateGuideTranslations = {
+  heading: string;
+  description: string;
+  summary: string;
+  tableLabel: string;
+  noMatch: string;
+  filterAll: string;
+  filterCodecPlaceholder: string;
+  sortHint: string;
+  infoButton: string;
+  dialogTitle: string;
+  profileLevel: string;
+  supportHeading: string;
+  recommendationHeading: string;
+  quantizerHeading: string;
+  quantizerSupportHeading: string;
+  quantizerRecommendationHeading: string;
+  testValue: string;
+  testQuantizer: string;
+  rangeUpTo: string;
+  rangeBetween: string;
+  rangeFrom: string;
+  discrete: string;
+  dynamicSupport: string;
+  quantizerRangeUpTo: string;
+  quantizerRangeBetween: string;
+  quantizerRangeFrom: string;
+  quantizerDiscrete: string;
+  quantizerTarget: string;
+  quantizerLowerIsHigherQuality: string;
+  quantizerNotApplicable: string;
+  quantizerComparisonValue: string;
+  unbounded: string;
+  noPublishedValue: string;
+  noUniversalValue: string;
+  noUniversalQuantizer: string;
+  vp8NoQuantizer: string;
+  authorityStandard: string;
+  authorityImplementation: string;
+  authorityRecommendation: string;
+  authorityComparison: string;
+  context: Record<string, string>;
+  close: string;
 };
 
 export type FamilyTranslations = {
@@ -246,6 +288,7 @@ export type TranslationResource = {
   sustained: SustainedTranslations;
   preview: PreviewTranslations;
   table: TableTranslations;
+  bitrateGuide: BitrateGuideTranslations;
   references: ReferencesTranslations;
   family: FamilyTranslations;
   kind: KindTranslations;

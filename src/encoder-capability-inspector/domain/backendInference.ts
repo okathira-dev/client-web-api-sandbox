@@ -4,7 +4,9 @@
  * WebCodecs には「実際に使われた実装」を返す API が無い。`isConfigSupported` が返す
  * 設定にも要求した `hardwareAcceleration` がそのまま入るだけで、実体は分からない。
  *
- * そこで、同じ codec string の `prefer-hardware` / `prefer-software` の結果と突き合わせる。
+ * そこで、同じ codec string × bitrate mode の `prefer-hardware` / `prefer-software`
+ * の結果と突き合わせる。mode をまたいで比較すると出力差を実装差と誤認するため、
+ * candidateId（mode を含む）でグループ化する。
  * 合成入力は決定的なので、実装が同じなら出力バイト数とチャンク数も一致する。
  * 一致したほうを実体とみなす。これはあくまで推定で、断定はできない。
  */

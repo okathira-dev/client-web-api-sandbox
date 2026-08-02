@@ -70,8 +70,8 @@ export type FamilySummary = {
  * ファミリー単位の要約。ファミリーで一律に可否を決めず、
  * 「具体的な設定のうち何件が通ったか」を数える。
  *
- * 映像は codec string 単位で数える（ハードウェア方針が違っても 1 件）。
- * 音声は AAC profile とチャンネル数を含んだ候補単位で数える。
+ * 映像は codec string × bitrateMode 単位で数える（ハードウェア方針が違っても 1 件）。
+ * 音声も profile・チャンネル数・bitrateMode を含んだ候補単位で数える。
  *
  */
 export const summarizeFamilies = (
@@ -79,10 +79,10 @@ export const summarizeFamilies = (
 ): FamilySummary[] => {
   const effective = getEffectiveReport(report);
   const results = effective?.results ?? [];
-  const usableCodecs = new Set(
+  const usableVideoCandidates = new Set(
     results
       .filter((result) => isVideoResult(result) && result.usable)
-      .map((result) => result.codec.toLowerCase()),
+      .map((result) => result.candidateId),
   );
   const usableAudioCandidates = new Set(
     results
@@ -111,7 +111,7 @@ export const summarizeFamilies = (
         family,
         "video",
         candidates.filter((candidate) =>
-          usableCodecs.has(candidate.codec.toLowerCase()),
+          usableVideoCandidates.has(candidate.candidateId),
         ).length,
         candidates.length,
       );

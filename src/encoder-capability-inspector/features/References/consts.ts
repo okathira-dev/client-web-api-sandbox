@@ -106,6 +106,16 @@ export const REFERENCE_GROUPS = [
         url: "https://www.itu.int/rec/T-REC-H.265",
       },
       {
+        id: "vp9-levels",
+        title: "WebM: VP9 levels",
+        url: "https://www.webmproject.org/vp9/levels/",
+      },
+      {
+        id: "av1-spec",
+        title: "AOMedia: AV1 specification",
+        url: "https://aomediacodec.github.io/av1-spec/av1-spec.pdf",
+      },
+      {
         id: "vp9-mp4",
         title: "VP Codec ISO Media File Format Binding",
         url: "https://www.webmproject.org/vp9/mp4/",
@@ -124,6 +134,26 @@ export const REFERENCE_GROUPS = [
         id: "rfc6716",
         title: "RFC 6716: Definition of the Opus Audio Codec",
         url: "https://datatracker.ietf.org/doc/html/rfc6716",
+      },
+      {
+        id: "youtube-encoding",
+        title: "YouTube: Recommended upload encoding settings",
+        url: "https://support.google.com/youtube/answer/1722171",
+      },
+      {
+        id: "apple-hls-authoring",
+        title: "Apple: HLS Authoring Specification for Apple Devices",
+        url: "https://developer.apple.com/documentation/http-live-streaming/hls-authoring-specification-for-apple-devices",
+      },
+      {
+        id: "google-vp9-settings",
+        title: "Google: VP9 encoding settings",
+        url: "https://developers.google.com/media/vp9/settings",
+      },
+      {
+        id: "webm-encoder-parameters",
+        title: "WebM: Encoder parameters",
+        url: "https://www.webmproject.org/docs/encoder-parameters/",
       },
     ],
   },

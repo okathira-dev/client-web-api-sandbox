@@ -9,7 +9,7 @@ import {
 import { HARDWARE_PREFERENCES, VIDEO_FAMILIES } from "./types";
 
 describe("candidate matrix", () => {
-  it("expands each family into the expected number of codec strings", () => {
+  it("expands each family into the expected number of codec/mode candidates", () => {
     const counts = Object.fromEntries(
       VIDEO_FAMILIES.map((family) => [
         family,
@@ -17,18 +17,21 @@ describe("candidate matrix", () => {
       ]),
     );
     expect(counts).toEqual({
-      h264: 6 * 12,
-      h265: 2 * 2 * 9,
-      vp9: 2 * 9,
-      av1: 3 * 9,
-      vp8: 1,
+      h264: 6 * 12 * 3,
+      h265: 2 * 2 * 9 * 3,
+      vp9: 2 * 9 * 3,
+      av1: 3 * 9 * 3,
+      vp8: 3,
     });
-    expect(VIDEO_CANDIDATES).toHaveLength(72 + 36 + 18 + 27 + 1);
+    expect(VIDEO_CANDIDATES).toHaveLength((72 + 36 + 18 + 27 + 1) * 3);
   });
 
-  it("keeps every video codec string unique", () => {
-    const codecs = VIDEO_CANDIDATES.map((candidate) => candidate.codec);
-    expect(new Set(codecs).size).toBe(codecs.length);
+  it("keeps every video candidate id unique and covers all bitrate modes", () => {
+    const ids = VIDEO_CANDIDATES.map((candidate) => candidate.candidateId);
+    expect(new Set(ids).size).toBe(ids.length);
+    expect(
+      new Set(VIDEO_CANDIDATES.map((candidate) => candidate.bitrateMode)),
+    ).toEqual(new Set(["constant", "variable", "quantizer"]));
   });
 
   it("emits codec strings in the shape each encoder expects", () => {
@@ -55,10 +58,10 @@ describe("candidate matrix", () => {
   });
 
   it("covers AAC profiles and Opus across both channel counts", () => {
-    expect(AUDIO_CANDIDATES).toHaveLength(4 * 2 + 2);
+    expect(AUDIO_CANDIDATES).toHaveLength((4 * 2 + 2) * 2);
     expect(
       AUDIO_CANDIDATES.filter((candidate) => candidate.family === "aac"),
-    ).toHaveLength(8);
+    ).toHaveLength(16);
     expect(
       new Set(AUDIO_CANDIDATES.map((candidate) => candidate.channels)),
     ).toEqual(new Set([1, 2]));
@@ -71,18 +74,13 @@ describe("candidate matrix", () => {
     ).toEqual(new Set([2, 5, 29, 42]));
   });
 
-  it("uses one representative bitrate rather than expanding audio quality levels", () => {
+  it("uses one representative bitrate while covering both audio bitrate modes", () => {
     expect(
       new Set(AUDIO_CANDIDATES.map((candidate) => candidate.bitrate)),
     ).toEqual(new Set([128_000]));
     expect(
-      AUDIO_CANDIDATES.filter((candidate) => candidate.family === "aac").every(
-        (candidate) =>
-          candidate.knownBitrateConstraint?.kind === "discrete" &&
-          candidate.knownBitrateConstraint.values.join(",") ===
-            "96000,128000,160000,192000",
-      ),
-    ).toBe(true);
+      new Set(AUDIO_CANDIDATES.map((candidate) => candidate.bitrateMode)),
+    ).toEqual(new Set(["constant", "variable"]));
   });
 
   it("routes each candidate to a container its codec can live in", () => {
@@ -107,7 +105,9 @@ describe("buildFullInspectionPlan", () => {
     expect(units).toHaveLength(
       VIDEO_CANDIDATES.length * HARDWARE_PREFERENCES.length,
     );
-    const forOneCodec = units.filter((unit) => unit.codec === "avc1.640028");
+    const forOneCodec = units.filter(
+      (unit) => unit.codec === "avc1.640028" && unit.bitrateMode === "variable",
+    );
     expect(forOneCodec.map((unit) => unit.hardwareAcceleration).sort()).toEqual(
       [...HARDWARE_PREFERENCES].sort(),
     );
@@ -150,6 +150,8 @@ describe("findInspectionUnits", () => {
   });
 
   it("ignores ids that are not in the plan", () => {
-    expect(findInspectionUnits(["video:nope:prefer-hardware"])).toEqual([]);
+    expect(
+      findInspectionUnits(["video:nope:variable:prefer-hardware"]),
+    ).toEqual([]);
   });
 });

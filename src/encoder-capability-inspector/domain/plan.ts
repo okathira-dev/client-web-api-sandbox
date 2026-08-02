@@ -21,7 +21,7 @@ export const buildVideoInspectionUnits = (): VideoInspectionUnit[] =>
         ({
           ...candidate,
           kind: "video",
-          id: `video:${candidate.codec}:${hardwareAcceleration}`,
+          id: `video:${candidate.candidateId}:${hardwareAcceleration}`,
           hardwareAcceleration,
         }) satisfies VideoInspectionUnit,
     ),

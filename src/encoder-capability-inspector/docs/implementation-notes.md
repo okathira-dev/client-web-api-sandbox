@@ -9,3 +9,5 @@
 - 補足文付きの入力とボタンの横並びでは、親の `Stack` に `alignItems="flex-start"` を付ける。既定の stretch によりボタンが入力の高さまで伸びるのを防ぐ。
 - `URL.createObjectURL` は `a.click()` の直後に同期で解放しない。ダウンロード開始後、次のタスクまで解放を待つ。
 - `REPORT_VERSION` は実装上の定数を正本とする。合成パターンや計測の意味が変わった場合、旧レポートを互換対象外にするため版を上げる。
+- 候補 ID には codec string だけでなく `bitrateMode` も含める。同じ codec の `constant` / `variable` / `quantizer` を集計時に混同しないためである。映像の `no-preference` 実体推定も bitrate mode ごとに別の兄弟候補として突き合わせる。
+- 公式の配信ガイドに一律の目安がない AV1 / VP8 は、VP9 / WebM の比較起点を置くが、推奨値や Level 上限とは表示・文書上で区別する。

@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 import { SocialIcons } from "../shared/components/SocialIcons";
+import { BitrateGuide } from "./features/BitrateGuide";
 import { InspectionProgress } from "./features/InspectionProgress";
 import { InspectionRunner } from "./features/InspectionRunner";
 import { References } from "./features/References";
@@ -55,6 +56,7 @@ export const App = () => {
         <SustainedTest />
         <SyntheticPreview />
         <ResultTable />
+        <BitrateGuide />
         <References />
       </Stack>
     </Container>

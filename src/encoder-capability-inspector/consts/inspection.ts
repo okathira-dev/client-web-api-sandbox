@@ -7,7 +7,7 @@
  * 合成パターンや計測方法のように値の読み方が変わる変更も対象になる。
  * まだ公開していない版での作り込みは、何度手を入れても同じ版のまま扱う。
  */
-export const REPORT_VERSION = 2;
+export const REPORT_VERSION = 3;
 
 export const REPORT_DB_NAME = "encoder-capability-inspector";
 export const REPORT_DB_VERSION = 1;

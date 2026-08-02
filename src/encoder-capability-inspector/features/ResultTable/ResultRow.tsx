@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { MediaKindIcon } from "../../components/MediaKindIcon";
 import type { BackendInference } from "../../domain/backendInference";
+import { getBitrateGuidanceForResult } from "../../domain/bitrateGuidance";
 import { getFamilyKind } from "../../domain/families";
 import { getResultStatus, getResultVariant } from "../../domain/filters";
 import type { UnitResult } from "../../domain/types";
@@ -13,6 +14,7 @@ import {
   formatMilliseconds,
 } from "../../utils/format";
 import { useResultDetailLines } from "../../utils/messages";
+import { BitrateInfoButton } from "../BitrateGuide/BitrateGuide";
 import { RESULT_GRID_TEMPLATE, RESULT_ROW_HEIGHT } from "./consts";
 
 /** 推定の根拠を説明する文。何を突き合わせて決まったかで分ける。 */
@@ -111,7 +113,7 @@ type ResultRowProps = {
 
 /**
  * 完了した行は結果オブジェクトが差し替わらない限り再描画しない。
- * ステージ更新のたびに 472 行ぶんの再計算が走ると、検査中の操作が重くなる。
+ * ステージ更新のたびに多数の候補行ぶんの再計算が走ると、検査中の操作が重くなる。
  * 言語切り替えは `useTranslation` 側の購読で全行に伝わるので、memo と両立する。
  */
 export const ResultRow = memo(
@@ -122,6 +124,7 @@ export const ResultRow = memo(
     const chip = STATUS_CHIP[status];
     const details = describeDetails(result);
     const sustained = result.sustained;
+    const bitrateGuidance = getBitrateGuidanceForResult(result);
 
     return (
       <Box
@@ -167,34 +170,30 @@ export const ResultRow = memo(
             <CellText mono title={result.codec}>
               {result.codec}
             </CellText>
+            {/*
+              サポート値と推奨値は長文の出典リンクを含むため、codec string の
+              ツールチップではなく、キーボード操作できるダイアログで開く。
+            */}
+            <BitrateInfoButton guidance={bitrateGuidance} />
           </Stack>
           <CaptionText>{result.label}</CaptionText>
+        </Box>
+        <Box role="cell" sx={{ overflow: "hidden" }}>
+          <CellText title={result.bitrateMode}>{result.bitrateMode}</CellText>
         </Box>
         <Box role="cell" sx={{ overflow: "hidden" }}>
           <CellText title={getResultVariant(result)}>
             {getResultVariant(result)}
           </CellText>
           <CaptionText>
-            {t("table.probeBitrate", { value: formatBitrate(result.bitrate) })}
+            {result.bitrateMode === "quantizer" && result.quantizer !== null
+              ? t("table.probeQuantizer", { value: result.quantizer })
+              : result.bitrate !== null
+                ? t("table.probeBitrate", {
+                    value: formatBitrate(result.bitrate),
+                  })
+                : "—"}
           </CaptionText>
-          {result.knownBitrateConstraint && (
-            <CaptionText
-              title={t("table.knownDiscreteBitrates", {
-                values: result.knownBitrateConstraint.values
-                  .map(formatBitrate)
-                  .join(" / "),
-                source: t(
-                  `table.bitrateSource.${result.knownBitrateConstraint.source}`,
-                ),
-              })}
-            >
-              {t("table.knownDiscreteBitratesShort", {
-                values: result.knownBitrateConstraint.values
-                  .map(formatBitrate)
-                  .join(" / "),
-              })}
-            </CaptionText>
-          )}
           {/*
             列幅に収まる短い印だけを出し、根拠と方法はツールチップへ回す。
             文章のまま置くと省略記号で切れて、何も読み取れなくなる。

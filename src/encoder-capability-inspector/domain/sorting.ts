@@ -14,6 +14,7 @@ import type { UnitResult } from "./types";
 export type SortField =
   | "family"
   | "codec"
+  | "bitrateMode"
   | "variant"
   | "status"
   | "details"
@@ -53,6 +54,8 @@ const getComparator = (
       return byNumber((result) => getFamilyOrder(result.family));
     case "codec":
       return byText((result) => result.codec);
+    case "bitrateMode":
+      return byText((result) => result.bitrateMode);
     case "variant":
       return byText(getResultVariant);
     case "status":

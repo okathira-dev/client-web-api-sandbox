@@ -10,13 +10,16 @@ export const getResultStatus = (result: UnitResult): ResultStatus => {
 };
 
 /**
- * 映像はハードウェア方針、音声はチャンネル数で 1 列にまとめる。
- * どちらも「同じ codec string でも結果が割れる軸」なので同じ列で扱える。
+ * bitrateMode は独立列で扱い、ここでは映像のハードウェア方針、音声のチャンネル数を
+ * 「variant」としてまとめる。どちらも同じ codec string でも結果が割れる軸である。
  */
 export const getResultVariant = (result: UnitResult): string =>
   result.kind === "video"
     ? result.hardwareAcceleration
     : `${result.channels}ch`;
+
+export const getResultBitrateMode = (result: UnitResult): string =>
+  result.bitrateMode;
 
 /**
  * 失敗・警告のコード。基本検査と継続検査の分をこの順で並べる。
@@ -50,6 +53,7 @@ export type TimeFilter = "" | "quick" | "slow";
 export type ResultFilters = {
   readonly family: VideoFamily | string;
   readonly codec: string;
+  readonly bitrateMode: string;
   readonly variant: string;
   readonly status: ResultStatus | "";
   readonly details: string;
@@ -61,6 +65,7 @@ export type ResultFilters = {
 export const EMPTY_RESULT_FILTERS: ResultFilters = {
   family: "",
   codec: "",
+  bitrateMode: "",
   variant: "",
   status: "",
   details: "",
@@ -87,6 +92,10 @@ export const matchesFilters = (
 
   const codecFilter = filters.codec.trim().toLowerCase();
   if (codecFilter && !result.codec.toLowerCase().includes(codecFilter)) {
+    return false;
+  }
+
+  if (filters.bitrateMode && result.bitrateMode !== filters.bitrateMode) {
     return false;
   }
 
@@ -143,6 +152,7 @@ export const filterResults = (
 export const isFiltersEmpty = (filters: ResultFilters): boolean =>
   filters.family === "" &&
   filters.codec.trim() === "" &&
+  filters.bitrateMode === "" &&
   filters.variant === "" &&
   filters.status === "" &&
   filters.details.trim() === "" &&

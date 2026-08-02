@@ -52,7 +52,7 @@ export const ResultTable = () => {
   const options = useMemo(() => getFilterOptions(results), [results]);
   /*
     `no-preference` が実際にどちらで動いたかは API から取れない。
-    同じ codec string の prefer-hardware / prefer-software と出力を突き合わせて推定する。
+    同じ codec string × bitrate mode の prefer-hardware / prefer-software と出力を突き合わせて推定する。
   */
   const backends = useMemo(() => inferNoPreferenceBackends(results), [results]);
 
@@ -151,6 +151,7 @@ export const ResultTable = () => {
             sort={sort}
             onSort={handleSort}
             familyOptions={options.families}
+            bitrateModeOptions={options.bitrateModes}
             variantOptions={options.variants}
             allSelected={allSelected}
             someSelected={someSelected}

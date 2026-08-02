@@ -36,4 +36,19 @@ describe("estimateRetainedBytes", () => {
   it("counts audio candidates too", () => {
     expect(estimateRetainedBytes([audioResultFixture()], 8)).toBe(128_000);
   });
+
+  it("uses the representative bitrate for quantizer candidates", () => {
+    const quantizer = videoResultFixture({
+      bitrate: null,
+      probeBitrate: 60_000_000,
+      requestedConfig: {
+        codec: "avc1.640028",
+        width: 1920,
+        height: 1080,
+        framerate: 30,
+        bitrateMode: "quantizer",
+      },
+    });
+    expect(estimateRetainedBytes([quantizer], 10)).toBe(75_000_000);
+  });
 });

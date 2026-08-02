@@ -51,6 +51,17 @@ describe("sortResults", () => {
     ).toEqual(["c", "a", "b"]);
   });
 
+  it("sorts the bitrate mode as its own column", () => {
+    const modes = [
+      videoResultFixture({ id: "variable", bitrateMode: "variable" }),
+      videoResultFixture({ id: "constant", bitrateMode: "constant" }),
+      videoResultFixture({ id: "quantizer", bitrateMode: "quantizer" }),
+    ];
+    expect(
+      ids(sortResults(modes, { field: "bitrateMode", direction: "asc" })),
+    ).toEqual(["constant", "quantizer", "variable"]);
+  });
+
   it("sorts numeric columns by value rather than by text", () => {
     expect(
       ids(sortResults(results, { field: "time", direction: "asc" })),

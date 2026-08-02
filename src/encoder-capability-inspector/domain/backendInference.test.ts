@@ -7,8 +7,8 @@ const withPreference = (
   overrides: Partial<Parameters<typeof videoResultFixture>[0]> = {},
 ) =>
   videoResultFixture({
-    id: `video:avc1.640028:${hardwareAcceleration}`,
-    candidateId: "avc1.640028",
+    id: `video:avc1.640028:variable:${hardwareAcceleration}`,
+    candidateId: "avc1.640028:variable",
     hardwareAcceleration,
     ...overrides,
   });
@@ -19,7 +19,9 @@ const sized = (outputBytes: number) => {
 };
 
 const infer = (results: readonly UnitResult[]) =>
-  inferNoPreferenceBackends(results).get("video:avc1.640028:no-preference");
+  inferNoPreferenceBackends(results).get(
+    "video:avc1.640028:variable:no-preference",
+  );
 
 describe("inferNoPreferenceBackends", () => {
   it("picks the sibling whose output it reproduces byte for byte", () => {
@@ -134,8 +136,8 @@ describe("inferNoPreferenceBackends", () => {
 
   it("keeps candidates apart instead of mixing their siblings", () => {
     const other = videoResultFixture({
-      id: "video:vp8:no-preference",
-      candidateId: "vp8",
+      id: "video:vp8:variable:no-preference",
+      candidateId: "vp8:variable",
       codec: "vp8",
       family: "vp8",
       hardwareAcceleration: "no-preference",
@@ -147,10 +149,10 @@ describe("inferNoPreferenceBackends", () => {
       withPreference("no-preference", sized(5000)),
       other,
     ]);
-    expect(inferences.get("video:avc1.640028:no-preference")?.verdict).toBe(
-      "hardware",
-    );
-    expect(inferences.get("video:vp8:no-preference")).toEqual({
+    expect(
+      inferences.get("video:avc1.640028:variable:no-preference")?.verdict,
+    ).toBe("hardware");
+    expect(inferences.get("video:vp8:variable:no-preference")).toEqual({
       verdict: "unknown",
       basis: null,
     });

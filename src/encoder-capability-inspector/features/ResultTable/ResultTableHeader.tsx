@@ -126,6 +126,7 @@ export type ResultTableHeaderProps = {
   readonly filters: ResultFilters;
   readonly sort: ResultSort | null;
   readonly familyOptions: readonly string[];
+  readonly bitrateModeOptions: readonly string[];
   readonly variantOptions: readonly string[];
   readonly allSelected: boolean;
   readonly someSelected: boolean;
@@ -139,6 +140,7 @@ export const ResultTableHeader = ({
   filters,
   sort,
   familyOptions,
+  bitrateModeOptions,
   variantOptions,
   allSelected,
   someSelected,
@@ -210,6 +212,24 @@ export const ResultTableHeader = ({
             onFilterChange("codec", event.target.value);
           }}
           sx={{ "& .MuiInputBase-root": { fontSize: 12 } }}
+        />
+      </HeaderCell>
+
+      <HeaderCell
+        label={t("table.columnBitrateMode")}
+        field="bitrateMode"
+        {...sortProps}
+      >
+        <FilterSelect
+          allLabel={allLabel}
+          value={filters.bitrateMode}
+          options={bitrateModeOptions.map((bitrateMode) => ({
+            value: bitrateMode,
+            label: bitrateMode,
+          }))}
+          onChange={(value) => {
+            onFilterChange("bitrateMode", value);
+          }}
         />
       </HeaderCell>
 

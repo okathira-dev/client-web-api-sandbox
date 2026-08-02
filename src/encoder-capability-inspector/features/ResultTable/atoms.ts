@@ -5,6 +5,7 @@ import { atom, useAtomValue, useSetAtom } from "jotai";
 import {
   EMPTY_RESULT_FILTERS,
   filterResults,
+  getResultBitrateMode,
   getResultVariant,
   type ResultFilters,
 } from "../../domain/filters";
@@ -85,6 +86,7 @@ export const useToggleManySelection = () => useSetAtom(toggleManyAtom);
 /** 表示中の結果から、絞り込み用の選択肢を作る。 */
 export const getFilterOptions = (results: readonly UnitResult[]) => ({
   families: [...new Set(results.map((result) => result.family))].sort(),
+  bitrateModes: [...new Set(results.map(getResultBitrateMode))].sort(),
   variants: [...new Set(results.map(getResultVariant))].sort(),
 });
 

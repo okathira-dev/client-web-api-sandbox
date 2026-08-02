@@ -86,6 +86,42 @@ const post = (response: WorkerResponse): void => {
 
 type StageReporter = (stage: InspectionStage) => void;
 
+/** lib.dom にない codec-specific quantizer オプションも検査対象として渡す。 */
+type ExtendedVideoEncodeOptions = VideoEncoderEncodeOptions & {
+  hevc?: { quantizer?: number | null };
+  vp9?: { quantizer?: number | null };
+  av1?: { quantizer?: number | null };
+};
+
+const getVideoEncodeOptions = (
+  unit: VideoInspectionUnit,
+  keyFrame: boolean,
+): ExtendedVideoEncodeOptions => {
+  const options: ExtendedVideoEncodeOptions = { keyFrame };
+  if (unit.bitrateMode !== "quantizer" || unit.quantizer === null) {
+    return options;
+  }
+
+  switch (unit.family) {
+    case "h264":
+      options.avc = { quantizer: unit.quantizer };
+      break;
+    case "h265":
+      options.hevc = { quantizer: unit.quantizer };
+      break;
+    case "vp9":
+      options.vp9 = { quantizer: unit.quantizer };
+      break;
+    case "av1":
+      options.av1 = { quantizer: unit.quantizer };
+      break;
+    case "vp8":
+      // VP8 の WebCodecs 登録仕様には codec-specific quantizer option がない。
+      break;
+  }
+  return options;
+};
+
 // ---------------------------------------------------------------------------
 // 環境情報
 // ---------------------------------------------------------------------------
@@ -183,7 +219,7 @@ const buildPerformance = ({
 
 /**
  * ノイズタイルは候補をまたいで同じものを使うので、ワーカーの生存期間で 1 度だけ作る。
- * 候補ごとに作り直すと、472 回ぶんの生成が丸ごと計測に乗ってしまう。
+ * 候補ごとに作り直すと、1,406 回ぶんの生成が丸ごと計測に乗ってしまう。
  */
 let noiseTiles: OffscreenCanvas[] | null = null;
 
@@ -348,9 +384,9 @@ const runVideoUnit = async (
     codec: unit.codec,
     width: unit.width,
     height: unit.height,
-    bitrate: unit.bitrate,
+    ...(unit.bitrate === null ? {} : { bitrate: unit.bitrate }),
     framerate: unit.fps,
-    bitrateMode: "variable",
+    bitrateMode: unit.bitrateMode,
     latencyMode: "quality",
     hardwareAcceleration: unit.hardwareAcceleration,
   };
@@ -484,7 +520,7 @@ const runVideoUnit = async (
       sourcePreparationMs += performance.now() - sourceStartedAt;
 
       try {
-        encoder.encode(frame, { keyFrame: index === 0 });
+        encoder.encode(frame, getVideoEncodeOptions(unit, index === 0));
       } finally {
         frame.close();
       }
@@ -603,7 +639,9 @@ const runVideoUnit = async (
     label: unit.label,
     codec: unit.codec,
     bitrate: unit.bitrate,
-    knownBitrateConstraint: unit.knownBitrateConstraint,
+    probeBitrate: unit.probeBitrate,
+    bitrateMode: unit.bitrateMode,
+    quantizer: unit.quantizer,
     family: unit.family,
     profile: unit.profile,
     level: unit.level,
@@ -826,6 +864,7 @@ const runAudioUnit = async (
     sampleRate: unit.sampleRate,
     numberOfChannels: unit.channels,
     bitrate: unit.bitrate,
+    bitrateMode: unit.bitrateMode,
   };
 
   let stage: InspectionStage = "declared";
@@ -1059,7 +1098,9 @@ const runAudioUnit = async (
     label: unit.label,
     codec: unit.codec,
     bitrate: unit.bitrate,
-    knownBitrateConstraint: unit.knownBitrateConstraint,
+    probeBitrate: unit.bitrate,
+    bitrateMode: unit.bitrateMode,
+    quantizer: null,
     family: unit.family,
     profile: unit.profile,
     expectedAudioObjectType: unit.audioObjectType,

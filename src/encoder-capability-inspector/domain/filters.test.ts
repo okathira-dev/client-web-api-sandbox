@@ -7,6 +7,7 @@ import {
   EMPTY_RESULT_FILTERS,
   filterResults,
   getBasicFrameTimePercent,
+  getResultBitrateMode,
   getResultDetails,
   getResultStatus,
   getResultVariant,
@@ -39,9 +40,14 @@ describe("getResultStatus", () => {
 });
 
 describe("getResultVariant", () => {
-  it("uses the hardware preference for video and the channel count for audio", () => {
+  it("uses the hardware preference for video and channel count for audio", () => {
     expect(getResultVariant(videoResultFixture())).toBe("prefer-hardware");
     expect(getResultVariant(audioResultFixture({ channels: 1 }))).toBe("1ch");
+  });
+
+  it("exposes bitrate mode independently", () => {
+    expect(getResultBitrateMode(videoResultFixture())).toBe("variable");
+    expect(getResultBitrateMode(audioResultFixture())).toBe("variable");
   });
 });
 
@@ -108,7 +114,13 @@ describe("matchesFilters", () => {
     expect(matchesFilters(result, withFilters({ codec: "vp09" }))).toBe(false);
   });
 
-  it("filters by hardware preference or channel count", () => {
+  it("filters bitrate mode separately from hardware preference or channel count", () => {
+    expect(
+      matchesFilters(result, withFilters({ bitrateMode: "variable" })),
+    ).toBe(true);
+    expect(
+      matchesFilters(result, withFilters({ bitrateMode: "quantizer" })),
+    ).toBe(false);
     expect(
       matchesFilters(result, withFilters({ variant: "prefer-hardware" })),
     ).toBe(true);

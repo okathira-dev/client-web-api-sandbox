@@ -2,7 +2,7 @@
  * 検査の中核となる型定義。
  *
  * 映像候補と音声候補は形が大きく異なるため、`kind` を判別子とする Union で表現し、
- * 「映像だけが持つ情報」（Profile / Level / ハードウェア方針）を音声側から参照できないようにする。
+ * 「映像だけが持つ情報」（Profile / Level / bitrateMode / ハードウェア方針）を音声側から参照できないようにする。
  */
 
 export const VIDEO_FAMILIES = ["h264", "h265", "vp9", "av1", "vp8"] as const;
@@ -18,22 +18,25 @@ export const HARDWARE_PREFERENCES = [
 ] as const;
 export type HardwarePreference = (typeof HARDWARE_PREFERENCES)[number];
 
+/** VideoEncoder が定義する 3 種のビットレート制御。quantizer は映像だけで使える。 */
+export const VIDEO_BITRATE_MODES = [
+  "constant",
+  "variable",
+  "quantizer",
+] as const;
+export type VideoBitrateMode = (typeof VIDEO_BITRATE_MODES)[number];
+
+/** AudioEncoder が定義する 2 種のビットレート制御。 */
+export const AUDIO_BITRATE_MODES = ["constant", "variable"] as const;
+export type AudioBitrateMode = (typeof AUDIO_BITRATE_MODES)[number];
+export type BitrateMode = VideoBitrateMode | AudioBitrateMode;
+
 /** mediabunny の `VideoCodec` / `AudioCodec` のうち本検査で使う値。 */
 export type VideoContainerCodec = "avc" | "hevc" | "vp9" | "av1" | "vp8";
 export type AudioContainerCodec = "aac" | "opus";
 export type ContainerFormat = "mp4" | "webm";
 
-/**
- * WebCodecs 自体はビットレートの許容範囲を照会する API を持たない。
- * ここには仕様または実装から確認できた値だけを入れ、検査に使う値とは分けて保持する。
- */
-export type KnownBitrateConstraint = {
-  readonly kind: "discrete";
-  readonly values: readonly number[];
-  readonly source: "chromium-windows-mf-aac";
-};
-
-/** 1 つの codec string に対する検査条件。ハードウェア方針はまだ含まない。 */
+/** 1 つの codec string × bitrateMode に対する検査条件。ハードウェア方針はまだ含まない。 */
 export type VideoCandidate = {
   readonly candidateId: string;
   readonly family: VideoFamily;
@@ -45,9 +48,13 @@ export type VideoCandidate = {
   readonly width: number;
   readonly height: number;
   readonly fps: number;
-  /** 今回の実エンコードに渡す値。Level の規格上限を表すとは限らない。 */
-  readonly bitrate: number;
-  readonly knownBitrateConstraint: KnownBitrateConstraint | null;
+  /** 今回の実エンコードに渡す値。quantizer では bitrate を指定しない。 */
+  readonly bitrate: number | null;
+  /** quantizer でも比較負荷として保持する、対応解像度/FPSの代表ビットレート。 */
+  readonly probeBitrate: number;
+  readonly bitrateMode: VideoBitrateMode;
+  /** quantizer モードで encode options に渡す値。非対応の codec は null。 */
+  readonly quantizer: number | null;
   readonly container: ContainerFormat;
   readonly containerCodec: VideoContainerCodec;
   readonly label: string;
@@ -64,13 +71,13 @@ export type AudioCandidate = {
   readonly sampleRate: number;
   /** 今回の実エンコードに渡す代表値。品質ごとの網羅検査には使わない。 */
   readonly bitrate: number;
-  readonly knownBitrateConstraint: KnownBitrateConstraint | null;
+  readonly bitrateMode: AudioBitrateMode;
   readonly container: ContainerFormat;
   readonly containerCodec: AudioContainerCodec;
   readonly label: string;
 };
 
-/** 実際に検査を実行する単位。映像は 1 候補 × ハードウェア方針 3 種へ展開される。 */
+/** 実際に検査を実行する単位。映像は 1 codec/mode 候補 × ハードウェア方針 3 種へ展開される。 */
 export type VideoInspectionUnit = VideoCandidate & {
   readonly kind: "video";
   readonly id: string;
@@ -158,10 +165,12 @@ export type UnitResultBase = {
   readonly candidateId: string;
   readonly label: string;
   readonly codec: string;
-  /** 実エンコードに渡したビットレート。 */
-  readonly bitrate: number;
-  /** 仕様・公式実装で確認済みの制約。未確認の範囲は記録しない。 */
-  readonly knownBitrateConstraint: KnownBitrateConstraint | null;
+  /** 実エンコードに渡したビットレート。quantizer モードでは null。 */
+  readonly bitrate: number | null;
+  /** quantizer のメモリ見積りにも使う比較用の代表ビットレート。 */
+  readonly probeBitrate: number;
+  readonly bitrateMode: BitrateMode;
+  readonly quantizer: number | null;
   readonly testMode: TestMode;
   readonly inputMode: InputMode;
   /** `isConfigSupported` が受理したか。 */

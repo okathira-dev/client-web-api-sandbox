@@ -17,7 +17,11 @@ export const estimateRetainedBytes = (
   durationSeconds: number,
 ): number => {
   const peakBitrate = results.reduce(
-    (highest, result) => Math.max(highest, result.requestedConfig.bitrate ?? 0),
+    (highest, result) =>
+      Math.max(
+        highest,
+        result.requestedConfig.bitrate ?? result.bitrate ?? result.probeBitrate,
+      ),
     0,
   );
   return Math.round((peakBitrate * durationSeconds) / 8);

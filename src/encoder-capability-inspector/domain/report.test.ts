@@ -125,15 +125,17 @@ describe("summarizeFamilies", () => {
     }
   });
 
-  it("counts a codec string once even when several hardware preferences pass", () => {
+  it("counts a codec/mode once even when several hardware preferences pass", () => {
     const report = reportFixture({
       results: [
         videoResultFixture({
-          id: "video:avc1.640028:prefer-hardware",
+          id: "video:avc1.640028:variable:prefer-hardware",
+          candidateId: "avc1.640028:variable",
           hardwareAcceleration: "prefer-hardware",
         }),
         videoResultFixture({
-          id: "video:avc1.640028:prefer-software",
+          id: "video:avc1.640028:variable:prefer-software",
+          candidateId: "avc1.640028:variable",
           hardwareAcceleration: "prefer-software",
         }),
       ],
@@ -246,14 +248,18 @@ describe("getRemainingMs", () => {
       getRemainingMs({
         elapsedMs: 20_000,
         completedUnits: 100,
-        totalUnits: 472,
+        totalUnits: 1_406,
       }),
-    ).toBe(74_400);
+    ).toBe(261_200);
   });
 
   it("gives no estimate before the first candidate finishes", () => {
     expect(
-      getRemainingMs({ elapsedMs: 5_000, completedUnits: 0, totalUnits: 472 }),
+      getRemainingMs({
+        elapsedMs: 5_000,
+        completedUnits: 0,
+        totalUnits: 1_406,
+      }),
     ).toBeNull();
   });
 
@@ -261,8 +267,8 @@ describe("getRemainingMs", () => {
     expect(
       getRemainingMs({
         elapsedMs: 40_000,
-        completedUnits: 472,
-        totalUnits: 472,
+        completedUnits: 1_406,
+        totalUnits: 1_406,
       }),
     ).toBeNull();
   });
@@ -284,8 +290,8 @@ describe("summarizeFamilies with audio", () => {
     const report = reportFixture({
       results: [
         audioResultFixture({
-          id: "audio:aac:2:2",
-          candidateId: "aac:2:2",
+          id: "audio:aac:2:2:variable",
+          candidateId: "aac:2:2:variable",
           codec: "mp4a.40.2",
           family: "aac",
           profile: "AAC-LC",
