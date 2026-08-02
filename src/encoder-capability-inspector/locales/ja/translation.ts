@@ -158,8 +158,8 @@ const translation: TranslationResource = {
       "もう一方の方針は失敗していて動く実装が片方しかなく、その {{backend}} 側と出力が完全に一致しました。",
     backendReasonUnknown:
       "両方の方針の出力が同じか、どちらとも一致しないため、実体を区別できません。",
-    backend_hardware: "HW",
-    backend_software: "SW",
+    backend_hardware: "hardware",
+    backend_software: "software",
     sustainedDone: "実施済み",
     sustainedNone: "未実施",
     sustainedFrames: "{{count}} フレーム",

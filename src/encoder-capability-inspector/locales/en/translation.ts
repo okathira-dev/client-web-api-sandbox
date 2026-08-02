@@ -154,8 +154,8 @@ const translation: TranslationResource = {
       "The other preference failed, so only one implementation works, and the output matched that {{backend}} side exactly.",
     backendReasonUnknown:
       "Both preferences produced the same output, or neither matched, so the implementation cannot be told apart.",
-    backend_hardware: "HW",
-    backend_software: "SW",
+    backend_hardware: "hardware",
+    backend_software: "software",
     filterAll: "All",
     filterCodecPlaceholder: "avc1.64…",
     filterDetailsPlaceholder: "Filter by error or warning",

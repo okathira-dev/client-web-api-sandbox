@@ -170,9 +170,10 @@ export const ResultRow = memo(
                         backend: t(`table.backend_${backend.verdict}`),
                       })
                 }
+                // 他の補足文と同じ大きさにする。列幅には収まる。
                 sx={{
-                  height: 18,
-                  "& .MuiChip-label": { px: 0.75, fontSize: 11 },
+                  height: 20,
+                  "& .MuiChip-label": { px: 0.75, fontSize: 12 },
                 }}
               />
             </Tooltip>
