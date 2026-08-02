@@ -31,3 +31,6 @@ dist-ssr
 
 # Serena cache
 .serena/cache/
+
+# Claude Code のローカル作業領域（worktreesはリポジトリ自身を含むため必ず除外する）
+.claude/

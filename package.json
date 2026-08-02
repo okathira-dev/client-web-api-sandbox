@@ -25,6 +25,8 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:ci": "jest --coverage --watchAll=false",
+    "inspector:samples": "node src/encoder-capability-inspector/scripts/generateSyntheticSamples.ts",
+    "inspector:samples:check": "node src/encoder-capability-inspector/scripts/generateSyntheticSamples.ts --check",
     "prepare": "husky"
   },
   "dependencies": {
@@ -37,11 +39,13 @@
     "@mui/material": "^6.5.0",
     "@mui/x-tree-view": "^8.27.2",
     "@okathira/ghostpdl-wasm": "^1.1.0",
+    "@tanstack/react-virtual": "^3.14.9",
     "@xmldom/xmldom": "^0.9.10",
     "fast-xml-parser": "^5.10.1",
     "i18next": "^24.2.3",
     "i18next-browser-languagedetector": "^8.2.1",
     "jotai": "^2.20.2",
+    "mediabunny": "^1.51.0",
     "papaparse": "^5.5.4",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
@@ -81,7 +85,7 @@
     "*.{jsx,tsx,html}": [
       "markuplint"
     ],
-    "src/**/*": [
+    "src/**/*.{js,jsx,ts,tsx,json,css,html}": [
       "biome check"
     ]
   },

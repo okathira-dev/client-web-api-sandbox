@@ -14,6 +14,7 @@
 - `src/lcg-predictor`: 線形合同法乱数予測ツール（テストあり）
 - `src/computation-of-tears`: Three.js を用いたジェネラティブ表現（Orthographic）
 - `src/pdf-compressor-wasm`: Ghostscript WASM による PDF 圧縮の設計・技術調査
+- `src/encoder-capability-inspector`: WebCodecs のエンコード設定を実出力まで通して検査するツール
 - `src/shared`: 共有 UI/HTML コンポーネント
 
 ## エントリポイント

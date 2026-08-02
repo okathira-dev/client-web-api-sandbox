@@ -47,6 +47,11 @@ export default defineConfig({
           "index.html",
         ),
         "kojo-xml-viewer": resolve(root, "kojo-xml-viewer", "index.html"),
+        "encoder-capability-inspector": resolve(
+          root,
+          "encoder-capability-inspector",
+          "index.html",
+        ),
       },
     },
   },
