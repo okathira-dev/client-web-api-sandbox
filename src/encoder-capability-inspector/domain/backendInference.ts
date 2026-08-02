@@ -16,11 +16,12 @@ export type BackendVerdict = "hardware" | "software" | "unknown";
 export type BackendInference = {
   readonly verdict: BackendVerdict;
   /**
-   * 何を根拠にしたか。
-   * - `output-match`: 一方とだけ出力が一致した
-   * - `only-one-succeeded`: 片方しか成功しておらず、消去法で寄せた（確度は低い）
+   * 何を根拠にしたか。どちらも「出力が一致した」ことが前提で、根拠の強さは変わらない。
+   *
+   * - `output-match`: 両方の方針が成功して出力が割れており、一方とだけ一致した
+   * - `only-one-worked`: 片方の方針は失敗しており、成功した側と一致した（消去法）
    */
-  readonly basis: "output-match" | "only-one-succeeded" | null;
+  readonly basis: "output-match" | "only-one-worked" | null;
 };
 
 const UNKNOWN: BackendInference = { verdict: "unknown", basis: null };
@@ -72,12 +73,20 @@ const infer = (
     return UNKNOWN;
   }
 
-  // 片方しか通らなかったなら、通ったほうへ寄せる。確度は落ちる。
+  /*
+    片方の方針が失敗しているなら、動く実装はもう一方しか無い。
+    そのうえで出力まで一致していれば、消去法と一致の両方が揃うので推定は強い。
+    一致しないなら、どちらでもない実装が動いたことになるので寄せない。
+  */
   if (hardwareSignature && !softwareSignature) {
-    return { verdict: "hardware", basis: "only-one-succeeded" };
+    return target === hardwareSignature
+      ? { verdict: "hardware", basis: "only-one-worked" }
+      : UNKNOWN;
   }
   if (softwareSignature && !hardwareSignature) {
-    return { verdict: "software", basis: "only-one-succeeded" };
+    return target === softwareSignature
+      ? { verdict: "software", basis: "only-one-worked" }
+      : UNKNOWN;
   }
 
   // 両方が同じ指紋。方針を変えても実装が変わらなかったということで、区別できない。

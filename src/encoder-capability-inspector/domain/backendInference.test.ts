@@ -50,7 +50,8 @@ describe("inferNoPreferenceBackends", () => {
     ).toEqual({ verdict: "unknown", basis: null });
   });
 
-  it("falls back to the only sibling that worked", () => {
+  it("settles on the only sibling that worked when the output matches it", () => {
+    // もう一方の方針は動かないので、消去法と出力一致の両方が揃う。
     expect(
       infer([
         withPreference("prefer-hardware", sized(5000)),
@@ -60,7 +61,21 @@ describe("inferNoPreferenceBackends", () => {
         }),
         withPreference("no-preference", sized(5000)),
       ]),
-    ).toEqual({ verdict: "hardware", basis: "only-one-succeeded" });
+    ).toEqual({ verdict: "hardware", basis: "only-one-worked" });
+  });
+
+  it("does not settle on the only sibling that worked when the output differs", () => {
+    // 動く実装が 1 つしかないはずなのに出力が違う。第三の実装が動いたことになる。
+    expect(
+      infer([
+        withPreference("prefer-hardware", sized(5000)),
+        withPreference("prefer-software", {
+          usable: false,
+          error: "isConfigSupported-false",
+        }),
+        withPreference("no-preference", sized(9000)),
+      ]),
+    ).toEqual({ verdict: "unknown", basis: null });
   });
 
   it("gives up when the output matches neither sibling", () => {

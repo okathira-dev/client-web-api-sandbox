@@ -150,9 +150,14 @@ const translation: TranslationResource = {
     experimentalOnly: "実験的のみ",
     backendHint:
       "WebCodecs には実際に使われた実装を返す API がありません。同じ codec string の prefer-hardware / prefer-software と出力バイト数・チャンク数を突き合わせた推定です。",
-    backendMatched: "推定 {{backend}}（出力一致）",
-    backendLikely: "推定 {{backend}}（片側のみ成功）",
-    backendUnknown: "実体は判定不能",
+    backendShort: "≈ {{backend}}",
+    backendUnknownShort: "実体不明",
+    backendReasonMatched:
+      "prefer-hardware と prefer-software で出力が割れており、{{backend}} 側と完全に一致しました。",
+    backendReasonOnlyOne:
+      "もう一方の方針は失敗していて動く実装が片方しかなく、その {{backend}} 側と出力が完全に一致しました。",
+    backendReasonUnknown:
+      "両方の方針の出力が同じか、どちらとも一致しないため、実体を区別できません。",
     backend_hardware: "HW",
     backend_software: "SW",
     sustainedDone: "実施済み",

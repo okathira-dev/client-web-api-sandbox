@@ -11,6 +11,16 @@ import { formatFrameBudget, formatMilliseconds } from "../../utils/format";
 import { useResultDetailLines } from "../../utils/messages";
 import { RESULT_GRID_TEMPLATE, RESULT_ROW_HEIGHT } from "./consts";
 
+/** 推定の根拠を説明する文。何を突き合わせて決まったかで分ける。 */
+const BACKEND_REASON_KEYS = {
+  "output-match": "table.backendReasonMatched",
+  "only-one-worked": "table.backendReasonOnlyOne",
+  unknown: "table.backendReasonUnknown",
+} as const;
+
+const getBackendReasonKey = (backend: BackendInference): string =>
+  BACKEND_REASON_KEYS[backend.basis ?? "unknown"];
+
 const STATUS_CHIP = {
   pass: { key: "table.statusPass", color: "success" },
   warning: { key: "table.statusWarning", color: "warning" },
@@ -138,20 +148,33 @@ export const ResultRow = memo(
         </Box>
         <Box role="cell" sx={{ overflow: "hidden" }}>
           <CellText>{getResultVariant(result)}</CellText>
+          {/*
+            列幅に収まる短い印だけを出し、根拠と方法はツールチップへ回す。
+            文章のまま置くと省略記号で切れて、何も読み取れなくなる。
+          */}
           {backend && (
-            <Tooltip title={t("table.backendHint")} placement="top">
-              <span>
-                <CaptionText>
-                  {backend.verdict === "unknown"
-                    ? t("table.backendUnknown")
-                    : t(
-                        backend.basis === "only-one-succeeded"
-                          ? "table.backendLikely"
-                          : "table.backendMatched",
-                        { backend: t(`table.backend_${backend.verdict}`) },
-                      )}
-                </CaptionText>
-              </span>
+            <Tooltip
+              title={`${t(getBackendReasonKey(backend), {
+                backend: t(`table.backend_${backend.verdict}`),
+              })} ${t("table.backendHint")}`}
+              placement="top"
+            >
+              <Chip
+                size="small"
+                variant="outlined"
+                color={backend.verdict === "unknown" ? "default" : "info"}
+                label={
+                  backend.verdict === "unknown"
+                    ? t("table.backendUnknownShort")
+                    : t("table.backendShort", {
+                        backend: t(`table.backend_${backend.verdict}`),
+                      })
+                }
+                sx={{
+                  height: 18,
+                  "& .MuiChip-label": { px: 0.75, fontSize: 11 },
+                }}
+              />
             </Tooltip>
           )}
         </Box>

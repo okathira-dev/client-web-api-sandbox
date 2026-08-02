@@ -149,9 +149,11 @@ export type TableTranslations = {
   experimentalExclude: string;
   experimentalOnly: string;
   backendHint: string;
-  backendMatched: string;
-  backendLikely: string;
-  backendUnknown: string;
+  backendShort: string;
+  backendUnknownShort: string;
+  backendReasonMatched: string;
+  backendReasonOnlyOne: string;
+  backendReasonUnknown: string;
   backend_hardware: string;
   backend_software: string;
   sustainedDone: string;

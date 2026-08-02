@@ -146,9 +146,14 @@ const translation: TranslationResource = {
     experimentalOnly: "Experimental only",
     backendHint:
       "WebCodecs exposes no API for the implementation actually used. This is inferred by matching the output byte count and chunk count against prefer-hardware and prefer-software for the same codec string.",
-    backendMatched: "likely {{backend}} (output matches)",
-    backendLikely: "likely {{backend}} (only one side worked)",
-    backendUnknown: "cannot tell which ran",
+    backendShort: "≈ {{backend}}",
+    backendUnknownShort: "unknown",
+    backendReasonMatched:
+      "prefer-hardware and prefer-software produced different output, and this run matched the {{backend}} side exactly.",
+    backendReasonOnlyOne:
+      "The other preference failed, so only one implementation works, and the output matched that {{backend}} side exactly.",
+    backendReasonUnknown:
+      "Both preferences produced the same output, or neither matched, so the implementation cannot be told apart.",
     backend_hardware: "HW",
     backend_software: "SW",
     filterAll: "All",
