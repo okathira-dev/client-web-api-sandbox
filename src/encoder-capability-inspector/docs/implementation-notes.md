@@ -8,4 +8,4 @@
 - MUI の `Accordion` は閉じても子要素を DOM に残す。重いプレビューには `slotProps={{ transition: { unmountOnExit: true } }}` を指定する。
 - 補足文付きの入力とボタンの横並びでは、親の `Stack` に `alignItems="flex-start"` を付ける。既定の stretch によりボタンが入力の高さまで伸びるのを防ぐ。
 - `URL.createObjectURL` は `a.click()` の直後に同期で解放しない。ダウンロード開始後、次のタスクまで解放を待つ。
-- `REPORT_VERSION` は 3。合成パターンと計測の意味が変わったため、旧レポートは互換対象外とする。
+- `REPORT_VERSION` は実装上の定数を正本とする。合成パターンや計測の意味が変わった場合、旧レポートを互換対象外にするため版を上げる。

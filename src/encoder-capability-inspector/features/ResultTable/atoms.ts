@@ -18,6 +18,7 @@ import type { UnitResult } from "../../domain/types";
 
 const filtersAtom = atom<ResultFilters>(EMPTY_RESULT_FILTERS);
 const sortAtom = atom<ResultSort | null>(null);
+// 絞り込みを変えて見えなくなった候補も選択状態は保つ。解除は明示操作だけにする。
 const selectedIdsAtom = atom<ReadonlySet<string>>(new Set<string>());
 
 /**

@@ -98,14 +98,7 @@ export const ResultTable = () => {
     previousLengthRef.current = filtered.length;
   }, [filtered, sort]);
 
-  // 絞り込みを変えたら一覧の先頭へ戻す。ずれた位置に留まると何が出ているか分からない。
-  useLayoutEffect(() => {
-    const element = scrollRef.current;
-    if (element) element.scrollTop = 0;
-    previousTopIdRef.current = null;
-    previousLengthRef.current = 0;
-  }, []);
-
+  // フィルター・並べ替えの操作から呼び、一覧の先頭と挿入補正の基準を同時に戻す。
   const scrollToTop = () => {
     const element = scrollRef.current;
     if (element) element.scrollTop = 0;

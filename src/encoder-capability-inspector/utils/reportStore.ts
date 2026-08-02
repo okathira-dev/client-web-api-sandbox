@@ -41,14 +41,39 @@ const withStore = async <T>(
     return await new Promise<T>((resolve, reject) => {
       const transaction = database.transaction(REPORT_STORE_NAME, mode);
       const request = operate(transaction.objectStore(REPORT_STORE_NAME));
+      let settled = false;
+      const finish = (settle: () => void) => {
+        // request の error の後に transaction の abort も来るため、最初の原因だけを返す。
+        if (settled) return;
+        settled = true;
+        settle();
+      };
       request.onsuccess = () => {
-        resolve(request.result);
+        // request の成功はトランザクションの確定ではない。oncomplete まで待つ。
       };
       request.onerror = () => {
-        reject(request.error ?? new Error("indexeddb-request-failed"));
+        finish(() => {
+          reject(request.error ?? new Error("indexeddb-request-failed"));
+        });
+      };
+      transaction.oncomplete = () => {
+        finish(() => {
+          resolve(request.result);
+        });
+      };
+      transaction.onerror = () => {
+        finish(() => {
+          reject(
+            transaction.error ?? new Error("indexeddb-transaction-failed"),
+          );
+        });
       };
       transaction.onabort = () => {
-        reject(transaction.error ?? new Error("indexeddb-transaction-aborted"));
+        finish(() => {
+          reject(
+            transaction.error ?? new Error("indexeddb-transaction-aborted"),
+          );
+        });
       };
     });
   } finally {

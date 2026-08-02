@@ -28,25 +28,45 @@ export const withDeadline = <T>(
   signal: AbortSignal,
   label: string,
 ): Promise<T> => {
-  const timeoutSignal = AbortSignal.timeout(timeoutMs);
-  const combined = AbortSignal.any([signal, timeoutSignal]);
-
   return new Promise<T>((resolve, reject) => {
-    const rejectForAbort = () => {
-      reject(
-        timeoutSignal.aborted
-          ? new Error(`${label}-timeout`)
-          : createAbortError(),
-      );
+    let settled = false;
+    const finish = (settle: () => void) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timeoutId);
+      signal.removeEventListener("abort", rejectForAbort);
+      settle();
     };
-    if (combined.aborted) {
+    const rejectForAbort = () => {
+      finish(() => {
+        reject(createAbortError());
+      });
+    };
+    const timeoutId = setTimeout(() => {
+      finish(() => {
+        reject(new Error(`${label}-timeout`));
+      });
+    }, timeoutMs);
+
+    if (signal.aborted) {
       rejectForAbort();
       return;
     }
-    combined.addEventListener("abort", rejectForAbort, { once: true });
-    promise.then(resolve, reject).finally(() => {
-      combined.removeEventListener("abort", rejectForAbort);
-    });
+    signal.addEventListener("abort", rejectForAbort, { once: true });
+    promise.then(
+      (value) => {
+        // 期限切れ・中断後に元の Promise が完了しても、先に確定した結果を上書きしない。
+        finish(() => {
+          resolve(value);
+        });
+      },
+      (error: unknown) => {
+        // 上と同じく、打ち切った処理の遅延失敗を二重に通知しない。
+        finish(() => {
+          reject(error);
+        });
+      },
+    );
   });
 };
 

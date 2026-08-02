@@ -41,6 +41,7 @@ const HeaderCell = ({
 
   return (
     <Box
+      role="columnheader"
       sx={{ display: "flex", flexDirection: "column", gap: 0.5, minWidth: 0 }}
     >
       <Tooltip
@@ -168,7 +169,7 @@ export const ResultTableHeader = ({
         borderColor: "divider",
       }}
     >
-      <Box>
+      <Box role="columnheader">
         <Checkbox
           size="small"
           checked={allSelected}

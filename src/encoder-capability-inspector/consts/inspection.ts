@@ -55,7 +55,11 @@ export const DECODER_FLUSH_TIMEOUT_MS = 15_000;
 export const AUDIO_FLUSH_TIMEOUT_MS = 12_000;
 export const MUX_START_TIMEOUT_MS = 10_000;
 export const MUX_FINALIZE_TIMEOUT_MS = 15_000;
+/** 失敗後の cancel は後始末なので、次の候補を待たせない短い上限にする。 */
+export const MUX_CANCEL_TIMEOUT_MS = 2_000;
 export const LIVE_FRAME_TIMEOUT_MS = 15_000;
+/** ライブ入力の reader 解放を待つ上限。超えたらワーカーを終了する。 */
+export const LIVE_SOURCE_CLOSE_TIMEOUT_MS = 3_000;
 
 /** encoder.flush() のタイムアウトは画素数に応じて伸ばす。 */
 export const MIN_ENCODE_FLUSH_TIMEOUT_MS = 12_000;

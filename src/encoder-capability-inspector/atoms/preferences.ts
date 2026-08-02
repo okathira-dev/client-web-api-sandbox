@@ -30,7 +30,10 @@ const sustainedDurationSecondsAtom = atom((get) =>
   parseSustainedDurationSeconds(get(sustainedDurationInputAtom)),
 );
 
-/** 有効な値になったときだけ localStorage へ書く。入力途中の文字列は保存しない。 */
+/**
+ * 入力途中の無効な文字列を永続化しない。無効な間は直近の有効値を保ち、
+ * 再読み込み後に実行不能な設定だけが残る状態を避ける。
+ */
 const persistAtom = atom(null, (get) => {
   const candidatePauseMs = get(candidatePauseMsAtom);
   const sustainedDurationSeconds = get(sustainedDurationSecondsAtom);

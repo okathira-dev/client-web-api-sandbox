@@ -56,6 +56,34 @@ const CaptionText = ({ children }: { children: React.ReactNode }) => (
   </Typography>
 );
 
+/**
+ * 詳細は省略表示になるため、表示できる補足がある行だけツールチップを付ける。
+ * 詳細がない行の「—」には説明すべき内容がないので、空のツールチップを出さない。
+ */
+const DetailSummary = ({
+  codes,
+  explanation,
+}: {
+  codes: string;
+  explanation: string;
+}) => {
+  const tooltip = [codes, explanation].filter(Boolean).join(" — ");
+  const code = <CellText mono>{codes || "—"}</CellText>;
+
+  return (
+    <>
+      {tooltip ? (
+        <Tooltip title={tooltip} placement="top">
+          <span>{code}</span>
+        </Tooltip>
+      ) : (
+        code
+      )}
+      {explanation && <CaptionText>{explanation}</CaptionText>}
+    </>
+  );
+};
+
 type ResultRowProps = {
   readonly result: UnitResult;
   readonly selected: boolean;
@@ -163,19 +191,10 @@ export const ResultRow = memo(
           <Chip size="small" color={chip.color} label={t(chip.key)} />
         </Box>
         <Box role="cell" sx={{ overflow: "hidden" }}>
-          <Tooltip
-            title={[details.codes, details.explanation]
-              .filter(Boolean)
-              .join(" — ")}
-            placement="top"
-          >
-            <span>
-              <CellText mono>{details.codes || "—"}</CellText>
-            </span>
-          </Tooltip>
-          {details.explanation && (
-            <CaptionText>{details.explanation}</CaptionText>
-          )}
+          <DetailSummary
+            codes={details.codes}
+            explanation={details.explanation}
+          />
         </Box>
         <Box role="cell" sx={{ overflow: "hidden" }}>
           <CellText>{formatFrameBudget(result.performance)}</CellText>

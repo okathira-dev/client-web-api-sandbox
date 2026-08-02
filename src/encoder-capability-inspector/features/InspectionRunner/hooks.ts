@@ -93,6 +93,7 @@ export const useInspectionControls = () => {
       } catch (error) {
         if (!isAbortError(error)) setError(describe(error));
       } finally {
+        // getDisplayMedia の成功後は、検査失敗・キャンセルでも共有トラックを必ず止める。
         liveCapture?.stop();
         abortRef.current = null;
         setRunKind(null);

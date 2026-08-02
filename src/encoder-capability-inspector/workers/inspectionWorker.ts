@@ -568,6 +568,7 @@ const runVideoUnit = async (
       container: unit.container,
       containerCodec: unit.containerCodec,
       frameRate: unit.fps,
+      signal,
     });
     metrics = {
       ...metrics,
@@ -997,6 +998,7 @@ const runAudioUnit = async (
       entries,
       container: unit.container,
       containerCodec: unit.containerCodec,
+      signal,
     });
     metrics = {
       ...metrics,

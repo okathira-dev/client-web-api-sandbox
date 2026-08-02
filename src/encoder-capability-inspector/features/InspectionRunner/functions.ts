@@ -4,7 +4,10 @@
  * 重い処理はワーカーへ委ね、ここは「候補を順に投げる・進捗を配る・終端で保存する」だけを持つ。
  */
 
-import { REPORT_VERSION } from "../../consts/inspection";
+import {
+  LIVE_SOURCE_CLOSE_TIMEOUT_MS,
+  REPORT_VERSION,
+} from "../../consts/inspection";
 import {
   buildFullInspectionPlan,
   findInspectionUnits,
@@ -33,6 +36,26 @@ const terminalStatusFor = (error: unknown): ReportStatus =>
 
 const describe = (error: unknown): string =>
   (error instanceof Error ? error.message : String(error)).slice(0, 300);
+
+/**
+ * ライブ入力を解放してからワーカーを終了する。応答しないワーカーでも finally が
+ * 進むように、close の待機には短い上限を設ける。
+ */
+const closeLiveSourceBeforeTerminate = async (
+  client: InspectionWorkerClient,
+): Promise<void> => {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => {
+    controller.abort();
+  }, LIVE_SOURCE_CLOSE_TIMEOUT_MS);
+  try {
+    await client.closeLiveSource(controller.signal);
+  } catch {
+    // 中断直後やタイムアウト時は terminate で確実に解放する。
+  } finally {
+    clearTimeout(timeoutId);
+  }
+};
 
 /**
  * 候補間の待機。0ms のときはタイマーを張らず、待機処理そのものを行わない（仕様 3.9）。
@@ -218,6 +241,7 @@ const mergeSustainedResult = (
   unitId: string,
   sustained: UnitResult,
 ): UnitResult[] =>
+  // 継続検査の返り値は基本検査の情報を持ち直すため、既存行の sustained 部分だけ置換する。
   results.map((result) =>
     result.id === unitId ? { ...result, sustained } : result,
   );
@@ -352,13 +376,9 @@ export const runSustainedInspection = async ({
       emit();
       throw error;
     } finally {
-      if (inputMode === "live") {
+      if (inputMode === "live" && client) {
         // トラック停止だけでは、ワーカーが掴んだままの reader が解放されない。
-        try {
-          await client?.closeLiveSource();
-        } catch {
-          // 中断直後はワーカーが応答しないこともある。terminate で確実に解放する。
-        }
+        await closeLiveSourceBeforeTerminate(client);
       }
       client?.terminate();
     }

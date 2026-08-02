@@ -21,7 +21,7 @@ export type InspectionWorkerClient = {
     source: LiveSourceInfo;
     signal: AbortSignal;
   }) => Promise<void>;
-  readonly closeLiveSource: () => Promise<void>;
+  readonly closeLiveSource: (signal: AbortSignal) => Promise<void>;
   readonly runUnit: (options: {
     unit: InspectionUnit;
     testMode: TestMode;
@@ -79,6 +79,7 @@ export const createInspectionWorkerClient = (): InspectionWorkerClient => {
         const response = event.data;
         if (response.requestId !== requestId) return;
         if (response.type === "stage") {
+          // stage は完了応答ではない。同じ requestId で最後の結果が返るまで待ち続ける。
           onStage?.(response.stage);
           return;
         }
@@ -135,9 +136,10 @@ export const createInspectionWorkerClient = (): InspectionWorkerClient => {
           response.type === "ack" ? { value: undefined } : null,
       }),
 
-    closeLiveSource: () =>
+    closeLiveSource: (signal) =>
       send<void>({
         request: { type: "close-live-source" },
+        signal,
         resolveFrom: (response) =>
           response.type === "ack" ? { value: undefined } : null,
       }),
