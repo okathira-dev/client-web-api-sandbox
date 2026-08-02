@@ -59,8 +59,14 @@ const HeaderCell = ({
             color: "text.secondary",
             alignSelf: "flex-start",
             maxWidth: "100%",
+            /*
+              TableSortLabel は `flex-direction: inherit` なので、見出しを縦積みしている
+              親の向きを引き継いでラベルとアイコンが縦に並んでしまう。横並びに戻す。
+            */
+            flexDirection: "row",
             "& .MuiTableSortLabel-icon": {
               fontSize: 16,
+              flexShrink: 0,
               // 未ソートでも薄く出し続ける。既定では opacity 0 で隠れてしまう。
               opacity: active ? 1 : 0.45,
             },
@@ -69,6 +75,8 @@ const HeaderCell = ({
           <Box
             component="span"
             sx={{
+              // 縮められるようにしておかないと、狭い列でアイコンが押し出される。
+              minWidth: 0,
               overflow: "hidden",
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
