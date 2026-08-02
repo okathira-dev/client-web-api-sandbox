@@ -12,7 +12,7 @@
 | 音声 | AAC 4 Profile / Opus × 1ch・2ch（48 kHz）× `constant` / `variable` | 20 |
 | | **合計** | **1,406** |
 
-映像では同じ codec string でも bitrate mode と `prefer-hardware` / `no-preference` / `prefer-software` を別候補として検査する。`constant` / `variable` は公式の配信ガイドにある代表的な初期目標を使い、`quantizer` は各 codec 登録仕様の範囲内に置いた比較用 QP を使う。AV1 と VP8 は一律の公式ビットレート表がないため、比較起点であることを明示する。音声はビットレート品質ごとには候補を増やさず、代表ビットレートで `constant` / `variable` を実検査する。各結果の検査値とは別に、codec string 横の情報ボタンと全体ガイドで、仕様・公式実装のサポート値および情報ソース付きの推奨値を確認できる。AAC は Windows Chromium の固定離散値と、macOS Chromium / macOS Safari のAudioToolbox設定依存を分けて表示する。映像の量子化パラメーターも同じ画面で、サポート範囲・推奨目安・値が大きいほど高品質か低品質か・検査比較値を確認できる。全体ガイドは表示範囲だけをDOMへ置く仮想スクロールに対応し、ファミリー・codec string・Profile / Levelで絞り込み、各列を昇順・降順・解除の順に並べ替えられる。
+映像では同じ codec string でも bitrate mode と `prefer-hardware` / `no-preference` / `prefer-software` を別候補として検査する。`constant` / `variable` は公式の配信ガイドにある代表的な初期目標を使い、`quantizer` は各 codec 登録仕様の範囲内に置いた比較用 QP を使う。AV1 と VP8 は一律の公式ビットレート表がないため、比較起点であることを明示する。音声はビットレート品質ごとには候補を増やさず、代表ビットレートで `constant` / `variable` を実検査する。各結果の検査値とは別に、codec string 横の情報ボタンと全体ガイドで、仕様・公式実装のサポート値および情報ソース付きの推奨値を確認できる。AAC は Windows Chromium の固定離散値と、macOS Chromium / macOS Safari の AudioToolbox 設定依存を分けて表示する。映像の量子化パラメーターも同じ画面で、サポート範囲・推奨目安・値が大きいほど高品質か低品質か・検査比較値を確認できる。全体ガイドは表示範囲だけをDOMへ置く仮想スクロールに対応し、ファミリー・codec string・Profile / Level で絞り込み、各列を昇順・降順・解除の順に並べ替えられる。
 
 ## ドキュメント
 
