@@ -9,10 +9,10 @@
 | 種別 | 内容 | 候補数 |
 | --- | --- | --- |
 | 映像 | H.264 / H.265 / VP9 / AV1 / VP8 を Profile・Level・ビット深度まで展開した codec string × ハードウェア方針 3 種 | 462 |
-| 音声 | AAC / Opus × 1ch・2ch × 各ビットレート（48 kHz） | 22 |
-| | **合計** | **484** |
+| 音声 | AAC 4 Profile / Opus × 1ch・2ch（48 kHz） | 10 |
+| | **合計** | **472** |
 
-映像では同じ codec string でも `prefer-hardware` / `no-preference` / `prefer-software` を別候補として検査する。Level に応じた解像度・FPS・ビットレートは、その Level の上限に近い検査負荷であり、実録画の推奨値ではない。
+映像では同じ codec string でも `prefer-hardware` / `no-preference` / `prefer-software` を別候補として検査する。Level に応じた解像度・FPS・ビットレートは、その Level の上限に近い検査負荷であり、実録画の推奨値ではない。音声は品質ごとに候補を増やさず、1 つの代表ビットレートを実検査する。結果には検査値を常に出し、仕様または公式実装で確認できる最低・最高・離散値だけを別途表示する。
 
 ## ドキュメント
 

@@ -136,6 +136,11 @@ export const REFERENCE_GROUPS = [
         url: "https://developer.chrome.com/docs/web-platform/best-practices/webcodecs",
       },
       {
+        id: "chromium-mf-audio-encoder",
+        title: "Chromium: Media Foundation audio encoder",
+        url: "https://chromium.googlesource.com/chromium/src/+/main/media/gpu/windows/mf_audio_encoder.cc",
+      },
+      {
         id: "webcodecs-samples",
         title: "WebCodecs samples",
         url: "https://w3c.github.io/webcodecs/samples/",

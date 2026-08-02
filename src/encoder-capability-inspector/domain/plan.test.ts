@@ -54,14 +54,35 @@ describe("candidate matrix", () => {
     }
   });
 
-  it("covers both AAC and Opus across channel counts and bitrates", () => {
-    expect(AUDIO_CANDIDATES).toHaveLength(5 * 2 + 6 * 2);
+  it("covers AAC profiles and Opus across both channel counts", () => {
+    expect(AUDIO_CANDIDATES).toHaveLength(4 * 2 + 2);
     expect(
       AUDIO_CANDIDATES.filter((candidate) => candidate.family === "aac"),
-    ).toHaveLength(10);
+    ).toHaveLength(8);
     expect(
       new Set(AUDIO_CANDIDATES.map((candidate) => candidate.channels)),
     ).toEqual(new Set([1, 2]));
+    expect(
+      new Set(
+        AUDIO_CANDIDATES.filter((candidate) => candidate.family === "aac").map(
+          (candidate) => candidate.audioObjectType,
+        ),
+      ),
+    ).toEqual(new Set([2, 5, 29, 42]));
+  });
+
+  it("uses one representative bitrate rather than expanding audio quality levels", () => {
+    expect(
+      new Set(AUDIO_CANDIDATES.map((candidate) => candidate.bitrate)),
+    ).toEqual(new Set([128_000]));
+    expect(
+      AUDIO_CANDIDATES.filter((candidate) => candidate.family === "aac").every(
+        (candidate) =>
+          candidate.knownBitrateConstraint?.kind === "discrete" &&
+          candidate.knownBitrateConstraint.values.join(",") ===
+            "96000,128000,160000,192000",
+      ),
+    ).toBe(true);
   });
 
   it("routes each candidate to a container its codec can live in", () => {

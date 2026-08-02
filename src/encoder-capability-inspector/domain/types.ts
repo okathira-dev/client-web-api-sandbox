@@ -23,6 +23,16 @@ export type VideoContainerCodec = "avc" | "hevc" | "vp9" | "av1" | "vp8";
 export type AudioContainerCodec = "aac" | "opus";
 export type ContainerFormat = "mp4" | "webm";
 
+/**
+ * WebCodecs 自体はビットレートの許容範囲を照会する API を持たない。
+ * ここには仕様または実装から確認できた値だけを入れ、検査に使う値とは分けて保持する。
+ */
+export type KnownBitrateConstraint = {
+  readonly kind: "discrete";
+  readonly values: readonly number[];
+  readonly source: "chromium-windows-mf-aac";
+};
+
 /** 1 つの codec string に対する検査条件。ハードウェア方針はまだ含まない。 */
 export type VideoCandidate = {
   readonly candidateId: string;
@@ -35,7 +45,9 @@ export type VideoCandidate = {
   readonly width: number;
   readonly height: number;
   readonly fps: number;
+  /** 今回の実エンコードに渡す値。Level の規格上限を表すとは限らない。 */
   readonly bitrate: number;
+  readonly knownBitrateConstraint: KnownBitrateConstraint | null;
   readonly container: ContainerFormat;
   readonly containerCodec: VideoContainerCodec;
   readonly label: string;
@@ -45,9 +57,14 @@ export type AudioCandidate = {
   readonly candidateId: string;
   readonly family: AudioFamily;
   readonly codec: string;
+  /** AAC は codec string に profile が入るため、実出力の ASC とも照合する。 */
+  readonly profile: string;
+  readonly audioObjectType: number | null;
   readonly channels: number;
   readonly sampleRate: number;
+  /** 今回の実エンコードに渡す代表値。品質ごとの網羅検査には使わない。 */
   readonly bitrate: number;
+  readonly knownBitrateConstraint: KnownBitrateConstraint | null;
   readonly container: ContainerFormat;
   readonly containerCodec: AudioContainerCodec;
   readonly label: string;
@@ -70,7 +87,9 @@ export type InspectionUnit = VideoInspectionUnit | AudioInspectionUnit;
 /** 候補ごとの処理段階。UI の進行表示と失敗箇所の切り分けに使う。 */
 export const INSPECTION_STAGES = [
   "declared",
-  "output",
+  "configure",
+  "encode",
+  "flush",
   "decode",
   "mux",
   "complete",
@@ -139,6 +158,10 @@ export type UnitResultBase = {
   readonly candidateId: string;
   readonly label: string;
   readonly codec: string;
+  /** 実エンコードに渡したビットレート。 */
+  readonly bitrate: number;
+  /** 仕様・公式実装で確認済みの制約。未確認の範囲は記録しない。 */
+  readonly knownBitrateConstraint: KnownBitrateConstraint | null;
   readonly testMode: TestMode;
   readonly inputMode: InputMode;
   /** `isConfigSupported` が受理したか。 */
@@ -174,9 +197,12 @@ export type VideoUnitResult = UnitResultBase & {
 export type AudioUnitResult = UnitResultBase & {
   readonly kind: "audio";
   readonly family: AudioFamily;
+  readonly profile: string;
+  readonly expectedAudioObjectType: number | null;
+  /** 出力 `decoderConfig.description` の ASC から読んだ値。読めなければ null。 */
+  readonly outputAudioObjectType: number | null;
   readonly channels: number;
   readonly sampleRate: number;
-  readonly bitrate: number;
   readonly requestedConfig: AudioEncoderConfig;
   /** ライブ入力で検査したときの、実際に取れた音声の素性。 */
   readonly source: LiveAudioInfo | null;

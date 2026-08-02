@@ -8,8 +8,7 @@
 
 import {
   AUDIO_FLUSH_TIMEOUT_MS,
-  AUDIO_FRAMES_PER_CHUNK,
-  COMPATIBILITY_AUDIO_FRAME_COUNT,
+  COMPATIBILITY_AUDIO_INPUT,
   COMPATIBILITY_VIDEO_FRAME_COUNT,
   DECODER_FLUSH_TIMEOUT_MS,
   LIVE_FRAME_TIMEOUT_MS,
@@ -21,6 +20,7 @@ import {
   SUPPORT_CHECK_TIMEOUT_MS,
   SUSTAINED_THROUGHPUT_WARNING_RATIO,
 } from "../consts/inspection";
+import { readAacAudioObjectType } from "../domain/aac";
 import {
   createCompatibilityAudioSamples,
   createSustainedAudioGenerator,
@@ -183,7 +183,7 @@ const buildPerformance = ({
 
 /**
  * ノイズタイルは候補をまたいで同じものを使うので、ワーカーの生存期間で 1 度だけ作る。
- * 候補ごとに作り直すと、484 回ぶんの生成が丸ごと計測に乗ってしまう。
+ * 候補ごとに作り直すと、472 回ぶんの生成が丸ごと計測に乗ってしまう。
  */
 let noiseTiles: OffscreenCanvas[] | null = null;
 
@@ -390,8 +390,8 @@ const runVideoUnit = async (
     declared = support.supported === true;
     if (!declared) throw new Error("isConfigSupported-false");
 
-    stage = "output";
-    onStage("output");
+    stage = "configure";
+    onStage("configure");
     encoder = new VideoEncoder({
       output: (chunk, meta) => {
         entries.push({ chunk, meta });
@@ -401,6 +401,9 @@ const runVideoUnit = async (
       },
     });
     encoder.configure(support.config ?? requestedConfig);
+
+    stage = "encode";
+    onStage("encode");
 
     const canvas = new OffscreenCanvas(unit.width, unit.height);
     const context = canvas.getContext("2d", { alpha: false });
@@ -495,6 +498,8 @@ const runVideoUnit = async (
       }
     }
 
+    stage = "flush";
+    onStage("flush");
     await withDeadline(
       encoder.flush(),
       getEncodeFlushTimeoutMs(unit.width, unit.height),
@@ -597,6 +602,8 @@ const runVideoUnit = async (
     candidateId: unit.candidateId,
     label: unit.label,
     codec: unit.codec,
+    bitrate: unit.bitrate,
+    knownBitrateConstraint: unit.knownBitrateConstraint,
     family: unit.family,
     profile: unit.profile,
     level: unit.level,
@@ -788,12 +795,13 @@ const getAudioChunkCount = (
 ): number =>
   testMode === "sustained"
     ? Math.max(
-        COMPATIBILITY_AUDIO_FRAME_COUNT,
+        COMPATIBILITY_AUDIO_INPUT[unit.family].chunkCount,
         Math.ceil(
-          (unit.sampleRate * durationMs) / (1000 * AUDIO_FRAMES_PER_CHUNK),
+          (unit.sampleRate * durationMs) /
+            (1000 * COMPATIBILITY_AUDIO_INPUT[unit.family].framesPerChunk),
         ),
       )
-    : COMPATIBILITY_AUDIO_FRAME_COUNT;
+    : COMPATIBILITY_AUDIO_INPUT[unit.family].chunkCount;
 
 const runAudioUnit = async (
   unit: AudioInspectionUnit,
@@ -830,6 +838,7 @@ const runAudioUnit = async (
   let error: string | null = null;
   let metrics: PerformanceMetrics | null = null;
   let sourceInfo: LiveAudioInfo | null = null;
+  let outputAudioObjectType: number | null = null;
 
   let encoder: AudioEncoder | null = null;
   let encoderError: Error | null = null;
@@ -861,8 +870,8 @@ const runAudioUnit = async (
     declared = support.supported === true;
     if (!declared) throw new Error("isConfigSupported-false");
 
-    stage = "output";
-    onStage("output");
+    stage = "configure";
+    onStage("configure");
     encoder = new AudioEncoder({
       output: (chunk, meta) => {
         entries.push({ chunk, meta });
@@ -873,7 +882,12 @@ const runAudioUnit = async (
     });
     encoder.configure(support.config ?? requestedConfig);
 
+    stage = "encode";
+    onStage("encode");
+
     const chunkCount = getAudioChunkCount(unit, testMode, durationMs);
+    const framesPerChunk =
+      COMPATIBILITY_AUDIO_INPUT[unit.family].framesPerChunk;
     const isSustained = testMode === "sustained";
     /*
       実用継続検査は掃引と微小ノイズでチャンクごとに中身が変わる。位相は生成器が
@@ -898,11 +912,11 @@ const runAudioUnit = async (
         : null;
     const samples =
       generator || liveFeed
-        ? new Float32Array(AUDIO_FRAMES_PER_CHUNK * unit.channels)
+        ? new Float32Array(framesPerChunk * unit.channels)
         : createCompatibilityAudioSamples({
             channels: unit.channels,
             sampleRate: unit.sampleRate,
-            frames: AUDIO_FRAMES_PER_CHUNK,
+            frames: framesPerChunk,
           });
 
     let sourcePreparationMs = 0;
@@ -913,17 +927,17 @@ const runAudioUnit = async (
       const sourceStartedAt = performance.now();
       // ライブ入力ではサンプルが届くのを待つ。待ち時間は用意の手間とは別に数える。
       const waitedMs = liveFeed
-        ? await liveFeed.fill(samples, AUDIO_FRAMES_PER_CHUNK)
+        ? await liveFeed.fill(samples, framesPerChunk)
         : 0;
       inputWaitMs += waitedMs;
-      generator?.fill(samples, AUDIO_FRAMES_PER_CHUNK);
+      generator?.fill(samples, framesPerChunk);
       const data = createAudioData({
         samples,
         channels: unit.channels,
         sampleRate: unit.sampleRate,
-        frames: AUDIO_FRAMES_PER_CHUNK,
+        frames: framesPerChunk,
         timestamp: Math.round(
-          (index * AUDIO_FRAMES_PER_CHUNK * 1_000_000) / unit.sampleRate,
+          (index * framesPerChunk * 1_000_000) / unit.sampleRate,
         ),
       });
       sourcePreparationMs += performance.now() - sourceStartedAt - waitedMs;
@@ -935,6 +949,8 @@ const runAudioUnit = async (
       if (index % 32 === 31) await wait(0);
     }
 
+    stage = "flush";
+    onStage("flush");
     await withDeadline(
       encoder.flush(),
       AUDIO_FLUSH_TIMEOUT_MS,
@@ -945,7 +961,7 @@ const runAudioUnit = async (
     if (entries.length === 0) throw new Error("encoder-no-output");
     encodedChunks = entries.length;
 
-    const chunkBudgetMs = (AUDIO_FRAMES_PER_CHUNK * 1000) / unit.sampleRate;
+    const chunkBudgetMs = (framesPerChunk * 1000) / unit.sampleRate;
     metrics = buildPerformance({
       frameCount: chunkCount,
       // 映像と同じく、入力の用意と入力待ちはエンコーダーの実力に数えない。
@@ -954,7 +970,7 @@ const runAudioUnit = async (
         performance.now() - encodeStartedAt - sourcePreparationMs - inputWaitMs,
       ),
       frameBudgetMs: chunkBudgetMs,
-      requestedFps: unit.sampleRate / AUDIO_FRAMES_PER_CHUNK,
+      requestedFps: unit.sampleRate / framesPerChunk,
       outputBytes: entries.reduce(
         (total, entry) => total + entry.chunk.byteLength,
         0,
@@ -984,6 +1000,21 @@ const runAudioUnit = async (
       sampleRate: unit.sampleRate,
       numberOfChannels: unit.channels,
     };
+    outputAudioObjectType =
+      unit.family === "aac"
+        ? readAacAudioObjectType(decoderConfig.description)
+        : null;
+    /*
+      Chromium の AudioEncoder は要求した AAC profile を内部設定へ渡さない実装がある。
+      `isConfigSupported()` ではなく、実際に出た ASC の Audio Object Type が一致して初めて
+      その profile を扱えたと結論付ける。
+    */
+    if (
+      unit.audioObjectType !== null &&
+      outputAudioObjectType !== unit.audioObjectType
+    ) {
+      throw new Error("aac-output-profile-mismatch");
+    }
     const decodeStartedAt = performance.now();
     decodedFrames = await verifyAudioDecode(entries, decoderConfig, signal);
     metrics = {
@@ -1027,10 +1058,14 @@ const runAudioUnit = async (
     candidateId: unit.candidateId,
     label: unit.label,
     codec: unit.codec,
+    bitrate: unit.bitrate,
+    knownBitrateConstraint: unit.knownBitrateConstraint,
     family: unit.family,
+    profile: unit.profile,
+    expectedAudioObjectType: unit.audioObjectType,
+    outputAudioObjectType,
     channels: unit.channels,
     sampleRate: unit.sampleRate,
-    bitrate: unit.bitrate,
     requestedConfig,
     source: sourceInfo,
     testMode,

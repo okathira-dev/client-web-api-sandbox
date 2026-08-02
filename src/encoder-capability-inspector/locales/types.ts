@@ -42,7 +42,9 @@ export type RunStatusTranslations = {
 /** 候補 1 件を処理する途中の段階。結果の `stage` に対応する。 */
 export type StageTranslations = {
   declared: string;
-  output: string;
+  configure: string;
+  encode: string;
+  flush: string;
   decode: string;
   mux: string;
   complete: string;
@@ -135,6 +137,12 @@ export type TableTranslations = {
   columnBudget: string;
   columnSustained: string;
   columnTime: string;
+  probeBitrate: string;
+  knownDiscreteBitrates: string;
+  knownDiscreteBitratesShort: string;
+  bitrateSource: {
+    "chromium-windows-mf-aac": string;
+  };
   filterAll: string;
   filterCodecPlaceholder: string;
   filterDetailsPlaceholder: string;
@@ -201,6 +209,7 @@ export type KindTranslations = {
 export type CodeTranslations = {
   "isConfigSupported-false": string;
   "encoder-no-output": string;
+  "aac-output-profile-mismatch": string;
   "video-decoder-unavailable": string;
   "video-decoder-unsupported": string;
   "video-decoder-no-output": string;

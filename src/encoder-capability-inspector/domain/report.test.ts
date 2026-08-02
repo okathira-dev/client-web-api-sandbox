@@ -246,14 +246,14 @@ describe("getRemainingMs", () => {
       getRemainingMs({
         elapsedMs: 20_000,
         completedUnits: 100,
-        totalUnits: 484,
+        totalUnits: 472,
       }),
-    ).toBe(76_800);
+    ).toBe(74_400);
   });
 
   it("gives no estimate before the first candidate finishes", () => {
     expect(
-      getRemainingMs({ elapsedMs: 5_000, completedUnits: 0, totalUnits: 484 }),
+      getRemainingMs({ elapsedMs: 5_000, completedUnits: 0, totalUnits: 472 }),
     ).toBeNull();
   });
 
@@ -261,8 +261,8 @@ describe("getRemainingMs", () => {
     expect(
       getRemainingMs({
         elapsedMs: 40_000,
-        completedUnits: 484,
-        totalUnits: 484,
+        completedUnits: 472,
+        totalUnits: 472,
       }),
     ).toBeNull();
   });
@@ -279,15 +279,18 @@ describe("summarizeFamilies with audio", () => {
     );
   });
 
-  it("counts audio per setting, since the codec string does not distinguish them", () => {
-    // AAC はどのビットレート・チャンネル数でも codec string が mp4a.40.2 のまま。
+  it("counts audio per profile and channel, since a codec string does not express every setting", () => {
+    // AAC はプロファイルとチャンネル数の組み合わせごとに結果を数える。
     const report = reportFixture({
       results: [
         audioResultFixture({
-          id: "audio:aac:2:128000",
-          candidateId: "aac:2:128000",
+          id: "audio:aac:2:2",
+          candidateId: "aac:2:2",
           codec: "mp4a.40.2",
           family: "aac",
+          profile: "AAC-LC",
+          expectedAudioObjectType: 2,
+          outputAudioObjectType: 2,
         }),
       ],
     });

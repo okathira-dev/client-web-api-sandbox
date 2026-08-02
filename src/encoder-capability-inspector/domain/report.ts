@@ -71,8 +71,7 @@ export type FamilySummary = {
  * 「具体的な設定のうち何件が通ったか」を数える。
  *
  * 映像は codec string 単位で数える（ハードウェア方針が違っても 1 件）。
- * 音声は codec string が設定を区別しない（AAC はどのビットレートでも `mp4a.40.2`）ため、
- * ビットレートとチャンネル数まで含んだ候補単位で数える。
+ * 音声は AAC profile とチャンネル数を含んだ候補単位で数える。
  *
  */
 export const summarizeFamilies = (

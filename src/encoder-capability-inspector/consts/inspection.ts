@@ -7,7 +7,7 @@
  * 合成パターンや計測方法のように値の読み方が変わる変更も対象になる。
  * まだ公開していない版での作り込みは、何度手を入れても同じ版のまま扱う。
  */
-export const REPORT_VERSION = 1;
+export const REPORT_VERSION = 2;
 
 export const REPORT_DB_NAME = "encoder-capability-inspector";
 export const REPORT_DB_VERSION = 1;
@@ -40,10 +40,16 @@ export const SUSTAINED_MEMORY_CAUTION_BYTES = 512 * 1024 * 1024;
 
 /** 互換性確認に必要な最小限のフレーム数（仕様 3.2）。 */
 export const COMPATIBILITY_VIDEO_FRAME_COUNT = 2;
-export const COMPATIBILITY_AUDIO_FRAME_COUNT = 2;
 
-/** AudioEncoder へ 1 回で渡すサンプル数。48kHz で 20ms 相当。 */
-export const AUDIO_FRAMES_PER_CHUNK = 960;
+/**
+ * 互換性確認の音声入力。AAC は Windows Media Foundation の 1 フレームが 1024 samples
+ * で、通常の出力開始に 3 フレームを要する。余裕を二倍にして 6 回供給する。
+ * Opus は 20ms（960 samples）を 4 回供給する。いずれも `flush()` 前の出力を確認できる量。
+ */
+export const COMPATIBILITY_AUDIO_INPUT = {
+  aac: { framesPerChunk: 1024, chunkCount: 6 },
+  opus: { framesPerChunk: 960, chunkCount: 4 },
+} as const;
 
 /** エンコーダーのキューがこれを超えたら供給を止めて捌けるのを待つ。 */
 export const MAX_ENCODE_QUEUE_SIZE = 24;

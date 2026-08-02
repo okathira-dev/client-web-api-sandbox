@@ -19,6 +19,12 @@ export const formatMilliseconds = (milliseconds: number | null): string =>
     ? "—"
     : `${Math.round(milliseconds)} ms`;
 
+/** ビットレートは検査値・公式実装の制約値のどちらにも同じ表記を使う。 */
+export const formatBitrate = (bitsPerSecond: number): string =>
+  bitsPerSecond >= 1_000_000
+    ? `${bitsPerSecond / 1_000_000} Mbps`
+    : `${bitsPerSecond / 1000} kbps`;
+
 /** フレーム予算に対する処理時間の割合。100% を超えると要求 FPS に追いつけない。 */
 export const formatFrameBudget = (
   performance: PerformanceMetrics | null,

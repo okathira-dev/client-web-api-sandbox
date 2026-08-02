@@ -254,11 +254,11 @@ export const getSustainedFrameOps = (
 const TWO_PI = Math.PI * 2;
 
 /**
- * 一括実用検査の音声。2 チャンクぶんを 1 回作って使い回す前提の定常波形。
+ * 一括実用検査の音声。候補ごとのチャンクを 1 回作って使い回す前提の定常波形。
  * チャンネルごとに周波数を変え、多チャンネルが潰れていないかだけは分かるようにする。
  *
- * 周波数は 50Hz の倍数に揃えてある。1 チャンク（48kHz で 960 サンプル = 20ms）に
- * 整数個の周期が収まるので、同じ列を繰り返し使っても境界で位相が飛ばない。
+ * 周波数は 750Hz の倍数に揃えてある。Opus の 960 samples と AAC の 1024 samples の
+ * どちらにも整数個の周期が収まるので、同じ列を繰り返しても境界で位相が飛ばない。
  */
 export const createCompatibilityAudioSamples = ({
   channels,
@@ -271,7 +271,7 @@ export const createCompatibilityAudioSamples = ({
 }): Float32Array<ArrayBuffer> => {
   const samples = new Float32Array(frames * channels);
   for (let channel = 0; channel < channels; channel += 1) {
-    const frequency = 400 + channel * 150;
+    const frequency = 750 + channel * 750;
     for (let index = 0; index < frames; index += 1) {
       samples[channel * frames + index] =
         Math.sin((TWO_PI * frequency * index) / sampleRate) * 0.2;

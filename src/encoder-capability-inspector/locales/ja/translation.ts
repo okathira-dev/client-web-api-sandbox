@@ -50,12 +50,14 @@ const translation: TranslationResource = {
     familyUntested: "{{family}}: 未検査",
     familyRatio: "{{family}}: {{usable}} / {{total}}",
     familyNote:
-      "映像は codec string の数、音声はビットレートとチャンネル数まで含んだ設定の数を分母にします（AAC はどの設定でも codec string が同じため）。完全に完了した検査の結果だけを集計します。",
+      "映像は codec string の数、音声は Profile とチャンネル数まで含んだ設定の数を分母にします。完全に完了した検査の結果だけを集計します。",
     environment: "実行環境",
     cores: "{{count}} 論理コア",
     stage: {
       declared: "設定の受理を確認中",
-      output: "エンコード中",
+      configure: "エンコーダーを設定中",
+      encode: "エンコード中",
+      flush: "エンコーダー出力を完了中",
       decode: "デコード検証中",
       mux: "多重化中",
       complete: "完了",
@@ -98,7 +100,7 @@ const translation: TranslationResource = {
   preview: {
     heading: "合成パターンを確認",
     description:
-      "検査へ渡している入力そのものを、同じ生成コードで再生します。表示は {{width}}×{{height}} ですが、実際の検査は候補ごとの解像度で同じパターンを描きます。音声は {{seconds}} 秒ぶんを繰り返し再生します。",
+      "検査と同じ生成コードで作った代表入力を再生します。表示は {{width}}×{{height}} ですが、実際の検査は候補ごとの解像度で同じパターンを描きます。音声は {{seconds}} 秒ぶんを繰り返し再生します。AAC と Opus では検査時のチャンク長が異なります。",
     compatibilityHeading: "一括実用検査の入力",
     compatibilityNote:
       "1 枚・1 チャンクだけ作って使い回します。全候補を 1 周する検査なので、入力生成は軽いほど結果が揺れません。動かないのが正しい状態です。",
@@ -134,6 +136,12 @@ const translation: TranslationResource = {
     columnBudget: "フレーム予算",
     columnSustained: "継続検査",
     columnTime: "実行時間",
+    probeBitrate: "検査: {{value}}",
+    knownDiscreteBitrates: "確認済み離散値: {{values}}（{{source}}）",
+    knownDiscreteBitratesShort: "既知: {{values}}",
+    bitrateSource: {
+      "chromium-windows-mf-aac": "Windows Chromium AAC 実装",
+    },
     filterAll: "すべて",
     filterCodecPlaceholder: "avc1.64…",
     filterDetailsPlaceholder: "エラー・警告で絞り込む",
@@ -200,6 +208,8 @@ const translation: TranslationResource = {
   codes: {
     "isConfigSupported-false": "この設定は宣言の時点で拒否されました",
     "encoder-no-output": "エンコーダーが出力を返しませんでした",
+    "aac-output-profile-mismatch":
+      "実際の AAC 出力プロファイルが要求した profile と一致しません",
     "video-decoder-unavailable": "VideoDecoder が利用できません",
     "video-decoder-unsupported": "出力をデコードできる構成がありません",
     "video-decoder-no-output": "デコーダーがフレームを返しませんでした",
