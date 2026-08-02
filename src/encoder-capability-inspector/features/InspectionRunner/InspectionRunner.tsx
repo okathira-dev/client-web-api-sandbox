@@ -85,7 +85,17 @@ export const InspectionRunner = () => {
         </Alert>
       )}
 
-      <Stack direction="row" spacing={1.5} flexWrap="wrap" useFlexGap>
+      {/*
+        待機時間の入力は補足文のぶん背が高い。既定の stretch のままだと
+        並んだボタンがそれに引き伸ばされるので、上端で揃えて自然な高さのままにする。
+      */}
+      <Stack
+        direction="row"
+        spacing={1.5}
+        flexWrap="wrap"
+        useFlexGap
+        alignItems="flex-start"
+      >
         <Button
           variant="contained"
           disabled={running || pauseInvalid}
@@ -131,8 +141,7 @@ export const InspectionRunner = () => {
 
         {/*
           無効なボタンはマウスイベントを出さず、ツールチップが働かないので span で包む。
-          この span は素のままだとブロックとして縦に伸び、中のボタンだけが元の高さで残る。
-          他のボタンと背丈を揃えるため、flex コンテナにして中身を伸ばす。
+          包みがボタンより大きく広がらないよう flex コンテナにしておく。
         */}
         <Tooltip title={t("runner.exportHint")} placement="top">
           <Box component="span" sx={{ display: "inline-flex" }}>
