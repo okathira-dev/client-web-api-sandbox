@@ -129,8 +129,13 @@ export const InspectionRunner = () => {
           </Tooltip>
         )}
 
+        {/*
+          無効なボタンはマウスイベントを出さず、ツールチップが働かないので span で包む。
+          この span は素のままだとブロックとして縦に伸び、中のボタンだけが元の高さで残る。
+          他のボタンと背丈を揃えるため、flex コンテナにして中身を伸ばす。
+        */}
         <Tooltip title={t("runner.exportHint")} placement="top">
-          <span>
+          <Box component="span" sx={{ display: "inline-flex" }}>
             <Button
               variant="outlined"
               disabled={!report}
@@ -145,7 +150,7 @@ export const InspectionRunner = () => {
             >
               {t("runner.export")}
             </Button>
-          </span>
+          </Box>
         </Tooltip>
 
         <Button
