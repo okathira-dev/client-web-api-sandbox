@@ -54,6 +54,11 @@ export default defineConfig({
         ),
         "kojo-xml-viewer": resolve(root, "kojo-xml-viewer", "index.html"),
         busybox: resolve(root, "busybox", "index.html"),
+        "encoder-capability-inspector": resolve(
+          root,
+          "encoder-capability-inspector",
+          "index.html",
+        ),
       },
     },
   },

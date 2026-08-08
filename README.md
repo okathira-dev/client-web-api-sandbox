@@ -65,6 +65,10 @@ npm run dev
 
 ブラウザや端末の機能そのものを使って解く、日英対応のWeb APIパズルゲーム
 
+### [./src/encoder-capability-inspector](./src/encoder-capability-inspector)
+
+WebCodecs の映像・音声エンコード設定が実際に使えるかを、実エンコード・デコード・多重化まで通して検査するツール
+
 ## 開発サポートファイル
 
 ### [./Scratchpad.md](./Scratchpad.md)

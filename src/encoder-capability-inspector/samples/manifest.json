@@ -1,0 +1,49 @@
+{
+  "patternVersion": 1,
+  "note": "npm run inspector:samples で再生成する。rawSha256 は圧縮前の生データのハッシュ。",
+  "video": {
+    "width": 640,
+    "height": 360,
+    "fps": 30,
+    "apngFrameCount": 20,
+    "apngFrameStride": 3
+  },
+  "audio": {
+    "sampleRate": 48000,
+    "framesPerChunk": 960,
+    "sustainedSeconds": 2,
+    "compatibilityChunks": 25
+  },
+  "files": {
+    "video/compatibility.png": {
+      "description": "一括実用検査の映像入力。全フレームがこの 1 枚の複製になる（生成は 1 回だけ）。",
+      "rawBytes": 691200,
+      "rawSha256": "5233ed8bf7fc0f959db4470688a1516f4819b0ec1d5f7427f9f509216f47a917",
+      "fileBytes": 62012
+    },
+    "video/sustained.png": {
+      "description": "実用継続検査の映像入力。30fps のフレーム列から 3 枚おきに 20 枚を抜いた APNG。",
+      "rawBytes": 13824000,
+      "rawSha256": "a046e2716d4ffabcd9c205650641cb845b014db3412796cc69010fbb70ac4fcf",
+      "fileBytes": 1249497
+    },
+    "audio/compatibility-stereo.wav": {
+      "description": "一括実用検査の音声入力（2ch）。20ms の同じチャンクを 25 回繰り返したもの。",
+      "rawBytes": 192000,
+      "rawSha256": "1b72167b4d39e5ec3e0b91bf0d23793941da8619fd8b865f5458e72212d02d3c",
+      "fileBytes": 96044
+    },
+    "audio/sustained-stereo.wav": {
+      "description": "実用継続検査の音声入力（2ch・2秒）。多重波形の掃引と微小ノイズ。",
+      "rawBytes": 768000,
+      "rawSha256": "a9b7fd0a649d8a91e81d23e549c2ffd3dfeb613697c949a08a8e48317aaa9600",
+      "fileBytes": 384044
+    },
+    "audio/sustained-mono.wav": {
+      "description": "実用継続検査の音声入力（1ch・2秒）。多重波形の掃引と微小ノイズ。",
+      "rawBytes": 384000,
+      "rawSha256": "fc9482f32577d5ea05425ad155f077362d3cade437ce07885fc7b8ca19ca517c",
+      "fileBytes": 192044
+    }
+  }
+}
