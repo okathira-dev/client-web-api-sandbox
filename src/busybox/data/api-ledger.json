@@ -1,25 +1,25 @@
 {
   "schemaVersion": 1,
-  "verifiedOn": "2026-07-20",
+  "verifiedOn": "2026-08-10",
   "sources": {
     "mdnUrl": "https://developer.mozilla.org/en-US/docs/Web/API",
     "bcdUrl": "https://unpkg.com/@mdn/browser-compat-data/data.json",
-    "bcdVersion": "8.0.7"
+    "bcdVersion": "8.0.10"
   },
   "summary": {
-    "familyCount": 147,
+    "familyCount": 148,
     "interfaceCount": 1090,
     "familyDisposition": {
-      "stage": 43,
-      "integrate": 91,
-      "hold": 5,
+      "stage": 42,
+      "integrate": 92,
+      "hold": 6,
       "exclude": 8
     },
     "interfaceDisposition": {
-      "stage": 211,
+      "stage": 178,
       "integrate": 625,
-      "hold": 183,
-      "exclude": 71
+      "hold": 217,
+      "exclude": 70
     },
     "unclassified": 0
   },
@@ -154,7 +154,7 @@
       "name": "Canvas API",
       "url": "https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API",
       "disposition": "stage",
-      "stageIds": ["S-190", "S-230", "S-350"],
+      "stageIds": ["S-190"],
       "reason": "Implemented as an observable Busybox mechanic."
     },
     {
@@ -251,9 +251,9 @@
     {
       "name": "Document Picture-in-Picture API",
       "url": "https://developer.mozilla.org/en-US/docs/Web/API/Document_Picture-in-Picture_API",
-      "disposition": "stage",
-      "stageIds": ["S-230", "S-350"],
-      "reason": "Implemented as an observable Busybox mechanic."
+      "disposition": "integrate",
+      "stageIds": [],
+      "reason": "Active web-platform building block, but no distinct player-observable mechanic beyond an existing stage; retain as implementation infrastructure."
     },
     {
       "name": "EditContext API",
@@ -335,9 +335,9 @@
     {
       "name": "Fullscreen API",
       "url": "https://developer.mozilla.org/en-US/docs/Web/API/Fullscreen_API",
-      "disposition": "integrate",
-      "stageIds": [],
-      "reason": "Active web-platform building block, but no distinct player-observable mechanic beyond an existing stage; retain as implementation infrastructure."
+      "disposition": "stage",
+      "stageIds": ["S-350"],
+      "reason": "Implemented as an observable Busybox mechanic."
     },
     {
       "name": "Gamepad API",
@@ -511,7 +511,7 @@
       "name": "MediaStream Recording API",
       "url": "https://developer.mozilla.org/en-US/docs/Web/API/MediaStream_Recording_API",
       "disposition": "stage",
-      "stageIds": ["S-190", "S-230", "S-350"],
+      "stageIds": ["S-190"],
       "reason": "Implemented as an observable Busybox mechanic."
     },
     {
@@ -567,7 +567,7 @@
       "name": "Picture-in-Picture API",
       "url": "https://developer.mozilla.org/en-US/docs/Web/API/Picture-in-Picture_API",
       "disposition": "stage",
-      "stageIds": ["S-230", "S-350"],
+      "stageIds": ["S-350"],
       "reason": "Implemented as an observable Busybox mechanic."
     },
     {
@@ -613,6 +613,13 @@
       "reason": "Requires a payment, identity, advertising, DRM, or retired surface outside the static-game policy."
     },
     {
+      "name": "Prompt API",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Prompt_API",
+      "disposition": "integrate",
+      "stageIds": [],
+      "reason": "Active web-platform building block, but no distinct player-observable mechanic beyond an existing stage; retain as implementation infrastructure."
+    },
+    {
       "name": "Push API",
       "url": "https://developer.mozilla.org/en-US/docs/Web/API/Push_API",
       "disposition": "integrate",
@@ -651,7 +658,7 @@
       "name": "Screen Capture API",
       "url": "https://developer.mozilla.org/en-US/docs/Web/API/Screen_Capture_API",
       "disposition": "stage",
-      "stageIds": ["S-190", "S-230", "S-350"],
+      "stageIds": ["S-190"],
       "reason": "Implemented as an observable Busybox mechanic."
     },
     {
@@ -965,9 +972,9 @@
     {
       "name": "WebGPU API",
       "url": "https://developer.mozilla.org/en-US/docs/Web/API/WebGPU_API",
-      "disposition": "stage",
-      "stageIds": ["S-270"],
-      "reason": "Implemented as an observable Busybox mechanic."
+      "disposition": "hold",
+      "stageIds": [],
+      "reason": "Experimental, hardware-limited, or implementation-limited without a distinct approved mechanic; retain in Labs audit."
     },
     {
       "name": "WebHID API",
@@ -3068,7 +3075,7 @@
       },
       "sourceFile": "api/CanvasCaptureMediaStreamTrack.json",
       "disposition": "stage",
-      "stageIds": ["S-190", "S-230", "S-350"],
+      "stageIds": ["S-190"],
       "reason": "Implemented as an observable Busybox mechanic."
     },
     {
@@ -3082,7 +3089,7 @@
       },
       "sourceFile": "api/CanvasFilter.json",
       "disposition": "stage",
-      "stageIds": ["S-190", "S-230", "S-350"],
+      "stageIds": ["S-190"],
       "reason": "Implemented as an observable Busybox mechanic."
     },
     {
@@ -3096,7 +3103,7 @@
       },
       "sourceFile": "api/CanvasGradient.json",
       "disposition": "stage",
-      "stageIds": ["S-190", "S-230", "S-350"],
+      "stageIds": ["S-190"],
       "reason": "Implemented as an observable Busybox mechanic."
     },
     {
@@ -3110,7 +3117,7 @@
       },
       "sourceFile": "api/CanvasPattern.json",
       "disposition": "stage",
-      "stageIds": ["S-190", "S-230", "S-350"],
+      "stageIds": ["S-190"],
       "reason": "Implemented as an observable Busybox mechanic."
     },
     {
@@ -3124,7 +3131,7 @@
       },
       "sourceFile": "api/CanvasRenderingContext2D.json",
       "disposition": "stage",
-      "stageIds": ["S-190", "S-230", "S-350"],
+      "stageIds": ["S-190"],
       "reason": "Implemented as an observable Busybox mechanic."
     },
     {
@@ -5125,9 +5132,9 @@
         "standard_track": true
       },
       "sourceFile": "api/GPU.json",
-      "disposition": "stage",
-      "stageIds": ["S-270"],
-      "reason": "Implemented as an observable Busybox mechanic."
+      "disposition": "hold",
+      "stageIds": [],
+      "reason": "Experimental, hardware-limited, or implementation-limited without a distinct approved mechanic; retain in Labs audit."
     },
     {
       "name": "GPUAdapter",
@@ -5139,9 +5146,9 @@
         "standard_track": true
       },
       "sourceFile": "api/GPUAdapter.json",
-      "disposition": "stage",
-      "stageIds": ["S-270"],
-      "reason": "Implemented as an observable Busybox mechanic."
+      "disposition": "hold",
+      "stageIds": [],
+      "reason": "Experimental, hardware-limited, or implementation-limited without a distinct approved mechanic; retain in Labs audit."
     },
     {
       "name": "GPUAdapterInfo",
@@ -5153,9 +5160,9 @@
         "standard_track": true
       },
       "sourceFile": "api/GPUAdapterInfo.json",
-      "disposition": "stage",
-      "stageIds": ["S-270"],
-      "reason": "Implemented as an observable Busybox mechanic."
+      "disposition": "hold",
+      "stageIds": [],
+      "reason": "Experimental, hardware-limited, or implementation-limited without a distinct approved mechanic; retain in Labs audit."
     },
     {
       "name": "GPUBindGroup",
@@ -5167,9 +5174,9 @@
         "standard_track": true
       },
       "sourceFile": "api/GPUBindGroup.json",
-      "disposition": "stage",
-      "stageIds": ["S-270"],
-      "reason": "Implemented as an observable Busybox mechanic."
+      "disposition": "hold",
+      "stageIds": [],
+      "reason": "Experimental, hardware-limited, or implementation-limited without a distinct approved mechanic; retain in Labs audit."
     },
     {
       "name": "GPUBindGroupLayout",
@@ -5181,9 +5188,9 @@
         "standard_track": true
       },
       "sourceFile": "api/GPUBindGroupLayout.json",
-      "disposition": "stage",
-      "stageIds": ["S-270"],
-      "reason": "Implemented as an observable Busybox mechanic."
+      "disposition": "hold",
+      "stageIds": [],
+      "reason": "Experimental, hardware-limited, or implementation-limited without a distinct approved mechanic; retain in Labs audit."
     },
     {
       "name": "GPUBuffer",
@@ -5195,9 +5202,9 @@
         "standard_track": true
       },
       "sourceFile": "api/GPUBuffer.json",
-      "disposition": "stage",
-      "stageIds": ["S-270"],
-      "reason": "Implemented as an observable Busybox mechanic."
+      "disposition": "hold",
+      "stageIds": [],
+      "reason": "Experimental, hardware-limited, or implementation-limited without a distinct approved mechanic; retain in Labs audit."
     },
     {
       "name": "GPUCanvasContext",
@@ -5210,7 +5217,7 @@
       },
       "sourceFile": "api/GPUCanvasContext.json",
       "disposition": "stage",
-      "stageIds": ["S-190", "S-230", "S-350", "S-270"],
+      "stageIds": ["S-190"],
       "reason": "Implemented as an observable Busybox mechanic."
     },
     {
@@ -5223,9 +5230,9 @@
         "standard_track": true
       },
       "sourceFile": "api/GPUCommandBuffer.json",
-      "disposition": "stage",
-      "stageIds": ["S-270"],
-      "reason": "Implemented as an observable Busybox mechanic."
+      "disposition": "hold",
+      "stageIds": [],
+      "reason": "Experimental, hardware-limited, or implementation-limited without a distinct approved mechanic; retain in Labs audit."
     },
     {
       "name": "GPUCommandEncoder",
@@ -5237,9 +5244,9 @@
         "standard_track": true
       },
       "sourceFile": "api/GPUCommandEncoder.json",
-      "disposition": "stage",
-      "stageIds": ["S-270"],
-      "reason": "Implemented as an observable Busybox mechanic."
+      "disposition": "hold",
+      "stageIds": [],
+      "reason": "Experimental, hardware-limited, or implementation-limited without a distinct approved mechanic; retain in Labs audit."
     },
     {
       "name": "GPUCompilationInfo",
@@ -5251,9 +5258,9 @@
         "standard_track": true
       },
       "sourceFile": "api/GPUCompilationInfo.json",
-      "disposition": "stage",
-      "stageIds": ["S-270"],
-      "reason": "Implemented as an observable Busybox mechanic."
+      "disposition": "hold",
+      "stageIds": [],
+      "reason": "Experimental, hardware-limited, or implementation-limited without a distinct approved mechanic; retain in Labs audit."
     },
     {
       "name": "GPUCompilationMessage",
@@ -5265,9 +5272,9 @@
         "standard_track": true
       },
       "sourceFile": "api/GPUCompilationMessage.json",
-      "disposition": "stage",
-      "stageIds": ["S-270"],
-      "reason": "Implemented as an observable Busybox mechanic."
+      "disposition": "hold",
+      "stageIds": [],
+      "reason": "Experimental, hardware-limited, or implementation-limited without a distinct approved mechanic; retain in Labs audit."
     },
     {
       "name": "GPUComputePassEncoder",
@@ -5279,9 +5286,9 @@
         "standard_track": true
       },
       "sourceFile": "api/GPUComputePassEncoder.json",
-      "disposition": "stage",
-      "stageIds": ["S-270"],
-      "reason": "Implemented as an observable Busybox mechanic."
+      "disposition": "hold",
+      "stageIds": [],
+      "reason": "Experimental, hardware-limited, or implementation-limited without a distinct approved mechanic; retain in Labs audit."
     },
     {
       "name": "GPUComputePipeline",
@@ -5293,9 +5300,9 @@
         "standard_track": true
       },
       "sourceFile": "api/GPUComputePipeline.json",
-      "disposition": "stage",
-      "stageIds": ["S-270"],
-      "reason": "Implemented as an observable Busybox mechanic."
+      "disposition": "hold",
+      "stageIds": [],
+      "reason": "Experimental, hardware-limited, or implementation-limited without a distinct approved mechanic; retain in Labs audit."
     },
     {
       "name": "GPUDevice",
@@ -5307,9 +5314,9 @@
         "standard_track": true
       },
       "sourceFile": "api/GPUDevice.json",
-      "disposition": "stage",
-      "stageIds": ["S-270"],
-      "reason": "Implemented as an observable Busybox mechanic."
+      "disposition": "hold",
+      "stageIds": [],
+      "reason": "Experimental, hardware-limited, or implementation-limited without a distinct approved mechanic; retain in Labs audit."
     },
     {
       "name": "GPUDeviceLostInfo",
@@ -5321,9 +5328,9 @@
         "standard_track": true
       },
       "sourceFile": "api/GPUDeviceLostInfo.json",
-      "disposition": "stage",
-      "stageIds": ["S-270"],
-      "reason": "Implemented as an observable Busybox mechanic."
+      "disposition": "hold",
+      "stageIds": [],
+      "reason": "Experimental, hardware-limited, or implementation-limited without a distinct approved mechanic; retain in Labs audit."
     },
     {
       "name": "GPUError",
@@ -5335,9 +5342,9 @@
         "standard_track": true
       },
       "sourceFile": "api/GPUError.json",
-      "disposition": "stage",
-      "stageIds": ["S-270"],
-      "reason": "Implemented as an observable Busybox mechanic."
+      "disposition": "hold",
+      "stageIds": [],
+      "reason": "Experimental, hardware-limited, or implementation-limited without a distinct approved mechanic; retain in Labs audit."
     },
     {
       "name": "GPUExternalTexture",
@@ -5349,9 +5356,9 @@
         "standard_track": true
       },
       "sourceFile": "api/GPUExternalTexture.json",
-      "disposition": "stage",
-      "stageIds": ["S-270"],
-      "reason": "Implemented as an observable Busybox mechanic."
+      "disposition": "hold",
+      "stageIds": [],
+      "reason": "Experimental, hardware-limited, or implementation-limited without a distinct approved mechanic; retain in Labs audit."
     },
     {
       "name": "GPUInternalError",
@@ -5363,9 +5370,9 @@
         "standard_track": true
       },
       "sourceFile": "api/GPUInternalError.json",
-      "disposition": "stage",
-      "stageIds": ["S-270"],
-      "reason": "Implemented as an observable Busybox mechanic."
+      "disposition": "hold",
+      "stageIds": [],
+      "reason": "Experimental, hardware-limited, or implementation-limited without a distinct approved mechanic; retain in Labs audit."
     },
     {
       "name": "GPUOutOfMemoryError",
@@ -5377,9 +5384,9 @@
         "standard_track": true
       },
       "sourceFile": "api/GPUOutOfMemoryError.json",
-      "disposition": "stage",
-      "stageIds": ["S-270"],
-      "reason": "Implemented as an observable Busybox mechanic."
+      "disposition": "hold",
+      "stageIds": [],
+      "reason": "Experimental, hardware-limited, or implementation-limited without a distinct approved mechanic; retain in Labs audit."
     },
     {
       "name": "GPUPipelineError",
@@ -5391,9 +5398,9 @@
         "standard_track": true
       },
       "sourceFile": "api/GPUPipelineError.json",
-      "disposition": "stage",
-      "stageIds": ["S-270"],
-      "reason": "Implemented as an observable Busybox mechanic."
+      "disposition": "hold",
+      "stageIds": [],
+      "reason": "Experimental, hardware-limited, or implementation-limited without a distinct approved mechanic; retain in Labs audit."
     },
     {
       "name": "GPUPipelineLayout",
@@ -5405,9 +5412,9 @@
         "standard_track": true
       },
       "sourceFile": "api/GPUPipelineLayout.json",
-      "disposition": "stage",
-      "stageIds": ["S-270"],
-      "reason": "Implemented as an observable Busybox mechanic."
+      "disposition": "hold",
+      "stageIds": [],
+      "reason": "Experimental, hardware-limited, or implementation-limited without a distinct approved mechanic; retain in Labs audit."
     },
     {
       "name": "GPUQuerySet",
@@ -5419,9 +5426,9 @@
         "standard_track": true
       },
       "sourceFile": "api/GPUQuerySet.json",
-      "disposition": "stage",
-      "stageIds": ["S-270"],
-      "reason": "Implemented as an observable Busybox mechanic."
+      "disposition": "hold",
+      "stageIds": [],
+      "reason": "Experimental, hardware-limited, or implementation-limited without a distinct approved mechanic; retain in Labs audit."
     },
     {
       "name": "GPUQueue",
@@ -5433,9 +5440,9 @@
         "standard_track": true
       },
       "sourceFile": "api/GPUQueue.json",
-      "disposition": "stage",
-      "stageIds": ["S-270"],
-      "reason": "Implemented as an observable Busybox mechanic."
+      "disposition": "hold",
+      "stageIds": [],
+      "reason": "Experimental, hardware-limited, or implementation-limited without a distinct approved mechanic; retain in Labs audit."
     },
     {
       "name": "GPURenderBundle",
@@ -5447,9 +5454,9 @@
         "standard_track": true
       },
       "sourceFile": "api/GPURenderBundle.json",
-      "disposition": "stage",
-      "stageIds": ["S-270"],
-      "reason": "Implemented as an observable Busybox mechanic."
+      "disposition": "hold",
+      "stageIds": [],
+      "reason": "Experimental, hardware-limited, or implementation-limited without a distinct approved mechanic; retain in Labs audit."
     },
     {
       "name": "GPURenderBundleEncoder",
@@ -5461,9 +5468,9 @@
         "standard_track": true
       },
       "sourceFile": "api/GPURenderBundleEncoder.json",
-      "disposition": "stage",
-      "stageIds": ["S-270"],
-      "reason": "Implemented as an observable Busybox mechanic."
+      "disposition": "hold",
+      "stageIds": [],
+      "reason": "Experimental, hardware-limited, or implementation-limited without a distinct approved mechanic; retain in Labs audit."
     },
     {
       "name": "GPURenderPassEncoder",
@@ -5475,9 +5482,9 @@
         "standard_track": true
       },
       "sourceFile": "api/GPURenderPassEncoder.json",
-      "disposition": "stage",
-      "stageIds": ["S-270"],
-      "reason": "Implemented as an observable Busybox mechanic."
+      "disposition": "hold",
+      "stageIds": [],
+      "reason": "Experimental, hardware-limited, or implementation-limited without a distinct approved mechanic; retain in Labs audit."
     },
     {
       "name": "GPURenderPipeline",
@@ -5489,9 +5496,9 @@
         "standard_track": true
       },
       "sourceFile": "api/GPURenderPipeline.json",
-      "disposition": "stage",
-      "stageIds": ["S-270"],
-      "reason": "Implemented as an observable Busybox mechanic."
+      "disposition": "hold",
+      "stageIds": [],
+      "reason": "Experimental, hardware-limited, or implementation-limited without a distinct approved mechanic; retain in Labs audit."
     },
     {
       "name": "GPUSampler",
@@ -5503,9 +5510,9 @@
         "standard_track": true
       },
       "sourceFile": "api/GPUSampler.json",
-      "disposition": "stage",
-      "stageIds": ["S-270"],
-      "reason": "Implemented as an observable Busybox mechanic."
+      "disposition": "hold",
+      "stageIds": [],
+      "reason": "Experimental, hardware-limited, or implementation-limited without a distinct approved mechanic; retain in Labs audit."
     },
     {
       "name": "GPUShaderModule",
@@ -5517,9 +5524,9 @@
         "standard_track": true
       },
       "sourceFile": "api/GPUShaderModule.json",
-      "disposition": "stage",
-      "stageIds": ["S-270"],
-      "reason": "Implemented as an observable Busybox mechanic."
+      "disposition": "hold",
+      "stageIds": [],
+      "reason": "Experimental, hardware-limited, or implementation-limited without a distinct approved mechanic; retain in Labs audit."
     },
     {
       "name": "GPUSupportedFeatures",
@@ -5531,9 +5538,9 @@
         "standard_track": true
       },
       "sourceFile": "api/GPUSupportedFeatures.json",
-      "disposition": "stage",
-      "stageIds": ["S-270"],
-      "reason": "Implemented as an observable Busybox mechanic."
+      "disposition": "hold",
+      "stageIds": [],
+      "reason": "Experimental, hardware-limited, or implementation-limited without a distinct approved mechanic; retain in Labs audit."
     },
     {
       "name": "GPUSupportedLimits",
@@ -5545,9 +5552,9 @@
         "standard_track": true
       },
       "sourceFile": "api/GPUSupportedLimits.json",
-      "disposition": "stage",
-      "stageIds": ["S-270"],
-      "reason": "Implemented as an observable Busybox mechanic."
+      "disposition": "hold",
+      "stageIds": [],
+      "reason": "Experimental, hardware-limited, or implementation-limited without a distinct approved mechanic; retain in Labs audit."
     },
     {
       "name": "GPUTexture",
@@ -5559,9 +5566,9 @@
         "standard_track": true
       },
       "sourceFile": "api/GPUTexture.json",
-      "disposition": "stage",
-      "stageIds": ["S-270"],
-      "reason": "Implemented as an observable Busybox mechanic."
+      "disposition": "hold",
+      "stageIds": [],
+      "reason": "Experimental, hardware-limited, or implementation-limited without a distinct approved mechanic; retain in Labs audit."
     },
     {
       "name": "GPUTextureView",
@@ -5573,9 +5580,9 @@
         "standard_track": true
       },
       "sourceFile": "api/GPUTextureView.json",
-      "disposition": "stage",
-      "stageIds": ["S-270"],
-      "reason": "Implemented as an observable Busybox mechanic."
+      "disposition": "hold",
+      "stageIds": [],
+      "reason": "Experimental, hardware-limited, or implementation-limited without a distinct approved mechanic; retain in Labs audit."
     },
     {
       "name": "GPUUncapturedErrorEvent",
@@ -5587,9 +5594,9 @@
         "standard_track": true
       },
       "sourceFile": "api/GPUUncapturedErrorEvent.json",
-      "disposition": "stage",
-      "stageIds": ["S-270"],
-      "reason": "Implemented as an observable Busybox mechanic."
+      "disposition": "hold",
+      "stageIds": [],
+      "reason": "Experimental, hardware-limited, or implementation-limited without a distinct approved mechanic; retain in Labs audit."
     },
     {
       "name": "GPUValidationError",
@@ -5601,9 +5608,9 @@
         "standard_track": true
       },
       "sourceFile": "api/GPUValidationError.json",
-      "disposition": "stage",
-      "stageIds": ["S-270"],
-      "reason": "Implemented as an observable Busybox mechanic."
+      "disposition": "hold",
+      "stageIds": [],
+      "reason": "Experimental, hardware-limited, or implementation-limited without a distinct approved mechanic; retain in Labs audit."
     },
     {
       "name": "GainNode",
@@ -5980,7 +5987,7 @@
       },
       "sourceFile": "api/HTMLCanvasElement.json",
       "disposition": "stage",
-      "stageIds": ["S-190", "S-230", "S-350"],
+      "stageIds": ["S-190"],
       "reason": "Implemented as an observable Busybox mechanic."
     },
     {
@@ -6442,7 +6449,7 @@
       },
       "sourceFile": "api/HTMLMediaElement.json",
       "disposition": "stage",
-      "stageIds": ["S-230", "S-350"],
+      "stageIds": ["S-350"],
       "reason": "Implemented as an observable Busybox mechanic."
     },
     {
@@ -8234,7 +8241,7 @@
       },
       "sourceFile": "api/MediaRecorder.json",
       "disposition": "stage",
-      "stageIds": ["S-190", "S-230", "S-350"],
+      "stageIds": ["S-190"],
       "reason": "Implemented as an observable Busybox mechanic."
     },
     {
@@ -8248,7 +8255,7 @@
       },
       "sourceFile": "api/MediaRecorderErrorEvent.json",
       "disposition": "stage",
-      "stageIds": ["S-190", "S-230", "S-350"],
+      "stageIds": ["S-190"],
       "reason": "Implemented as an observable Busybox mechanic."
     },
     {
@@ -9172,7 +9179,7 @@
       },
       "sourceFile": "api/OffscreenCanvas.json",
       "disposition": "stage",
-      "stageIds": ["S-190", "S-230", "S-350"],
+      "stageIds": ["S-190"],
       "reason": "Implemented as an observable Busybox mechanic."
     },
     {
@@ -9186,7 +9193,7 @@
       },
       "sourceFile": "api/OffscreenCanvasRenderingContext2D.json",
       "disposition": "stage",
-      "stageIds": ["S-190", "S-230", "S-350"],
+      "stageIds": ["S-190"],
       "reason": "Implemented as an observable Busybox mechanic."
     },
     {
@@ -10422,6 +10429,20 @@
       "reason": "Implemented as an observable Busybox mechanic."
     },
     {
+      "name": "RTCIceCandidatePair",
+      "bcdKey": "api.RTCIceCandidatePair",
+      "mdnUrl": "https://developer.mozilla.org/docs/Web/API/RTCIceCandidatePair",
+      "status": {
+        "deprecated": false,
+        "experimental": true,
+        "standard_track": true
+      },
+      "sourceFile": "api/RTCIceCandidatePair.json",
+      "disposition": "stage",
+      "stageIds": ["S-190", "S-360"],
+      "reason": "Implemented as an observable Busybox mechanic."
+    },
+    {
       "name": "RTCIceTransport",
       "bcdKey": "api.RTCIceTransport",
       "mdnUrl": "https://developer.mozilla.org/docs/Web/API/RTCIceTransport",
@@ -10938,20 +10959,6 @@
       "disposition": "integrate",
       "stageIds": [],
       "reason": "Active web-platform building block, but no distinct player-observable mechanic beyond an existing stage; retain as implementation infrastructure."
-    },
-    {
-      "name": "SVGAnimateColorElement",
-      "bcdKey": "api.SVGAnimateColorElement",
-      "mdnUrl": "https://developer.mozilla.org/docs/Web/API/SVGAnimateColorElement",
-      "status": {
-        "deprecated": true,
-        "experimental": false,
-        "standard_track": true
-      },
-      "sourceFile": "api/SVGAnimateColorElement.json",
-      "disposition": "exclude",
-      "stageIds": [],
-      "reason": "Deprecated in BCD; no new stage."
     },
     {
       "name": "SVGAnimateElement",

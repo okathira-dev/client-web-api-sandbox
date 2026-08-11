@@ -135,6 +135,12 @@ export const stageCatalogue = [
         clue: "selection",
         label: { ja: "選択範囲の箱", en: "Selection box" },
       },
+      {
+        id: "S-030-B02",
+        color: "#f59e0b",
+        clue: "selection",
+        label: { ja: "離れた範囲の箱", en: "Disjoint-range box" },
+      },
     ],
   }),
   defineStage({
@@ -179,6 +185,12 @@ export const stageCatalogue = [
         color: "#c084fc",
         clue: "return",
         label: { ja: "再訪の箱", en: "Return box" },
+      },
+      {
+        id: "S-060-B02",
+        color: "#a855f7",
+        clue: "offline",
+        label: { ja: "オフライン郵便の箱", en: "Offline-mail box" },
       },
     ],
   }),
@@ -309,6 +321,18 @@ export const stageCatalogue = [
         clue: "dom",
         label: { ja: "文書構造の箱", en: "Document-structure box" },
       },
+      {
+        id: "S-150-B02",
+        color: "#a78bfa",
+        clue: "hidden",
+        label: { ja: "不可視focusの箱", en: "Hidden-focus box" },
+      },
+      {
+        id: "S-150-B03",
+        color: "#8b5cf6",
+        clue: "dom",
+        label: { ja: "排他detailsの箱", en: "Exclusive-details box" },
+      },
     ],
   }),
   defineStage({
@@ -430,18 +454,11 @@ export const stageCatalogue = [
         clue: "transition",
         label: { ja: "再読込の箱", en: "Reload box" },
       },
-    ],
-  }),
-  defineStage({
-    id: "S-230",
-    label: { ja: "浮かぶ窓", en: "The floating window" },
-    category: "edge",
-    problems: [
       {
-        id: "S-230-B01",
-        color: "#60a5fa",
-        clue: "pip",
-        label: { ja: "小窓の箱", en: "Picture-in-picture box" },
+        id: "S-220-B04",
+        color: "#06b6d4",
+        clue: "transition",
+        label: { ja: "分岐破棄の箱", en: "Branch-disposal box" },
       },
     ],
   }),
@@ -493,19 +510,6 @@ export const stageCatalogue = [
         color: "#a78bfa",
         clue: "eyedropper",
         label: { ja: "色を採る箱", en: "Color-picker box" },
-      },
-    ],
-  }),
-  defineStage({
-    id: "S-270",
-    label: { ja: "並列の捜索", en: "The parallel search" },
-    category: "edge",
-    problems: [
-      {
-        id: "S-270-B01",
-        color: "#34d399",
-        clue: "gpu",
-        label: { ja: "並列計算の箱", en: "Parallel-compute box" },
       },
     ],
   }),
@@ -638,8 +642,32 @@ export const stageCatalogue = [
       {
         id: "S-350-B03",
         color: "#34d399",
-        clue: "pip",
+        clue: "pause",
         label: { ja: "再生と停止の箱", en: "Play-pause box" },
+      },
+      {
+        id: "S-350-B04",
+        color: "#65a30d",
+        clue: "speed",
+        label: { ja: "再生速度の箱", en: "Playback-rate box" },
+      },
+      {
+        id: "S-350-B05",
+        color: "#4d7c0f",
+        clue: "subtitles",
+        label: { ja: "字幕trackの箱", en: "Caption-track box" },
+      },
+      {
+        id: "S-350-B06",
+        color: "#60a5fa",
+        clue: "pip",
+        label: { ja: "小窓の箱", en: "Picture-in-picture box" },
+      },
+      {
+        id: "S-350-B08",
+        color: "#38bdf8",
+        clue: "fullscreen",
+        label: { ja: "全画面の箱", en: "Fullscreen box" },
       },
     ],
   }),
@@ -904,6 +932,12 @@ export const stageCatalogue = [
         clue: "export",
         label: { ja: "ドロップの箱", en: "Drop box" },
       },
+      {
+        id: "S-510-B02",
+        color: "#10b981",
+        clue: "import",
+        label: { ja: "窓越し現像の箱", en: "Cross-window developing box" },
+      },
     ],
   }),
   defineStage({
@@ -1026,6 +1060,12 @@ export const stageCatalogue = [
         clue: "sound",
         label: { ja: "発話の箱", en: "Speech box" },
       },
+      {
+        id: "S-580-B02",
+        color: "#ec4899",
+        clue: "sound",
+        label: { ja: "ずれた声の箱", en: "Shifted-voice box" },
+      },
     ],
   }),
   defineStage({
@@ -1077,6 +1117,204 @@ export const stageCatalogue = [
         label: { ja: "500m以上の箱", en: "500 m or more box" },
       },
     ],
+  }),
+  defineStage({
+    id: "S-610",
+    label: { ja: "閉じ方の三態", en: "Three ways to close" },
+    category: "page",
+    problems: [
+      {
+        id: "S-610-B01",
+        color: "#f97316",
+        clue: "windows",
+        label: { ja: "ボタン閉じの箱", en: "Button-close box" },
+      },
+      {
+        id: "S-610-B02",
+        color: "#ea580c",
+        clue: "click",
+        label: { ja: "外側閉じの箱", en: "Light-dismiss box" },
+      },
+      {
+        id: "S-610-B03",
+        color: "#c2410c",
+        clue: "return",
+        label: { ja: "Escape閉じの箱", en: "Escape-close box" },
+      },
+    ],
+  }),
+  defineStage({
+    id: "S-620",
+    label: { ja: "数字の遠い親戚", en: "Distant relatives of digits" },
+    category: "page",
+    problems: Array.from({ length: 17 }, (_, index) => ({
+      id: `S-620-B${String(index + 1).padStart(2, "0")}` as `S-620-B${number}`,
+      color: ["#38bdf8", "#22d3ee", "#2dd4bf", "#34d399", "#4ade80"][index % 5],
+      clue: "selection" as const,
+      label: {
+        ja: `異体数字 ${index + 1}`,
+        en: `Numeral variant ${index + 1}`,
+      },
+    })) as readonly ProblemFor<"S-620">[],
+  }),
+  defineStage({
+    id: "S-640",
+    label: { ja: "読めない文字列", en: "Unreadable strings" },
+    category: "page",
+    problems: Array.from({ length: 8 }, (_, index) => ({
+      id: `S-640-B${String(index + 1).padStart(2, "0")}` as `S-640-B${number}`,
+      color: ["#818cf8", "#6366f1", "#4f46e5", "#4338ca"][index % 4],
+      clue: "hidden" as const,
+      label: {
+        ja: `文字コードの箱 ${index + 1}`,
+        en: `Encoding box ${index + 1}`,
+      },
+    })) as readonly ProblemFor<"S-640">[],
+  }),
+  defineStage({
+    id: "S-650",
+    label: { ja: "許可の四扉", en: "Four permission doors" },
+    category: "device",
+    problems: [
+      {
+        id: "S-650-B01",
+        color: "#22c55e",
+        clue: "path",
+        label: { ja: "位置情報の箱", en: "Geolocation box" },
+      },
+      {
+        id: "S-650-B02",
+        color: "#16a34a",
+        clue: "notification",
+        label: { ja: "通知の箱", en: "Notification box" },
+      },
+      {
+        id: "S-650-B03",
+        color: "#15803d",
+        clue: "screen",
+        label: { ja: "カメラの箱", en: "Camera box" },
+      },
+      {
+        id: "S-650-B04",
+        color: "#166534",
+        clue: "sound",
+        label: { ja: "マイクの箱", en: "Microphone box" },
+      },
+    ],
+  }),
+  defineStage({
+    id: "S-660",
+    label: { ja: "負荷の三景", en: "Pressure seasons" },
+    category: "device",
+    problems: [
+      {
+        id: "S-660-B01",
+        color: "#a7f3d0",
+        clue: "gpu",
+        label: { ja: "nominalの箱", en: "Nominal box" },
+      },
+      {
+        id: "S-660-B02",
+        color: "#6ee7b7",
+        clue: "gpu",
+        label: { ja: "中間状態の箱", en: "Middle-state box" },
+      },
+      {
+        id: "S-660-B03",
+        color: "#10b981",
+        clue: "gpu",
+        label: { ja: "criticalの箱", en: "Critical box" },
+      },
+    ],
+  }),
+  defineStage({
+    id: "S-670",
+    label: { ja: "Console迷路", en: "Console maze" },
+    category: "edge",
+    problems: [
+      {
+        id: "S-670-B01",
+        color: "#eab308",
+        clue: "hidden",
+        label: { ja: "診断盤面の箱", en: "Diagnostic-board box" },
+      },
+    ],
+  }),
+  defineStage({
+    id: "S-710",
+    label: { ja: "動画変換室", en: "Video conversion room" },
+    category: "edge",
+    problems: [
+      {
+        id: "S-710-B01",
+        color: "#f8fafc",
+        clue: "hidden",
+        label: { ja: "暗闇frameの箱", en: "Dark-frame box" },
+      },
+      {
+        id: "S-710-B02",
+        color: "#94a3b8",
+        clue: "import",
+        label: { ja: "decode失敗の箱", en: "Decode-failure box" },
+      },
+      {
+        id: "S-710-B03",
+        color: "#64748b",
+        clue: "devices",
+        label: { ja: "QR frameの箱", en: "QR-frame box" },
+      },
+      {
+        id: "S-710-B04",
+        color: "#475569",
+        clue: "export",
+        label: { ja: "metadataの箱", en: "Metadata box" },
+      },
+    ],
+  }),
+  defineStage({
+    id: "S-720",
+    label: { ja: "映像復元室", en: "Video recovery room" },
+    category: "edge",
+    problems: [
+      {
+        id: "S-720-B01",
+        color: "#f43f5e",
+        clue: "transition",
+        label: { ja: "T1の箱", en: "T1 box" },
+      },
+      {
+        id: "S-720-B02",
+        color: "#e11d48",
+        clue: "transition",
+        label: { ja: "T2の箱", en: "T2 box" },
+      },
+      {
+        id: "S-720-B03",
+        color: "#be123c",
+        clue: "transition",
+        label: { ja: "T3の箱", en: "T3 box" },
+      },
+      {
+        id: "S-720-B04",
+        color: "#9f1239",
+        clue: "devices",
+        label: { ja: "QR復元の箱", en: "QR-recovery box" },
+      },
+    ],
+  }),
+  defineStage({
+    id: "S-810",
+    label: { ja: "変形する映像", en: "Shape-shifting video" },
+    category: "page",
+    problems: Array.from({ length: 4 }, (_, index) => ({
+      id: `S-810-B${String(index + 1).padStart(2, "0")}` as `S-810-B${number}`,
+      color: ["#84cc16", "#65a30d", "#4d7c0f", "#3f6212"][index],
+      clue: "time" as const,
+      label: {
+        ja: `寸法変化の箱 ${index + 1}`,
+        en: `Dimension-change box ${index + 1}`,
+      },
+    })) as readonly ProblemFor<"S-810">[],
   }),
 ] as const satisfies readonly StageSpec[];
 

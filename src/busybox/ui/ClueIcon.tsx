@@ -23,12 +23,16 @@ export type ClueIconName =
   | "dom"
   | "path"
   | "time"
+  | "pause"
+  | "speed"
+  | "subtitles"
   | "copy"
   | "paste"
   | "history"
   | "transition"
   | "screen"
   | "pip"
+  | "fullscreen"
   | "share"
   | "lock"
   | "wait"
@@ -85,12 +89,18 @@ export function ClueIcon({ name }: { name: ClueIconName }) {
     dom: <path d="M4 5h16M4 12h16M4 19h16M7 3v4m5 3v4m5 3v4" />,
     path: <path d="M4 18c3-10 5 2 8-8s5 2 8-6M4 18h4m8-14h4" />,
     time: <path d="M12 4a8 8 0 1 0 8 8M12 7v5l3 2M8 2h8" />,
+    pause: <path d="M7 5h3v14H7Zm7 0h3v14h-3Z" />,
+    speed: <path d="M4 17a8 8 0 1 1 16 0M12 12l5-4m-9 9h8" />,
+    subtitles: <path d="M3 5h18v14H3Zm3 8h5m2 0h5M6 16h3m2 0h7" />,
     copy: <path d="M8 8h11v12H8Zm-3 8H4V4h11v1" />,
     paste: <path d="M8 5h8v3H8Zm-2 1H4v15h16V6h-2m-6 5v7m-3-3 3 3 3-3" />,
     history: <path d="M4 5v5h5M5 9a8 8 0 1 1 1 8m6-9v5l3 2" />,
     transition: <path d="M4 7h11m-3-3 3 3-3 3m8 7H9m3-3-3 3 3 3M6 4v16" />,
     screen: <path d="M3 4h18v13H3Zm5 17h8m-4-4v4M7 8h10v5H7" />,
     pip: <path d="M3 4h18v16H3Zm10 7h6v6h-6Z" />,
+    fullscreen: (
+      <path d="M4 9V4h5m6 0h5v5m0 6v5h-5M9 20H4v-5M4 4l6 6m10-6-6 6m6 10-6-6M4 20l6-6" />
+    ),
     share: <path d="M8 12 16 5m-5 0h5v5M6 9H4v11h11v-2" />,
     lock: <path d="M7 10V7a5 5 0 0 1 10 0v3m-12 0h14v11H5Zm7 4v3" />,
     wait: (

@@ -103,10 +103,13 @@ Blackboxを参考に抽出した機構を、そのまま複製せず、Web固有
 2. `S-350-B01` シーク箱: `seeking`から`seeked`までを観測し、開始前から再生位置が有意に変わった場合に開く。目標時刻や目標frameは要求せず、通常再生で時刻が進んだだけでは開かない。
 3. `S-350-B02` ミュート箱: `volumechange`後に `muted === true`、または利用可能な環境で `volume === 0` になった時点で開く。指定区間の通過、再生継続、解除は要求しない。初期状態をscriptからmuteして偽クリアさせない。
 4. `S-350-B03` 再生・停止箱: `playing`を観測した後、再生位置が進んでから`pause`を観測した場合に開く。初期のpaused状態だけでは開かない。
-5. 3箱は順不同で独立して開く。映像には操作の直接説明ではなく、timelineとspeakerを示唆する非言語的な手掛かりだけを置く。
-6. 突然の大音量を使わず、安全な一定音量にする。字幕または視覚表現を付け、聴覚だけに依存させない。
-7. native controlsが操作を提示しない環境では該当箱を未観測のままにする。custom control、skip、別操作による代替クリアは用意しない。
-8. 離脱時は再生停止、listener解除、source解放を行い、視聴履歴、再生位置、音量値を進捗へ保存しない。
+5. `S-350-B04` 再生速度箱: native controlsで1倍速以外へ変更し、`ratechange`後の実`playbackRate`を観測して開く。page製速度selectorや自動変更は置かない。
+6. `S-350-B05` 字幕track箱: native字幕menuで`Busybox`を選び、targetだけが`showing`になった時に開く。
+7. `S-350-B06` PiP箱: 同じnative videoのbrowser所有controlからPicture-in-Pictureへ入り、実`enterpictureinpicture`で開く。page製buttonや自動要求は置かない。
+8. 6箱は順不同で独立して開く。映像には操作の直接説明ではなく、timelineとspeakerを示唆する非言語的な手掛かりだけを置く。
+9. 突然の大音量を使わず、安全な一定音量にする。字幕または視覚表現を付け、聴覚だけに依存させない。
+10. native controlsが操作を提示しない環境では該当箱を未観測のままにする。custom control、skip、別操作による代替クリアは用意しない。
+11. 離脱時は再生停止、PiP終了、listener解除、source解放を行い、視聴履歴、再生位置、音量値を進捗へ保存しない。
 
 #### 既存ステージとの差
 
@@ -141,9 +144,11 @@ Blackboxを参考に抽出した機構を、そのまま複製せず、Web固有
 6. 3箱は順不同で独立して永続化する。document navigationでstage instanceが破棄されても、すでに開いた箱を失わない。
 7. navigation entry、`pageshow` listener、history stateの有無をfeature detectionし、利用できない環境では該当箱を未観測のままにする。skipや別操作による代替クリアは用意しない。
 
+> 2026-07-21追記: このBlackbox由来の3箱とは別に、Deep Research DR-047のNavigation API案をS-220-B04として統合した。A→B→Cからbrowser BackでAへ戻りDへ分岐し、旧B / C両entryの`dispose`と`canGoForward === false`を観測する。最新の4箱仕様は[Deep Research元案・暫定採否台帳](./deep-research-idea-disposition-ledger.md)と[ステージ実装状況](./stage-implementation-status.md)を正とする。
+
 #### 既存ステージとの差
 
-- S-060は訪問間の永続記憶を使う問題であり、戻り方やnavigation種別を問わない。S-220はbrowser履歴とdocument navigationそのものを入力にする。
+- S-060-B01は訪問間の永続記憶を使い、戻り方やnavigation種別を問わない。S-060-B02はoffline中に実Beaconをlocal Service Workerへ投函し、senderを破棄するfull-document navigation後のreceiptを使う。S-220はbrowser履歴とnavigation種別そのものを入力にするため、いずれとも判定目的が異なる。
 - `pushState` / `popstate`によるsame-document navigationは `PerformanceNavigationTiming.type` を更新しないため、第1箱と第2箱を同じ判定にまとめない。
 - 端末再起動後にも進捗が復元されることはgameplay条件にせず、保存基盤の品質確認としてのみ維持する。
 
@@ -601,7 +606,7 @@ memory-only案では、Dedicated Worker内でECDSA P-256鍵pairを `extractable:
   - [`navigator.mediaSession.setActionHandler("pause", handler)`](https://developer.mozilla.org/en-US/docs/Web/API/MediaSession/setActionHandler)は、deviceのonscreen / physical media controlsから届くpause actionをhandlerへ渡せる。
   - [Media Session Standard](https://w3c.github.io/mediasession/#actions-model)はaction sourceをplatformまたはuser-agent UI surfaceと定義するが、page callbackの `MediaSessionActionDetails`にsourceを公開しない。Control Center、lock screen、headset、keyboard media key、browser chromeを区別できない。
   - 一部browser / OSは電話着信などのsystem interruptionをpause actionとしてdispatchしうる。playerの明示操作だったと断定できない。
-- 決定: 新規G-041 / S-430の1箱として、「Control Centerを使う」ではなく「page外のMedia Session pause actionを受ける」問題へ再設計する。native video playerのcontrols / pause eventは判定に使わない。
+- 決定: 新規G-041 / S-430-B01として、「Control Centerを使う」ではなく「page外のMedia Session pause actionを受ける」問題へ再設計する。native video playerのcontrols / pause eventは判定に使わない。2026-07-24のDR-065対話で、Audio Sessionの実interruptionと復帰を扱うB02を同じstageへ追加承認した。
 
 #### 外側のpause案
 
@@ -615,8 +620,8 @@ memory-only案では、Dedicated Worker内でECDSA P-256鍵pairを `extractable:
 8. reset / 離脱時はaudioをpauseし、action handlersへ`null`を設定し、metadataとplaybackStateを戻し、生成Blob URLをrevokeする。再入場時は新しいsessionから再挑戦する。
 
 - 既存との差: S-350-B03はpage内のnative video controlsでplay後の`pause` eventを観測する。S-430はcontrolsなしaudioに対してMedia Session action handlerが呼ばれた事実を観測し、media element eventだけでは開かない。
-- 現行コードとの差: G-041 / S-430、generated loop audio、Media Session handler、external controls用metadataは未実装。
-- 技術スパイク: Windows / macOS / iOS / Androidのlock screen、notification / control surface、keyboard / headset、browser media UIでpause handler、background playback、system interruption、cleanupを確認する。
+- 現行コードとの差: G-041 / S-430-B01、generated loop audio、Media Session handler、external controls用metadataは実装済みで人手確認待ち。DR-065のB02は未実装。
+- 技術スパイク: B01はWindows / macOS / iOS / Androidのlock screen、notification / control surface、keyboard / headset、browser media UIでpause handler、background playback、system interruption、cleanupを確認する。B02は対応Safari / WebKit環境を中心に、`active → interrupted → active`、再生復帰、type reset、B01とのevent分離を確認する。
 
 ## 現在の相談
 
@@ -822,6 +827,7 @@ memory-only案では、Dedicated Worker内でECDSA P-256鍵pairを `extractable:
 - S-130はfileをdiskへ書き出して後で再投入、S-440は`.busybox`をOSから開いてPWAをlaunchする問題。本案はdiskへ保存せず、継続中のpointer dragが2つのtop-level context間でFileを運ぶ点で分担する。
 - Desktopの現行Chrome、Edge、Firefox、Safariで、script生成Fileがwindow境界を越えて`drop`へ残るかをPoCする。成立しないbrowserへtext payloadやuploadによる代替clearは設けない。
 - 技術根拠: [`DataTransferItemList.add()`](https://developer.mozilla.org/en-US/docs/Web/API/DataTransferItemList/add)はFile項目を追加でき、drag dataは原則`dragstart`でだけ変更し、`drop`で読み出す。
+- 2026-07-26追記: DR-105 Storage Access APIの相談から派生したcross-origin iframe画像D&DをS-510-B02へ追加する。外部静的originのiframe内に置いたGit管理済み透明PNG 3枚を親Documentの現像台へdragし、実`drop`の`text/uri-list`、layer ID、current iframe payloadが一致した時だけ重ねる。B01のtop-level window間File転送は変更せず、B02はiframe / parent境界と画像URL itemを分担する。
 
 ### BB-009 近接センサーを覆う
 
@@ -946,12 +952,12 @@ memory-only案では、Dedicated Worker内でECDSA P-256鍵pairを `extractable:
 | 14 | 63 | 通知からinline返信 | 標準NotificationActionに文字入力payloadがなく、代替案はS-410 / S-420と重複 | 取りやめ |
 | 15 | 64 | 指定時刻の通知から復帰 | backendを用意しないためserver-scheduled Pushは不採用。client alarmも成立しない | 取りやめ |
 | 16 | 69 | 約25分background | S-040へ2秒B01とmonotonicな25分B02を配置 | 採用・S-040拡張待ち |
-| 17 | 70 | Control Centerから音声停止 | native playerではなくMedia Sessionのexternal pause actionを観測 | 採用・S-430技術スパイク待ち |
+| 17 | 70 | Control Centerから音声停止 | B01はnative playerではなくMedia Sessionのexternal pause actionを観測。DR-065のB02はAudio Sessionの実interruptionと復帰を追加 | B01実装済み・B02技術スパイク待ち |
 | 18 | 26 | home画面上の位置から起動 | icon座標は廃止し、manifest shortcut専用URLをLaunchQueueで受けるS-310-B02へ置換 | 採用・S-310拡張待ち |
 | 19 | 27 | OS文字サイズ | text-scale meta / preferred-text-scaleを小・標準・大・特大の4箱へ対応 | 採用・S-480技術スパイク待ち |
 | 20 | 79 | iOS Spotlight検索 | Core Spotlightはnative限定。Web indexing結果からの遷移sourceも証明できない | 取りやめ |
 | 21 | 80 | OS screenshotへQRを埋める | 元機構は取りやめ。表示と異なるClipboard内容のCaesar暗号案は独立S-500の1箱へ採用 | 元機構取りやめ・S-500計画 |
-| 22 | 86 | iMessage stickerのアプリ間D&D | installed PWAから通常browserへ生成PNG FileをdragするS-510の1箱 | 採用・S-510技術スパイク待ち |
+| 22 | 86 | iMessage stickerのアプリ間D&D | B01はinstalled PWAから通常browserへ生成PNG Fileをdragする。DR-105派生B02はcross-origin iframeから親へ透明PNG 3枚をdragする | B01採用済み。B02追加承認・S-510技術スパイク待ち |
 | 23 | 9 | proximity sensorを覆う | 2026 Working DraftのProximitySensorで実far→nearを読むLabs 1箱 | 採用・S-520技術スパイク待ち |
 | 24 | 31 | 指定語を発話 | `SpeechRecognition`で`busybox`を認識し、S-490の鍵語を声で再利用する1箱 | 採用・S-580技術スパイク待ち |
 | 25 | 33–36 | 出発地点から一定距離移動 | accuracy差引後の5m・25m・100m。開始anchorだけをsession保存しsleep / discard後に再開 | 採用・S-590技術スパイク待ち |

@@ -201,18 +201,6 @@ export const stageDefinitions = {
     probe: () => "available",
     component: lazy(() => import("../stages/S-220")),
   },
-  "S-230": {
-    stage: stageById["S-230"],
-    probe: () =>
-      safeCapabilityProbe(() =>
-        document.pictureInPictureEnabled &&
-        "requestPictureInPicture" in HTMLVideoElement.prototype &&
-        "captureStream" in HTMLCanvasElement.prototype
-          ? "available"
-          : "unsupported",
-      ),
-    component: lazy(() => import("../stages/S-230")),
-  },
   "S-240": {
     stage: stageById["S-240"],
     probe: () =>
@@ -240,14 +228,6 @@ export const stageDefinitions = {
           : "unsupported",
       ),
     component: lazy(() => import("../stages/S-260")),
-  },
-  "S-270": {
-    stage: stageById["S-270"],
-    probe: () =>
-      safeCapabilityProbe(() =>
-        isSecureContext && "gpu" in navigator ? "available" : "unsupported",
-      ),
-    component: lazy(() => import("../stages/S-270")),
   },
   "S-280": {
     stage: stageById["S-280"],
@@ -533,5 +513,78 @@ export const stageDefinitions = {
           : "unsupported",
       ),
     component: lazy(() => import("../stages/S-600")),
+  },
+  "S-610": {
+    stage: stageById["S-610"],
+    probe: () =>
+      safeCapabilityProbe(() =>
+        "HTMLDialogElement" in window ? "available" : "unsupported",
+      ),
+    component: lazy(() => import("../stages/S-610")),
+  },
+  "S-620": {
+    stage: stageById["S-620"],
+    probe: () =>
+      safeCapabilityProbe(() =>
+        "FontFace" in window && "CSS" in window ? "available" : "unsupported",
+      ),
+    component: lazy(() => import("../stages/S-620")),
+  },
+  "S-640": {
+    stage: stageById["S-640"],
+    probe: () =>
+      safeCapabilityProbe(() =>
+        "TextDecoder" in window ? "available" : "unsupported",
+      ),
+    component: lazy(() => import("../stages/S-640")),
+  },
+  "S-650": {
+    stage: stageById["S-650"],
+    probe: () =>
+      safeCapabilityProbe(() =>
+        "permissions" in navigator ? "permission-required" : "unsupported",
+      ),
+    component: lazy(() => import("../stages/S-650")),
+  },
+  "S-660": {
+    stage: stageById["S-660"],
+    probe: () =>
+      safeCapabilityProbe(() =>
+        window.PressureObserver?.knownSources.includes("cpu")
+          ? "available"
+          : "unsupported",
+      ),
+    component: lazy(() => import("../stages/S-660")),
+  },
+  "S-670": {
+    stage: stageById["S-670"],
+    probe: () => "available",
+    component: lazy(() => import("../stages/S-670")),
+  },
+  "S-710": {
+    stage: stageById["S-710"],
+    probe: () =>
+      safeCapabilityProbe(() =>
+        "MediaRecorder" in window && "HTMLVideoElement" in window
+          ? "available"
+          : "unsupported",
+      ),
+    component: lazy(() => import("../stages/S-710")),
+  },
+  "S-720": {
+    stage: stageById["S-720"],
+    probe: () => "available",
+    component: lazy(() => import("../stages/S-720")),
+  },
+  "S-810": {
+    stage: stageById["S-810"],
+    probe: () =>
+      safeCapabilityProbe(() =>
+        "onresize" in HTMLVideoElement.prototype &&
+        "requestVideoFrameCallback" in HTMLVideoElement.prototype
+          ? "available"
+          : "unsupported",
+      ),
+    component: lazy(() => import("../stages/S-810")),
   },
 } satisfies Readonly<Record<StageId, StageRegistration>>;

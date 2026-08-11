@@ -93,6 +93,34 @@ interface Navigator {
   readonly windowControlsOverlay?: WindowControlsOverlay;
 }
 
+type PressureState = "nominal" | "fair" | "serious" | "critical";
+
+interface PressureRecord {
+  readonly source: "cpu" | string;
+  readonly state: PressureState;
+  readonly time: DOMHighResTimeStamp;
+}
+
+interface PressureObserverOptions {
+  readonly sampleInterval?: number;
+}
+
+declare class PressureObserver extends EventTarget {
+  static readonly knownSources: readonly string[];
+  constructor(
+    callback: (
+      records: readonly PressureRecord[],
+      observer: PressureObserver,
+    ) => void,
+  );
+  observe(source: "cpu", options?: PressureObserverOptions): Promise<void>;
+  disconnect(): void;
+}
+
+interface Window {
+  readonly PressureObserver?: typeof PressureObserver;
+}
+
 interface SpeechRecognitionResultAlternative {
   readonly transcript: string;
   readonly confidence: number;

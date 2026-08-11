@@ -1,5 +1,7 @@
 # 実装計画
 
+> この文書は初期実装の長期計画・運用履歴であり、現在の作業順や箱の正本ではない。現在の残問題・確認順は[現状・残問題・人手確認への引継ぎ](./current-status-and-handoff.md)、現行状態は[ステージ実装状況](./stage-implementation-status.md)を使う。
+
 ## 目的
 
 Busyboxを、計画だけの試作品ではなく、GitHub Pages上で日英対応・ローカル進捗・PWA・任意のGoogle Driveバックアップまで一通り利用できる状態へ進める。
@@ -280,12 +282,12 @@ Google連携なしの体験を維持したまま、ユーザー自身のDriveへ
 
 ### 目的
 
-ギミックメモG-001〜G-059を実装済みまたは合意済み計画へ対応付け、API名だけが異なる重複問題を増やさない。個々の対応は[ギミック実装カバレッジ計画](./gimmick-coverage-plan.md)、相談完了後の件数・依存関係・実装順は[ステージ展開計画](./stage-rollout-plan.md)を正とする。
+ギミックメモG-001〜G-080を実装済みまたは合意済み計画へ対応付け、API名だけが異なる重複問題を増やさない。個々の対応は[ギミック実装カバレッジ計画](./gimmick-coverage-plan.md)、現行の解法は[現行ステージ解法仕様](./stage-walkthroughs.md)、実装件数は[ステージ実装状況](./stage-implementation-status.md)を正とする。
 
 ### 実装順
 
 1. 機械可読API台帳、stage manifest、計画と実装の件数検証
-2. mind map、round通信、PWA route、Service Worker inboxの横断基盤
+2. mind map、round通信、PWA route、Service Worker inbox、生成済みmedia asset検証の横断基盤
 3. 既存ステージ再設計と権限不要のCore追加
 4. Screen Capture、WebRTC、複数tab / windowの技術スパイクと実装
 5. manifest、installed PWA、通知、起動面の一括互換性バッチ
@@ -296,7 +298,9 @@ Google連携なしの体験を維持したまま、ユーザー自身のDriveへ
 
 ### 完了条件
 
-- G-001〜G-059が実装ステージ、統合先、または理由付き取りやめへ一意に対応している
+- G-001〜G-080が実装ステージ、統合先、または理由付き取りやめへ一意に対応している
+- 事前生成可能なmedia fixtureはsource、生成手順、codec / 寸法 / 内容などの意味検証とともにGit管理され、runtime生成へ退避していない
+- 同期・リアルタイム性が本質でない合言葉は固定し、copy可能なら説明的な`BUSYBOX{...}`、転記が必要なら最大2語になっている
 - 全追加ステージが共通箱、入場再挑戦、累積進捗へ参加する
 - 非対応・拒否・取消・切断が他ステージを壊さない
 - 自動確認できない条件が人手台帳へ残っている

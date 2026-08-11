@@ -10,8 +10,8 @@ describe("Busybox stage registry", () => {
   });
 
   it("keeps documented problem-box counts aligned", () => {
-    expect(stageCatalogue).toHaveLength(60);
-    expect(totalBoxCount).toBe(97);
+    expect(stageCatalogue).toHaveLength(67);
+    expect(totalBoxCount).toBe(154);
     for (const stage of stageCatalogue) {
       const problemIds = stage.problems.map((problem) => problem.id);
       expect(new Set(problemIds).size).toBe(problemIds.length);

@@ -130,6 +130,10 @@ describe("Busybox service worker strategy", () => {
       "./index.html",
       "./manifest.webmanifest",
       "./icon.svg",
+      "./licenses/index.html",
+      "./licenses/jsqr-Apache-2.0.txt",
+      "./licenses/mediabunny-MPL-2.0.txt",
+      "./licenses/unifont-OFL-1.1.txt",
     ]);
     expect(worker.assetCache.addAll).toHaveBeenCalledWith([
       "https://example.test/repo/assets/busybox-AbCdEf12.js",

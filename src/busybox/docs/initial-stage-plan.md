@@ -19,10 +19,10 @@
 | S-000 | 最初の箱 | 1 | HTML activation / click | Webページ基盤 | 必須。クリックまたはタップだけで開き、箱のルールを教える | H-001, H-002, H-003, H-020 |
 | S-010 | 三つの手 | 3 | Pointer Events `pointerType` | Webページ基盤 + 端末 | 必須候補。mouse、touch、penを別箱にし、pen箱の公開は対応実機での合格後とする | H-004, H-020, H-024 |
 | S-020 | 枠に合わせる | 1 | CSSOM View / Resize Observer | Webページ基盤 | 必須候補。ブラウザ窓またはviewport自体を入力にする | H-001, H-002, H-003 |
-| S-030 | 選ばれた範囲 | 1 | Selection / Custom Highlight | Webページ基盤 | 必須候補。文字入力ではなく選択範囲を答えにする | H-001, H-003, H-020 |
+| S-030 | 選ばれた範囲 | 3 | Selection / Custom Highlight | Webページ基盤 | B01の純Selectionは実装済み。B02は非連続Rangeを一つのHighlightへ蓄積し、B03は`highlightsFromPoint()`で重なったHighlight集合を触る | H-001, H-002, H-003, H-004, H-020, H-025 |
 | S-040 | 見ない時間 | 2 | Page Visibility / High Resolution Time | 保存 + 遷移 | 2秒と25分の連続hiddenを別箱にする。復帰時のmonotonic elapsedだけを判定する | H-013, H-022, H-025 |
 | S-050 | 二つの窓 | 1 | Broadcast Channel | 遷移 | 必須候補。2タブが同時に異なる役割を持つ | H-013 |
-| S-060 | 帰ってくる箱 | 1 | IndexedDB | 保存 | 必須候補。閉じて再訪した事実を使う | H-001, H-018 |
+| S-060 | 帰ってくる箱 | 2 | IndexedDB / Beacon / Service Worker | 保存 + 遷移 | B01は閉じて再訪した事実を使う。B02はoffline中の明示投函を実`sendBeacon()`でlocal Service Workerへ渡し、full-document navigation後のreceiptで開く | H-001, H-018, H-021, H-048 |
 | S-070 | 通信のない返事 | 1 | Service Worker / Cache | 保存 + 遷移 | 必須候補。オフラインを失敗ではなく条件にする | H-005, H-021, H-022 |
 | S-080 | 別の入口 | 1 | PWA display-mode | 保存 + 遷移 + 環境依存 | 必須候補。通常タブとインストール起動を区別する | H-005, H-023 |
 | S-090 | 外からの呼び声 | 1 | Notifications / notification click | 保存 + 遷移 | 条件付き。通知から復帰した経路を使う | H-005, H-006, H-023 |

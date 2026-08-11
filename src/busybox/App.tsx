@@ -271,6 +271,9 @@ export function App() {
               </div>
             )}
             <p className="privacy-note">{copy.privacy}</p>
+            <div className="settings-legal-links">
+              <a href="./licenses/index.html">{copy.thirdPartyLicenses}</a>
+            </div>
           </section>
         )}
 

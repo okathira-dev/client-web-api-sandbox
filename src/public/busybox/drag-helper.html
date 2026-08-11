@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Busybox image layers</title>
+<style>
+  body { margin: 0; background: #111827; color: #f8fafc; font: 14px system-ui, sans-serif; }
+  main { display: flex; gap: 12px; padding: 12px; flex-wrap: wrap; }
+  img { width: 120px; height: 80px; object-fit: contain; border: 1px solid #64748b; background: #0f172a; cursor: grab; }
+</style>
+</head>
+<body>
+  <main>
+    <img draggable="true" data-layer="A" src="./drag-layer-a.png" alt="layer A" width="120" height="80">
+    <img draggable="true" data-layer="B" src="./drag-layer-b.png" alt="layer B" width="120" height="80">
+    <img draggable="true" data-layer="C" src="./drag-layer-c.png" alt="layer C" width="120" height="80">
+  </main>
+<script>
+  const round = new URL(location.href).searchParams.get("round") || "";
+  for (const image of document.querySelectorAll("img[data-layer]")) {
+    image.addEventListener("dragstart", (event) => {
+      const source = new URL(image.getAttribute("src"), location.href).href;
+      event.dataTransfer.setData("text/uri-list", source);
+      event.dataTransfer.setData("text/plain", `busybox-round:${round}:${image.dataset.layer}`);
+      event.dataTransfer.effectAllowed = "copy";
+    });
+  }
+</script>
+</body>
+</html>

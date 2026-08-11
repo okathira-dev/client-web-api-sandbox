@@ -9,9 +9,9 @@ _A new kind of puzzle game where the browser itself is the key._
 ## 現在の状態
 
 Viteのマルチページ構成へ独立した入口を持つReactアプリとして実装中。
-現在はアプリシェル、日英表示、ステージ台帳、基本ナビゲーション、IndexedDB進捗スキーマ、進捗の書き出し・初期化、共通ステージランタイム、入場ごとに再挑戦できる全97問題箱、全60ステージ、mind map型ステージ一覧、Busybox scope限定のPWA、任意のGoogle Driveバックアップを備える。
+現在はアプリシェル、日英表示、ステージ台帳、基本ナビゲーション、IndexedDB進捗スキーマ、進捗の書き出し・初期化、共通ステージランタイム、入場ごとに再挑戦できる67ステージ、mind map型ステージ一覧、Busybox scope限定のPWA、任意のGoogle Driveバックアップを備える。
 
-2026-07-20時点では、相談で採用した問題をひととおりコード化した段階であり、各種ギミックの実ブラウザ・実機確認はまだ完了していない。画面構成、一覧、ステージ画面、ギミックは人手確認を受けて今後も変更する。[現状メモ・人手確認への引継ぎ](./docs/current-status-and-handoff.md)を参照する。
+2026-08-11時点では、現環境で確認できた範囲の実装と自動検証を終え、実ブラウザ・実機での人手確認とUI品質確認を進める段階である。残問題、確認順、旧資料の扱いは[現状・残問題・人手確認への引継ぎ](./docs/current-status-and-handoff.md)を参照する。
 
 進捗スキーマはversion 1。箱の解決記録は後退させず、同じスキーマの未知フィールドを保持する。将来versionや破損データは自動上書きせず、設定画面からの明示的な初期化を待つ。
 
@@ -21,6 +21,8 @@ Viteのマルチページ構成へ独立した入口を持つReactアプリと�
 - `StageSpec` と `ProblemSpec` は静的・不変な台帳、`ProblemHandle` は今回の入場だけの状態と解決操作を表す。
 - 日英のステージラベルは表示専用で、ファイル名、変数名、URL、保存ID、テスト名には使わない。
 - 共通処理は複数ステージで同じ意味とライフサイクルを持つ場合だけ `stages/shared/` へ置く。
+- 事前生成可能な動画・音声・画像は生成手順と形式・寸法・内容などの意味検証を添えてGit管理し、player入力やlive同期に依存する媒体だけを実行時生成する。Gitのコミットが固定assetの版管理を担い、ゲーム判定そのものではないSHA一覧は別管理しない。
+- 同期・リアルタイム性が本質でない合言葉は固定し、copy可能なら長い`BUSYBOX{...}`、転記が必要なら最大2語にする。
 - 各ステージのJSDocにギミック、使用API、成功条件、権限・プライバシー、cleanup、人手確認IDを記録する。
 
 開発サーバー起動後、`/busybox/index.html` から開く。公開ビルドでも相対パスだけで読み込めるため、GitHub Pagesのリポジトリ配下パスに対応する。
@@ -29,15 +31,19 @@ Viteのマルチページ構成へ独立した入口を持つReactアプリと�
 
 | 文書 | 役割 |
 | --- | --- |
+| [現行ステージ解法仕様](./docs/stage-walkthroughs.md) | レビュー済みステージの現行体験、解法、negative caseを定義する |
 | [現状メモ・人手確認への引継ぎ](./docs/current-status-and-handoff.md) | 一通りのコード化後に未確認の範囲、確認順、変更時の留意点を共有する |
 | [企画・プロダクト仕様](./docs/product-spec.md) | 体験、対象、スコープ、日英コピーを定義する |
 | [アーキテクチャ判断](./docs/architecture-decisions.md) | ローカル保存、Drive連携、配信、ステージ分離の方針を定義する |
-| [実装計画](./docs/implementation-plan.md) | フェーズ、完了条件、コミット方針を定義する |
-| [ステージ展開計画](./docs/stage-rollout-plan.md) | 相談完了後の計画件数、技術PoC、依存関係、実装ウェーブを定義する |
+| [実装計画](./docs/implementation-plan.md) | 初期実装の履歴。現在の作業順は現状メモを正とする |
+| [ステージ展開計画](./docs/stage-rollout-plan.md) | 実装前の履歴スナップショット。現行の箱ID・解法の正本にしない |
+| [実装PoCマスタープラン](./docs/implementation-poc-master-plan.md) | PoC計画の履歴。未実装案の現行計画ではない |
+| [実装PoC実施記録](./docs/poc-results.md) | PoCの証跡。現行の実装状態はステージ実装状況と現状メモを正とする |
 | [API調査・採用方針](./docs/api-research-and-adoption.md) | Web APIの母集団、採否、再調査方法を定義する |
+| [Deep Research元案・暫定採否台帳](./docs/deep-research-idea-disposition-ledger.md) | 非規範の元案・対話履歴。最後の決定と現行実装を優先する |
 | [Blackbox機構監査・対話決定台帳](./docs/blackbox-mechanism-ledger.md) | 参考機構のWeb向け再設計、29/29件の採否、残る技術PoCを記録する |
-| [ギミックメモ台帳](./docs/gimmick-backlog.md) | 重複を避けながらステージ案を育てる |
-| [ギミック実装カバレッジ計画](./docs/gimmick-coverage-plan.md) | G-001〜G-059と実装・計画ステージ、現行API確認、完了条件を対応付ける |
+| [ギミックメモ台帳](./docs/gimmick-backlog.md) | JSDoc移行前の設計履歴。現行解法の正本にしない |
+| [ギミック実装カバレッジ計画](./docs/gimmick-coverage-plan.md) | JSDoc移行前の対応履歴。現行解法の正本にしない |
 | [初期ステージ計画](./docs/initial-stage-plan.md) | 初期候補、問題箱数、採用ゲート、人手確認を対応付ける |
 | [ステージ実装状況](./docs/stage-implementation-status.md) | コード化、自動確認、人手確認待ちを区別する |
 | [ステージ仕様テンプレート](./docs/stage-spec-template.md) | 各ステージの意図、権限、後片付け、検証を同じ形式で記録する |

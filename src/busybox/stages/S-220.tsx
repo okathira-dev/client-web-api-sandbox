@@ -25,7 +25,9 @@ export default function S220Stage(props: StageComponentProps) {
   const problem = props.problem("S-220-B01");
   const backForward = props.problem("S-220-B02");
   const reload = props.problem("S-220-B03");
+  const disposal = props.problem("S-220-B04");
   const [depth, setDepth] = useState(() => currentTrail()?.depth ?? 0);
+  const [navigationStatus, setNavigationStatus] = useState("");
 
   useEffect(() => {
     const navigation = performance.getEntriesByType("navigation")[0] as
@@ -45,6 +47,48 @@ export default function S220Stage(props: StageComponentProps) {
     }
     return () => window.removeEventListener("pageshow", pageShown);
   }, [backForward.solve, problem.solve, reload.solve]);
+
+  useEffect(() => {
+    const navigation = (window as unknown as { navigation?: NavigationLike })
+      .navigation;
+    const entry = navigation?.currentEntry;
+    if (!navigation || !entry) {
+      setNavigationStatus("Navigation API unavailable");
+      return;
+    }
+    let branchCreated = false;
+    const handleNavigate = () => {
+      branchCreated = true;
+      setNavigationStatus("native navigate event");
+    };
+    const handleEntryChange = () => {
+      setNavigationStatus(
+        `currententrychange; canGoForward=${String(navigation.canGoForward)}`,
+      );
+    };
+    const handleDispose = () => {
+      if (!branchCreated) return;
+      disposal.solve(["navigation:entry-dispose"]);
+      setNavigationStatus("current entry disposed");
+    };
+    navigation.addEventListener("navigate", handleNavigate);
+    navigation.addEventListener("currententrychange", handleEntryChange);
+    entry.addEventListener("dispose", handleDispose);
+    return () => {
+      navigation.removeEventListener("navigate", handleNavigate);
+      navigation.removeEventListener("currententrychange", handleEntryChange);
+      entry.removeEventListener("dispose", handleDispose);
+    };
+  }, [disposal.solve]);
+
+  const createDisposableBranch = () => {
+    const navigation = (window as unknown as { navigation?: NavigationLike })
+      .navigation;
+    if (!navigation) return;
+    const url = new URL(window.location.href);
+    url.searchParams.set("branch", crypto.randomUUID());
+    void navigation.navigate(url.href);
+  };
 
   const buildTrail = () => {
     const baseUrl = new URL(window.location.href);
@@ -83,11 +127,32 @@ export default function S220Stage(props: StageComponentProps) {
             : "Use browser Back three times"
           : `${depth} / 3`}
       </p>
+      <button
+        type="button"
+        className="stage-action"
+        onClick={createDisposableBranch}
+      >
+        {props.locale === "ja" ? "分岐を作る" : "Create a branch"}
+      </button>
+      <p className="interaction-status" role="status">
+        {navigationStatus}
+      </p>
       <div className="problem-row">
         <ProblemGiftBox problem={problem} locale={props.locale} />
         <ProblemGiftBox problem={backForward} locale={props.locale} />
         <ProblemGiftBox problem={reload} locale={props.locale} />
+        <ProblemGiftBox problem={disposal} locale={props.locale} />
       </div>
     </div>
   );
+}
+
+interface NavigationEntryLike extends EventTarget {
+  readonly key: string;
+}
+
+interface NavigationLike extends EventTarget {
+  readonly canGoForward: boolean;
+  readonly currentEntry: NavigationEntryLike | null;
+  navigate(url: string): Promise<unknown>;
 }

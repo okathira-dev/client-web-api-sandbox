@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "qrVersion": 2,
+  "frameRate": 12,
+  "frameCount": 24,
+  "size": "360x360",
+  "answers": {
+    "t1": "BUSYBOX{swap_halves}",
+    "t2": "BUSYBOX{merge_frames}",
+    "alpha": "BUSYBOX{odd_even_alpha}",
+    "beta": "BUSYBOX{swap_route_beta}"
+  },
+  "routes": {
+    "source-t1": ["T1"],
+    "source-t2": ["T2"],
+    "source-t3": {
+      "alpha": ["T3", "T2"],
+      "beta": ["T1", "T3", "T2", "T1"]
+    }
+  },
+  "assets": [
+    {
+      "file": "source-t1.webm"
+    },
+    {
+      "file": "source-t2.webm"
+    },
+    {
+      "file": "source-t3.webm"
+    },
+    {
+      "file": "t3-alpha-intermediate.webm"
+    },
+    {
+      "file": "t3-beta-intermediate.webm"
+    },
+    {
+      "file": "recovered-t1.webm"
+    },
+    {
+      "file": "recovered-t2.webm"
+    },
+    {
+      "file": "recovered-alpha.webm"
+    },
+    {
+      "file": "recovered-beta.webm"
+    }
+  ]
+}

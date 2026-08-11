@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Busybox PoC probes</title>
+    <style>
+      body { background: #111; color: #eee; font: 16px/1.5 system-ui, sans-serif; margin: 2rem; }
+      main { max-width: 66rem; margin: auto; }
+      button { font: inherit; margin: .25rem .25rem .25rem 0; padding: .4rem .65rem; }
+      table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+      th, td { border: 1px solid #555; padding: .45rem; text-align: left; vertical-align: top; }
+      .available { color: #9f9; } .unsupported { color: #f99; } .unknown { color: #ffdb75; }
+      #probe-output { white-space: pre-wrap; background: #1b1b1b; padding: 1rem; min-height: 5rem; }
+      #highlight-fixture { max-width: 36rem; margin: 1rem 0; }
+      .poc-accordion { border: 1px solid #555; margin: .75rem 0; padding: 0 1rem 1rem; }
+      .poc-accordion > summary { cursor: pointer; font-weight: 700; margin: 0 -1rem; padding: .75rem 1rem; }
+      .poc-accordion[open] > summary { border-bottom: 1px solid #555; margin-bottom: 1rem; }
+      .encoding-labels { display: flex; flex-wrap: wrap; gap: .35rem; list-style: none; padding: 0; }
+      .encoding-labels li { border: 1px solid #666; border-radius: .25rem; padding: .1rem .4rem; }
+      .encoding-question { border: 1px solid #555; margin: 1rem 0; padding: 1rem; }
+      .encoding-question h3 { margin: 0 0 .5rem; }
+      .encoding-bytes, .encoding-reference { background: #1b1b1b; display: block; overflow-wrap: anywhere; padding: .75rem; }
+      .encoding-answer { border-left: .3rem solid #9f9; margin: 1rem 0; padding: .5rem .75rem; }
+      .encoding-results { overflow-x: auto; }
+      .encoding-results table { min-width: 34rem; }
+      .encoding-match { color: #9f9; font-weight: 700; }
+      .encoding-no-match { color: #aaa; }
+      @font-face { font-family: "Busybox Unifont"; src: url("../fixtures/unicode/fonts/unifont-17.0.05-bmp-subset.woff2") format("woff2"); font-display: block; unicode-range: U+0000-FFFF; }
+      @font-face { font-family: "Busybox Unifont"; src: url("../fixtures/unicode/fonts/unifont-17.0.05-upper-subset.woff2") format("woff2"); font-display: block; unicode-range: U+10000-1FFFF; }
+      .unicode-preview { display: grid; gap: .75rem; grid-template-columns: repeat(auto-fit, minmax(min(25rem, 100%), 1fr)); }
+      .unicode-question { border: 1px solid #555; padding: 1rem; }
+      .unicode-question h3 { margin-top: 0; }
+      .unicode-expression { align-items: center; background: #1b1b1b; display: flex; font: 2rem/1.35 "Busybox Unifont", sans-serif; gap: .7rem; justify-content: center; min-height: 5rem; overflow-wrap: anywhere; padding: .75rem; unicode-bidi: isolate; }
+      .unicode-expression-mayan { min-height: 10rem; }
+      .mayan-operand { display: inline-block; letter-spacing: .1rem; line-height: 1; text-align: center; text-orientation: upright; writing-mode: vertical-rl; }
+      .media-probe { border: 1px solid #555; margin: 1rem 0; padding: 1rem; }
+      .media-probe h3 { margin-top: 0; }
+      .media-probe video { background: #000; display: block; margin: .75rem 0; max-height: 22rem; max-width: 100%; width: 40rem; }
+      .media-reels { display: grid; gap: .75rem; grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr)); }
+      .media-reels video { width: 100%; }
+      .media-status { background: #1b1b1b; display: block; min-height: 2rem; overflow-wrap: anywhere; padding: .65rem; }
+      .review-summary { display: grid; gap: .75rem; grid-template-columns: repeat(auto-fit, minmax(min(17rem, 100%), 1fr)); margin: 1rem 0; }
+      .review-card { border: 1px solid #555; padding: .75rem; }
+      .review-card h3 { margin-top: 0; }
+      .review-card ul { margin-bottom: 0; padding-left: 1.25rem; }
+      .media-checks { display: grid; gap: .5rem; list-style: none; padding: 0; }
+      .media-check { border-left: .3rem solid #ffdb75; padding: .45rem .65rem; }
+      .media-check[data-state="passed"] { border-color: #9f9; }
+      .media-check[data-state="unavailable"] { border-color: #f99; }
+      .media-log { background: #1b1b1b; display: block; max-height: 12rem; min-height: 4rem; overflow: auto; padding: .65rem; white-space: pre-wrap; }
+      .media-session-audio { display: none; }
+      .video-recovery-grid { display: grid; gap: .75rem; grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr)); }
+      .video-recovery-card { border: 1px solid #555; padding: .75rem; }
+      .video-recovery-card h4 { margin-top: 0; }
+      .video-recovery-card video { background: #000; max-width: 100%; width: 22rem; }
+      .video-recovery-runtime { border: 1px solid #555; margin: 1rem 0; padding: 1rem; }
+      .video-recovery-runtime canvas { background: #000; display: block; image-rendering: pixelated; margin: .75rem 0; max-width: 100%; width: 22rem; }
+      ::highlight(poc-first) { background: #1e88e5; color: white; }
+      ::highlight(poc-second) { background: #f4511e; color: white; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Busybox implementation PoC probes</h1>
+      <p>開発者用の隔離ページ。製品ステージには含めない。権限を要求する操作は明示ボタンからのみ実行する。</p>
+      <details class="poc-accordion" open>
+        <summary>PoC APIの存在確認一覧</summary>
+        <table>
+          <caption>現在のブラウザにおけるPoC APIの存在確認</caption>
+          <thead><tr><th>PoC</th><th>API / path</th><th>このブラウザ</th></tr></thead>
+          <tbody id="capability-results" aria-busy="true"></tbody>
+        </table>
+      </details>
+      <details class="poc-accordion" open>
+        <summary>残PoCの確認キュー</summary>
+        <p>このページは、実際のブラウザイベントを確認できる範囲だけをまとめる。permission、外部機器、OS設定、account、実SMSなどをここで擬似的に成功させない。</p>
+        <div class="review-summary" id="manual-review-results" aria-busy="true"></div>
+      </details>
+      <details class="poc-accordion" name="poc-probe">
+        <summary>最後に実施する外部条件PoC（成功は記録しない）</summary>
+        <p>ここは準備物と実機確認の到達条件だけをまとめる。必要な機器・account・permissionを用意するまでは実行しない。</p>
+        <table>
+          <caption>外部条件PoCの最終確認項目</caption>
+          <thead><tr><th>PoC</th><th>準備物</th><th>確認する実event</th></tr></thead>
+          <tbody>
+            <tr><td>002</td><td>Service Worker・offline sender / receiver</td><td>server不在時に1回だけIDB receipt</td></tr>
+            <tr><td>007 / 012</td><td>Safari Audio Session / AndroidかChromeOS回線</td><td>interrupted復帰 / 実connection.type</td></tr>
+            <tr><td>009</td><td>installed PWAと別origin iframe</td><td>境界を越えたDataTransfer</td></tr>
+            <tr><td>019 / 020 / 023</td><td>receiver画面 / XR機器</td><td>remote / presentation接続、XR select ray</td></tr>
+            <tr><td>024</td><td>installed PWA・公開HTTPS・長期観測</td><td>client 0件でperiodicsync event</td></tr>
+            <tr><td>025 / 026</td><td>SMS送信端末 / Android contact</td><td>OTP専用autofill / Contact Picker property</td></tr>
+            <tr><td>027 / 028</td><td>公開origin・provider RP登録 / payment handler</td><td>FedCM専用result / PaymentRequest lifecycle</td></tr>
+            <tr><td>029</td><td>対応desktop Chromium・専用OTFをOS user install</td><td>限定font再発見とBlob検証</td></tr>
+          </tbody>
+        </table>
+      </details>
+      <h2>安全な最小試験</h2>
+      <details class="poc-accordion" name="poc-probe">
+        <summary>POC-002: offline Beacon 郵便</summary>
+        <p>まずworkerを登録する。次に「投函」を押すと、native <code>sendBeacon()</code> がsame-origin POSTを送った後、full-document receiverへ遷移する。receiptはworkerだけがIndexedDBへ書く。server停止中の実行は最後の外部条件確認で行う。</p>
+        <button type="button" id="register-offline-beacon">workerを登録する</button>
+        <button type="button" id="send-offline-beacon" disabled>Beaconを投函してreceiverへ移動する</button>
+        <output class="media-status" id="offline-beacon-status" aria-live="polite">worker未登録</output>
+      </details>
+      <details class="poc-accordion" name="poc-probe">
+        <summary>共通: 安全な capability snapshot</summary>
+        <button type="button" id="run-baseline">安全な capability 詳細を読む</button>
+      </details>
+      <details class="poc-accordion" name="poc-probe">
+        <summary>POC-001: CSS Custom Highlight</summary>
+        <button type="button" id="run-highlight">Custom Highlight の Range を作る</button>
+        <p id="highlight-fixture">Alpha Bravo Charlie Delta Echo Foxtrot</p>
+      </details>
+      <details class="poc-accordion" name="poc-probe">
+        <summary>POC-003: details[name]</summary>
+        <p>二つのdisclosureをpointerまたはkeyboardで開閉する。状態遷移はnative <code>toggle</code> eventだけを記録する。</p>
+        <button type="button" id="run-details">native details の排他を試す</button>
+        <details name="poc-details"><summary>一つ目の native details</summary>alpha</details>
+        <details name="poc-details"><summary>二つ目の native details</summary>bravo</details>
+        <output class="media-status" id="details-status" aria-live="polite">toggle待ち</output>
+        <p>dialogの×、Esc、native light dismissをそれぞれ試す。page製backdrop handlerはない。</p>
+        <button type="button" id="open-dismiss-dialog">native dialogを開く</button>
+        <dialog id="poc-dismiss-dialog" aria-label="native dismiss fixture" closedby="any"><p>native dismiss fixture</p><form method="dialog"><button type="submit" value="button">×</button></form></dialog>
+        <output class="media-status" id="dialog-status" aria-live="polite">dialog未開始</output>
+      </details>
+      <details class="poc-accordion" name="poc-probe">
+        <summary>POC-004: Navigation API</summary>
+        <p>A → B → Cの後、browser BackでAへ戻りDを選ぶと、forward branchのdisposalをnative eventとして観察する。scriptによるBack操作はしない。</p>
+        <button type="button" id="run-navigation">Navigation API を読む</button>
+        <button type="button" data-navigation-entry="a">A</button>
+        <button type="button" data-navigation-entry="b">B</button>
+        <button type="button" data-navigation-entry="c">C</button>
+        <button type="button" data-navigation-entry="d">D</button>
+        <output class="media-log" id="navigation-status" aria-live="polite">navigation event待ち</output>
+      </details>
+      <details class="poc-accordion" name="poc-probe">
+        <summary>POC-005: WebGPU safe adapter lifecycle</summary>
+        <p>負荷生成やCPU fallbackは置かない。明示操作でadapter / deviceを取得し、直ちにresourceを解放する経路だけを確認する。</p>
+        <button type="button" id="run-webgpu">WebGPU adapter を安全に確認する</button>
+        <output class="media-status" id="webgpu-status" aria-live="polite">未実行</output>
+      </details>
+      <details class="poc-accordion" name="poc-probe">
+        <summary>POC-010: SpeechSynthesis sequence</summary>
+        <p>表示しない短い変換列を、一文字ずつnative speech queueへ入れる。開始・完了・cancelのみを記録する。</p>
+        <button type="button" id="run-speech">変換列を発話する</button>
+        <button type="button" id="stop-speech">発話をcancelする</button>
+        <output class="media-status" id="speech-status" aria-live="polite">未実行</output>
+      </details>
+      <details class="poc-accordion" name="poc-probe">
+        <summary>POC-014: Permissions state and cleanup</summary>
+        <p>最初はPermissionStatusだけを読む。camera / microphoneのnative requestは明示buttonでのみ行い、取得したtrackを直ちにstopする。</p>
+        <button type="button" id="run-permissions">4権限の現在状態を読む</button>
+        <button type="button" id="request-camera">camera を一度だけrequestして停止する</button>
+        <button type="button" id="request-microphone">microphone を一度だけrequestして停止する</button>
+        <output class="media-status" id="permissions-status" aria-live="polite">未実行</output>
+      </details>
+      <details class="poc-accordion" name="poc-probe">
+        <summary>POC-015: Compute Pressure passive observer</summary>
+        <p>CPU負荷を一切発生させず、実recordだけを一時表示する。virtual sourceやstubは使わない。</p>
+        <button type="button" id="start-pressure">CPU pressure observer を開始する</button>
+        <button type="button" id="stop-pressure">observer をdisconnectする</button>
+        <output class="media-status" id="pressure-status" aria-live="polite">未開始</output>
+      </details>
+      <details class="poc-accordion" name="poc-probe">
+        <summary>POC-016: Console maze</summary>
+        <p>入力やpage編集を要求しない。移動buttonを押すたびに、同じASCII盤面をConsoleへ再表示する。</p>
+        <button type="button" id="maze-north">北</button>
+        <button type="button" id="maze-west">西</button>
+        <button type="button" id="maze-south">南</button>
+        <button type="button" id="maze-east">東</button>
+        <button type="button" id="reset-maze">迷路を戻す</button>
+        <output class="media-status" id="maze-status" aria-live="polite">Consoleを開いて盤面を確認する。</output>
+      </details>
+      <details class="poc-accordion" name="poc-probe">
+        <summary>POC-018: Text Fragment traversal fixture</summary>
+        <p>同一pageへのfragment linkを押し、browserのscrollとhighlightを観察する。page scriptは到達・scroll位置を判定しない。</p>
+        <p class="fragment-links"><a href="#fragment-a" data-text-fragment="Amber trains leave at dawn">A</a> <a href="#fragment-b" data-text-fragment="Blue maps fold under rain">B</a> <a href="#fragment-c" data-text-fragment="Copper keys sleep in drawers">C</a> <a href="#fragment-d" data-text-fragment="Delta lights wait for night">D</a></p>
+        <div class="fragment-fixture">
+          <p id="fragment-a">Amber trains leave at dawn. The first marker is ordinary text in a longer document.</p>
+          <p id="fragment-b">Blue maps fold under rain. The second marker uses another unique sentence.</p>
+          <p id="fragment-c">Copper keys sleep in drawers. The third marker remains deliberately plain.</p>
+          <p id="fragment-d">Delta lights wait for night. The final marker completes this traversal fixture.</p>
+        </div>
+      </details>
+      <details class="poc-accordion" name="poc-probe">
+        <summary>POC-017: Console診断卓 candidate</summary>
+        <p>Consoleを別の計器盤にする候補。page側のswitch操作だけで、同じ観測値をplain textと<code>console.table()</code>へ出す。製品パズルの正解組はまだ固定しない。</p>
+        <button type="button" data-console-dial="north">N</button>
+        <button type="button" data-console-dial="east">E</button>
+        <button type="button" data-console-dial="south">S</button>
+        <button type="button" data-console-dial="west">W</button>
+        <button type="button" id="reset-console-diagnostics">診断卓を戻す</button>
+        <output class="media-status" id="console-diagnostics-status" aria-live="polite">Consoleを開いてcandidate Aを確認する。</output>
+      </details>
+      <details class="poc-accordion" name="poc-probe">
+        <summary>POC-006: native media履歴probe（現行箱番号ではない）</summary>
+        <section class="media-probe" aria-labelledby="media-capability-heading">
+          <h3 id="media-capability-heading">旧B04 Media Capabilities（D-141で不採用）</h3>
+          <p>候補構成の照会だけを検証する履歴probe。native解像度選択UIではなく、製品stageの箱には使わない。</p>
+          <button type="button" id="run-media-capabilities">6候補の3灯を測定する</button>
+          <table>
+            <caption>固定codec / resolution profile</caption>
+            <thead><tr><th>候補</th><th>bitrate</th><th>supported</th><th>smooth</th><th>powerEfficient</th></tr></thead>
+            <tbody id="media-capability-results" aria-busy="true"></tbody>
+          </table>
+          <output class="media-status" id="media-capability-status" aria-live="polite">未測定</output>
+        </section>
+        <section class="media-probe" aria-labelledby="media-vfr-heading">
+          <h3 id="media-vfr-heading">旧B05 VFR 24fps区間（現行S-810-B01）</h3>
+          <button type="button" id="run-media-vfr">9秒reelを再生してframe cadenceを測定する</button>
+          <video id="media-vfr" controls muted preload="metadata" aria-label="12、24、30、60fps区間を持つVFR reel">
+            <track kind="captions" src="data:text/vtt,WEBVTT" srclang="en" label="No captions" />
+          </video>
+          <output class="media-status" id="media-vfr-status" aria-live="polite">未測定</output>
+        </section>
+        <section class="media-probe" aria-labelledby="media-resolution-heading">
+          <h3 id="media-resolution-heading">旧B06 native解像度reel（D-142で不採用）</h3>
+          <button type="button" id="run-media-resolution">3 reelのnatural / frame寸法を測定する</button>
+          <div class="media-reels">
+            <video id="media-reel-low" controls muted preload="metadata" aria-label="low resolution reel"><track kind="captions" src="data:text/vtt,WEBVTT" srclang="en" label="No captions" /></video>
+            <video id="media-reel-target" controls muted preload="metadata" aria-label="target resolution reel"><track kind="captions" src="data:text/vtt,WEBVTT" srclang="en" label="No captions" /></video>
+            <video id="media-reel-high" controls muted preload="metadata" aria-label="high resolution reel"><track kind="captions" src="data:text/vtt,WEBVTT" srclang="en" label="No captions" /></video>
+          </div>
+          <output class="media-status" id="media-resolution-status" aria-live="polite">未測定</output>
+        </section>
+        <section class="media-probe" aria-labelledby="media-subtitle-heading">
+          <h3 id="media-subtitle-heading">旧B07 native字幕track（現行S-350-B05）</h3>
+          <p>native controlsの字幕menuから <code>Busybox</code> を選ぶ。custom pickerは用意しない。</p>
+          <video id="media-subtitles" controls muted preload="metadata" aria-label="Busy、Busybox、Box字幕trackを持つreel">
+            <track id="media-subtitle-track-0" kind="captions" src="../fixtures/media/assets/captions-busy.vtt" srclang="qaa" label="Busy" default />
+            <track id="media-subtitle-track-1" kind="captions" src="../fixtures/media/assets/captions-busybox.vtt" srclang="qab" label="Busybox" />
+            <track id="media-subtitle-track-2" kind="captions" src="../fixtures/media/assets/captions-box.vtt" srclang="qac" label="Box" />
+          </video>
+          <output class="media-status" id="media-subtitle-status" aria-live="polite">native字幕変更待ち</output>
+        </section>
+        <section class="media-probe" aria-labelledby="media-audio-heading">
+          <h3 id="media-audio-heading">B08 native音声track</h3>
+          <p>対応browserではnative controlsの音声menuから <code>Busybox</code> を選ぶ。非対応時の代替pickerは用意しない。</p>
+          <video id="media-audio-tracks" controls preload="metadata" aria-label="Busy、Busybox、Box音声trackを持つreel">
+            <track kind="captions" src="data:text/vtt,WEBVTT" srclang="en" label="No captions" />
+          </video>
+          <output class="media-status" id="media-audio-status" aria-live="polite">media metadata待ち</output>
+        </section>
+      </details>
+      <details class="poc-accordion" name="poc-probe" open>
+        <summary>POC-031: browser / OS media controls</summary>
+        <p>ゲーム製の再生・停止・seek・mute controlは置かない。各videoはブラウザ標準controlsから操作する。緑はこのページが実eventを受けたことを表し、ゲーム仕様の採用決定ではない。</p>
+        <section class="media-probe" aria-labelledby="native-controls-heading">
+          <h3 id="native-controls-heading">S-350-B01〜B03: native player</h3>
+          <p>videoをseek、mute、再生して少し進めてからpauseする。</p>
+          <video id="poc-native-controls" controls preload="metadata" aria-label="seek、mute、play後pauseを確認する短尺動画">
+            <track kind="captions" src="data:text/vtt,WEBVTT" srclang="en" label="No captions" />
+          </video>
+          <ul class="media-checks" aria-live="polite">
+            <li class="media-check" id="poc-native-seek" data-state="waiting">B01 seek: 未観測</li>
+            <li class="media-check" id="poc-native-mute" data-state="waiting">B02 mute: 未観測</li>
+            <li class="media-check" id="poc-native-play-pause" data-state="waiting">B03 play → time advances → pause: 未観測</li>
+          </ul>
+        </section>
+        <section class="media-probe" aria-labelledby="pip-controls-heading">
+          <h3 id="pip-controls-heading">旧S-230／現S-350-B06: native PiP入口とPoC用page API入口</h3>
+          <p>まず標準controlsにPiP操作が提示されるか確認する。page API経路は比較用PoCに限り、製品S-350には置かない。</p>
+          <video id="poc-pip-video" controls muted playsinline preload="metadata" aria-label="Picture-in-Picture確認用動画">
+            <track kind="captions" src="data:text/vtt,WEBVTT" srclang="en" label="No captions" />
+          </video>
+          <button type="button" id="run-page-pip">page APIでPiPを要求する</button>
+          <ul class="media-checks" aria-live="polite">
+            <li class="media-check" id="poc-pip-native" data-state="waiting">native player PiP: 未観測</li>
+            <li class="media-check" id="poc-pip-page" data-state="waiting">page API PiP: 未観測</li>
+            <li class="media-check" id="poc-pip-leave" data-state="waiting">PiP終了: 未観測</li>
+          </ul>
+        </section>
+        <section class="media-probe" aria-labelledby="media-session-heading">
+          <h3 id="media-session-heading">S-430-B01: page外のMedia Session action</h3>
+          <p>「外部メディア操作を開始する」を押した後、OSのメディアUI、browser media UI、media key、headsetなどから操作する。page内の安全停止はB01を通さない。action sourceは取得できないため、受けたaction typeだけを記録する。</p>
+          <button type="button" id="start-media-session">外部メディア操作を開始する</button>
+          <button type="button" id="stop-media-session">安全に停止して初期化する</button>
+          <audio id="poc-media-session-audio" class="media-session-audio" preload="metadata">
+            <track kind="captions" src="data:text/vtt,WEBVTT" srclang="en" label="No captions" />
+          </audio>
+          <ul class="media-checks" aria-live="polite">
+            <li class="media-check" id="poc-media-session-ready" data-state="waiting">Media Session: 未開始</li>
+            <li class="media-check" id="poc-media-session-pause" data-state="waiting">B01 external pause action: 未観測</li>
+          </ul>
+          <output class="media-log" id="poc-media-session-log" aria-live="polite">まだactionはありません。</output>
+        </section>
+      </details>
+      <details class="poc-accordion" name="poc-probe">
+        <summary>POC-011 / S-620: Unicode数字</summary>
+        <button type="button" id="run-unicode">17式のfontとcopy結果を検証する</button>
+        <section aria-labelledby="unicode-preview-heading">
+          <h2 id="unicode-preview-heading">S-620 問題プレビュー</h2>
+          <p>開発用プレビュー。製品版では体系名、Unicode version、基数、答えを表示せず、式と共通回答欄だけを置く。</p>
+          <div class="unicode-preview" id="unicode-preview" aria-busy="true"></div>
+        </section>
+      </details>
+      <details class="poc-accordion" name="poc-probe">
+        <summary>POC-013 / S-640: Encoding API</summary>
+        <button type="button" id="run-decoder">TextDecoder fixture を読む</button>
+        <button type="button" id="run-encoding">S-640 fixture を検証する</button>
+        <section aria-labelledby="encoding-preview-heading">
+          <h2 id="encoding-preview-heading">S-640 問題プレビュー</h2>
+          <p>開発用の全候補表。各byte列を16種類すべてのlabelでfatal <code>TextDecoder</code>復号し、結果と正答を並べる。製品ステージ用の操作UIではない。</p>
+          <h3>使用する label</h3>
+          <ul class="encoding-labels" id="encoding-labels" aria-busy="true"></ul>
+          <div id="encoding-preview" aria-busy="true"></div>
+        </section>
+      </details>
+      <details class="poc-accordion" name="poc-probe">
+        <summary>POC-022: WebCodecs</summary>
+        <button type="button" id="run-webcodecs">WebCodecs の基本値を読む</button>
+        <section class="media-probe" aria-labelledby="video-recovery-heading">
+          <h3 id="video-recovery-heading">S-720 映像復元fixture</h3>
+          <p>全動画はGit管理した360×360・12fps・2秒の固定asset。入力videoは単独frameでQRとして読めず、指定変換の最終videoだけが読めることを確認する。B03とB04は同じ<code>source-t3</code>を使用する。</p>
+          <button type="button" id="run-video-recovery">video metadataを検証する</button>
+          <output class="media-status" id="video-recovery-status" aria-live="polite">未検証</output>
+          <section class="video-recovery-runtime" aria-labelledby="video-recovery-runtime-heading">
+            <h4 id="video-recovery-runtime-heading">実frame変換と二値照合</h4>
+            <p>各buttonは入力videoの全24 frameを順に読む。T1/T2/T3を実行後、再符号化済みの期待videoとは色値でなく白黒二値matrixを比較する。出力videoを擬似生成せず、frame parityと変換結果を先に検証する。</p>
+            <button type="button" data-video-recovery-route="t1">T1 → alphaを検証</button>
+            <button type="button" data-video-recovery-route="t2">T2 → alphaを検証</button>
+            <button type="button" data-video-recovery-route="alpha">T3 → T2 → alphaを検証</button>
+            <button type="button" data-video-recovery-route="beta">T1 → T3 → T2 → T1 → betaを検証</button>
+            <canvas id="video-recovery-canvas" width="360" height="360" aria-label="最後に実行した映像復元変換のframe出力"></canvas>
+            <output class="media-status" id="video-recovery-runtime-status" aria-live="polite">未実行</output>
+          </section>
+          <div class="video-recovery-grid">
+            <article class="video-recovery-card">
+              <h4>T1: 左右交換 → alpha</h4>
+              <video id="recovery-source-t1" controls muted preload="metadata" aria-label="T1入力動画"><track kind="captions" src="data:text/vtt,WEBVTT" srclang="en" label="No captions" /></video>
+              <p><code>T1</code>後の期待出力:</p>
+              <video id="recovery-alpha-t1" controls muted preload="metadata" aria-label="T1復元alpha QR動画"><track kind="captions" src="data:text/vtt,WEBVTT" srclang="en" label="No captions" /></video>
+            </article>
+            <article class="video-recovery-card">
+              <h4>T2: 時間方向乗算 → alpha</h4>
+              <video id="recovery-source-t2" controls muted preload="metadata" aria-label="T2入力動画"><track kind="captions" src="data:text/vtt,WEBVTT" srclang="en" label="No captions" /></video>
+              <p><code>T2</code>後の期待出力:</p>
+              <video id="recovery-alpha-t2" controls muted preload="metadata" aria-label="T2復元alpha QR動画"><track kind="captions" src="data:text/vtt,WEBVTT" srclang="en" label="No captions" /></video>
+            </article>
+            <article class="video-recovery-card">
+              <h4>T3 → T2: alpha</h4>
+              <video id="recovery-source-t3-alpha" controls muted preload="metadata" aria-label="T3とT2入力動画"><track kind="captions" src="data:text/vtt,WEBVTT" srclang="en" label="No captions" /></video>
+              <p><code>T3 → T2</code>後の期待出力:</p>
+              <video id="recovery-alpha-t3" controls muted preload="metadata" aria-label="T3とT2復元alpha QR動画"><track kind="captions" src="data:text/vtt,WEBVTT" srclang="en" label="No captions" /></video>
+            </article>
+            <article class="video-recovery-card">
+              <h4>T1 → T3 → T2 → T1: beta</h4>
+              <video id="recovery-source-t3-beta" controls muted preload="metadata" aria-label="T1とT3とT2入力動画"><track kind="captions" src="data:text/vtt,WEBVTT" srclang="en" label="No captions" /></video>
+              <p><code>T1 → T3 → T2 → T1</code>後の期待出力:</p>
+              <video id="recovery-beta-t3" controls muted preload="metadata" aria-label="T1とT3とT2復元beta QR動画"><track kind="captions" src="data:text/vtt,WEBVTT" srclang="en" label="No captions" /></video>
+            </article>
+          </div>
+        </section>
+      </details>
+      <details class="poc-accordion" name="poc-probe">
+        <summary>POC-021: bounded Insertable Streams read path</summary>
+        <p>固定360px動画から最大2 frameだけを読む最小経路。変換・QR置換・downloadはまだ製品stageへ持ち込まず、readerのcleanupとAPI境界を先に確認する。</p>
+        <button type="button" id="run-insertable-stream">2 frameだけ読む</button>
+        <output class="media-status" id="insertable-stream-status" aria-live="polite">未実行</output>
+      </details>
+      <details class="poc-accordion" name="poc-probe">
+        <summary>POC-030: Invoker Commands</summary>
+        <p>「Invoker Commands を作る」でdialogを開いた後、dialog内の「閉じる」を押す。後者はpageのclick handlerではなく、buttonの<code>commandfor="poc-dialog" command="close"</code>をbrowserが解釈してdialogへ送るnative commandである。</p>
+        <button type="button" id="run-invoker">Invoker Commands を作る</button>
+        <dialog id="poc-dialog" aria-label="native dialog fixture" closedby="any"><p>native dialog fixture</p><button type="button" commandfor="poc-dialog" command="close">閉じる</button></dialog>
+        <output class="media-status" id="invoker-status" aria-live="polite">未実行</output>
+      </details>
+      <h2>結果</h2>
+      <output id="probe-output" aria-live="polite">未実行</output>
+    </main>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

@@ -23,6 +23,8 @@ export default function S020Stage(props: StageComponentProps) {
   );
   const [width, setWidth] = useState(window.innerWidth);
   const problem = props.problem("S-020-B01");
+  const meterMin = Math.min(initialWidth.current, targetWidth) - 100;
+  const meterMax = Math.max(initialWidth.current, targetWidth) + 100;
 
   useEffect(() => {
     const observe = () => {
@@ -52,6 +54,14 @@ export default function S020Stage(props: StageComponentProps) {
       <p className="measurement" aria-live="polite">
         {width} → {targetWidth}
       </p>
+      <meter
+        min={meterMin}
+        max={meterMax}
+        optimum={targetWidth}
+        value={Math.min(meterMax, Math.max(meterMin, width))}
+      >
+        {width}
+      </meter>
       <ProblemGiftBox problem={problem} locale={props.locale} />
     </div>
   );

@@ -6,6 +6,8 @@
 
 例外としてS-060の「一度表示した」というbooleanだけは `busybox:S-060:seen` としてlocalStorageにも同期保存する。初回表示直後にタブを閉じると、非同期のIndexedDB transactionがcommit前に破棄されうるためである。このフラグから他の進捗は復元せず、設定画面のローカル初期化でIndexedDBと同時に削除する。
 
+S-060-B02のBeacon receiptは主進捗storeや上記localStorage flagへ直接書かず、Service Workerだけが書ける専用IndexedDB storeへcurrent attempt IDと固定protocol結果だけを保存する。receiverがmatching receiptをconsumeして通常の箱解決済みIDへ反映した後、receiptを削除する。Drive同期、file export、analyticsへは含めず、resetとsite data削除でattemptとともに消す。
+
 保存するのは箱を解いた時刻、判定に必要な最小限の観測事実、言語設定、インストール単位のランダムIDである。カメラ、マイク、センサー、選択文字列、ファイル内容などの生入力は保存しない。
 
 ## version 1

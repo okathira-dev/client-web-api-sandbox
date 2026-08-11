@@ -1,5 +1,24 @@
 # 検証記録
 
+## 2026-08-11 現行実装コミット前検証
+
+この節が現行コードに対する最新の自動検証結果である。以下の過去節は当時のfixture、箱番号、実装経路を記録した履歴であり、現在のS-640/S-710/S-720/S-810の仕様判断には使わない。人手確認の未完了項目は[現状・残問題・人手確認への引継ぎ](./current-status-and-handoff.md)と[人手確認台帳](./human-test-matrix.md)を正とする。
+
+| 検証 | 結果 | 証跡 |
+| --- | --- | --- |
+| TypeScript | 合格 | `tsc --noEmit` |
+| Jest | 合格 | 44 suites / 285 tests |
+| Biome | 合格 | `src/busybox` とfixture生成script |
+| Markuplint | 合格 | `src` の JSX / HTML 全対象 |
+| Vite production build | 合格 | multi-page build、S-640/S-710/S-720/S-810 chunkを含む |
+| S-640 fixture | 合格 | 8問の文字化け、元/誤表示encoding、回答非重複、fatal decode |
+| S-710 fixture | 合格 | 暗黒frame、QR frame、10秒、WebM構造、QR payload、decode失敗output |
+| S-720 route | 合格 | 4正規route、実変換関数、cycle拒否、経路判定単体test |
+| S-810 capability | 合格 | `resize` と `requestVideoFrameCallback()`の両方をprobe |
+| licenses / path hygiene | 合格 | 第三者ライセンス内容、ソース内絶対Windows pathなし |
+
+自動検証は人手確認の代替ではない。特にS-710の実frame差し替え、S-720のoutput再生・QR、S-810の可変寸法WebM再生は、Chrome実画面で確認する。
+
 ## 2026-07-20 ステージ一覧のcompact化
 
 | 確認 | 結果 | 証跡 |
@@ -202,6 +221,23 @@ S-010は画面でも、各箱の下にマウスカーソル、指、ペンのア
 | production build | 合格 | Busybox本体と遅延stage chunkを生成 |
 | PWA静的ファイル | 合格 | `manifest.webmanifest`、`service-worker.js`、`icon.svg` を `dist/busybox/` へ配置 |
 
+### 2026-08-09 現環境一括実装の自動検証
+
+| 項目 | 結果 | 証跡 |
+| --- | --- | --- |
+| catalogue / registry | 合格 | 68 stage・156箱、追加ID重複なし、lazy componentとprobeを同期。`stageDefinitions.test.ts` |
+| TypeScript | 合格 | `tsc --noEmit` |
+| markuplint | 合格 | `src/**/*.{jsx,tsx,html}` 全対象がpass |
+| Biome | 合格 | 追加・変更したBusybox TS/TSX/JS 25ファイルをpass。既存全体警告は別管理 |
+| Jest | 合格 | 40 suites / 274 tests、S-710の事前生成decode-failure fixtureのWebM構造検証を含む |
+| production build | 合格 | Vite buildでS-610〜S-720の遅延chunk、public helper、静的mediaを生成 |
+| fixture determinism | 合格 | S-710 `s710-decode-failure.webm`を生成scriptと形式検証で固定。S-620/S-640/S-720のfixture manifestと意味検証を維持 |
+| diff hygiene | 合格 | `git diff --check` |
+
+同日再実行でも、S-710 object URL cleanup追加後にTypeScript、Biome（変更対象）、markuplint、Jest 40 suites / 274 tests、Vite production buildがすべて合格した。buildの既知警告（`vite.config.ts`の`__dirname`、browser externalization、500 kB超chunk）は既存警告として残る。
+
+2026-08-10: S-660の中間二状態を一箱へ統合した。未公開のため進捗schemaはv1のままとし、旧箱構成との互換処理は持たない。S-710のB02を入力decode失敗の別経路へ限定し、B03を実QR画像へ置換、S-510-B02のasset URLとSHA-256を固定した。TypeScript、Biome、Jest、Vite production build、`git diff --check`が合格した。Windows ChromeでのS-710 QR出力とS-510 iframe内からの実dragは最終人手確認として残す。
+
 ### ブラウザシナリオ
 
 | シナリオ | 結果 | 観測 |
@@ -219,6 +255,46 @@ S-010は画面でも、各箱の下にマウスカーソル、指、ペンのア
 | 390px viewport | 未確定 | viewport制御中に自動ブラウザがタイムアウト。合格へ数えずH-020へ残す |
 
 S-060の最初の試行では、問題コンポーネントの遅延読込前に強制遷移したため観測対象にならなかった。箱本体が表示されたことを待つ正しいシナリオへ修正し、表示commit直後の同期フラグとIndexedDB観測の両方で再訪を確認した。
+
+## 2026-08-10 D-141 S-270削除 / S-350再整理
+
+| 確認 | 結果 | 証跡 |
+| --- | --- | --- |
+| catalogue / registry / map / manifest | 合格 | 68stage・154箱。S-270 / G-024、S-350 Media Capabilities profile箱、実寸reel箱を削除。S-350-B04をnative再生速度へ置換し、B01〜B05、合意済みの将来B07、S-810-B01を同期 |
+| API ledger | 合格 | 公式MDN / BCDから再生成。WebGPUはstage未割当の`hold`、Media Capabilitiesは箱にしない`integrate`へ更新 |
+| media fixture | 合格 | `src/busybox/fixtures/media/`へ製品昇格。codec・寸法・音声trackとportable manifestを`verify-busybox-media-assets.mjs`で照合 |
+| cadence判定 | 合格 | 25提示frame / 24連続delta、許容差0.004秒。12 / 30 / 60fpsのnegative caseを単体test |
+| static checks | 合格 | Markuplint、Biome、TypeScript、`git diff --check`。Biomeの既存schema version infoと`jest.setup.ts` warningのみ |
+| automated tests | 合格 | Jest 41 suites / 277 tests。mapの各cluster 12stage以下も再確認 |
+| production build | 合格 | Vite buildでS-350 / S-810の遅延chunkと全5media assetを出力 |
+| browser structure | 合格（速度変更はH-030待ち） | S-350が5箱・単一player・page製profile / reel UIなし、B03 pause icon、B04 speed icon、B05 subtitles iconであることをlocalhostで確認。Chrome native playerのoverflow入口も表示。実menuから速度変更して開箱する操作はH-030に残す |
+| native seek完遂 | H-053待ち | browser制御からnative timelineの任意時刻操作を安定再現できないため、実マウスで24fps区間だけが開くことを公開前ゲートに残す |
+
+## 2026-08-10 D-143 PiP統合 / S-640修復
+
+| 検証 | 結果 | 証跡 |
+| --- | --- | --- |
+| catalogue / registry / map / manifest | 合格 | 独立S-230を削除し、G-020をS-350-B06へ移動。67stage・154箱 |
+| S-640 ID契約 | 合格 | fixture順を明示的なS-640-B01〜B12へ対応させ、全IDがcatalogueに属することをunit testで固定 |
+| S-640 問題表示 | 合格 | 2進・16進はbyte列だけ、文字化けは誤復号textだけを提示し、正答文字列の露出をunit testで拒否 |
+| S-350 cleanup | 合格 | 離脱時pauseをB03判定から除外し、PiPを終了する |
+| S-720 解錠境界 | 合格 | 実file選択前のtransformを無効化し、復元成功だけでは開箱・flag表示せず、復元後のQR flag完全一致だけで開く |
+| S-710 解錠境界 | 合格 | 変換条件の内部検出だけでは開箱せず、出力動画から読んだ合言葉の共通欄への完全一致だけで対応箱を開く。statusへのdecode失敗flag露出も削除 |
+| automated checks | 合格 | Markuplint、Biome（既存warningのみ）、TypeScript、Jest 42 suites / 279 tests、Vite production build |
+| browser structure | 合格（native PiP実操作はH-030待ち） | S-350は0/6・単一video、S-640は0/12でB01〜B12と意図した問題表現を表示し例外なし、S-720は未選択のtransformとflag欄がdisabled |
+
+## 2026-08-10 D-144 media stage製品化
+
+| 検証 | 結果 | 証跡 |
+| --- | --- | --- |
+| catalogue / registry / map / manifest | 合格 | S-350-B08 fullscreenを追加し67stage・155箱、全採用計画78stage・186箱へ同期。Fullscreen APIをS-350へ割当 |
+| S-640 UI / 回答境界 | 合格 | 2進・16進・文字化けを分類別cardへ整理し、12問共通入力一つだけを表示。localhostで12問・1 textbox・正答非露出を確認 |
+| S-710 iframe / decode失敗 | 合格 | same-origin ClipPress iframeを独立MPA entryとしてbuild。session付きmessageを検証し、壊れた固定inputで固定recovery output、親合言葉欄の有効化、console errorなしを実browser確認 |
+| S-710 QR portability | 合格（実QR入力はH-042待ち） | native `BarcodeDetector`を先に試し、失敗・非対応時はdownscale `ImageData`をbundled jsQR 1.4.0へ渡す。S-700-B02の実Barcode Detection条件とは分離 |
+| S-720 patch bay | 合格 | 3 source・3 transform・1 output、out→任意in、Bezier canvas cable、4正規routeのunit test。実browserでB04 cycleの`recovered-beta.webm`即時再生、共通flag入力による1/4、console errorなしを確認 |
+| fixture製品昇格 | 合格 | encoding、Unicode font、S-720のsource / intermediate / 4 output、S-710のdecode失敗input / outputを`src/busybox/fixtures/`でGit管理。生成script、manifest、形式・寸法・内容の意味検証を同期し、製品stageのPoC path参照0件 |
+| automated checks | 合格 | TypeScript、Biome 140 files、Markuplint全対象、Jest 43 suites / 285 tests、encoding / Unicode / native media fixture verifier、Vite production build、`git diff --check` |
+| build既知warning | 継続 | Vite `__dirname` native-loader予告、ghostpdl browser externalization、500kB超chunkは既存warning。S-710 tool chunkはMediaBunny + jsQRを独立iframeへ分離済み |
 
 ## 未実施の人手ゲート
 

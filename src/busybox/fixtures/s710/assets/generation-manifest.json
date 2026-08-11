@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "durationSeconds": 10,
+  "blackWindow": [4, 5],
+  "qrWindow": [4, 5],
+  "qrPayload": "S710_QR_TEST",
+  "assets": ["dark-frame-input.webm", "qr-frame-input.webm"]
+}

@@ -23,6 +23,7 @@ manifestの `start_url`、`id`、`scope` とアイコンはすべて相対URLに
 
 ## ステージとの接続
 
+- S-060-B02は最初にonlineで制御中Service Workerとsender / receiver / receipt assetのcacheを準備する。offline中の明示link操作で実`sendBeacon()`を専用same-origin virtual POSTへ送り、`true`の場合だけreceiverへfull-document navigationする。workerはPOSTを検証し、`respondWith()`内で専用IndexedDB receiptをcommitして204を返す。receiverはcacheから開き、listener設置後のstore照会でmatching receiptを確認する。外部networkやbackendへは送らない。
 - S-070は `navigator.onLine` とonline/offlineイベントを観測する。ネットワーク疎通の完全な保証には使わない。
 - S-080は `display-mode: standalone` を観測する。インストール可否そのものをAPI存在だけで判定しない。
 - S-090はステージ内ボタンから通知権限を要求し、Service Workerのnotification clickで専用URLへ戻った事実を判定する。
@@ -34,7 +35,8 @@ manifestの `start_url`、`id`、`scope` とアイコンはすべて相対URLに
 - S-440はmanifest `file_handlers`で`.busybox`をOSへ関連付け、OSの「開く」からLaunchQueueへ渡された実file handleだけを読む。fileはclient生成し、serverへuploadしない。起動済みpageへの通常dropは判定外とする。
 - S-450はmanifest `protocol_handlers`で`web+busybox`を登録し、custom scheme経由のround payloadを受ける。初回handler確認を拒否した環境では未観測のままとする。
 - S-460はdesktop installed PWAのWindow Controls Overlayがvisibleな時だけtitlebar geometryを盤面にする。
-- S-510はinstalled PWAをsticker source、通常browser windowをreceiverとして使う。共通install導線からsourceの起動とreceiver pageの並べ方を示すが、同一page内dropや通常file uploadはclearにしない。
+- S-510-B01はinstalled PWAをsticker source、通常browser windowをreceiverとして使う。共通install導線からsourceの起動とreceiver pageの並べ方を示すが、同一page内dropや通常file uploadはclearにしない。B02はPWAを要求せず、専用の外部静的originをcross-origin iframeとして埋め、iframe内の画像を親Documentへ実dropする。
+- S-740はinstalled PWAでperiodic syncを登録し、水と光のcare recordを別訪問で一回ずつ預ける。window client 0件の異なる実`periodicsync`だけが発芽・開花assetを取得してlocal phaseを進める。通知、timer、page load、通常Background Sync、DevTools模擬eventでは成長させず、開花・reset時にtagをunregisterして専用store / cacheを削除する。
 
 通知本文やキャッシュには進捗、生入力、端末識別子を含めない。
 

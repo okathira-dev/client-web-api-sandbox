@@ -105,7 +105,9 @@ function parseObservation(value: unknown): ObservationProgress | null {
   return { ...value, observedAt: value.observedAt, facts };
 }
 
-function parseVersionOne(value: Record<string, unknown>): ProgressParseResult {
+function parseStructuredDocument(
+  value: Record<string, unknown>,
+): ProgressParseResult {
   if (
     typeof value.installationId !== "string" ||
     !isIsoDate(value.createdAt) ||
@@ -203,7 +205,7 @@ export function parseProgressDocument(value: unknown): ProgressParseResult {
   }
   if (value.schemaVersion === 0) return migrateVersionZero(value);
   if (value.schemaVersion === progressSchemaVersion)
-    return parseVersionOne(value);
+    return parseStructuredDocument(value);
   return { status: "corrupt", reason: "unsupported-schema" };
 }
 

@@ -7,6 +7,8 @@
 | [企画書ドラフト](./product-brief-draft.md) | プロダクト意図の入力資料 |
 | [Deep Researchメモ](./deep-research-report.md) | Web APIギミックの未検証アイデア集 |
 
+Deep Researchメモ145案の安定ID、現行ステージとの対応、暫定5分類、対話相談キューは[Deep Research元案・暫定採否台帳](../deep-research-idea-disposition-ledger.md)で管理する。保存版の本文には判定を書き戻さない。
+
 ## 文書の優先順位
 
 内容が矛盾する場合は、次の順に扱う。

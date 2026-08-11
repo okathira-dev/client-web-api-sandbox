@@ -3,13 +3,21 @@
 const workerUrl = new URL(self.location.href);
 const developmentMode = workerUrl.searchParams.get("mode") === "development";
 const cachePrefix = "busybox-";
-const cacheVersion = "v3";
+const cacheVersion = "v4";
 const shellCacheName = `${cachePrefix}shell-${cacheVersion}`;
 const assetCacheName = `${cachePrefix}assets-${cacheVersion}`;
 const scopeUrl = new URL(self.registration.scope);
 const shellUrl = new URL("./index.html", scopeUrl).href;
 const assetPath = new URL("../assets/", scopeUrl).pathname;
-const shellFiles = ["./index.html", "./manifest.webmanifest", "./icon.svg"];
+const shellFiles = [
+  "./index.html",
+  "./manifest.webmanifest",
+  "./icon.svg",
+  "./licenses/index.html",
+  "./licenses/jsqr-Apache-2.0.txt",
+  "./licenses/mediabunny-MPL-2.0.txt",
+  "./licenses/unifont-OFL-1.1.txt",
+];
 const mutableShellUrls = new Set(
   shellFiles.map((path) => new URL(path, scopeUrl).href),
 );
@@ -110,14 +118,62 @@ self.addEventListener("activate", (event) => {
   );
 });
 
+const offlineBeaconDatabase = "busybox-offline-beacon";
+const offlineBeaconStore = "receipts";
+
+function openOfflineBeaconDatabase() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(offlineBeaconDatabase, 1);
+    request.onupgradeneeded = () => {
+      request.result.createObjectStore(offlineBeaconStore, { keyPath: "nonce" });
+    };
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+async function storeOfflineBeaconReceipt(nonce) {
+  const database = await openOfflineBeaconDatabase();
+  await new Promise((resolve, reject) => {
+    const transaction = database.transaction(offlineBeaconStore, "readwrite");
+    transaction.objectStore(offlineBeaconStore).put({ nonce });
+    transaction.oncomplete = resolve;
+    transaction.onerror = () => reject(transaction.error);
+  });
+  database.close();
+}
+
+async function receiveOfflineBeacon(request) {
+  let payload;
+  try {
+    payload = await request.json();
+  } catch {
+    return new Response("invalid receipt", { status: 400 });
+  }
+  if (typeof payload?.nonce !== "string" || payload.nonce.length < 16) {
+    return new Response("invalid receipt", { status: 400 });
+  }
+  await storeOfflineBeaconReceipt(payload.nonce);
+  return new Response(null, { status: 204 });
+}
+
 self.addEventListener("fetch", (event) => {
+  const request = event.request;
+  const url = new URL(request.url);
+  if (
+    request.method === "POST" &&
+    url.origin === self.location.origin &&
+    url.pathname.endsWith("/offline-beacon/receipt")
+  ) {
+    event.respondWith(receiveOfflineBeacon(request));
+    return;
+  }
+
   // Vite still needs a worker for notification flows during development. Leaving
   // fetch unhandled makes every module/HMR request use the network normally.
   if (developmentMode) return;
 
-  const request = event.request;
   if (request.method !== "GET") return;
-  const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
   const isBusyboxNavigation =
