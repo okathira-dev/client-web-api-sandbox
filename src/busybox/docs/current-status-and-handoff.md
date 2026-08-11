@@ -1,6 +1,6 @@
 # 現状・残問題・人手確認への引継ぎ
 
-更新日: 2026-08-11
+更新日: 2026-08-12
 
 この文書は、現在の実装をコミットした時点での「できていること」「人手で確認すること」「次の設計課題」を一つにまとめた引継ぎメモである。結論を決めるときは、コードとこの文書を入口にし、古い計画表の件数・箱番号・成功条件を再利用しない。
 
@@ -19,11 +19,14 @@
 
 ## 今回コミットする実装
 
+- S-030-B02を削除してSelection APIのB01だけにし、S-150をpointer-inert button・native select typeahead・named detailsのキーボード操作へ再構成した。
+- S-060-B02はonlineの単純投函を拒否し、offlineかつService Worker制御下でのみBeaconを投函できるようにした。S-220の分岐ガイド、S-580のen-US認識、S-660の入場時自動Pressure観測、S-510の実ファイル／iframe drop分離も反映した。
 - S-640を8問の文字化け問題へ整理し、元の符号化で復号した文字列を一つの共通入力欄へ入力する形にした。
-- S-710へClipPress風のsame-origin iframe、10秒camera録画、固定bitrate圧縮、暗黒frame・QR frame・decode失敗・再入力metadataの4経路を実装した。
+- 製品で入力する固定flagは小文字の`busybox{...}`へ統一し、S-720のQR fixtureも再生成した。
+- S-710へClipPress風のsame-origin iframe、10秒camera録画、160kbps固定bitrate圧縮、暗黒frame・QR frame・decode失敗・再入力metadataの4経路を実装した。QRは同梱jsQRで検出し、検出した四辺形へflag QRを射影して置換する。
 - S-710の暗黒frameとQR frameを生成script、manifest、意味検証test付きの製品fixtureへ昇格した。decode失敗時は固定outputだけを配布し、入力用の壊れたfixtureはゲーム画面から提供しない。
 - S-720を動画3ノード、T1/T2/T3の2列、outputノードのpatch bayへ変更した。source→output直結、変換の連結、同一変換の2回使用を許可し、分岐とcycleを拒否する。接続された経路をMediaBunnyとCanvasで実変換する。
-- S-810を144〜1080pxの正方形、横長、縦長へ連続変化するVP8 WebMの実寸観測へ変更した。`videoWidth`、`videoHeight`、`resize`、`requestVideoFrameCallback()`を成功条件にする。
+- S-810をMSEへ1フレームずつtimestamp offset付きで追加する144〜1080pxの正方形、横長、縦長スイープへ変更した。`videoWidth`、`videoHeight`、`resize`、`requestVideoFrameCallback()`でフレームごとのnative寸法を観測する。
 - 設定ページから第三者ライセンスページへ到達できるようにし、共通app shellを広げた。
 - 現行解法仕様、人手確認台帳、ステージ実装状況のS-640/S-710/S-720/S-810記載を更新した。
 
@@ -37,7 +40,7 @@
 - S-710 fixture: 10秒、暗黒frameの画素上限、QR payload、WebM構造を検証
 - S-640 fixture: 8問、元encoding・誤表示encoding、回答重複なし、fatal decodeを検証
 - S-720 route: 4正規経路、T1/T2/T3、cycle拒否、経路判定を単体検証
-- S-810 capability probe: `resize` と `requestVideoFrameCallback()`の両方を要求
+- S-810 capability probe: `resize` と `requestVideoFrameCallback()`の両方を要求し、Windows Chromeで4寸法の開箱を確認
 - ソースコード内の絶対Windowsパス検索: 該当なし
 - ライセンス配布test: jsQR、MediaBunny、GNU Unifontの同一内容を検証
 
@@ -95,9 +98,9 @@ fixtureは`src/busybox/fixtures/s710/assets/`にある。
 ### 必ず次の動作確認で見るもの
 
 - S-640 8問の実ブラウザ表示、共通入力欄、正答・誤答、再入場。
-- S-710の暗黒frame、QR frame、decode失敗、metadata再入力、camera録画、size比、download、連続試行。
-- S-720の4正規route、実T1/T2/T3変換、全frame再生、QR読取、分岐・cycle拒否、mobile横幅。
-- S-810の可変寸法WebM再生。ブラウザがVP8のframeごとの寸法変更を保持するかは自動testだけでは保証できない。
+- S-710はWindows ChromeでQR置換とdecode失敗を確認済み。暗黒frame、metadata再入力、camera録画、size比、download、連続試行を追加確認する。
+- S-720はWindows ChromeでT1 routeとlowercase flagを確認済み。残り3正規route、全frame再生、QR読取、分岐・cycle拒否、mobile横幅を確認する。
+- S-810はWindows Chromeで4寸法の開箱を確認済み。再生成、pause、ended、reload、離脱でcallbackとobject URLが残らないことを追加確認する。
 - S-350のB01〜B06/B08、S-060-B02、S-150、S-220、S-580など、以前にPoCで確認した中心経路を製品stageで再確認する。
 - 全stage共通のH-025（再入場、今回開いた箱、永続進捗、reset）とH-019（生データ非送信）。
 

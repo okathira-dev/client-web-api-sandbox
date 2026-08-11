@@ -9,13 +9,13 @@ import {
 } from "mediabunny";
 import { StrictMode, useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { createNativeQrDetector, decodeQrCanvas } from "../../media/qrDecoder";
+import { decodeQrCanvas } from "../../media/qrDecoder";
 import {
   type S710EligibilityMessage,
   type S710FlagKind,
   s710Flags,
 } from "../../stages/s710Protocol";
-import { drawQr } from "../../stages/s710Qr";
+import { drawQrIntoQuad } from "../../stages/s710Qr";
 import "./styles.css";
 
 class DecodeFailure extends Error {}
@@ -31,37 +31,20 @@ function drawMessage(
   context.fillStyle = "#fff";
   context.textAlign = "center";
   context.textBaseline = "middle";
-  const maxWidth = width * 0.9;
-  const maxHeight = height * 0.78;
-  const words = message.split(/\s+/).filter(Boolean);
-  const measureAt = (fontSize: number, lines: readonly string[]) => {
-    context.font = `bold ${fontSize}px sans-serif`;
-    return Math.max(...lines.map((line) => context.measureText(line).width));
-  };
-  let lines = [message];
-  if (words.length > 1 && measureAt(100, lines) > maxWidth) {
-    const midpoint = Math.ceil(words.length / 2);
-    lines = [
-      words.slice(0, midpoint).join(" "),
-      words.slice(midpoint).join(" "),
-    ];
-  }
+  const maxWidth = width * 0.94;
+  const maxHeight = height * 0.7;
   const baseSize = 100;
-  const measuredWidth = measureAt(baseSize, lines);
-  const lineHeight = baseSize * 1.15;
-  const widthScale = maxWidth / Math.max(1, measuredWidth);
-  const heightScale = maxHeight / Math.max(1, lineHeight * lines.length);
+  context.font = `bold ${baseSize}px sans-serif`;
+  const measuredWidth = context.measureText(message).width;
   const fontSize = Math.max(
-    24,
-    Math.floor(baseSize * Math.min(widthScale, heightScale)),
+    16,
+    Math.floor(
+      baseSize *
+        Math.min(maxWidth / Math.max(1, measuredWidth), maxHeight / baseSize),
+    ),
   );
   context.font = `bold ${fontSize}px sans-serif`;
-  const actualLineHeight = fontSize * 1.15;
-  const firstBaseline =
-    height / 2 - ((lines.length - 1) * actualLineHeight) / 2;
-  lines.forEach((line, index) => {
-    context.fillText(line, width / 2, firstBaseline + index * actualLineHeight);
-  });
+  context.fillText(message, width / 2, height / 2);
 }
 
 function isDarkFrame(image: ImageData) {
@@ -218,7 +201,6 @@ function Tool() {
       const secondPass = tags?.raw?.BUSYBOX_TRANSFORMER === "S710_V1";
       const target = new BufferTarget();
       const output = new Output({ format: new WebMOutputFormat(), target });
-      const nativeDetector = createNativeQrDetector();
       const frameCanvas = document.createElement("canvas");
       const scanCanvas = document.createElement("canvas");
       let darkSeen = false;
@@ -233,7 +215,7 @@ function Tool() {
           height: 360,
           fit: "contain",
           codec: "vp8",
-          bitrate: 384_000,
+          bitrate: 160_000,
           process: async (sample) => {
             frameCanvas.width = sample.displayWidth;
             frameCanvas.height = sample.displayHeight;
@@ -272,13 +254,23 @@ function Tool() {
                   scanCanvas.width,
                   scanCanvas.height,
                 );
-              const decoded = await decodeQrCanvas(scanCanvas, nativeDetector);
+              const decoded = decodeQrCanvas(scanCanvas);
               if (decoded) {
                 qrSeen = true;
-                drawQr(
+                const scaleX = frameCanvas.width / scanCanvas.width;
+                const scaleY = frameCanvas.height / scanCanvas.height;
+                const scalePoint = (point: { x: number; y: number }) => ({
+                  x: point.x * scaleX,
+                  y: point.y * scaleY,
+                });
+                drawQrIntoQuad(
                   context,
-                  frameCanvas.width,
-                  frameCanvas.height,
+                  [
+                    scalePoint(decoded.location.topLeftCorner),
+                    scalePoint(decoded.location.topRightCorner),
+                    scalePoint(decoded.location.bottomRightCorner),
+                    scalePoint(decoded.location.bottomLeftCorner),
+                  ],
                   s710Flags.qr,
                 );
               }

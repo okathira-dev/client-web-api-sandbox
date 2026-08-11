@@ -299,6 +299,37 @@ input:focus-visible {
   place-items: center;
   border-style: dashed;
 }
+.drag-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  width: 100%;
+}
+.drag-card {
+  display: grid;
+  align-content: start;
+  gap: 0.75rem;
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid #4c4260;
+  border-radius: 1rem;
+  background: #171329;
+}
+.drag-card iframe {
+  width: 100%;
+  min-height: 10rem;
+  border: 1px solid #665979;
+  border-radius: 0.65rem;
+  background: #111827;
+}
+.drag-card .drop-target {
+  min-height: 6rem;
+}
+@media (max-width: 720px) {
+  .drag-columns {
+    grid-template-columns: 1fr;
+  }
+}
 
 .rgb-page {
   min-height: 60vh;
@@ -596,8 +627,8 @@ input:focus-visible {
 }
 
 .panel {
-  max-width: 44rem;
-  margin: 0 auto;
+  width: 100%;
+  margin: 0;
   padding: clamp(1.25rem, 4vw, 2.25rem);
   border: 1px solid #443a59;
   border-radius: 1.25rem;
@@ -613,6 +644,12 @@ input:focus-visible {
 }
 .panel a {
   color: #d8c5ff;
+}
+.about-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1.25rem;
 }
 .storage-status {
   margin: 1rem 0;
@@ -695,7 +732,7 @@ input:focus-visible {
   line-height: 1.65;
 }
 .stage-view {
-  max-width: 52rem;
+  width: 100%;
   margin: 0 auto;
 }
 .back-button {
@@ -769,6 +806,35 @@ input:focus-visible {
   color: #f7f3ff;
   background: #35284f;
   cursor: pointer;
+}
+.accessibility-keyboard-button {
+  pointer-events: none;
+}
+.accessibility-select {
+  display: grid;
+  gap: 0.5rem;
+  width: min(100%, 32rem);
+  color: #d8cfdf;
+  font-weight: 700;
+}
+.accessibility-select select {
+  width: 100%;
+  border: 1px solid #665979;
+  border-radius: 0.7rem;
+  padding: 0.75rem 0.9rem;
+  color: #f7f3ff;
+  background: #2a2240;
+}
+.accessibility-details {
+  display: grid;
+  gap: 0.5rem;
+  width: min(100%, 32rem);
+}
+.accessibility-details details {
+  border: 1px solid #665979;
+  border-radius: 0.65rem;
+  padding: 0.7rem 0.9rem;
+  background: #211a32;
 }
 .resize-ruler {
   width: min(28rem, 90%);
@@ -949,6 +1015,27 @@ input:focus-visible {
 .history-trail {
   display: flex;
   gap: 0.7rem;
+}
+.navigation-branch-guide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  color: #cfc7db;
+  font-family: ui-monospace, monospace;
+}
+.navigation-branch-guide span {
+  border: 1px solid #665979;
+  border-radius: 999px;
+  padding: 0.25rem 0.55rem;
+  color: #a49bad;
+  background: #211a32;
+}
+.navigation-branch-guide span[data-active="true"] {
+  border-color: #ffd166;
+  color: #171020;
+  background: #ffd166;
 }
 .history-trail span {
   width: 3rem;

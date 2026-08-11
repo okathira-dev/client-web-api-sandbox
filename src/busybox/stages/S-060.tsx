@@ -18,6 +18,10 @@ export default function S060Stage(props: StageComponentProps) {
   const problem = props.problem("S-060-B01");
   const beaconProblem = props.problem("S-060-B02");
   const [status, setStatus] = useState("");
+  const [offline, setOffline] = useState(() => !navigator.onLine);
+  const [workerControlled, setWorkerControlled] = useState(() =>
+    Boolean(navigator.serviceWorker.controller),
+  );
   const seenBefore = useRef(
     props.observations[observationId] !== undefined || hasRevisitFlag(),
   );
@@ -64,7 +68,35 @@ export default function S060Stage(props: StageComponentProps) {
     request.onerror = () => setStatus("receipt store unavailable");
   }, [beaconProblem.solve]);
 
+  useEffect(() => {
+    const handleOnline = () => setOffline(false);
+    const handleOffline = () => setOffline(true);
+    const handleController = () => setWorkerControlled(true);
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+    navigator.serviceWorker?.addEventListener(
+      "controllerchange",
+      handleController,
+    );
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+      navigator.serviceWorker?.removeEventListener(
+        "controllerchange",
+        handleController,
+      );
+    };
+  }, []);
+
   const sendBeacon = () => {
+    if (!offline || !workerControlled) {
+      setStatus(
+        !workerControlled
+          ? "Service Workerの制御を待っています"
+          : "ネットワークを切断してから投函してください",
+      );
+      return;
+    }
     const nonce = crypto.randomUUID();
     const payload = new Blob([JSON.stringify({ nonce })], {
       type: "application/json",
@@ -91,14 +123,24 @@ export default function S060Stage(props: StageComponentProps) {
       </div>
       <p>{props.locale === "ja" ? "また、ここで。" : "See you here again."}</p>
       <div className="stage-actions">
-        <button type="button" className="stage-action" onClick={sendBeacon}>
+        <button
+          type="button"
+          className="stage-action"
+          onClick={sendBeacon}
+          disabled={!offline || !workerControlled}
+        >
           {props.locale === "ja"
             ? "オフライン郵便を投函"
             : "Post offline beacon"}
         </button>
       </div>
       <p className="interaction-status" role="status">
-        {status}
+        {status ||
+          (!workerControlled
+            ? "Service Workerの制御を待っています"
+            : offline
+              ? "オフライン郵便を投函できます"
+              : "ネットワークを切断すると投函できます")}
       </p>
       <div className="problem-row">
         <ProblemGiftBox problem={problem} locale={props.locale} />

@@ -42,10 +42,10 @@ header div span {
 }
 .workspace {
   display: grid;
-  grid-template-columns: minmax(270px, 1fr) auto minmax(270px, 1fr);
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   gap: 20px;
-  padding: 28px 24px;
+  padding: 20px 24px;
 }
 .pane {
   align-self: stretch;
@@ -64,7 +64,7 @@ h1 {
 .empty {
   display: grid;
   place-items: center;
-  min-height: 190px;
+  min-height: 150px;
   border: 2px dashed #b6c2d5;
   border-radius: 10px;
   color: #60708c;

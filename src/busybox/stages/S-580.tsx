@@ -19,7 +19,9 @@ export default function S580Stage(props: StageComponentProps) {
     if (!Constructor) return;
     const instance = new Constructor();
     recognition.current = instance;
-    instance.lang = props.locale === "ja" ? "ja-JP" : "en-US";
+    // The answer is the English product name; UI localization must not change
+    // the recognition language used by this browser API puzzle.
+    instance.lang = "en-US";
     instance.interimResults = false;
     instance.onresult = (event) => {
       const alternatives = Array.from(

@@ -64,23 +64,23 @@ PoC記録、展開計画、Deep Research分類台帳、旧実装計画は履歴�
 
 ### 何をするステージか
 
-ゲーム内に別サイト風の動画圧縮ツール「ClipPress」がiframeで埋め込まれている。fileまたは最大10秒のcamera録画を入力し、固定384kbpsのWebMへ変換する。入力と出力のfile sizeも表示する。ゲーム本体には四箱と一つの合言葉欄だけがある。
+ゲーム内に別サイト風の動画圧縮ツール「ClipPress」がiframeで埋め込まれている。fileまたは最大10秒のcamera録画を入力し、固定160kbpsのWebMへ変換する。入力と出力のfile sizeも表示する。ゲーム本体には四箱と一つの合言葉欄だけがある。
 
 ### 各箱の解法
 
 | 箱 | 入力条件 | 出力で読むもの |
 | --- | --- | --- |
-| B01 暗闇frame | RGBが全pixel `#000000`〜`#101010`のframeを含む動画 | 該当する一frameだけに表示される`DARK FRAME` |
-| B02 decode失敗 | 動画としてdecodeできないfileを変換する | Git管理済み固定error動画の`BROKEN INPUT` |
-| B03 QR frame | QRを含むframeがある動画を変換する | downscale frameをjsQRで検出し、同じ一frameへ差し替えたflag QR |
-| B04 metadata | ClipPressで正常変換した出力をもう一度入力する | 全frameへoverlayされる`SECOND PASS` |
+| B01 暗闇frame | RGBが全pixel `#000000`〜`#101010`のframeを含む動画 | 該当する一frameだけに表示される`busybox{dark_frame}` |
+| B02 decode失敗 | 動画としてdecodeできないfileを変換する | Git管理済み固定error動画の`busybox{broken_input}` |
+| B03 QR frame | QRを含むframeがある動画を変換する | downscale frameを同梱jsQRで検出し、検出四辺形へ射影した`busybox{qr_replaced}`のQRへ同じ一frameだけを差し替える |
+| B04 metadata | ClipPressで正常変換した出力をもう一度入力する | 全frameへoverlayされる`busybox{second_pass}` |
 
 出力を再生・停止・seekして文字またはQRを読み、親pageの共通合言葉欄へ完全一致で入力する。iframeはsession付き同一origin `postMessage`で「どの条件が成立したか」だけを親へ伝え、合言葉そのものを伝えない。
 
 ### 開かない操作
 
 - 変換buttonを押しただけ、内部条件を検出しただけ
-- native `BarcodeDetector`がない端末でQR問題を非対応扱いにすること
+- `BarcodeDetector`を使ってS-710のQR検出を実装すること（S-710は同梱jsQRを使う。Barcode Detection APIの実績は別stageだけに残す）
 - file名や拡張子だけで二回目の変換と判定すること
 - 動画でないfileを暗黒frameとして扱うこと
 
@@ -94,10 +94,10 @@ PoC記録、展開計画、Deep Research分類台帳、旧実装計画は履歴�
 
 | 箱 | ケーブル経路 | 出力QRのflag |
 | --- | --- | --- |
-| B01 | VIDEO 1 → T1 → OUTPUT | `BUSYBOX{swap_halves}` |
-| B02 | VIDEO 2 → T2 → OUTPUT | `BUSYBOX{merge_frames}` |
-| B03 | VIDEO 3 → T3 → T2 → OUTPUT | `BUSYBOX{odd_even_alpha}` |
-| B04 | VIDEO 3 → T1 → T3 → T2 → T1 → OUTPUT（T1を二列で二度使用） | `BUSYBOX{swap_route_beta}` |
+| B01 | VIDEO 1 → T1 → OUTPUT | `busybox{swap_halves}` |
+| B02 | VIDEO 2 → T2 → OUTPUT | `busybox{merge_frames}` |
+| B03 | VIDEO 3 → T3 → T2 → OUTPUT | `busybox{odd_even_alpha}` |
+| B04 | VIDEO 3 → T1 → T3 → T2 → T1 → OUTPUT（T1を二列で二度使用） | `busybox{swap_route_beta}` |
 
 T1は左右半分の交換、T2は全frameの画素積（fixtureでは黒セルを合成）、T3は偶数frameの左半分／奇数frameの右半分以外を白で埋める変換である。B04だけはT1の一列目と二列目を順に通す。ケーブルがoutputへ届かない、またはcycleになる接続は成立しない。出力動画のQRを読み、全箱共通のflag欄へ入力する。
 
@@ -113,7 +113,7 @@ T1は左右半分の交換、T2は全frameの画素積（fixtureでは黒セル�
 
 ### 何をするステージか
 
-一本のVP8 WebMに、解像度と縦横比が連続的に変化するframe sweepをブラウザ内で生成する。これは固定assetを再生するだけでは確認できないCanvasSourceのframe寸法変化そのものをギミックにするためである。native videoの実解像度が変化する瞬間をプレイヤーが観察する。
+一本のMSE動画へ、1フレームずつVP8 WebMをtimestamp offset付きで追加する。各セグメントのcanvas寸法を変え、144〜1080pxの正方形、横長、縦長へスイープする。これは固定assetを再生するだけでは確認できないnative videoの実寸変化をギミックにするためである。プレイヤーは生成後、native controlsで再生またはシークして実寸の変化を観察する。
 
 ### 解法
 

@@ -87,11 +87,11 @@ function drawSweepFrame(
   context.fillText(String(index + 1), width / 2, height / 2);
 }
 
-async function createSweepVideo(signal: AbortSignal) {
+async function createSweepSegment(index: number, signal: AbortSignal) {
   const canvas = document.createElement("canvas");
   const source = new CanvasSource(canvas, {
     codec: "vp8",
-    bitrate: 1_200_000,
+    bitrate: 600_000,
     keyFrameInterval: 1 / 15,
     sizeChangeBehavior: "passThrough",
   });
@@ -99,15 +99,72 @@ async function createSweepVideo(signal: AbortSignal) {
   const output = new Output({ format: new WebMOutputFormat(), target });
   output.addVideoTrack(source, { frameRate: 15 });
   await output.start();
-  for (let index = 0; index < 120; index += 1) {
-    if (signal.aborted) throw new DOMException("aborted", "AbortError");
-    const [width, height] = dimensionsForFrame(index);
-    drawSweepFrame(canvas, width, height, index);
-    await source.add(index / 15, 1 / 15, { keyFrame: true });
-  }
+  if (signal.aborted) throw new DOMException("aborted", "AbortError");
+  const [width, height] = dimensionsForFrame(index);
+  drawSweepFrame(canvas, width, height, index);
+  await source.add(0, 1 / 15, { keyFrame: true });
   await output.finalize();
   if (!target.buffer) throw new Error("sweep output unavailable");
-  return URL.createObjectURL(new Blob([target.buffer], { type: "video/webm" }));
+  return target.buffer;
+}
+
+function appendSegment(
+  sourceBuffer: SourceBuffer,
+  segment: ArrayBuffer,
+  signal: AbortSignal,
+) {
+  return new Promise<void>((resolve, reject) => {
+    const finish = () => {
+      sourceBuffer.removeEventListener("updateend", finish);
+      signal.removeEventListener("abort", cancel);
+      resolve();
+    };
+    const cancel = () => {
+      sourceBuffer.removeEventListener("updateend", finish);
+      reject(new DOMException("aborted", "AbortError"));
+    };
+    signal.addEventListener("abort", cancel, { once: true });
+    sourceBuffer.addEventListener("updateend", finish, { once: true });
+    try {
+      sourceBuffer.appendBuffer(segment);
+    } catch (error) {
+      sourceBuffer.removeEventListener("updateend", finish);
+      signal.removeEventListener("abort", cancel);
+      reject(error);
+    }
+  });
+}
+
+function createSweepMediaSource(signal: AbortSignal) {
+  const mediaSource = new MediaSource();
+  const url = URL.createObjectURL(mediaSource);
+  const ready = new Promise<void>((resolve, reject) => {
+    mediaSource.addEventListener(
+      "sourceopen",
+      () => {
+        void (async () => {
+          const mime = 'video/webm; codecs="vp8"';
+          if (!MediaSource.isTypeSupported(mime))
+            throw new Error("MSE WebM VP8 is unavailable");
+          const sourceBuffer = mediaSource.addSourceBuffer(mime);
+          sourceBuffer.mode = "segments";
+          for (let index = 0; index < 120; index += 1) {
+            const segment = await createSweepSegment(index, signal);
+            sourceBuffer.timestampOffset = index / 15;
+            await appendSegment(sourceBuffer, segment, signal);
+          }
+          if (mediaSource.readyState === "open") mediaSource.endOfStream();
+          resolve();
+        })().catch((error: unknown) => {
+          if (mediaSource.readyState === "open")
+            mediaSource.endOfStream("decode");
+          reject(error);
+        });
+      },
+      { once: true },
+    );
+  });
+  return { ready, url };
 }
 
 function classifyDimensions(
@@ -201,17 +258,19 @@ export default function S810Stage(props: StageComponentProps) {
           const controller = new AbortController();
           generationRef.current = controller;
           setStatus("Generating frame-size sweep…");
-          void createSweepVideo(controller.signal)
-            .then((url) => {
-              setVideoUrl((previous) => {
-                if (previous) URL.revokeObjectURL(previous);
-                return url;
-              });
-              setObserved({});
+          const media = createSweepMediaSource(controller.signal);
+          setVideoUrl((previous) => {
+            if (previous) URL.revokeObjectURL(previous);
+            return media.url;
+          });
+          setObserved({});
+          setStatus("Building native variable-size video…");
+          void media.ready
+            .then(() =>
               setStatus(
                 "Play and seek through the changing native video size.",
-              );
-            })
+              ),
+            )
             .catch((error: unknown) => {
               if ((error as Error).name !== "AbortError")
                 setStatus(

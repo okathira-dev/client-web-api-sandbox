@@ -21,61 +21,67 @@ export default function S660Stage(props: StageComponentProps) {
   );
   const observer = useRef<PressureObserver | null>(null);
   const [state, setState] = useState<PressureState | "waiting">("waiting");
-  const [observing, setObserving] = useState(false);
   const [status, setStatus] = useState("");
 
   const stop = useCallback(() => {
     observer.current?.disconnect();
     observer.current = null;
-    setObserving(false);
   }, []);
 
   useEffect(() => {
-    const stopWhenHidden = () => {
-      if (document.visibilityState === "hidden") stop();
+    let disposed = false;
+    const observe = async () => {
+      if (disposed || observer.current || document.visibilityState === "hidden")
+        return;
+      const Constructor = window.PressureObserver;
+      if (!Constructor?.knownSources.includes("cpu")) {
+        setStatus(
+          props.locale === "ja"
+            ? "この環境ではCPU Pressureを購読できない"
+            : "CPU Pressure is unavailable in this environment",
+        );
+        return;
+      }
+      const instance = new Constructor((records) => {
+        const latest = records.at(-1)?.state;
+        if (!latest) return;
+        setState(latest);
+        problems[boxIndexFor(latest)]?.solve([`cpu:${latest}`]);
+        setStatus(`cpu=${latest}`);
+      });
+      observer.current = instance;
+      setStatus(
+        props.locale === "ja"
+          ? "CPU状態を自動観測中…"
+          : "Observing CPU pressure…",
+      );
+      try {
+        await instance.observe("cpu", { sampleInterval: 1_000 });
+      } catch {
+        if (observer.current === instance) stop();
+        setStatus(
+          props.locale === "ja"
+            ? "CPU状態を購読できない"
+            : "Could not observe CPU pressure",
+        );
+      }
     };
-    document.addEventListener("visibilitychange", stopWhenHidden);
+    const handleVisibility = () => {
+      if (document.visibilityState === "hidden") {
+        stop();
+        return;
+      }
+      void observe();
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+    void observe();
     return () => {
-      document.removeEventListener("visibilitychange", stopWhenHidden);
+      disposed = true;
+      document.removeEventListener("visibilitychange", handleVisibility);
       observer.current?.disconnect();
       observer.current = null;
     };
-  }, [stop]);
-
-  const start = async () => {
-    if (observing) return;
-    const Constructor = window.PressureObserver;
-    if (!Constructor?.knownSources.includes("cpu")) {
-      setStatus(
-        props.locale === "ja"
-          ? "この環境ではCPU Pressureを購読できない"
-          : "CPU Pressure is unavailable in this environment",
-      );
-      return;
-    }
-    const instance = new Constructor((records) => {
-      const latest = records.at(-1)?.state;
-      if (!latest) return;
-      setState(latest);
-      problems[boxIndexFor(latest)]?.solve([`cpu:${latest}`]);
-      setStatus(`cpu=${latest}`);
-    });
-    observer.current = instance;
-    setObserving(true);
-    setStatus(
-      props.locale === "ja" ? "CPU状態を購読中…" : "Observing CPU pressure…",
-    );
-    try {
-      await instance.observe("cpu", { sampleInterval: 1_000 });
-    } catch {
-      if (observer.current === instance) stop();
-      setStatus(
-        props.locale === "ja"
-          ? "CPU状態を購読できない"
-          : "Could not observe CPU pressure",
-      );
-    }
-  };
+  }, [problems, props.locale, stop]);
 
   return (
     <div className="puzzle puzzle--centered">
@@ -88,30 +94,12 @@ export default function S660Stage(props: StageComponentProps) {
           />
         ))}
       </div>
-      <div className="stage-actions">
-        <button
-          type="button"
-          className="stage-action"
-          onClick={() => void start()}
-          disabled={observing}
-        >
-          {props.locale === "ja" ? "CPU状態を購読" : "Observe CPU pressure"}
-        </button>
-        <button
-          type="button"
-          className="stage-action"
-          onClick={stop}
-          disabled={!observing}
-        >
-          {props.locale === "ja" ? "購読を停止" : "Stop observing"}
-        </button>
-      </div>
       <p className="measurement">{state}</p>
       <p className="interaction-status" role="status">
         {status ||
           (props.locale === "ja"
-            ? "ゲーム側で負荷は発生させない"
-            : "The game does not create load")}
+            ? "ステージを開くと自動観測。ゲーム側で負荷は発生させない"
+            : "Observation starts on entry; the game creates no load")}
       </p>
     </div>
   );

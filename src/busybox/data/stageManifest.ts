@@ -17,7 +17,11 @@ const stageEvidence = {
     ["H-013", "H-022", "H-025"],
   ],
   "S-050": [["G-017"], ["BroadcastChannel"], ["H-013"]],
-  "S-060": [["G-014"], ["IndexedDB"], ["H-001", "H-018"]],
+  "S-060": [
+    ["G-014"],
+    ["IndexedDB", "sendBeacon", "Service Worker"],
+    ["H-001", "H-018", "H-021", "H-048"],
+  ],
   "S-070": [
     ["G-015"],
     ["Service Worker", "CacheStorage"],
@@ -50,7 +54,11 @@ const stageEvidence = {
     ["Google Drive appDataFolder"],
     ["H-015", "H-016", "H-017", "H-018"],
   ],
-  "S-150": [["G-001"], ["MutationObserver"], ["H-001", "H-020"]],
+  "S-150": [
+    ["G-001"],
+    ["UI Events", "HTMLSelectElement", "details[name]"],
+    ["H-001", "H-002", "H-003", "H-020"],
+  ],
   "S-160": [["G-004"], ["Canvas", "PointerEvent"], ["H-004", "H-020", "H-024"]],
   "S-170": [["G-005"], ["Web Animations"], ["H-001", "H-003", "H-020"]],
   "S-180": [["G-006"], ["Clipboard API"], ["H-006", "H-014", "H-020", "H-025"]],
@@ -265,6 +273,8 @@ const stageEvidence = {
   "S-810": [
     ["G-080"],
     [
+      "MediaSource",
+      "SourceBuffer",
       "HTMLVideoElement resize",
       "videoWidth",
       "videoHeight",

@@ -135,12 +135,6 @@ export const stageCatalogue = [
         clue: "selection",
         label: { ja: "選択範囲の箱", en: "Selection box" },
       },
-      {
-        id: "S-030-B02",
-        color: "#f59e0b",
-        clue: "selection",
-        label: { ja: "離れた範囲の箱", en: "Disjoint-range box" },
-      },
     ],
   }),
   defineStage({
@@ -312,26 +306,26 @@ export const stageCatalogue = [
   }),
   defineStage({
     id: "S-150",
-    label: { ja: "文書の順番", en: "Document order" },
+    label: { ja: "キーボードでたどる", en: "Keyboard paths" },
     category: "page",
     problems: [
       {
         id: "S-150-B01",
         color: "#c084fc",
-        clue: "dom",
-        label: { ja: "文書構造の箱", en: "Document-structure box" },
+        clue: "hidden",
+        label: { ja: "フォーカスの箱", en: "Focus box" },
       },
       {
         id: "S-150-B02",
         color: "#a78bfa",
-        clue: "hidden",
-        label: { ja: "不可視focusの箱", en: "Hidden-focus box" },
+        clue: "selection",
+        label: { ja: "検索選択の箱", en: "Typeahead-select box" },
       },
       {
         id: "S-150-B03",
         color: "#8b5cf6",
         clue: "dom",
-        label: { ja: "排他detailsの箱", en: "Exclusive-details box" },
+        label: { ja: "排他開示の箱", en: "Exclusive-disclosure box" },
       },
     ],
   }),

@@ -27,14 +27,43 @@ const glyphs = {
   P: ["11110", "10001", "10001", "11110", "10000", "10000", "10000"],
   U: ["10001", "10001", "10001", "10001", "10001", "10001", "01110"],
   T: ["11111", "00100", "00100", "00100", "00100", "00100", "00100"],
+  S: ["01111", "10000", "10000", "01110", "00001", "00001", "11110"],
+  Y: ["10001", "10001", "01010", "00100", "00100", "00100", "00100"],
+  X: ["10001", "10001", "01010", "00100", "01010", "10001", "10001"],
+  "{": ["00110", "00100", "00100", "11000", "00100", "00100", "00110"],
+  "}": ["01100", "00100", "00100", "00011", "00100", "00100", "01100"],
+  _: ["00000", "00000", "00000", "00000", "00000", "00000", "11111"],
 };
+
+for (const [lower, upper] of Object.entries({
+  b: "B",
+  u: "U",
+  s: "S",
+  y: "Y",
+  o: "O",
+  x: "X",
+  r: "R",
+  e: "E",
+  n: "N",
+  k: "K",
+  i: "I",
+  p: "P",
+  t: "T",
+})) {
+  glyphs[lower] = glyphs[upper];
+}
 
 function brokenFrame() {
   const width = 640;
   const height = 360;
   const pixels = new Uint8Array(width * height);
-  const text = "BROKEN INPUT";
-  const scale = 10;
+  const text = "busybox{broken_input}";
+  const scale = Math.max(
+    1,
+    Math.floor(
+      Math.min((width - 20) / (text.length * 6 - 1), (height - 20) / 7),
+    ),
+  );
   const letterWidth = 6 * scale;
   const left = Math.floor((width - (text.length * letterWidth - scale)) / 2);
   const top = Math.floor((height - 7 * scale) / 2);
@@ -84,8 +113,10 @@ try {
       "libvpx",
       "-pix_fmt",
       "yuv420p",
+      "-f",
+      "webm",
       "-b:v",
-      "384k",
+      "160k",
       "-metadata",
       "title=ClipPress decode recovery",
       "-y",

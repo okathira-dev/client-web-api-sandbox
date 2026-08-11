@@ -1,8 +1,8 @@
 export const videoRecoveryFlags = {
-  t1: "BUSYBOX{swap_halves}",
-  t2: "BUSYBOX{merge_frames}",
-  alpha: "BUSYBOX{odd_even_alpha}",
-  beta: "BUSYBOX{swap_route_beta}",
+  t1: "busybox{swap_halves}",
+  t2: "busybox{merge_frames}",
+  alpha: "busybox{odd_even_alpha}",
+  beta: "busybox{swap_route_beta}",
 } as const;
 
 export type VideoRecoveryRoute = keyof typeof videoRecoveryFlags;

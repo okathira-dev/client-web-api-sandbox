@@ -271,9 +271,6 @@ export function App() {
               </div>
             )}
             <p className="privacy-note">{copy.privacy}</p>
-            <div className="settings-legal-links">
-              <a href="./licenses/index.html">{copy.thirdPartyLicenses}</a>
-            </div>
           </section>
         )}
 
@@ -281,9 +278,12 @@ export function App() {
           <section className="panel" aria-labelledby={headingIds.about}>
             <h2 id={headingIds.about}>{copy.about}</h2>
             <p>{copy.aboutBody}</p>
-            <a href="./docs/privacy-and-permissions.md">
-              Privacy &amp; permissions
-            </a>
+            <div className="about-links">
+              <a href="./docs/privacy-and-permissions.md">
+                Privacy &amp; permissions
+              </a>
+              <a href="./licenses/index.html">{copy.thirdPartyLicenses}</a>
+            </div>
           </section>
         )}
       </main>

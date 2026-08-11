@@ -23,10 +23,10 @@ const qrSize = 25;
 const dataCodewords = 34;
 const errorCorrectionCodewords = 10;
 const qrTexts = {
-  t1: "BUSYBOX{swap_halves}",
-  t2: "BUSYBOX{merge_frames}",
-  alpha: "BUSYBOX{odd_even_alpha}",
-  beta: "BUSYBOX{swap_route_beta}",
+  t1: "busybox{swap_halves}",
+  t2: "busybox{merge_frames}",
+  alpha: "busybox{odd_even_alpha}",
+  beta: "busybox{swap_route_beta}",
 };
 
 async function run(executable, args) {
@@ -327,6 +327,8 @@ async function makeVideo(name, frames) {
     "libvpx",
     "-pix_fmt",
     "yuv420p",
+    "-f",
+    "webm",
     "-b:v",
     "600k",
     "-metadata",

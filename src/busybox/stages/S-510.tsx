@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { StageComponentProps } from "../runtime/types";
 import { ProblemGiftBox } from "../ui/GiftBox";
 
@@ -23,7 +23,48 @@ function toHex(bytes: ArrayBuffer) {
   ).join("");
 }
 
-/** S-510 — drag a generated PNG File from a dedicated source window into this receiver. H-004/H-013/H-014/H-023. */
+function DropZone({
+  children,
+  onDrop,
+}: {
+  children: React.ReactNode;
+  onDrop(event: React.DragEvent<HTMLElement>): void;
+}) {
+  return (
+    <section
+      className="drop-target"
+      aria-label="Drop target"
+      onDragOver={(event) => {
+        event.preventDefault();
+        event.dataTransfer.dropEffect = "copy";
+      }}
+      onDrop={(event) => {
+        event.preventDefault();
+        if (event.isTrusted) onDrop(event);
+      }}
+    >
+      {children}
+    </section>
+  );
+}
+
+/**
+ * S-510 — drag data across browser boundaries.
+ *
+ * B01 uses a real downloaded PNG. The player downloads the fixed fixture and
+ * drags it from the browser download shelf or the OS file manager into the
+ * first drop zone. The drop must be trusted, contain a PNG-like File, and
+ * match the Git-managed fixture digest.
+ *
+ * B02 uses an opaque-origin sandbox iframe. Dragging one of its images arms a
+ * short-lived layer marker in the parent. The second drop zone accepts only
+ * the iframe's text/uri-list plus matching marker, then fetches and verifies
+ * that layer before composing all three images. The two zones are separate so
+ * a browser-exposed File item cannot swallow the URI path.
+ *
+ * No file is uploaded or sent to a server. Human verification:
+ * H-001, H-002, H-003, H-005, H-013, H-014, H-019, H-020, H-023, H-025.
+ */
 export default function S510Stage(props: StageComponentProps) {
   const problem = props.problem("S-510-B01");
   const crossWindowProblem = props.problem("S-510-B02");
@@ -32,153 +73,162 @@ export default function S510Stage(props: StageComponentProps) {
     () => params.get("round") ?? crypto.randomUUID(),
     [params],
   );
-  const source = params.get("drag-source") === "1";
-  const [file, setFile] = useState<File | null>(null);
   const [status, setStatus] = useState("");
   const [layers, setLayers] = useState<Readonly<Record<string, string>>>({});
+  const [armedLayer, setArmedLayer] = useState<{
+    layer: string;
+    expires: number;
+  }>();
+  const helperRef = useRef<HTMLIFrameElement>(null);
+
   useEffect(() => {
-    if (!source) return;
-    const canvas = document.createElement("canvas");
-    canvas.width = 240;
-    canvas.height = 120;
-    const context = canvas.getContext("2d");
-    if (!context) return;
-    context.fillStyle = "#171329";
-    context.fillRect(0, 0, canvas.width, canvas.height);
-    context.fillStyle = "#facc15";
-    context.font = "24px sans-serif";
-    context.fillText(".busybox", 55, 68);
-    canvas.toBlob((blob) => {
-      if (blob)
-        setFile(
-          new File(
-            [blob, new TextEncoder().encode(`busybox-round:${round}`)],
-            `busybox-${round}.png`,
-            { type: "image/png" },
-          ),
-        );
-    }, "image/png");
-  }, [round, source]);
+    const receiveArm = (event: MessageEvent<unknown>) => {
+      if (event.source !== helperRef.current?.contentWindow) return;
+      if (!event.data || typeof event.data !== "object") return;
+      const data = event.data as {
+        channel?: unknown;
+        round?: unknown;
+        layer?: unknown;
+        type?: unknown;
+      };
+      if (
+        data.channel !== "busybox-s510-drag" ||
+        data.type !== "start" ||
+        data.round !== round ||
+        typeof data.layer !== "string" ||
+        !(data.layer in layerAssets)
+      )
+        return;
+      setArmedLayer({ layer: data.layer, expires: Date.now() + 5_000 });
+    };
+    window.addEventListener("message", receiveArm);
+    return () => window.removeEventListener("message", receiveArm);
+  }, [round]);
+
+  useEffect(() => {
+    if (!armedLayer) return;
+    const remaining = Math.max(0, armedLayer.expires - Date.now());
+    const timer = window.setTimeout(() => setArmedLayer(undefined), remaining);
+    return () => window.clearTimeout(timer);
+  }, [armedLayer]);
+
+  const sourceUrl = new URL("./drag-layer-a.png", location.href).href;
+  const helperUrl = new URL("./drag-helper.html", location.href);
+  helperUrl.searchParams.set("round", round);
+
+  const handleFileDrop = (event: React.DragEvent<HTMLElement>) => {
+    const dropped = event.dataTransfer.files[0];
+    if (!dropped) {
+      setStatus("PNGファイルをここへドロップしてください");
+      return;
+    }
+    void dropped
+      .arrayBuffer()
+      .then((bytes) => crypto.subtle.digest("SHA-256", bytes))
+      .then((digest) => {
+        if (toHex(digest) !== layerAssets.A.sha256) {
+          setStatus("別の画像です");
+          return;
+        }
+        problem.solve(["drag-drop:png-file"]);
+        setStatus(`${dropped.name} received`);
+      })
+      .catch(() => setStatus("画像を読み取れません"));
+  };
+
+  const handleLayerDrop = (event: React.DragEvent<HTMLElement>) => {
+    const uri = event.dataTransfer
+      .getData("text/uri-list")
+      .split("\n")[0]
+      ?.trim();
+    const label = event.dataTransfer.getData("text/plain");
+    if (!uri || !armedLayer || armedLayer.expires < Date.now()) {
+      setStatus("iframeの画像をドラッグしてからドロップしてください");
+      return;
+    }
+    if (label !== `busybox-round:${round}:${armedLayer.layer}`) return;
+    const layer = armedLayer.layer;
+    const asset = layerAssets[layer as keyof typeof layerAssets];
+    if (!asset) return;
+    const parsed = new URL(uri, location.href);
+    const expectedPath = new URL(`./${asset.filename}`, location.href).pathname;
+    if (parsed.origin !== location.origin || parsed.pathname !== expectedPath) {
+      setStatus("許可されていない画像です");
+      return;
+    }
+    setArmedLayer(undefined);
+    void fetch(parsed.href)
+      .then((response) => response.arrayBuffer())
+      .then((bytes) => crypto.subtle.digest("SHA-256", bytes))
+      .then((digest) => {
+        if (toHex(digest) !== asset.sha256) {
+          setStatus("画像の照合に失敗しました");
+          return;
+        }
+        setLayers((current) => ({ ...current, [layer]: parsed.href }));
+        setStatus(`${layer} received`);
+      })
+      .catch(() => setStatus("画像の取得に失敗しました"));
+  };
+
   useEffect(() => {
     if (Object.keys(layers).length >= 3)
       crossWindowProblem.solve(["iframe-drag:three-layers"]);
   }, [crossWindowProblem.solve, layers]);
-  if (source)
-    return (
-      <div className="puzzle puzzle--centered">
-        <button
-          type="button"
-          className="drag-token"
-          draggable={Boolean(file)}
-          onDragStart={(event) => {
-            if (file) {
-              event.dataTransfer.items.add(file);
-              event.dataTransfer.effectAllowed = "copy";
-            }
-          }}
-        >
-          {props.locale === "ja"
-            ? "この印を別の窓へドラッグ"
-            : "Drag this mark to the other window"}
-        </button>
-      </div>
-    );
-  const sourceUrl = new URL(location.href);
-  sourceUrl.searchParams.set("round", round);
-  sourceUrl.searchParams.set("drag-source", "1");
-  const helperUrl = new URL("./drag-helper.html", location.href);
-  helperUrl.searchParams.set("round", round);
+
   return (
     <div className="puzzle puzzle--centered">
-      <ProblemGiftBox problem={problem} locale={props.locale} />
-      <button
-        type="button"
-        className="stage-action"
-        onClick={() => window.open(sourceUrl, "_blank")}
-      >
-        {props.locale === "ja" ? "印の窓を開く" : "Open the mark window"}
-      </button>
-      <iframe
-        title={
-          props.locale === "ja" ? "窓越しの画像" : "Cross-window image source"
-        }
-        sandbox="allow-scripts"
-        loading="lazy"
-        src={helperUrl.href}
-        style={{
-          width: "100%",
-          minHeight: 220,
-          border: "1px solid currentColor",
-        }}
-      />
-      <button
-        type="button"
-        className="drop-target"
-        onDragOver={(event) => {
-          event.preventDefault();
-          event.dataTransfer.dropEffect = "copy";
-        }}
-        onDrop={(event) => {
-          event.preventDefault();
-          if (!event.isTrusted) return;
-          const dropped = event.dataTransfer.files[0];
-          if (dropped) {
-            if (dropped.type !== "image/png") return;
-            void dropped.arrayBuffer().then((bytes) => {
-              const text = new TextDecoder().decode(bytes);
-              if (
-                dropped.name === `busybox-${round}.png` &&
-                text.includes(`busybox-round:${round}`)
-              ) {
-                problem.solve(["drag-drop:png-file"]);
-                setStatus(dropped.name);
-              }
-            });
-            return;
-          }
-          const uri = event.dataTransfer
-            .getData("text/uri-list")
-            .split("\n")[0]
-            ?.trim();
-          const label = event.dataTransfer.getData("text/plain");
-          if (!uri || !label.startsWith(`busybox-round:${round}:`)) return;
-          const layer = label.slice(`busybox-round:${round}:`.length);
-          const asset = layerAssets[layer as keyof typeof layerAssets];
-          if (!asset) return;
-          const parsed = new URL(uri, location.href);
-          const expectedPath = new URL(`./${asset.filename}`, location.href)
-            .pathname;
-          if (
-            parsed.origin !== location.origin ||
-            parsed.pathname !== expectedPath
-          )
-            return;
-          void fetch(parsed.href)
-            .then((response) => response.arrayBuffer())
-            .then((bytes) => crypto.subtle.digest("SHA-256", bytes))
-            .then((digest) => {
-              if (toHex(digest) !== asset.sha256) return;
-              setLayers((current) => {
-                return { ...current, [layer]: parsed.href };
-              });
-              setStatus(`${layer} received`);
-            })
-            .catch(() => setStatus("image fetch failed"));
-        }}
-      >
-        {props.locale === "ja"
-          ? "ここへファイルを落とす"
-          : "Drop the file here"}
-      </button>
-      <fieldset className="drag-composite">
-        <legend>
-          {props.locale === "ja" ? "受領レイヤー" : "Received layers"}
-        </legend>
-        {Object.entries(layers).map(([layer, url]) => (
-          <img key={layer} src={url} alt={layer} width={240} height={120} />
-        ))}
-      </fieldset>
-      <ProblemGiftBox problem={crossWindowProblem} locale={props.locale} />
+      <div className="drag-columns">
+        <section className="drag-card">
+          <ProblemGiftBox problem={problem} locale={props.locale} />
+          <h2>{props.locale === "ja" ? "実ファイル" : "Real file"}</h2>
+          <p>
+            {props.locale === "ja"
+              ? "画像を保存し、OSのファイルからここへドラッグする。"
+              : "Save the image, then drag it here from the OS file manager."}
+          </p>
+          <a
+            className="download"
+            href={sourceUrl}
+            download="busybox-sticker.png"
+          >
+            {props.locale === "ja" ? "PNGを保存" : "Download PNG"}
+          </a>
+          <DropZone onDrop={handleFileDrop}>
+            {props.locale === "ja"
+              ? "PNGファイルをここへ"
+              : "Drop the PNG here"}
+          </DropZone>
+        </section>
+        <section className="drag-card">
+          <ProblemGiftBox problem={crossWindowProblem} locale={props.locale} />
+          <h2>{props.locale === "ja" ? "iframeの画像" : "Iframe image"}</h2>
+          <iframe
+            ref={helperRef}
+            title={
+              props.locale === "ja"
+                ? "窓越しの画像"
+                : "Cross-origin image source"
+            }
+            sandbox="allow-scripts"
+            loading="lazy"
+            src={helperUrl.href}
+          />
+          <DropZone onDrop={handleLayerDrop}>
+            {props.locale === "ja"
+              ? "iframeの画像をここへ"
+              : "Drop the iframe image here"}
+          </DropZone>
+          <fieldset className="drag-composite">
+            <legend>
+              {props.locale === "ja" ? "受領レイヤー" : "Received layers"}
+            </legend>
+            {Object.entries(layers).map(([layer, url]) => (
+              <img key={layer} src={url} alt={layer} width={240} height={120} />
+            ))}
+          </fieldset>
+        </section>
+      </div>
       <p className="interaction-status" role="status">
         {status}
       </p>

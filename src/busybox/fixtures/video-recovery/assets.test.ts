@@ -30,10 +30,10 @@ describe("S-720 video recovery fixture", () => {
 
     expect(fixture.size).toBe("360x360");
     expect(fixture.answers).toEqual({
-      t1: "BUSYBOX{swap_halves}",
-      t2: "BUSYBOX{merge_frames}",
-      alpha: "BUSYBOX{odd_even_alpha}",
-      beta: "BUSYBOX{swap_route_beta}",
+      t1: "busybox{swap_halves}",
+      t2: "busybox{merge_frames}",
+      alpha: "busybox{odd_even_alpha}",
+      beta: "busybox{swap_route_beta}",
     });
     expect(fixture.routes).toEqual({
       "source-t1": ["T1"],

@@ -275,7 +275,23 @@ try {
   await concatSegments(b03Segments, join(assetRoot, "qr-frame-input.webm"));
   await writeFile(
     join(assetRoot, "generation-manifest.json"),
-    `${JSON.stringify({ schemaVersion: 1, durationSeconds: 10, blackWindow: [4, 5], qrWindow: [4, 5], qrPayload: "S710_QR_TEST", assets: ["dark-frame-input.webm", "qr-frame-input.webm"] }, null, 2)}\n`,
+    `${JSON.stringify(
+      {
+        schemaVersion: 1,
+        durationSeconds: 10,
+        blackWindow: [4, 5],
+        qrWindow: [4, 5],
+        qrPayload: "S710_QR_TEST",
+        assets: ["dark-frame-input.webm", "qr-frame-input.webm"],
+      },
+      null,
+      2,
+    )
+      .replaceAll("[\n    4,\n    5\n  ]", "[4, 5]")
+      .replaceAll(
+        '[\n    "dark-frame-input.webm",\n    "qr-frame-input.webm"\n  ]',
+        '["dark-frame-input.webm", "qr-frame-input.webm"]',
+      )}\n`,
   );
 } finally {
   await rm(temporaryRoot, { recursive: true, force: true });

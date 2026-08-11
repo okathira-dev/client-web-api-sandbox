@@ -1,47 +1,42 @@
 import jsQR from "jsqr";
 
-interface BarcodeResult {
-  readonly rawValue?: string;
+export interface QrPoint {
+  readonly x: number;
+  readonly y: number;
 }
 
-interface BarcodeDetectorLike {
-  detect(source: CanvasImageSource): Promise<readonly BarcodeResult[]>;
+export interface QrDetection {
+  readonly data: string;
+  readonly location: {
+    readonly topLeftCorner: QrPoint;
+    readonly topRightCorner: QrPoint;
+    readonly bottomRightCorner: QrPoint;
+    readonly bottomLeftCorner: QrPoint;
+  };
 }
 
-interface BarcodeDetectorConstructor {
-  new (options?: { formats?: readonly string[] }): BarcodeDetectorLike;
-}
-
-export function createNativeQrDetector(): BarcodeDetectorLike | undefined {
-  const Detector = (
-    window as unknown as { BarcodeDetector?: BarcodeDetectorConstructor }
-  ).BarcodeDetector;
-  if (!Detector) return undefined;
-  try {
-    return new Detector({ formats: ["qr_code"] });
-  } catch {
-    return undefined;
-  }
-}
-
-export async function decodeQrCanvas(
+/**
+ * Decode through the bundled jsQR implementation. S-710 intentionally does
+ * not use Barcode Detection API as a fallback or primary path: its puzzle
+ * needs the same corner geometry on every supported device.
+ */
+export function decodeQrCanvas(
   canvas: HTMLCanvasElement,
-  nativeDetector?: BarcodeDetectorLike,
-): Promise<string | undefined> {
-  if (nativeDetector) {
-    try {
-      const nativeResult = (await nativeDetector.detect(canvas)).find(
-        (result) => result.rawValue,
-      )?.rawValue;
-      if (nativeResult) return nativeResult;
-    } catch {
-      // The bundled decoder below is the device-independent path.
-    }
-  }
+): QrDetection | undefined {
   const context = canvas.getContext("2d", { willReadFrequently: true });
   if (!context) return undefined;
   const image = context.getImageData(0, 0, canvas.width, canvas.height);
-  return jsQR(image.data, image.width, image.height, {
+  const decoded = jsQR(image.data, image.width, image.height, {
     inversionAttempts: "attemptBoth",
-  })?.data;
+  });
+  if (!decoded) return undefined;
+  return {
+    data: decoded.data,
+    location: {
+      topLeftCorner: decoded.location.topLeftCorner,
+      topRightCorner: decoded.location.topRightCorner,
+      bottomRightCorner: decoded.location.bottomRightCorner,
+      bottomLeftCorner: decoded.location.bottomLeftCorner,
+    },
+  };
 }

@@ -1,5 +1,21 @@
 # 検証記録
 
+## 2026-08-12 実装追補の検証
+
+| 検証 | 結果 | 証跡 |
+| --- | --- | --- |
+| TypeScript | 合格 | bundled TypeScript で `--noEmit` |
+| Jest | 合格 | 44 suites / 285 tests |
+| Biome | 合格 | `src/busybox` と変更したfixture生成script |
+| Markuplint | 合格 | `src/**/*.{jsx,tsx,html}` |
+| Vite production build | 合格 | multi-page build、S-640/S-710/S-720/S-810 chunkを含む |
+| S-810 Windows Chrome | 合格 | MSE timestamp offset経路で小正方形・大正方形・横長・縦長の4箱を実再生中に開箱 |
+| S-710 Windows Chrome | 合格 | Git管理QR fixtureでQR frame置換を確認し、lowercase `busybox{qr_replaced}`で開箱。JSON file入力でdecode失敗固定outputと`busybox{broken_input}`を確認 |
+| S-720 Windows Chrome / fixture QR | 合格 | `VIDEO 1 → T1 → OUTPUT`の実変換後にlowercase `busybox{swap_halves}`を入力し、T1箱を開箱。FFmpeg抽出frameをjsQRで4 routeとも `busybox{...}`へ照合 |
+| 固定media再生成 | 合格 | ローカルのWebM対応FFmpegを`BUSYBOX_FFMPEG_PATH`へ明示してS-710 decode失敗outputとS-720全9本を再生成。manifest、WebM header、lowercase QR payloadの正本を更新 |
+
+生成時のFFmpegはソースコードへ絶対パスを記録せず、実行時の`BUSYBOX_FFMPEG_PATH`で注入する。実装側も入力flagを小文字へ正規化して照合する。
+
 ## 2026-08-11 現行実装コミット前検証
 
 この節が現行コードに対する最新の自動検証結果である。以下の過去節は当時のfixture、箱番号、実装経路を記録した履歴であり、現在のS-640/S-710/S-720/S-810の仕様判断には使わない。人手確認の未完了項目は[現状・残問題・人手確認への引継ぎ](./current-status-and-handoff.md)と[人手確認台帳](./human-test-matrix.md)を正とする。

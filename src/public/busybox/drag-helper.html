@@ -20,6 +20,12 @@
   for (const image of document.querySelectorAll("img[data-layer]")) {
     image.addEventListener("dragstart", (event) => {
       const source = new URL(image.getAttribute("src"), location.href).href;
+      parent.postMessage({
+        channel: "busybox-s510-drag",
+        type: "start",
+        round,
+        layer: image.dataset.layer,
+      }, "*");
       event.dataTransfer.setData("text/uri-list", source);
       event.dataTransfer.setData("text/plain", `busybox-round:${round}:${image.dataset.layer}`);
       event.dataTransfer.effectAllowed = "copy";

@@ -13,7 +13,7 @@
 
 ## 現行スナップショット
 
-2026-08-11現在、catalogue、runtime registry、地図、manifestに67stage・155箱が実装されている。D-141でS-270とS-350のMedia Capabilities profile箱を不採用、D-143でS-230のPiP箱をS-350へ統合し、D-144でS-350へfullscreen箱を追加した。全採用計画の旧件数は現行コードの判断に使わない。
+2026-08-12現在、catalogue、runtime registry、地図、manifestに67stage・153箱が実装されている。S-030-B02を削除し、S-270とS-350のMedia Capabilities profile箱を不採用、S-230のPiP箱をS-350へ統合し、S-350へfullscreen箱を追加した。全採用計画の旧件数は現行コードの判断に使わない。
 
 過去の60stage・97箱、68stage・156箱、69stage・156箱、79stage・187箱、80stage・187箱は、実装前または中間時点のスナップショットである。現行の箱IDと解法は[現行ステージ解法仕様](./stage-walkthroughs.md)と実装を正とし、旧展開計画やPoCの番号から導かない。
 
@@ -22,7 +22,7 @@
 | S-000 | click / activation | 実装済み・人手確認待ち | 初回・再入場の閉箱、累積1/1、再開封、進捗非重複 | H-001, H-002, H-003, H-020 |
 | S-010 | Pointer Events | 実装済み・人手確認待ち | 3箱の同形性、マウス分離、再入場時の累積1/3 | H-004, H-020, H-024 |
 | S-020 | viewport resize / HTMLMeterElement | B01実装済み・人手確認待ち、meter表示も実装済み | 実viewport resizeが成功条件。meterは現在幅と目標帯の表示だけで、scriptによるmeter値変更は判定外 | H-001, H-002, H-003, H-020 |
-| S-030 | Selection / CSS Custom Highlight | B01/B02実装済み・人手確認待ち、B03はAPI未対応で保留 | B02は正しい非連続Range 3個を一つのHighlightへ蓄積。B03はtrusted pointer座標の`highlightsFromPoint()`結果を重なりを含む集合として照合し、DOM elementや手計算矩形だけではclearしない | H-001, H-002, H-003, H-004, H-020, H-025 |
+| S-030 | Selection | B01実装済み・人手確認待ち | 一つの文章から指定範囲をnative Selectionで選択する。CSS Custom Highlightによる旧B02は削除し、入力欄やscript製ハイライトでは開かない | H-001, H-002, H-003, H-004, H-020, H-025 |
 | S-040 | Page Visibility / High Resolution Time | 実装済み・人手確認待ち | monotonicな2秒判定と、同一documentが25分以上連続hidden後に復帰するB02。reload / discardは試行終了 | H-013, H-022, H-025 |
 | S-050 | Broadcast Channel | 実装済み・人手確認待ち | URL直接起動、cleanup境界 | H-013 |
 | S-060 | IndexedDB再訪 / Beacon offline郵便 | B01/B02実装済み・人手確認待ち | B01の観測保存、移行、マージ。B02は実`sendBeacon()`、offline full-document navigation、Service Worker POST検証、IndexedDB receipt commitを使い、same-document遷移、通常fetch、直接writeでは開かない | H-001, H-018, H-021, H-048 |
@@ -34,7 +34,7 @@
 | S-120 | microphone / RMS | 実装済み・人手確認待ち | 生音声非保存、AudioContext cleanup | H-006, H-007, H-019 |
 | S-130 | File API / Web Crypto | 実装済み・人手確認待ち | 4KB上限、ハッシュ照合、2箱進捗 | H-014, H-020 |
 | S-140 | Google Drive `appDataFolder` | 実装済み・設定/人手確認待ち | API通信モック、grow-onlyマージ、破損保護 | H-015〜H-018 |
-| S-150 | DOM / MutationObserver / UI Events / details | B01〜B03実装済み・人手確認待ち | B01はDOM順と見た目順の分離。B02は不可視箱へのfocus。B03は同じ`name`の`<details>`を手掛かりどおりに排他的開閉 | H-001, H-002, H-003, H-020 |
+| S-150 | DOM / UI Events / native select / details | B01〜B03実装済み・人手確認待ち | B01は`pointer-events:none`のbuttonへTabでfocus。B02はdecoyの中からnative selectのtypeaheadで`open busybox`を選択。B03は同じ`name`の`<details>`を複数開閉し、UAの排他状態を観測 | H-001, H-002, H-003, H-020 |
 | S-160 | Canvas / Pointer Events | 実装済み・人手確認待ち | 距離・時間・速度差の判定、pointer cleanup | H-004, H-020, H-024 |
 | S-170 | Web Animations | 実装済み・人手確認待ち | animation時刻判定、cancel cleanup | H-001, H-002, H-003, H-020 |
 | S-180 | Clipboard API | 実装済み・人手確認待ち | copy操作で`xobysub`を書き、page外で`busybox`へ修正・再copyした後、箱click時の`clipboard.readText()`完全一致でB01 | H-001, H-002, H-003, H-004, H-006, H-014, H-020, H-025 |
@@ -82,12 +82,12 @@
 | S-630 | Network Information `type` | DR-101でB01〜B04承認済み・未実装 | 明示観測時のWi-Fi、cellular、ethernet、Bluetoothを別箱へ累積。速度、RTT、Save Data、offline、unknown系、UA sniff、通信試験を判定に使わない | H-004, H-019, H-023, H-025, H-032 |
 | S-640 | Encoding API / legacy encodings | B01〜B08初版実装済み・人手確認待ち | 8つの文字化けcardを表示し、一つの共通入力欄へ元の符号化で復号した文字列を入れる。誤表示用と元データ用の2つのencodingをfixtureで検証し、全回答非重複とexact code point一致を固定する | H-001, H-002, H-003, H-004, H-014, H-020, H-025, H-033 |
 | S-650 | Permissions API / PermissionStatus | B01〜B04初版実装済み・人手確認待ち | 位置情報、通知、カメラ、マイクの初期granted、change、focus再照会、明示request、denied / prompt、descriptor非対応、media cleanupを検証する | H-004, H-006, H-007, H-019, H-023, H-025, H-034 |
-| S-660 | Compute Pressure API / PressureObserver | B01〜B03初版実装済み・人手確認待ち | CPUのnominal、中間（fair / serious）、criticalを箱へ累積。ゲーム負荷なし、明示開始、初期record、state変化、非対応、Permissions Policy、disconnect、非保存を検証する | H-004, H-019, H-023, H-025, H-035 |
+| S-660 | Compute Pressure API / PressureObserver | B01〜B03初版実装済み・人手確認待ち | 入場時にCPUを自動観測し、nominal、中間（fair / serious）、criticalを箱へ累積。ゲーム負荷なし。hidden時disconnect、再表示時の再購読、非対応、Permissions Policy、非保存を検証する | H-004, H-019, H-023, H-025, H-035 |
 | S-670 | Console API / ASCII TUI | B01初版実装済み・人手確認待ち | Consoleへread-only迷路を出し、page方向buttonで移動。plain text、再表示、Console入力なし、page編集なし、resetを検証する | H-001, H-002, H-003, H-004, H-020, H-025, H-036 |
 | S-680 | Console API / diagnostic table | D-135で不採用・stage予約解除 | S-670 Console迷路と、Consoleをread-only表示面、pageを入力面として往復する中心体験が重複するため実装しない | — |
 | S-690 | URL Fragment Text Directives | DR-049でB01の枠組み承認済み・詳細保留 | 同一pageの実Text Fragment link、対象text一意性、巡回graph、最終回答、Back、非対応、固定history上限を検証する。謎fixtureのレビュー後に仕様確定する | H-001, H-002, H-003, H-004, H-019, H-020, H-025, H-038 |
 | S-700 | Remote Playback / Barcode Detection / camera / Presentation | DR-075でB01 / B02、DR-076でB03承認済み・未実装。B02はDR-016の実装先 | B01 / B02はRemote Playback接続と文字鍵 / QRを従来どおり検証する。B03は明示`start()`、実`connected`、receiver初期描画後のround付きready、取消、切断、terminate、非保存を検証する | H-003, H-004, H-006, H-019, H-020, H-023, H-025, H-040, H-041 |
-| S-710 | MediaBunny / MediaRecorder / WebM metadata / jsQR / iframe | B01〜B04初版実装済み・人手確認待ち | 独立したClipPress風HTMLをsame-origin iframeへ埋め込み、10秒・640×360・15fps・384kbps変換、暗黒frame白文字化、入力decode失敗時の固定error動画、downscaleしたframeのjsQR検出とQR置換、SimpleTag再入力overlay、downloadとsize比を実装。iframeは条件成立だけをsession付き`postMessage`で親へ渡し、共通合言葉欄の完全一致で開く | H-003, H-004, H-006, H-007, H-014, H-019, H-020, H-023, H-025, H-042 |
+| S-710 | MediaBunny / MediaRecorder / WebM metadata / jsQR / iframe | B01〜B04初版実装済み・人手確認待ち | 独立したClipPress風HTMLをsame-origin iframeへ埋め込み、10秒・640×360・15fps・160kbps変換、暗黒frame白文字化、入力decode失敗時の固定error動画、downscaleしたframeのjsQR検出と検出四辺形へのQR射影置換、SimpleTag再入力overlay、downloadとsize比を実装。iframeは条件成立だけをsession付き`postMessage`で親へ渡し、共通合言葉欄は小文字へ正規化して照合する | H-003, H-004, H-006, H-007, H-014, H-019, H-020, H-023, H-025, H-042 |
 | S-720 | HTMLMediaElement / SVG patch cable / MediaBunny / Canvas | B01〜B04初版実装済み・人手確認待ち | 左の動画3node、中央にT1〜T3を二列、右の出力nodeをBezier cableで配線する。source→output直結または変換の連結を実行し、4つの正規routeだけでQR flagを共通欄へ入れると対応箱が開く。分岐とcycleは拒否する | H-001, H-002, H-003, H-004, H-014, H-019, H-020, H-023, H-025, H-043 |
 | S-730 | WebXR Device API / XRSession / XRFrame / XRInputSource | DR-084でB01 / B02承認済み・未実装 | B01はAR / VRの実immersive sessionと最初の非null viewer pose、B02は実input sourceのselect rayと固定XR箱の交差を検証する。inline、page click、DOM overlay、模擬pose、歩行、room scanは成功経路にしない | H-001, H-002, H-003, H-004, H-014, H-019, H-023, H-044 |
 | S-740 | Periodic Background Sync / Service Worker / IndexedDB / Cache Storage | DR-097でB01承認済み・未実装 | installed PWAで水と光を別訪問に預け、window client 0件の異なる二回の実`periodicsync`が発芽・開花assetを取得してphaseを進める。日次保証、通知、timer、foreground / synthetic event、debug発火は成功経路にしない | H-005, H-014, H-018, H-019, H-021, H-023, H-025, H-045 |
@@ -97,7 +97,7 @@
 | S-780 | Payment Handler / Payment Request / Service Worker | DR-129でB01〜B04承認済み・未実装 | 正しい架空handlerのtrusted event、承認success、意図的拒否fail、同一handler retry後successを別箱へ累積する。実provider、cancel / error、game製UI、結果label、固定flagを使わない | H-003, H-004, H-019, H-023, H-025, H-050 |
 | S-790 | Local Font Access / FontData / FontFace / Web Crypto | DR-137でB01承認済み・未実装 | Git管理する専用fontをOSへinstallし、対象PostScript名だけの実照会、raw font data検証、専用glyph表示で直接開く。全font列挙、既存font、upload、`local()`だけ、固定flagを使わない | H-003, H-004, H-006, H-014, H-019, H-023, H-025, H-051 |
 | S-800 | URL Fragment Text Directives / `hidden=until-found` / `beforematch` | D-136でB01 / B02承認済み・問題詳細保留 | 英文上の対象語を、B01ではpercent-encoded `textStart`とpunctuation contextから、B02では表示された単語からplayer自身がfragment URLへ組み立てる。入力欄なし。`beforematch`で対象語を出現させ対応箱を開く。英文、対象語、fragment文字列は実装前に吟味する | H-001, H-002, H-003, H-004, H-019, H-020, H-025, H-038 |
-| S-810 | HTMLMediaElement / `videoWidth` / `videoHeight` / `resize` | B01〜B04初版実装済み・人手確認待ち | 生成したVP8 WebMを再生・シークし、144→1080の正方形、1080→144の正方形、横長、縦長の実frame寸法を観測して対応箱を開く。CSS寸法や固定画像では成功しない | H-001, H-002, H-003, H-019, H-020, H-023, H-025, H-053 |
+| S-810 | MediaSource / SourceBuffer / `videoWidth` / `videoHeight` / `resize` / `requestVideoFrameCallback` | B01〜B04初版実装済み・人手確認待ち | 1フレームVP8 WebMをMSEへtimestamp offset付きで連結し、144→1080の正方形、1080→144の正方形、横長、縦長の実native寸法を観測して対応箱を開く。CSS寸法や固定画像では成功しない | H-001, H-002, H-003, H-019, H-020, H-023, H-025, H-053 |
 
 H-025は全行に共通する公開前ゲートである。コード上は全問題箱が単一 `ProblemGiftBox` とID別presentationを通り、状態導出の組み合わせを自動テストしている。実API・権限・端末条件を再達成した時に各箱が開くことは、各ステージの既存人手ゲートと合わせて確認する。
 

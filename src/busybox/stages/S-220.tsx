@@ -28,6 +28,13 @@ export default function S220Stage(props: StageComponentProps) {
   const disposal = props.problem("S-220-B04");
   const [depth, setDepth] = useState(() => currentTrail()?.depth ?? 0);
   const [navigationStatus, setNavigationStatus] = useState("");
+  const [branchRound, setBranchRound] = useState(() => {
+    try {
+      return Number(sessionStorage.getItem("busybox:S-220:branch-round") ?? 0);
+    } catch {
+      return 0;
+    }
+  });
 
   useEffect(() => {
     const navigation = performance.getEntriesByType("navigation")[0] as
@@ -85,6 +92,13 @@ export default function S220Stage(props: StageComponentProps) {
     const navigation = (window as unknown as { navigation?: NavigationLike })
       .navigation;
     if (!navigation) return;
+    const nextRound = branchRound + 1;
+    try {
+      sessionStorage.setItem("busybox:S-220:branch-round", String(nextRound));
+    } catch {
+      // Session storage is only a visual aid; Navigation API remains the gate.
+    }
+    setBranchRound(nextRound);
     const url = new URL(window.location.href);
     url.searchParams.set("branch", crypto.randomUUID());
     void navigation.navigate(url.href);
@@ -120,6 +134,17 @@ export default function S220Stage(props: StageComponentProps) {
       <button type="button" className="stage-action" onClick={buildTrail}>
         {props.locale === "ja" ? "道を3つ積む" : "Build three steps"}
       </button>
+      <div
+        className="navigation-branch-guide"
+        role="img"
+        aria-label="Navigation branch route"
+      >
+        <span data-active={branchRound === 0}>A</span>
+        <span aria-hidden="true">→</span>
+        <span data-active={branchRound > 0}>B</span>
+        <span aria-hidden="true">← browser Back →</span>
+        <span data-active={branchRound > 0}>C</span>
+      </div>
       <p className="measurement">
         {depth === 3
           ? props.locale === "ja"
@@ -132,7 +157,13 @@ export default function S220Stage(props: StageComponentProps) {
         className="stage-action"
         onClick={createDisposableBranch}
       >
-        {props.locale === "ja" ? "分岐を作る" : "Create a branch"}
+        {props.locale === "ja"
+          ? branchRound === 0
+            ? "AからBへ進む"
+            : "戻ったら別の枝Cへ進む"
+          : branchRound === 0
+            ? "Go from A to B"
+            : "After Back, branch from A to C"}
       </button>
       <p className="interaction-status" role="status">
         {navigationStatus}

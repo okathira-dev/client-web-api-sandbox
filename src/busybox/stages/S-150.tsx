@@ -1,47 +1,45 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import type { StageComponentProps } from "../runtime/types";
 import { ProblemGiftBox } from "../ui/GiftBox";
 
-const visualOrder = { A: 1, B: 2, C: 3 } as const;
+const selectOptions = [
+  ...Array.from(
+    { length: 24 },
+    (_, index) => `item-${String(index + 1).padStart(2, "0")}`,
+  ),
+  "open busybox",
+  ...Array.from(
+    { length: 24 },
+    (_, index) => `item-${String(index + 25).padStart(2, "0")}`,
+  ),
+];
 
 /**
- * S-150
+ * S-150 — keyboard paths.
  *
- * Gimmick: Keep the visual order fixed while rotating the underlying DOM order.
- * Uses: CSS order, DOM child order, and MutationObserver.
- * Success: The actual child text becomes ABC even though the visible strip stays ABC.
- * Privacy/Permission: No permission or retained document content.
- * Cleanup: Disconnect the MutationObserver on unmount.
- * Human verification: H-001, H-020, H-025
+ * B01 is a visible native button that does not receive pointer activation.
+ * A player must reach it with the browser's focus navigation. The box opens
+ * from the trusted focus event; script focus and pointer clicks are not part
+ * of the intended solution.
+ *
+ * B02 is a native select with one meaningful option hidden among decoys. Its
+ * incremental-search/typeahead behavior is the puzzle: focus the select and
+ * type `open` until the target option is selected. The box opens only after
+ * the native select reports that selection.
+ *
+ * B03 keeps the browser's native named-details exclusivity. Open more than
+ * one disclosure in sequence and observe that the browser closes the prior
+ * one, leaving exactly one open at a time.
+ *
+ * No permissions or persistent data are used. All listeners are removed when
+ * the stage is left. Human verification: H-001, H-002, H-003, H-020, H-025.
  */
 export default function S150Stage(props: StageComponentProps) {
-  const problem = props.problem("S-150-B01");
-  const focusProblem = props.problem("S-150-B02");
+  const focusProblem = props.problem("S-150-B01");
+  const selectProblem = props.problem("S-150-B02");
   const detailsProblem = props.problem("S-150-B03");
-  const [order, setOrder] = useState<readonly (keyof typeof visualOrder)[]>([
-    "B",
-    "C",
-    "A",
-  ]);
-  const structureRef = useRef<HTMLOListElement>(null);
   const detailsRef = useRef<HTMLDivElement>(null);
   const detailToggleCount = useRef(0);
-
-  useEffect(() => {
-    const structure = structureRef.current;
-    if (!structure) return;
-    const inspect = () => {
-      const text = Array.from(
-        structure.children,
-        (item) => item.textContent,
-      ).join("");
-      if (text === "ABC") problem.solve(["dom:ordered"]);
-    };
-    const observer = new MutationObserver(inspect);
-    observer.observe(structure, { childList: true });
-    inspect();
-    return () => observer.disconnect();
-  }, [problem.solve]);
 
   useEffect(() => {
     const container = detailsRef.current;
@@ -63,42 +61,41 @@ export default function S150Stage(props: StageComponentProps) {
     };
   }, [detailsProblem.solve]);
 
-  const rotate = () => {
-    setOrder(([first, ...rest]) => (first ? [...rest, first] : []));
-  };
-
   return (
-    <div className="puzzle puzzle--centered">
-      <ol className="structure-strip" ref={structureRef} aria-label="DOM order">
-        {order.map((token) => (
-          <li key={token} style={{ order: visualOrder[token] }}>
-            {token}
-          </li>
-        ))}
-      </ol>
+    <div className="puzzle puzzle--centered accessibility-puzzle">
       <p className="measurement">
         {props.locale === "ja"
-          ? "見た目は動かない。読む順番だけが動く。"
-          : "The view stays still. Only reading order moves."}
+          ? "クリックできない箱へTabで移動し、selectは文字入力で探す。"
+          : "Reach the pointer-inert box with Tab; search the select by typing."}
       </p>
-      <button type="button" className="stage-action" onClick={rotate}>
-        {props.locale === "ja" ? "文書を回す" : "Rotate document"}
-      </button>
       <button
         type="button"
-        className="stage-action"
+        className="stage-action accessibility-keyboard-button"
         onFocus={() => focusProblem.solve(["focus:native"])}
-        style={{
-          position: "absolute",
-          width: 1,
-          height: 1,
-          overflow: "hidden",
-          clipPath: "inset(50%)",
-        }}
+        onClick={() => focusProblem.solve(["activation:keyboard"])}
       >
-        {props.locale === "ja" ? "不可視focus" : "Hidden focus"}
+        {props.locale === "ja" ? "キーボードでたどる箱" : "Keyboard-only box"}
       </button>
-      <div ref={detailsRef}>
+      <label className="accessibility-select">
+        {props.locale === "ja" ? "メニューを検索" : "Search the menu"}
+        <select
+          defaultValue=""
+          onChange={(event) => {
+            if (event.currentTarget.value === "open busybox")
+              selectProblem.solve(["select:typeahead"]);
+          }}
+        >
+          <option value="" disabled>
+            {props.locale === "ja" ? "項目を入力して探す" : "Type to search"}
+          </option>
+          {selectOptions.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      </label>
+      <div ref={detailsRef} className="accessibility-details">
         {(["A", "B", "C"] as const).map((name) => (
           <details key={name} name="busybox-exclusive-details">
             <summary>{name}</summary>
@@ -107,8 +104,8 @@ export default function S150Stage(props: StageComponentProps) {
         ))}
       </div>
       <div className="problem-row">
-        <ProblemGiftBox problem={problem} locale={props.locale} />
         <ProblemGiftBox problem={focusProblem} locale={props.locale} />
+        <ProblemGiftBox problem={selectProblem} locale={props.locale} />
         <ProblemGiftBox problem={detailsProblem} locale={props.locale} />
       </div>
     </div>

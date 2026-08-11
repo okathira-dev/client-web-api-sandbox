@@ -209,3 +209,91 @@ export function drawQr(
           modulePixels,
         );
 }
+
+export interface QrQuadPoint {
+  readonly x: number;
+  readonly y: number;
+}
+
+function projectiveMap(
+  sourceX: number,
+  sourceY: number,
+  corners: readonly [QrQuadPoint, QrQuadPoint, QrQuadPoint, QrQuadPoint],
+) {
+  const [topLeft, topRight, bottomRight, bottomLeft] = corners;
+  const dx1 = topRight.x - bottomRight.x;
+  const dx2 = bottomLeft.x - bottomRight.x;
+  const dx3 = topLeft.x - topRight.x + bottomRight.x - bottomLeft.x;
+  const dy1 = topRight.y - bottomRight.y;
+  const dy2 = bottomLeft.y - bottomRight.y;
+  const dy3 = topLeft.y - topRight.y + bottomRight.y - bottomLeft.y;
+  const determinant = dx1 * dy2 - dx2 * dy1;
+  const g =
+    Math.abs(determinant) < 0.0001 ? 0 : (dx3 * dy2 - dx2 * dy3) / determinant;
+  const h =
+    Math.abs(determinant) < 0.0001 ? 0 : (dx1 * dy3 - dx3 * dy1) / determinant;
+  const a = topRight.x - topLeft.x + g * topRight.x;
+  const b = bottomLeft.x - topLeft.x + h * bottomLeft.x;
+  const c = topLeft.x;
+  const d = topRight.y - topLeft.y + g * topRight.y;
+  const e = bottomLeft.y - topLeft.y + h * bottomLeft.y;
+  const f = topLeft.y;
+  const denominator = g * sourceX + h * sourceY + 1;
+  return {
+    x: (a * sourceX + b * sourceY + c) / denominator,
+    y: (d * sourceX + e * sourceY + f) / denominator,
+  };
+}
+
+function expandQuad(
+  corners: readonly [QrQuadPoint, QrQuadPoint, QrQuadPoint, QrQuadPoint],
+  scale: number,
+): [QrQuadPoint, QrQuadPoint, QrQuadPoint, QrQuadPoint] {
+  const center = corners.reduce(
+    (sum, point) => ({ x: sum.x + point.x / 4, y: sum.y + point.y / 4 }),
+    { x: 0, y: 0 },
+  );
+  return corners.map((point) => ({
+    x: center.x + (point.x - center.x) * scale,
+    y: center.y + (point.y - center.y) * scale,
+  })) as [QrQuadPoint, QrQuadPoint, QrQuadPoint, QrQuadPoint];
+}
+
+/** Draw the replacement QR into the detected quadrilateral, including a quiet zone. */
+export function drawQrIntoQuad(
+  context: CanvasRenderingContext2D,
+  corners: readonly [QrQuadPoint, QrQuadPoint, QrQuadPoint, QrQuadPoint],
+  text: string,
+) {
+  const matrix = matrixFor(text);
+  const quiet = 4;
+  const total = size + quiet * 2;
+  const target = expandQuad(corners, total / size);
+  const map = (x: number, y: number) =>
+    projectiveMap(x / total, y / total, target);
+  const polygon = (points: readonly QrQuadPoint[]) => {
+    context.beginPath();
+    const first = points[0];
+    if (!first) return;
+    context.moveTo(first.x, first.y);
+    for (const point of points.slice(1)) context.lineTo(point.x, point.y);
+    context.closePath();
+  };
+  polygon([map(0, 0), map(total, 0), map(total, total), map(0, total)]);
+  context.fillStyle = "#fff";
+  context.fill();
+  context.fillStyle = "#000";
+  for (let row = 0; row < size; row += 1)
+    for (let column = 0; column < size; column += 1)
+      if (matrix[row]?.[column]) {
+        const left = column + quiet;
+        const top = row + quiet;
+        polygon([
+          map(left, top),
+          map(left + 1, top),
+          map(left + 1, top + 1),
+          map(left, top + 1),
+        ]);
+        context.fill();
+      }
+}

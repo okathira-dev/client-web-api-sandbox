@@ -1,8 +1,8 @@
 export const s710Flags = {
-  dark: "DARK FRAME",
-  broken: "BROKEN INPUT",
-  qr: "BUSYBOX{qr_frame_message}",
-  second: "SECOND PASS",
+  dark: "busybox{dark_frame}",
+  broken: "busybox{broken_input}",
+  qr: "busybox{qr_replaced}",
+  second: "busybox{second_pass}",
 } as const;
 
 export type S710FlagKind = keyof typeof s710Flags;

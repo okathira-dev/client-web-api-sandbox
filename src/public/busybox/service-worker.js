@@ -144,9 +144,21 @@ async function storeOfflineBeaconReceipt(nonce) {
 }
 
 async function receiveOfflineBeacon(request) {
+  const payloadRequest = request.clone();
+  const probeUrl = new URL(
+    `./offline-beacon/network-probe?nonce=${crypto.randomUUID()}`,
+    self.location.href,
+  );
+  try {
+    await fetch(probeUrl.href, { cache: "no-store", credentials: "omit" });
+    return new Response("network reachable", { status: 409 });
+  } catch {
+    // A failed network-only fetch is the worker-side offline gate. Continue
+    // with the Beacon body only after the origin is unreachable.
+  }
   let payload;
   try {
-    payload = await request.json();
+    payload = await payloadRequest.json();
   } catch {
     return new Response("invalid receipt", { status: 400 });
   }

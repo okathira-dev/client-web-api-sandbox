@@ -519,16 +519,17 @@ export default function S720Stage(props: StageComponentProps) {
           flag
           <input
             value={answer}
-            placeholder="BUSYBOX{…}"
+            placeholder="busybox{…}"
             onChange={(event) => {
               const next = event.currentTarget.value;
               setAnswer(next);
+              const normalized = next.trim().toLowerCase();
               const route = (
                 Object.keys(videoRecoveryFlags) as VideoRecoveryRoute[]
               ).find(
                 (candidate) =>
                   available[candidate] &&
-                  videoRecoveryFlags[candidate] === next,
+                  videoRecoveryFlags[candidate] === normalized,
               );
               if (!route) return;
               const index =

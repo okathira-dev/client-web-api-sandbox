@@ -81,14 +81,15 @@ export default function S710Stage(props: StageComponentProps) {
         {props.locale === "ja" ? "合言葉" : "Password"}
         <input
           value={answer}
-          placeholder="BUSYBOX{…}"
+          placeholder="busybox{…}"
           disabled={!flagKinds.some((kind) => eligible[kind])}
           onChange={(event) => {
             const next = event.currentTarget.value;
             setAnswer(next);
+            const normalized = next.trim().toLowerCase();
             const kind = flagKinds.find(
               (candidate) =>
-                eligible[candidate] && s710Flags[candidate] === next,
+                eligible[candidate] && s710Flags[candidate] === normalized,
             );
             if (!kind) return;
             const index =
