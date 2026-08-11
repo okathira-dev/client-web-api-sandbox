@@ -18,16 +18,13 @@ const captionSources = {
 } as const;
 
 /**
- * S-350 — browser-owned video controls and media track choices.
- *
- * B01 observes a meaningful native seek, excluding the automatic end-to-start
- * replay reset. B02 observes mute or zero volume on an audible fixture. B03
- * requires playback to advance before a non-ended pause. B04 observes a
- * non-default playback rate through ratechange. B05 observes the Busybox
- * caption selected through the native track menu. B06 observes entry into the
- * browser-owned Picture-in-Picture window. The page does not change
- * playbackRate or request PiP itself. No media state is persisted; playback is
- * stopped and PiP is closed on exit. H-001/H-002/H-003/H-012/H-019/H-020/H-023/H-025.
+ * S-350 — browser標準の動画プレイヤー操作をそのまま解法にする。
+ * 目的: game製の再生UIではなく、native controlsのseek、mute、pause、速度、字幕、PiP、fullscreenを観測する。
+ * 最初の一手: 音声付き動画を再生し、B01は途中seek、B02はmute/音量0、B03は終了前pause、B04は速度変更を行う。B05は字幕メニューでBusyboxを選び、B06はPiP、B08はfullscreenへ入る。
+ * 箱ごとの成功条件: 各操作が実videoイベント・textTrack状態・documentPiP/fullscreen状態として報告された時だけ対応箱が開く。終了後の先頭復帰seekは除外する。
+ * 開かない操作: page内の模倣ボタン、ended後の自動seek、scriptによるrate変更／PiP要求、字幕文字列の入力では開かない。
+ * API/権限: HTMLMediaElement、TextTrack、Picture-in-Picture、Fullscreen。音声・映像は保存・送信しない。PiP/fullscreenはbrowserの明示操作を要求する。
+ * cleanup/環境: videoを停止し、PiP/fullscreenとlistenerを離脱時に解放する。H-001/H-002/H-003/H-012/H-019/H-020/H-023/H-025/H-030/H-052を確認する。
  */
 export default function S350Stage(props: StageComponentProps) {
   const seek = props.problem("S-350-B01");

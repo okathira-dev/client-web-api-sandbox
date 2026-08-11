@@ -31,20 +31,11 @@ Viteのマルチページ構成へ独立した入口を持つReactアプリと�
 
 | 文書 | 役割 |
 | --- | --- |
+- [ドキュメント入口](./docs/README.md) | 現行資料と履歴資料の境界、読む順番、実装JSDocとlocaleの規約 |
 | [現行ステージ解法仕様](./docs/stage-walkthroughs.md) | レビュー済みステージの現行体験、解法、negative caseを定義する |
 | [現状メモ・人手確認への引継ぎ](./docs/current-status-and-handoff.md) | 一通りのコード化後に未確認の範囲、確認順、変更時の留意点を共有する |
 | [企画・プロダクト仕様](./docs/product-spec.md) | 体験、対象、スコープ、日英コピーを定義する |
 | [アーキテクチャ判断](./docs/architecture-decisions.md) | ローカル保存、Drive連携、配信、ステージ分離の方針を定義する |
-| [実装計画](./docs/implementation-plan.md) | 初期実装の履歴。現在の作業順は現状メモを正とする |
-| [ステージ展開計画](./docs/stage-rollout-plan.md) | 実装前の履歴スナップショット。現行の箱ID・解法の正本にしない |
-| [実装PoCマスタープラン](./docs/implementation-poc-master-plan.md) | PoC計画の履歴。未実装案の現行計画ではない |
-| [実装PoC実施記録](./docs/poc-results.md) | PoCの証跡。現行の実装状態はステージ実装状況と現状メモを正とする |
-| [API調査・採用方針](./docs/api-research-and-adoption.md) | Web APIの母集団、採否、再調査方法を定義する |
-| [Deep Research元案・暫定採否台帳](./docs/deep-research-idea-disposition-ledger.md) | 非規範の元案・対話履歴。最後の決定と現行実装を優先する |
-| [Blackbox機構監査・対話決定台帳](./docs/blackbox-mechanism-ledger.md) | 参考機構のWeb向け再設計、29/29件の採否、残る技術PoCを記録する |
-| [ギミックメモ台帳](./docs/gimmick-backlog.md) | JSDoc移行前の設計履歴。現行解法の正本にしない |
-| [ギミック実装カバレッジ計画](./docs/gimmick-coverage-plan.md) | JSDoc移行前の対応履歴。現行解法の正本にしない |
-| [初期ステージ計画](./docs/initial-stage-plan.md) | 初期候補、問題箱数、採用ゲート、人手確認を対応付ける |
 | [ステージ実装状況](./docs/stage-implementation-status.md) | コード化、自動確認、人手確認待ちを区別する |
 | [ステージ仕様テンプレート](./docs/stage-spec-template.md) | 各ステージの意図、権限、後片付け、検証を同じ形式で記録する |
 | [問題箱の形状と再挑戦モデル](./docs/problem-box-state-model.md) | 全問題で共通する箱形状、リボン、入場単位の開閉を定義する |
@@ -59,6 +50,8 @@ Viteのマルチページ構成へ独立した入口を持つReactアプリと�
 | [Google Drive設定と運用](./docs/google-drive-setup.md) | OAuth設定、最小scope、同期、削除、公開ゲートを定義する |
 | [決定ログ](./docs/decision-log.md) | 確定事項と未確定事項を混同しないための記録 |
 | [添付資料の保存版](./docs/source/README.md) | 企画書ドラフトとDeep Researchメモを非規範の入力資料として保存する |
+
+実装前計画、PoC結果、調査台帳、初期ステージ計画は[ドキュメント入口の履歴一覧](./docs/README.md)から参照する。そこにある資料は判断の経緯を残すためのもので、現行の箱ID・解法・件数を決める資料ではない。
 
 ## 作業の隔離
 

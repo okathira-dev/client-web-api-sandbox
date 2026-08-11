@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { StageComponentProps } from "../runtime/types";
 import { ProblemGiftBox } from "../ui/GiftBox";
+import { stageText } from "./locale";
+import { s660Locale } from "./S-660.locale";
 
 function boxIndexFor(state: PressureState) {
   if (state === "nominal") return 0;
@@ -8,7 +10,15 @@ function boxIndexFor(state: PressureState) {
   return 1;
 }
 
-/** CPU pressure is an implementation-defined state hint, not a percentage meter. */
+/**
+ * S-660 — Compute Pressureの状態を負荷計ではなくbrowserの状態hintとして読む。
+ * 目的: nominal、fair/serious、criticalの3箱を、ゲーム側の負荷なしで観測する。
+ * 最初の一手: stageへ入ったまま自動購読を待ち、必要なら別作業負荷の変化を観察する。
+ * 箱ごとの成功条件: B01はnominal、B02はfairまたはserious、B03はcriticalをPressureObserverから受けた時に開く。
+ * 開かない操作: CPUをbusybox側で意図的に消費する、割合を推定する、status文字列を書き換える操作では開かない。
+ * API/権限: PressureObserverのcpu source。権限・入力値・状態履歴は保存・送信しない。
+ * cleanup/環境: hiddenでdisconnectし、visibleで再購読する。対応環境とPermissions Policyを含めH-004/H-019/H-023/H-025/H-035を確認する。
+ */
 export default function S660Stage(props: StageComponentProps) {
   const problems = useMemo(
     () =>
@@ -35,11 +45,7 @@ export default function S660Stage(props: StageComponentProps) {
         return;
       const Constructor = window.PressureObserver;
       if (!Constructor?.knownSources.includes("cpu")) {
-        setStatus(
-          props.locale === "ja"
-            ? "この環境ではCPU Pressureを購読できない"
-            : "CPU Pressure is unavailable in this environment",
-        );
+        setStatus(stageText(props.locale, s660Locale.unavailable));
         return;
       }
       const instance = new Constructor((records) => {
@@ -50,20 +56,12 @@ export default function S660Stage(props: StageComponentProps) {
         setStatus(`cpu=${latest}`);
       });
       observer.current = instance;
-      setStatus(
-        props.locale === "ja"
-          ? "CPU状態を自動観測中…"
-          : "Observing CPU pressure…",
-      );
+      setStatus(stageText(props.locale, s660Locale.observing));
       try {
         await instance.observe("cpu", { sampleInterval: 1_000 });
       } catch {
         if (observer.current === instance) stop();
-        setStatus(
-          props.locale === "ja"
-            ? "CPU状態を購読できない"
-            : "Could not observe CPU pressure",
-        );
+        setStatus(stageText(props.locale, s660Locale.observeFailed));
       }
     };
     const handleVisibility = () => {
@@ -96,10 +94,7 @@ export default function S660Stage(props: StageComponentProps) {
       </div>
       <p className="measurement">{state}</p>
       <p className="interaction-status" role="status">
-        {status ||
-          (props.locale === "ja"
-            ? "ステージを開くと自動観測。ゲーム側で負荷は発生させない"
-            : "Observation starts on entry; the game creates no load")}
+        {status || stageText(props.locale, s660Locale.idle)}
       </p>
     </div>
   );

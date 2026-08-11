@@ -1,6 +1,8 @@
 import { useEffect, useRef } from "react";
 import type { StageComponentProps } from "../runtime/types";
 import { ProblemGiftBox } from "../ui/GiftBox";
+import { stageText } from "./locale";
+import { s150Locale } from "./S-150.locale";
 
 const selectOptions = [
   ...Array.from(
@@ -63,21 +65,17 @@ export default function S150Stage(props: StageComponentProps) {
 
   return (
     <div className="puzzle puzzle--centered accessibility-puzzle">
-      <p className="measurement">
-        {props.locale === "ja"
-          ? "クリックできない箱へTabで移動し、selectは文字入力で探す。"
-          : "Reach the pointer-inert box with Tab; search the select by typing."}
-      </p>
+      <p className="measurement">{stageText(props.locale, s150Locale.clue)}</p>
       <button
         type="button"
         className="stage-action accessibility-keyboard-button"
         onFocus={() => focusProblem.solve(["focus:native"])}
         onClick={() => focusProblem.solve(["activation:keyboard"])}
       >
-        {props.locale === "ja" ? "キーボードでたどる箱" : "Keyboard-only box"}
+        {stageText(props.locale, s150Locale.focusButton)}
       </button>
       <label className="accessibility-select">
-        {props.locale === "ja" ? "メニューを検索" : "Search the menu"}
+        {stageText(props.locale, s150Locale.selectLabel)}
         <select
           defaultValue=""
           onChange={(event) => {
@@ -86,7 +84,7 @@ export default function S150Stage(props: StageComponentProps) {
           }}
         >
           <option value="" disabled>
-            {props.locale === "ja" ? "項目を入力して探す" : "Type to search"}
+            {stageText(props.locale, s150Locale.selectPlaceholder)}
           </option>
           {selectOptions.map((option) => (
             <option key={option} value={option}>

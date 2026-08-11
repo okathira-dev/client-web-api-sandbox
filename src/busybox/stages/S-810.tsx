@@ -7,6 +7,8 @@ import {
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { StageComponentProps } from "../runtime/types";
 import { ProblemGiftBox } from "../ui/GiftBox";
+import { stageText } from "./locale";
+import { s810Locale } from "./S-810.locale";
 
 type SweepKey = "small-square" | "large-square" | "wide" | "tall";
 
@@ -178,6 +180,15 @@ function classifyDimensions(
   return undefined;
 }
 
+/**
+ * S-810 — MSEで連結したVP8 WebMのnative videoWidth/videoHeightを読む。
+ * 目的: CSSで引き伸ばした表示ではなく、再生中のフレーム寸法そのものを見せる。
+ * 最初の一手: スウィープ動画を生成し、再生またはシークして4種類の寸法帯を観察する。
+ * 箱ごとの成功条件: B01は小正方形、B02は大正方形、B03は横長、B04は縦長をframe callbackで確認する。
+ * 開かない操作: CSSサイズ変更、固定画像、生成ボタンだけ、metadataの一回読み取りだけでは開かない。
+ * API/権限: MediaSource/SourceBuffer、MediaBunny、video resize、requestVideoFrameCallback。権限・送信・保存はない。
+ * cleanup/環境: appendとAbortSignal、video callback、blob URLを離脱時に破棄する。MSE WebM VP8対応環境でH-001/H-002/H-003/H-019/H-020/H-023/H-025/H-053を確認する。
+ */
 export default function S810Stage(props: StageComponentProps) {
   const problems = (
     ["S-810-B01", "S-810-B02", "S-810-B03", "S-810-B04"] as const
@@ -190,7 +201,9 @@ export default function S810Stage(props: StageComponentProps) {
     {},
   );
   const [dimensions, setDimensions] = useState<[number, number]>();
-  const [status, setStatus] = useState("Generate the changing-size video.");
+  const [status, setStatus] = useState(() =>
+    stageText(props.locale, s810Locale.initial),
+  );
 
   const observe = (width: number, height: number) => {
     setDimensions([width, height]);
@@ -257,31 +270,25 @@ export default function S810Stage(props: StageComponentProps) {
           generationRef.current?.abort();
           const controller = new AbortController();
           generationRef.current = controller;
-          setStatus("Generating frame-size sweep…");
+          setStatus(stageText(props.locale, s810Locale.generating));
           const media = createSweepMediaSource(controller.signal);
           setVideoUrl((previous) => {
             if (previous) URL.revokeObjectURL(previous);
             return media.url;
           });
           setObserved({});
-          setStatus("Building native variable-size video…");
+          setStatus(stageText(props.locale, s810Locale.building));
           void media.ready
-            .then(() =>
-              setStatus(
-                "Play and seek through the changing native video size.",
-              ),
-            )
+            .then(() => setStatus(stageText(props.locale, s810Locale.ready)))
             .catch((error: unknown) => {
               if ((error as Error).name !== "AbortError")
                 setStatus(
-                  `Generation failed: ${error instanceof Error ? error.message : "unknown error"}`,
+                  `Generation failed: ${error instanceof Error ? error.message : stageText(props.locale, s810Locale.unknown)}`,
                 );
             });
         }}
       >
-        {props.locale === "ja"
-          ? "スウィープ動画を生成"
-          : "Generate sweep video"}
+        {stageText(props.locale, s810Locale.generate)}
       </button>
       {videoUrl ? (
         <video
@@ -307,7 +314,7 @@ export default function S810Stage(props: StageComponentProps) {
             stopSampling();
             const video = videoRef.current;
             if (!video?.requestVideoFrameCallback) {
-              setStatus("This browser cannot observe presented video frames.");
+              setStatus(stageText(props.locale, s810Locale.frameUnsupported));
               return;
             }
             callbackId.current = video.requestVideoFrameCallback(sample);
@@ -319,7 +326,7 @@ export default function S810Stage(props: StageComponentProps) {
             kind="captions"
             src="data:text/vtt,WEBVTT"
             srcLang="en"
-            label="No captions"
+            label={stageText(props.locale, s810Locale.captions)}
           />
         </video>
       ) : null}

@@ -18,12 +18,12 @@
 - [x] S-810をMSEによるフレーム単位の可変寸法動画生成へ変更（Windows Chromeで4寸法の開箱を確認）
 - [x] Aboutから同梱ライセンス本文へ導線を追加し、全ページのshell幅を拡張
 - [x] S-710 decode失敗fixtureとS-720 WebM 9本を小文字flagの固定assetへ再生成（ローカルFFmpegを環境変数で注入）
-- [ ] 旧仕様を参照する履歴ドキュメントを棚卸しし、現行結論への導線を整理
-- [ ] stage-localizationへの文言切り出し
-- [ ] 全stageの日本語・MECE JSDoc整備
+- [x] 旧仕様を参照する履歴ドキュメントを棚卸しし、現行結論への導線を整理（docs/README.mdへ集約）
+- [x] 今回変更したstageの表示文言を隣接locale moduleへ切り出し
+- [x] 今回変更したstageの日本語・MECE JSDocを整備
 - [x] `tsc` / Biome / Markuplint / Jest / build の最終実行
 - [x] Windows ChromeでS-640/S-710/S-720/S-810の主要経路を確認
-- [ ] 変更内容と残課題を確認後にコミット
+- [x] 変更内容と残課題を確認後にコミット
 
 ## 正本への参照
 

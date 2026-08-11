@@ -1,12 +1,22 @@
 import { useEffect, useRef, useState } from "react";
 import type { StageComponentProps } from "../runtime/types";
 import { ProblemGiftBox } from "../ui/GiftBox";
+import { stageText } from "./locale";
+import { s580Locale } from "./S-580.locale";
 
 function normalizeSpeech(value: string) {
   return value.toLowerCase().replace(/[\s\p{P}\p{S}]/gu, "");
 }
 
-/** S-580 — recognize the spoken word busybox; there is no text-input route. H-006/H-007/H-027. */
+/**
+ * S-580 — SpeechRecognitionとSpeechSynthesisを、文字入力なしで体験する。
+ * 目的: UI言語ではなく認識側をen-USに固定し、busyboxという音声を聞き取る。
+ * 最初の一手: B01は「聞き取る」でbusyboxを発話し、B02はずれた一文字ずつの音声を聞いて元の語を推理する。
+ * 箱ごとの成功条件: B01はrecognized transcriptがbusybox、B02はsynthesis終了後の実utterance列を観測した時だけ開く。
+ * 開かない操作: テキスト欄、status文字列の編集、synthesis開始だけ、別言語の発話では開かない。
+ * API/権限: SpeechRecognitionとSpeechSynthesis。マイクはB01の明示操作時だけ要求し、音声・認識履歴は保存・送信しない。
+ * cleanup/環境: recognitionをabortし、utteranceとspeech synthesisをcancelする。en-US音声が使える環境でH-006/H-007/H-019/H-020/H-023/H-025/H-027を確認する。
+ */
 export default function S580Stage(props: StageComponentProps) {
   const problem = props.problem("S-580-B01");
   const synthesisProblem = props.problem("S-580-B02");
@@ -40,7 +50,7 @@ export default function S580Stage(props: StageComponentProps) {
         problem.solve(["speech:busybox"]);
     };
     instance.onerror = () =>
-      setStatus(props.locale === "ja" ? "認識できない" : "Not recognized");
+      setStatus(stageText(props.locale, s580Locale.notRecognized));
     instance.start();
   };
   const speakShifted = () => {
@@ -57,7 +67,7 @@ export default function S580Stage(props: StageComponentProps) {
       if (!character) {
         if (started && !failed)
           synthesisProblem.solve(["speech-synthesis:completed"]);
-        setStatus(props.locale === "ja" ? "発話完了" : "Speech complete");
+        setStatus(stageText(props.locale, s580Locale.speechComplete));
         return;
       }
       const utterance = new SpeechSynthesisUtterance(character);
@@ -71,15 +81,11 @@ export default function S580Stage(props: StageComponentProps) {
       };
       utterance.onerror = () => {
         failed = true;
-        setStatus(props.locale === "ja" ? "発話エラー" : "Speech error");
+        setStatus(stageText(props.locale, s580Locale.speechError));
       };
       current.speak(utterance);
     };
-    setStatus(
-      props.locale === "ja"
-        ? "一文字ずつ発話中…"
-        : "Speaking one character at a time…",
-    );
+    setStatus(stageText(props.locale, s580Locale.speaking));
     speakNext();
   };
   useEffect(() => {
@@ -101,10 +107,10 @@ export default function S580Stage(props: StageComponentProps) {
       </div>
       <div className="stage-actions">
         <button type="button" className="stage-action" onClick={start}>
-          {props.locale === "ja" ? "聞き取る" : "Listen"}
+          {stageText(props.locale, s580Locale.listen)}
         </button>
         <button type="button" className="stage-action" onClick={speakShifted}>
-          {props.locale === "ja" ? "ずれた声を聞く" : "Hear the shifted voice"}
+          {stageText(props.locale, s580Locale.shifted)}
         </button>
       </div>
       <p className="interaction-status" role="status">

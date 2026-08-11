@@ -3,6 +3,15 @@ import { unicodeExpressionText, unicodeFixtures } from "../fixtures/unicode";
 import type { StageComponentProps } from "../runtime/types";
 import { ProblemGiftBox } from "../ui/GiftBox";
 
+/**
+ * S-620 — Unicode数字を読んで、共通の十進入力へ戻す。
+ * 目的: 見た目の違う数字が同じ位置表記を持つことを体験する。
+ * 最初の一手: 各カードの数字を読み、カードごとに十進値を考える。
+ * 箱ごとの成功条件: B01〜B17は対応するASCII十進文字列だけで開く。
+ * 開かない操作: 数字の貼り付け、他カードの値、空欄、入力イベントの偽装では開かない。
+ * API/権限: Unicode code point、固定fixture、FontFace。権限・外部送信・回答保存はない。
+ * cleanup/環境: font失敗はUIへ隔離し、入力値は入場中だけ保持する。H-001/H-002/H-003/H-004/H-014/H-020/H-025を確認する。
+ */
 export default function S620Stage(props: StageComponentProps) {
   const [answer, setAnswer] = useState("");
   const [fontReady, setFontReady] = useState(false);

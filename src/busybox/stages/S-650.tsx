@@ -12,6 +12,15 @@ const keys: readonly PermissionKey[] = [
   "microphone",
 ];
 
+/**
+ * S-650 — PermissionStatusの状態を、許可要求そのものと分けて観測する。
+ * 目的: 位置情報・通知・カメラ・マイクの4権限についてbrowserの実状態変化を読む。
+ * 最初の一手: 各権限の要求を明示的に行い、設定変更後に再照会する。
+ * 箱ごとの成功条件: B01〜B04は対応PermissionStatusがgrantedになった時だけ開く。
+ * 開かない操作: request成功だけ、promptのまま、game側の仮表示、初期値の書き換えでは開かない。
+ * API/権限: Permissions API、getUserMedia、Geolocation、Notification。streamは即停止し、位置・音声・映像・履歴は保存しない。
+ * cleanup/環境: change/focus listenerとmedia trackを離脱時に破棄する。H-004/H-006/H-007/H-019/H-023/H-025/H-034を確認する。
+ */
 function permissionLabel(
   key: PermissionKey,
   locale: StageComponentProps["locale"],
@@ -25,6 +34,15 @@ function permissionLabel(
   return labels[key][locale];
 }
 
+/**
+ * S-650 — PermissionStatusの状態を、許可要求そのものと分けて観測する。
+ * 目的: 位置情報・通知・カメラ・マイクの4権限についてbrowserの実状態変化を読む。
+ * 最初の一手: 各権限の要求を明示的に行い、設定変更後に再照会する。
+ * 箱ごとの成功条件: B01〜B04は対応PermissionStatusがgrantedになった時だけ開く。
+ * 開かない操作: request成功だけ、promptのまま、game側の仮表示、初期値の書き換えでは開かない。
+ * API/権限: Permissions API、getUserMedia、Geolocation、Notification。streamは即停止し、位置・音声・映像・履歴は保存しない。
+ * cleanup/環境: change/focus listenerとmedia trackを離脱時に破棄する。H-004/H-006/H-007/H-019/H-023/H-025/H-034を確認する。
+ */
 export default function S650Stage(props: StageComponentProps) {
   const problems = useMemo(
     () =>

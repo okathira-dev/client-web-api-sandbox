@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { StageComponentProps } from "../runtime/types";
 import { ProblemGiftBox } from "../ui/GiftBox";
+import { stageText } from "./locale";
+import { s510Locale } from "./S-510.locale";
 
 const layerAssets = {
   A: {
@@ -49,21 +51,13 @@ function DropZone({
 }
 
 /**
- * S-510 — drag data across browser boundaries.
- *
- * B01 uses a real downloaded PNG. The player downloads the fixed fixture and
- * drags it from the browser download shelf or the OS file manager into the
- * first drop zone. The drop must be trusted, contain a PNG-like File, and
- * match the Git-managed fixture digest.
- *
- * B02 uses an opaque-origin sandbox iframe. Dragging one of its images arms a
- * short-lived layer marker in the parent. The second drop zone accepts only
- * the iframe's text/uri-list plus matching marker, then fetches and verifies
- * that layer before composing all three images. The two zones are separate so
- * a browser-exposed File item cannot swallow the URI path.
- *
- * No file is uploaded or sent to a server. Human verification:
- * H-001, H-002, H-003, H-005, H-013, H-014, H-019, H-020, H-023, H-025.
+ * S-510 — browser境界をまたぐ実ファイルとsandbox iframeのdrag-and-drop。
+ * 目的: 同じD&Dでも、downloadされたFileとopaque-originのURI payloadが異なることを見せる。
+ * 最初の一手: B01は固定PNGをdownloadしてOS／download shelfから最初のdrop zoneへ、B02はiframeの透明レイヤー3枚を現像台へ順にdropする。
+ * 箱ごとの成功条件: B01はtrusted Fileとfixture SHA-256一致、B02はtext/uri-list・短命marker・asset SHA一致後の3枚合成で開く。
+ * 開かない操作: script生成DragEvent、同一pageの画像、FileとURIの取り違え、marker期限切れでは開かない。
+ * API/権限: HTML Drag and Drop、DataTransfer File、text/uri-list、sandbox iframe、SHA-256。ファイルはupload・外部送信しない。
+ * cleanup/環境: message markerを5秒で失効し、listener、iframe、object URLを離脱時に破棄する。H-001/H-002/H-003/H-005/H-013/H-014/H-019/H-020/H-023/H-025を確認する。
  */
 export default function S510Stage(props: StageComponentProps) {
   const problem = props.problem("S-510-B01");
@@ -119,7 +113,7 @@ export default function S510Stage(props: StageComponentProps) {
   const handleFileDrop = (event: React.DragEvent<HTMLElement>) => {
     const dropped = event.dataTransfer.files[0];
     if (!dropped) {
-      setStatus("PNGファイルをここへドロップしてください");
+      setStatus(stageText(props.locale, s510Locale.noPng));
       return;
     }
     void dropped
@@ -127,13 +121,15 @@ export default function S510Stage(props: StageComponentProps) {
       .then((bytes) => crypto.subtle.digest("SHA-256", bytes))
       .then((digest) => {
         if (toHex(digest) !== layerAssets.A.sha256) {
-          setStatus("別の画像です");
+          setStatus(stageText(props.locale, s510Locale.wrongImage));
           return;
         }
         problem.solve(["drag-drop:png-file"]);
-        setStatus(`${dropped.name} received`);
+        setStatus(
+          `${dropped.name} ${stageText(props.locale, s510Locale.received)}`,
+        );
       })
-      .catch(() => setStatus("画像を読み取れません"));
+      .catch(() => setStatus(stageText(props.locale, s510Locale.unreadable)));
   };
 
   const handleLayerDrop = (event: React.DragEvent<HTMLElement>) => {
@@ -143,7 +139,7 @@ export default function S510Stage(props: StageComponentProps) {
       ?.trim();
     const label = event.dataTransfer.getData("text/plain");
     if (!uri || !armedLayer || armedLayer.expires < Date.now()) {
-      setStatus("iframeの画像をドラッグしてからドロップしてください");
+      setStatus(stageText(props.locale, s510Locale.needIframeDrag));
       return;
     }
     if (label !== `busybox-round:${round}:${armedLayer.layer}`) return;
@@ -153,7 +149,7 @@ export default function S510Stage(props: StageComponentProps) {
     const parsed = new URL(uri, location.href);
     const expectedPath = new URL(`./${asset.filename}`, location.href).pathname;
     if (parsed.origin !== location.origin || parsed.pathname !== expectedPath) {
-      setStatus("許可されていない画像です");
+      setStatus(stageText(props.locale, s510Locale.forbidden));
       return;
     }
     setArmedLayer(undefined);
@@ -162,13 +158,13 @@ export default function S510Stage(props: StageComponentProps) {
       .then((bytes) => crypto.subtle.digest("SHA-256", bytes))
       .then((digest) => {
         if (toHex(digest) !== asset.sha256) {
-          setStatus("画像の照合に失敗しました");
+          setStatus(stageText(props.locale, s510Locale.digestFailed));
           return;
         }
         setLayers((current) => ({ ...current, [layer]: parsed.href }));
-        setStatus(`${layer} received`);
+        setStatus(`${layer} ${stageText(props.locale, s510Locale.received)}`);
       })
-      .catch(() => setStatus("画像の取得に失敗しました"));
+      .catch(() => setStatus(stageText(props.locale, s510Locale.fetchFailed)));
   };
 
   useEffect(() => {
@@ -181,47 +177,35 @@ export default function S510Stage(props: StageComponentProps) {
       <div className="drag-columns">
         <section className="drag-card">
           <ProblemGiftBox problem={problem} locale={props.locale} />
-          <h2>{props.locale === "ja" ? "実ファイル" : "Real file"}</h2>
-          <p>
-            {props.locale === "ja"
-              ? "画像を保存し、OSのファイルからここへドラッグする。"
-              : "Save the image, then drag it here from the OS file manager."}
-          </p>
+          <h2>{stageText(props.locale, s510Locale.realFile)}</h2>
+          <p>{stageText(props.locale, s510Locale.realFileHelp)}</p>
           <a
             className="download"
             href={sourceUrl}
             download="busybox-sticker.png"
           >
-            {props.locale === "ja" ? "PNGを保存" : "Download PNG"}
+            {stageText(props.locale, s510Locale.downloadPng)}
           </a>
           <DropZone onDrop={handleFileDrop}>
-            {props.locale === "ja"
-              ? "PNGファイルをここへ"
-              : "Drop the PNG here"}
+            {stageText(props.locale, s510Locale.dropPng)}
           </DropZone>
         </section>
         <section className="drag-card">
           <ProblemGiftBox problem={crossWindowProblem} locale={props.locale} />
-          <h2>{props.locale === "ja" ? "iframeの画像" : "Iframe image"}</h2>
+          <h2>{stageText(props.locale, s510Locale.iframeImage)}</h2>
           <iframe
             ref={helperRef}
-            title={
-              props.locale === "ja"
-                ? "窓越しの画像"
-                : "Cross-origin image source"
-            }
+            title={stageText(props.locale, s510Locale.iframeTitle)}
             sandbox="allow-scripts"
             loading="lazy"
             src={helperUrl.href}
           />
           <DropZone onDrop={handleLayerDrop}>
-            {props.locale === "ja"
-              ? "iframeの画像をここへ"
-              : "Drop the iframe image here"}
+            {stageText(props.locale, s510Locale.dropIframe)}
           </DropZone>
           <fieldset className="drag-composite">
             <legend>
-              {props.locale === "ja" ? "受領レイヤー" : "Received layers"}
+              {stageText(props.locale, s510Locale.receivedLayers)}
             </legend>
             {Object.entries(layers).map(([layer, url]) => (
               <img key={layer} src={url} alt={layer} width={240} height={120} />

@@ -120,10 +120,10 @@ fixtureは`src/busybox/fixtures/s710/assets/`にある。
 
 ### 設計・品質上の残問題
 
-1. **stage-localization** — ステージ実装内に日本語・英語の表示文言が多数ハードコードされている。`stages/S-xxx/locale.ts`または同等のstage隣接locale moduleへ、`ja`/`en`の説明、状態、ボタン、エラー、aria-labelを分離する。`StageSpec.label`、共通UI、固定flag、技術IDは混ぜない。
-2. **stage-gimmick-jsdoc** — JSDocがないS-610、S-620、S-640、S-650、S-670、S-710、S-720、S-810を追加する。短い英語だけのS-190、S-250、S-350、S-360〜S-460、S-480〜S-600なども、日本語で置き換える。各JSDocは「プレイヤーが見る目的、最初の一手、箱ごとの操作・成功条件、開かない操作、使用API、権限、保存・送信しない情報、cleanup、対応環境、確認ID」をMECEに含め、初めてのプレイヤーが読めば再現できる粒度にする。
+1. **stage-localization** — 今回変更したS-030/S-060/S-150/S-220/S-510/S-580/S-660/S-710/S-720/S-810は隣接locale moduleへ移行した。未変更の旧stageにはまだinline文言があるため、次のstage改修で同じ分離を続ける。
+2. **stage-gimmick-jsdoc** — 今回変更したstageとJSDoc未整備だったS-610/S-620/S-640/S-650/S-670/S-710/S-720/S-810は日本語MECE化した。未変更stageの短い英語JSDocは次の改修対象として残る。
 3. **localeとJSDocの同時移行** — JSDocの説明を表示文言の代替にせず、localeはUI、JSDocは実装意図と解法の開発者向け正本にする。日本語JSDocを完成させた後、同じ内容を重複して持つギミック一覧表を削除・縮約する。ただし決定履歴、PoC証跡、公開前人手確認項目は削除しない。
-4. **旧ドキュメントの情報設計** — `current-environment-implementation-plan.md`、`implementation-poc-master-plan.md`、`stage-rollout-plan.md`、旧版`release-readiness.md`は現行結論の正本ではない。履歴として残す場合は「履歴・結論に使わない」と明示し、READMEから現行計画に見えるリンクを外す。JSDoc移行後に`gimmick-backlog.md`と`gimmick-coverage-plan.md`を削除または履歴へ移す。
+4. **旧ドキュメントの情報設計** — `docs/README.md`を追加し、READMEから旧計画を現行資料として直接たどらない導線へ整理した。履歴ファイルは削除せず、決定経緯・PoC証跡として残す。
 5. **S-810固定asset方針の例外** — 可変寸法そのものをブラウザ内で生成するため現在はruntime生成にしている。事前生成可能なmediaはGit管理する原則との境界なので、Chromeで成立確認後に固定asset化できるか、runtime生成を仕様上の例外として残すか決める。
 6. **S-720旧assetの整理** — 製品stageは実変換のみを使うが、旧`recovered-*`と中間assetはPoCページ・test・manifestが参照する。PoCを履歴として残すか、生成scriptとtestを新経路へ移して旧assetを削除するかを決める。
 7. **S-710 fixtureの配布境界** — B01/B03 fixtureはGit管理するが、ゲーム画面から直接配布すると謎を先に見せる。ローカル動作確認用としてrepoに置く現状を維持するか、開発専用のfixture indexを用意するかを決める。
@@ -135,7 +135,7 @@ fixtureは`src/busybox/fixtures/s710/assets/`にある。
 
 PoC結果、決定ログ、Deep Research元案、Blackbox監査は、なぜ現在の設計になったかを追跡する証跡なので残す。ただし、現行の箱番号・成功条件・件数をそこから導かない。
 
-現行の解法説明は[現行ステージ解法仕様](./stage-walkthroughs.md)、現行の進捗は[ステージ実装状況](./stage-implementation-status.md)、次の作業はこの文書へ集約する。JSDocとlocaleの移行が完了した時点で、同じ解法を重複記載する`gimmick-backlog.md`と`gimmick-coverage-plan.md`の扱いを再判定する。
+現行の解法説明は[現行ステージ解法仕様](./stage-walkthroughs.md)、現行の進捗は[ステージ実装状況](./stage-implementation-status.md)、次の作業はこの文書へ集約する。資料の入口と履歴／現行の境界は[ドキュメント入口](./README.md)で確認する。JSDocとlocaleの移行が完了した時点で、同じ解法を重複記載する`gimmick-backlog.md`と`gimmick-coverage-plan.md`の扱いを再判定する。
 
 ## 完了の定義
 

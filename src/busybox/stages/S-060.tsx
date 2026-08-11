@@ -2,16 +2,17 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { hasRevisitFlag, setRevisitFlag } from "../infra/synchronousFlags";
 import type { StageComponentProps } from "../runtime/types";
 import { ProblemGiftBox } from "../ui/GiftBox";
+import { stageText } from "./locale";
+import { s060Locale } from "./S-060.locale";
 
 /**
- * S-060
- *
- * Gimmick: A synchronous flag and persisted observation make a later visit input.
- * Uses: A local synchronous revisit flag and the progress observation API.
- * Success: Re-enter after the first visit has recorded its observation.
- * Privacy/Permission: No permission; only an entered/returned fact is retained.
- * Cleanup: No external resource.
- * Human verification: H-001, H-018, H-025
+ * S-060 — 再訪問と、Service Workerを介したoffline郵便を分けて体験する。
+ * 目的: 閉じた後に残る仕事と、戻ってきたdocumentの変化をbrowserの保存機構で観測する。
+ * 最初の一手: B01は一度離脱して同じstageへ戻る。B02はService Worker制御後にofflineへ切り替えて投函する。
+ * 箱ごとの成功条件: B01は保存済みのentered観測を再訪時に消費、B02は実sendBeacon→offline navigation→worker receiptを再訪時に消費する。
+ * 開かない操作: online中の投函、通常fetch、same-document遷移、直接IndexedDB書込みではB02は開かない。
+ * API/権限: session/local flag、IndexedDB、sendBeacon、Service Worker。入力やreceiptは外部送信せず、必要なnonceだけ一時照合に使う。
+ * cleanup/環境: receiptを一度消費し、databaseとnetwork listenerを閉じる。Service Worker制御とoffline切替ができる環境でH-001/H-018/H-021/H-025/H-048を確認する。
  */
 export default function S060Stage(props: StageComponentProps) {
   const observationId = "S-060:entered";
@@ -54,19 +55,20 @@ export default function S060Stage(props: StageComponentProps) {
       const lookup = transaction.objectStore("receipts").get(nonce);
       lookup.onsuccess = () => {
         if (!lookup.result) {
-          setStatus("no receipt yet");
+          setStatus(stageText(props.locale, s060Locale.noReceipt));
           database.close();
           return;
         }
         transaction.objectStore("receipts").delete(nonce);
         beaconProblem.solve(["offline-beacon:receipt-consumed"]);
-        setStatus("receipt consumed");
+        setStatus(stageText(props.locale, s060Locale.receiptConsumed));
       };
       transaction.oncomplete = () => database.close();
       transaction.onerror = () => database.close();
     };
-    request.onerror = () => setStatus("receipt store unavailable");
-  }, [beaconProblem.solve]);
+    request.onerror = () =>
+      setStatus(stageText(props.locale, s060Locale.receiptUnavailable));
+  }, [beaconProblem.solve, props.locale]);
 
   useEffect(() => {
     const handleOnline = () => setOffline(false);
@@ -92,8 +94,8 @@ export default function S060Stage(props: StageComponentProps) {
     if (!offline || !workerControlled) {
       setStatus(
         !workerControlled
-          ? "Service Workerの制御を待っています"
-          : "ネットワークを切断してから投函してください",
+          ? stageText(props.locale, s060Locale.waitingWorker)
+          : stageText(props.locale, s060Locale.needOffline),
       );
       return;
     }
@@ -106,10 +108,10 @@ export default function S060Stage(props: StageComponentProps) {
       payload,
     );
     if (!accepted) {
-      setStatus("sendBeacon() rejected; no navigation");
+      setStatus(stageText(props.locale, s060Locale.rejected));
       return;
     }
-    setStatus("sendBeacon() accepted; receiver navigation");
+    setStatus(stageText(props.locale, s060Locale.accepted));
     const receiver = new URL("./index.html", window.location.href);
     receiver.searchParams.set("stage", "S-060");
     receiver.searchParams.set("offline-beacon", nonce);
@@ -121,7 +123,7 @@ export default function S060Stage(props: StageComponentProps) {
       <div className="return-clue" aria-hidden="true">
         ↪
       </div>
-      <p>{props.locale === "ja" ? "また、ここで。" : "See you here again."}</p>
+      <p>{stageText(props.locale, s060Locale.revisitClue)}</p>
       <div className="stage-actions">
         <button
           type="button"
@@ -129,18 +131,16 @@ export default function S060Stage(props: StageComponentProps) {
           onClick={sendBeacon}
           disabled={!offline || !workerControlled}
         >
-          {props.locale === "ja"
-            ? "オフライン郵便を投函"
-            : "Post offline beacon"}
+          {stageText(props.locale, s060Locale.post)}
         </button>
       </div>
       <p className="interaction-status" role="status">
         {status ||
           (!workerControlled
-            ? "Service Workerの制御を待っています"
+            ? stageText(props.locale, s060Locale.waitingWorker)
             : offline
-              ? "オフライン郵便を投函できます"
-              : "ネットワークを切断すると投函できます")}
+              ? stageText(props.locale, s060Locale.readyOffline)
+              : stageText(props.locale, s060Locale.needOffline))}
       </p>
       <div className="problem-row">
         <ProblemGiftBox problem={problem} locale={props.locale} />

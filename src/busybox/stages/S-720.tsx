@@ -17,12 +17,23 @@ import {
 } from "../fixtures/video-recovery/fixtures";
 import type { StageComponentProps } from "../runtime/types";
 import { ProblemGiftBox } from "../ui/GiftBox";
+import { stageText } from "./locale";
+import { s720Locale } from "./S-720.locale";
 
 type SourceNode = "source1" | "source2" | "source3";
 type TransformNode = "t1a" | "t2a" | "t3a" | "t1b" | "t2b" | "t3b";
 type NodeId = SourceNode | TransformNode | "output";
 type TransformKind = "t1" | "t2" | "t3";
 
+/**
+ * S-720 — 動画ノードと変換ノードをBezierケーブルで配線するpatch bay。
+ * 目的: 動画を実際に変換し、QRが読める正しい経路だけを発見する。
+ * 最初の一手: sourceのoutを変換in、変換outを次のin、最後をoutputへ順に接続する。
+ * 箱ごとの成功条件: B01〜B04は正規routeを実行して出力QRを読み、共通flagを入力する。
+ * 開かない操作: 分岐、cycle、入力側から始める接続、変換を表示だけで済ませた入力では開かない。
+ * API/権限: SVG/Canvasケーブル、HTMLMediaElement、MediaBunny、Canvas。権限・送信・回答保存はない。
+ * cleanup/環境: 変換中のAbortSignalとblob URLを破棄し、出力videoを停止する。H-001/H-002/H-003/H-004/H-014/H-019/H-020/H-023/H-025/H-043を確認する。
+ */
 export interface VideoPatchCable {
   from: Exclude<NodeId, "output">;
   to: Exclude<NodeId, SourceNode>;
@@ -260,6 +271,15 @@ function routeDetails(path: readonly NodeId[]) {
   };
 }
 
+/**
+ * S-720 — 動画ノードと変換ノードをBezierケーブルで配線するpatch bay。
+ * 目的: 動画を実際に変換し、QRが読める正しい経路だけを発見する。
+ * 最初の一手: sourceのoutを変換in、変換outを次のin、最後をoutputへ順に接続する。
+ * 箱ごとの成功条件: B01〜B04は正規routeを実行して出力QRを読み、共通flagを入力する。
+ * 開かない操作: 分岐、cycle、入力側から始める接続、変換を表示だけで済ませた入力では開かない。
+ * API/権限: SVG/Canvasケーブル、HTMLMediaElement、MediaBunny、Canvas。権限・送信・回答保存はない。
+ * cleanup/環境: 変換中のAbortSignalとblob URLを破棄し、出力videoを停止する。H-001/H-002/H-003/H-004/H-014/H-019/H-020/H-023/H-025/H-043を確認する。
+ */
 export default function S720Stage(props: StageComponentProps) {
   const problems = useMemo(
     () =>
@@ -275,7 +295,9 @@ export default function S720Stage(props: StageComponentProps) {
     Partial<Record<VideoRecoveryRoute, boolean>>
   >({});
   const [outputUrl, setOutputUrl] = useState<string>();
-  const [status, setStatus] = useState("Connect a source to the output.");
+  const [status, setStatus] = useState(() =>
+    stageText(props.locale, s720Locale.connectPrompt),
+  );
   const [answer, setAnswer] = useState("");
   const activePath = useMemo(() => pathForCables(cables), [cables]);
   const activeRoute = useMemo(() => findVideoRecoveryRoute(cables), [cables]);
@@ -316,7 +338,7 @@ export default function S720Stage(props: StageComponentProps) {
         if (previous?.startsWith("blob:")) URL.revokeObjectURL(previous);
         return undefined;
       });
-      setStatus("Connect a source to the output.");
+      setStatus(stageText(props.locale, s720Locale.connectPrompt));
       return;
     }
     const controller = new AbortController();
@@ -324,9 +346,9 @@ export default function S720Stage(props: StageComponentProps) {
     const sourceUrl = videoRecoveryAssets[details.source];
     if (details.transforms.length === 0) {
       setOutputUrl(sourceUrl);
-      setStatus("Direct source connection.");
+      setStatus(stageText(props.locale, s720Locale.direct));
     } else {
-      setStatus("Applying the connected transforms…");
+      setStatus(stageText(props.locale, s720Locale.applying));
       void renderVideoRoute(
         details.source,
         details.transforms,
@@ -339,7 +361,7 @@ export default function S720Stage(props: StageComponentProps) {
             if (previous?.startsWith("blob:")) URL.revokeObjectURL(previous);
             return next;
           });
-          setStatus("Output ready.");
+          setStatus(stageText(props.locale, s720Locale.ready));
           if (activeRoute) {
             setAvailable((previous) => ({ ...previous, [activeRoute]: true }));
           }
@@ -347,7 +369,7 @@ export default function S720Stage(props: StageComponentProps) {
         .catch((error: unknown) => {
           if (!disposed && (error as Error).name !== "AbortError") {
             setStatus(
-              `Transform failed: ${error instanceof Error ? error.message : "unknown error"}`,
+              `${stageText(props.locale, s720Locale.failed)}: ${error instanceof Error ? error.message : "unknown error"}`,
             );
           }
         });
@@ -356,7 +378,7 @@ export default function S720Stage(props: StageComponentProps) {
       disposed = true;
       controller.abort();
     };
-  }, [activePath, activeRoute]);
+  }, [activePath, activeRoute, props.locale]);
 
   useEffect(
     () => () => {
@@ -513,7 +535,7 @@ export default function S720Stage(props: StageComponentProps) {
             setPendingFrom(undefined);
           }}
         >
-          {props.locale === "ja" ? "ケーブルを外す" : "Disconnect all"}
+          {stageText(props.locale, s720Locale.disconnect)}
         </button>
         <label className="parallel-answer">
           flag

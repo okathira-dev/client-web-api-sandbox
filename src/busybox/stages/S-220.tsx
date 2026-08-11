@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import type { StageComponentProps } from "../runtime/types";
 import { ProblemGiftBox } from "../ui/GiftBox";
+import { stageText } from "./locale";
+import { s220Locale } from "./S-220.locale";
 
 interface TrailState {
   busyboxTrail?: { depth: number; ready: boolean };
@@ -12,14 +14,13 @@ function currentTrail() {
 }
 
 /**
- * S-220
- *
- * Gimmick: Build three same-document history entries, then walk Back to their base.
- * Uses: History API state, query strings, and the app's navigation remount.
- * Success: Enter with a ready trail whose depth has returned to zero.
- * Privacy/Permission: No permission; history state contains only depth and readiness.
- * Cleanup: Replace the base URL before adding bounded entries; no listener is retained.
- * Human verification: H-001, H-002, H-003, H-022, H-025
+ * S-220 — same-document履歴とNavigation APIの枝分かれを読む。
+ * 目的: browserのBack、reload、forward枝の破棄を、ページ内のボタンと実履歴の組合せで体験する。
+ * 最初の一手: B01は3段の履歴を積んでbrowser Backを3回、B02/B03は実Back-forwardとreloadを行う。B04はA→B→Back→Cへ進む。
+ * 箱ごとの成功条件: B01はdepth 0への復帰、B02はback_forward、B03はreload、B04は旧entryのdisposeとcanGoForward=falseを観測した時に開く。
+ * 開かない操作: pushStateだけの模倣、URL文字列の一致、page内Backボタン、forward枝を残したままでは開かない。
+ * API/権限: History API、PerformanceNavigationTiming、pageshow、Navigation API。状態はdepth/readyと一時roundだけで、送信・個人情報保存はない。
+ * cleanup/環境: pageshow・Navigation listenerを離脱時に外し、履歴の深さを3段に制限する。H-001/H-002/H-003/H-022/H-025を確認する。
  */
 export default function S220Stage(props: StageComponentProps) {
   const problem = props.problem("S-220-B01");
@@ -60,23 +61,23 @@ export default function S220Stage(props: StageComponentProps) {
       .navigation;
     const entry = navigation?.currentEntry;
     if (!navigation || !entry) {
-      setNavigationStatus("Navigation API unavailable");
+      setNavigationStatus(stageText(props.locale, s220Locale.unavailable));
       return;
     }
     let branchCreated = false;
     const handleNavigate = () => {
       branchCreated = true;
-      setNavigationStatus("native navigate event");
+      setNavigationStatus(stageText(props.locale, s220Locale.nativeNavigate));
     };
     const handleEntryChange = () => {
       setNavigationStatus(
-        `currententrychange; canGoForward=${String(navigation.canGoForward)}`,
+        `${stageText(props.locale, s220Locale.currentEntry)}${String(navigation.canGoForward)}`,
       );
     };
     const handleDispose = () => {
       if (!branchCreated) return;
       disposal.solve(["navigation:entry-dispose"]);
-      setNavigationStatus("current entry disposed");
+      setNavigationStatus(stageText(props.locale, s220Locale.disposed));
     };
     navigation.addEventListener("navigate", handleNavigate);
     navigation.addEventListener("currententrychange", handleEntryChange);
@@ -86,7 +87,7 @@ export default function S220Stage(props: StageComponentProps) {
       navigation.removeEventListener("currententrychange", handleEntryChange);
       entry.removeEventListener("dispose", handleDispose);
     };
-  }, [disposal.solve]);
+  }, [disposal.solve, props.locale]);
 
   const createDisposableBranch = () => {
     const navigation = (window as unknown as { navigation?: NavigationLike })
@@ -132,7 +133,7 @@ export default function S220Stage(props: StageComponentProps) {
         ))}
       </div>
       <button type="button" className="stage-action" onClick={buildTrail}>
-        {props.locale === "ja" ? "道を3つ積む" : "Build three steps"}
+        {stageText(props.locale, s220Locale.buildTrail)}
       </button>
       <div
         className="navigation-branch-guide"
@@ -147,9 +148,7 @@ export default function S220Stage(props: StageComponentProps) {
       </div>
       <p className="measurement">
         {depth === 3
-          ? props.locale === "ja"
-            ? "ブラウザの戻るを3回"
-            : "Use browser Back three times"
+          ? stageText(props.locale, s220Locale.useBack)
           : `${depth} / 3`}
       </p>
       <button
@@ -157,13 +156,9 @@ export default function S220Stage(props: StageComponentProps) {
         className="stage-action"
         onClick={createDisposableBranch}
       >
-        {props.locale === "ja"
-          ? branchRound === 0
-            ? "AからBへ進む"
-            : "戻ったら別の枝Cへ進む"
-          : branchRound === 0
-            ? "Go from A to B"
-            : "After Back, branch from A to C"}
+        {branchRound === 0
+          ? stageText(props.locale, s220Locale.branchFromB)
+          : stageText(props.locale, s220Locale.branchFromA)}
       </button>
       <p className="interaction-status" role="status">
         {navigationStatus}

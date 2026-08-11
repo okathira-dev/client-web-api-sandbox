@@ -11,6 +11,15 @@ const mazeRows = [
 ] as const;
 const start = { row: 1, column: 1 };
 
+/**
+ * S-670 — Consoleへ出すread-only迷路と、ページ側の入力を分離する。
+ * 目的: Console APIを表示面として使い、プレイヤーはページの方向ボタンだけで迷路を解く。
+ * 最初の一手: ConsoleのSからEまでを読み、上下左右を順に押す。
+ * 箱ごとの成功条件: B01は壁を越えずにEへ到達した状態だけで開く。
+ * 開かない操作: Console入力、DevTools編集、盤面文字列の書き換え、壁への移動では開かない。
+ * API/権限: console.logと通常のbutton/keydown。権限・保存・送信はない。
+ * cleanup/環境: Console表示は再描画時に更新し、listenerはAbortSignalで外す。H-001/H-002/H-003/H-004/H-020/H-025/H-036を確認する。
+ */
 export default function S670Stage(props: StageComponentProps) {
   const problem = props.problem("S-670-B01");
   const [position, setPosition] = useState(start);
