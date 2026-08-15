@@ -280,6 +280,19 @@ function routeDetails(path: readonly NodeId[]) {
  * API/権限: SVG/Canvasケーブル、HTMLMediaElement、MediaBunny、Canvas。権限・送信・回答保存はない。
  * cleanup/環境: 変換中のAbortSignalとblob URLを破棄し、出力videoを停止する。H-001/H-002/H-003/H-004/H-014/H-019/H-020/H-023/H-025/H-043を確認する。
  */
+/**
+ * S-720
+ *
+ * 目的: S-720の箱が示すブラウザ固有の状態・イベント・データ受け渡しを、プレイヤーの操作で観測する。
+ * 最初の一手: 画面の箱と説明を確認し、表示されている標準UIまたは外部機器を使って観測を開始する。
+ * 箱ごとの解法: 問題定義にある各Bxxについて、対応する実操作を行い、実APIから得た値・イベント・結果が厳密な成功条件を満たした箱だけが開く。
+ * 開かない操作: 文字列の直接編集、合成イベント、DevToolsでのDOM改変、見た目だけの変更、別箱の結果の流用では開かない。
+ * 使用API: このファイルが呼び出すWeb APIと、共通のProblem/Stage runtime。
+ * 権限・privacy: 実装が必要とする権限・保存・送信は、箱の操作に必要な最小範囲へ限定する。生の入力を回答以外の目的で扱わない。
+ * cleanup: stage離脱・取消・再試行時に、このstageが取得したlistener、timer、stream、worker、接続、blob URLを実装に応じて解除する。
+ * 対応環境: StageHostのcapability probeがavailableまたはpermission-requiredとしたブラウザ。非対応時は操作を要求せずunsupported表示とする。
+ * 人手確認: 対応するH-xxxをhuman-test-matrix.mdで確認し、権限拒否・取消・再入場も確認する。
+ */
 export default function S720Stage(props: StageComponentProps) {
   const problems = useMemo(
     () =>
@@ -369,7 +382,7 @@ export default function S720Stage(props: StageComponentProps) {
         .catch((error: unknown) => {
           if (!disposed && (error as Error).name !== "AbortError") {
             setStatus(
-              `${stageText(props.locale, s720Locale.failed)}: ${error instanceof Error ? error.message : "unknown error"}`,
+              `${stageText(props.locale, s720Locale.failed)}: ${error instanceof Error ? error.message : stageText(props.locale, s720Locale.unknownError)}`,
             );
           }
         });
@@ -418,7 +431,7 @@ export default function S720Stage(props: StageComponentProps) {
       </div>
       <section
         className="video-patchbay"
-        aria-label="video transform patch bay"
+        aria-label={stageText(props.locale, s720Locale.patchBay)}
       >
         <div className="video-patchbay__surface">
           <canvas
@@ -427,7 +440,7 @@ export default function S720Stage(props: StageComponentProps) {
             width="1120"
             height="650"
           >
-            Connected video cables
+            {stageText(props.locale, s720Locale.canvasDescription)}
           </canvas>
           {sourceNodes.map((id, index) => (
             <section
@@ -440,21 +453,24 @@ export default function S720Stage(props: StageComponentProps) {
                 autoPlay
                 playsInline
                 src={videoRecoveryAssets[id]}
-                aria-label={`video source ${index + 1}`}
+                aria-label={`${stageText(props.locale, s720Locale.sourceAriaPrefix)} ${index + 1}`}
               >
                 <track
                   kind="captions"
                   src="data:text/vtt,WEBVTT"
                   srcLang="en"
-                  label="Silent fixture"
+                  label={stageText(props.locale, s720Locale.silentFixture)}
                 />
               </video>
-              <span>VIDEO {index + 1}</span>
+              <span>
+                {stageText(props.locale, s720Locale.sourcePrefix).toUpperCase()}{" "}
+                {index + 1}
+              </span>
               <button
                 type="button"
                 className={`patch-port patch-port--out${pendingFrom === id ? " patch-port--active" : ""}`}
                 onClick={() => setPendingFrom(id)}
-                aria-label={`connect video ${index + 1} output`}
+                aria-label={`${stageText(props.locale, s720Locale.connectSourceOutput)} ${index + 1}`}
               />
             </section>
           ))}
@@ -468,7 +484,7 @@ export default function S720Stage(props: StageComponentProps) {
                   type="button"
                   className="patch-port patch-port--in"
                   onClick={() => connectTo(id)}
-                  aria-label={`connect ${id} input`}
+                  aria-label={`${stageText(props.locale, s720Locale.connectNodeInput)} ${id}`}
                 />
                 <strong>{nodeKind(id).toUpperCase()}</strong>
                 <span>
@@ -482,7 +498,7 @@ export default function S720Stage(props: StageComponentProps) {
                   type="button"
                   className={`patch-port patch-port--out${pendingFrom === id ? " patch-port--active" : ""}`}
                   onClick={() => setPendingFrom(id)}
-                  aria-label={`connect ${id} output`}
+                  aria-label={`${stageText(props.locale, s720Locale.connectNodeOutput)} ${id}`}
                 />
               </section>
             )),
@@ -492,9 +508,9 @@ export default function S720Stage(props: StageComponentProps) {
               type="button"
               className="patch-port patch-port--in"
               onClick={() => connectTo("output")}
-              aria-label="connect video output input"
+              aria-label={stageText(props.locale, s720Locale.connectOutput)}
             />
-            <span>OUTPUT</span>
+            <span>{stageText(props.locale, s720Locale.outputLabel)}</span>
             {outputUrl ? (
               <video
                 key={outputUrl}
@@ -504,20 +520,20 @@ export default function S720Stage(props: StageComponentProps) {
                 playsInline
                 controls
                 src={outputUrl}
-                aria-label="transformed video output"
+                aria-label={stageText(props.locale, s720Locale.output)}
               >
                 <track
                   kind="captions"
                   src="data:text/vtt,WEBVTT"
                   srcLang="en"
-                  label="Silent output"
+                  label={stageText(props.locale, s720Locale.silentOutput)}
                 />
               </video>
             ) : (
               <div
                 className="patch-output-idle"
                 role="img"
-                aria-label="video output idle"
+                aria-label={stageText(props.locale, s720Locale.outputIdle)}
               >
                 ∿
               </div>
@@ -538,7 +554,7 @@ export default function S720Stage(props: StageComponentProps) {
           {stageText(props.locale, s720Locale.disconnect)}
         </button>
         <label className="parallel-answer">
-          flag
+          {stageText(props.locale, s720Locale.flagLabel)}
           <input
             value={answer}
             placeholder="busybox{…}"

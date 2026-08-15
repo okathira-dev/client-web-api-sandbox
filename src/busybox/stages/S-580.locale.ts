@@ -1,6 +1,7 @@
-import type { StageLocaleText } from "./locale";
+import { defineStageLocale } from "./locale";
 
-export const s580Locale = {
+export const s580Locale = defineStageLocale({
+  stageName: { ja: "箱の名前を呼ぶ", en: "Call the box by name" },
   notRecognized: { ja: "認識できない", en: "Not recognized" },
   speechComplete: { ja: "発話完了", en: "Speech complete" },
   speechError: { ja: "発話エラー", en: "Speech error" },
@@ -10,4 +11,6 @@ export const s580Locale = {
   },
   listen: { ja: "聞き取る", en: "Listen" },
   shifted: { ja: "ずれた声を聞く", en: "Hear the shifted voice" },
-} satisfies Record<string, StageLocaleText>;
+  B01: { ja: "発話の箱", en: "Speech box" },
+  B02: { ja: "ずれた声の箱", en: "Shifted-voice box" },
+});

@@ -7,7 +7,7 @@
 - ステージID:
 - 表示ラベル（日英、後で推敲可）:
 - 実装ファイル: `stages/S-xxx.tsx`
-- stage-localization: `stages/S-xxx/locale.ts`（UIに表示する日本語・英語を置く）
+- stage-localization: `stages/S-xxx.locale.ts`（UIに表示する日本語・英語を置く）
 - 対応ギミックID:
 - 問題箱ID:
 - 大区分:
@@ -97,4 +97,4 @@
  */
 ```
 
-表示ラベル、button、status、aria-label、エラーなどのUI文言はstage-localizationへ置き、JSDocへ重複させない。表示ラベルは `StageSpec.label` とlocaleにだけ置き、ファイル名、export名、テスト名、URL、保存キーへ転記しない。
+表示ラベル、button、status、aria-label、エラーなどのUI文言はstage-localizationへ置き、JSDocへ重複させない。ステージ名と箱名も各 `S-xxx.locale.ts` の `stageName` / `Bxx` semantic keyへ置き、`metadataLocale.ts` が表示時に解決する。`StageSpec` / `ProblemSpec` はID・色・ヒント・構造だけを持ち、ファイル名、export名、テスト名、URL、保存キーへ表示文言を転記しない。

@@ -16,6 +16,8 @@ import {
 import type { ProblemBoxId } from "../domain/stages";
 import type { ProgressController } from "../hooks/useProgress";
 import { type Locale, messages } from "../i18n";
+import { stageNameText } from "../stages/metadataLocale";
+import { uiText } from "../ui/locale";
 import type { StageRegistration, StageServices } from "./types";
 
 interface Props {
@@ -28,6 +30,7 @@ interface Props {
 
 interface BoundaryProps {
   stageId: string;
+  locale: Locale;
   children: ReactNode;
 }
 
@@ -51,7 +54,7 @@ class StageErrorBoundary extends Component<BoundaryProps, { failed: boolean }> {
   render() {
     return this.state.failed ? (
       <div className="stage-error" role="alert">
-        This box stopped responding. Return to the box room and try again.
+        {uiText(this.props.locale, "stageCrashed")}
       </div>
     ) : (
       this.props.children
@@ -168,7 +171,9 @@ export function StageHost({
       </button>
       <header className="stage-view__header">
         <p>{definition.stage.id}</p>
-        <h2 id={activeStageHeadingId}>{definition.stage.label[locale]}</h2>
+        <h2 id={activeStageHeadingId}>
+          {stageNameText(locale, definition.stage.id)}
+        </h2>
         <div
           className={`stage-state ${persistentlyComplete ? "stage-state--solved" : ""}`}
         >
@@ -181,10 +186,12 @@ export function StageHost({
           {copy.unavailable}
         </div>
       ) : signal ? (
-        <StageErrorBoundary stageId={definition.stage.id}>
+        <StageErrorBoundary stageId={definition.stage.id} locale={locale}>
           <Suspense
             fallback={
-              <div className="stage-loading">{copy.storageLoading}</div>
+              <div className="stage-loading">
+                {uiText(locale, "stageLoading")}
+              </div>
             }
           >
             <definition.component

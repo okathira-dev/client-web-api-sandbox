@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { StageComponentProps } from "../runtime/types";
 import { ProblemGiftBox } from "../ui/GiftBox";
+import { stageText } from "./locale";
+import { s330Locale } from "./S-330.locale";
 
 /**
  * S-330
@@ -11,6 +13,19 @@ import { ProblemGiftBox } from "../ui/GiftBox";
  * Privacy/Permission: Request wake lock only from the action; retain no device data.
  * Cleanup: Remove visibility listeners and release any held sentinel on abort or unmount.
  * Human verification: H-005, H-022, H-023, H-025
+ */
+/**
+ * S-330
+ *
+ * 目的: S-330の箱が示すブラウザ固有の状態・イベント・データ受け渡しを、プレイヤーの操作で観測する。
+ * 最初の一手: 画面の箱と説明を確認し、表示されている標準UIまたは外部機器を使って観測を開始する。
+ * 箱ごとの解法: 問題定義にある各Bxxについて、対応する実操作を行い、実APIから得た値・イベント・結果が厳密な成功条件を満たした箱だけが開く。
+ * 開かない操作: 文字列の直接編集、合成イベント、DevToolsでのDOM改変、見た目だけの変更、別箱の結果の流用では開かない。
+ * 使用API: このファイルが呼び出すWeb APIと、共通のProblem/Stage runtime。
+ * 権限・privacy: 実装が必要とする権限・保存・送信は、箱の操作に必要な最小範囲へ限定する。生の入力を回答以外の目的で扱わない。
+ * cleanup: stage離脱・取消・再試行時に、このstageが取得したlistener、timer、stream、worker、接続、blob URLを実装に応じて解除する。
+ * 対応環境: StageHostのcapability probeがavailableまたはpermission-requiredとしたブラウザ。非対応時は操作を要求せずunsupported表示とする。
+ * 人手確認: 対応するH-xxxをhuman-test-matrix.mdで確認し、権限拒否・取消・再入場も確認する。
  */
 export default function S330Stage(props: StageComponentProps) {
   const acquireProblem = props.problem("S-330-B01");
@@ -90,15 +105,22 @@ export default function S330Stage(props: StageComponentProps) {
         className="stage-action"
         onClick={() => void acquire(false)}
       >
-        {props.locale === "ja" ? "灯りを保つ" : "Keep the light awake"}
+        {stageText(props.locale, s330Locale.keepAwake)}
       </button>
       <p className="measurement">
-        {props.locale === "ja"
-          ? "取得後にタブを隠し、戻る。"
-          : "After acquiring, hide the tab and return."}
+        {stageText(props.locale, s330Locale.returnAfterAcquire)}
       </p>
       <p className="interaction-status" role="status">
-        {status}
+        {stageText(
+          props.locale,
+          status === "holding"
+            ? s330Locale.holding
+            : status === "reacquired"
+              ? s330Locale.reacquired
+              : status === "released"
+                ? s330Locale.released
+                : s330Locale.unavailable,
+        )}
       </p>
     </div>
   );

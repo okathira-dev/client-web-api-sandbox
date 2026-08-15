@@ -1,6 +1,8 @@
-import type { StageLocaleText } from "./locale";
+import { defineStageLocale } from "./locale";
 
-export const s510Locale = {
+export const s510Locale = defineStageLocale({
+  stageName: { ja: "窓を越えるファイル", en: "A file across windows" },
+  dropTarget: { ja: "ドロップ先", en: "Drop target" },
   realFile: { ja: "実ファイル", en: "Real file" },
   realFileHelp: {
     ja: "画像を保存し、OSのファイルからここへドラッグする。",
@@ -35,4 +37,6 @@ export const s510Locale = {
     ja: "画像の取得に失敗しました",
     en: "Could not fetch the image",
   },
-} satisfies Record<string, StageLocaleText>;
+  B01: { ja: "ドロップの箱", en: "Drop box" },
+  B02: { ja: "窓越し現像の箱", en: "Cross-window developing box" },
+});

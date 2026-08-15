@@ -62,8 +62,8 @@
   </head>
   <body>
     <main>
-      <h1>Busybox implementation PoC probes</h1>
-      <p>開発者用の隔離ページ。製品ステージには含めない。権限を要求する操作は明示ボタンからのみ実行する。</p>
+      <h1>Busybox latest PoC probes</h1>
+      <p>開発者用の隔離ページ。製品ステージには含めず、現行仕様に対応する最新版の観測だけを置く。権限を要求する操作は明示ボタンからのみ実行する。</p>
       <details class="poc-accordion" open>
         <summary>PoC APIの存在確認一覧</summary>
         <table>
@@ -135,12 +135,6 @@
         <output class="media-log" id="navigation-status" aria-live="polite">navigation event待ち</output>
       </details>
       <details class="poc-accordion" name="poc-probe">
-        <summary>POC-005: WebGPU safe adapter lifecycle</summary>
-        <p>負荷生成やCPU fallbackは置かない。明示操作でadapter / deviceを取得し、直ちにresourceを解放する経路だけを確認する。</p>
-        <button type="button" id="run-webgpu">WebGPU adapter を安全に確認する</button>
-        <output class="media-status" id="webgpu-status" aria-live="polite">未実行</output>
-      </details>
-      <details class="poc-accordion" name="poc-probe">
         <summary>POC-010: SpeechSynthesis sequence</summary>
         <p>表示しない短い変換列を、一文字ずつnative speech queueへ入れる。開始・完了・cancelのみを記録する。</p>
         <button type="button" id="run-speech">変換列を発話する</button>
@@ -183,66 +177,6 @@
           <p id="fragment-d">Delta lights wait for night. The final marker completes this traversal fixture.</p>
         </div>
       </details>
-      <details class="poc-accordion" name="poc-probe">
-        <summary>POC-017: Console診断卓 candidate</summary>
-        <p>Consoleを別の計器盤にする候補。page側のswitch操作だけで、同じ観測値をplain textと<code>console.table()</code>へ出す。製品パズルの正解組はまだ固定しない。</p>
-        <button type="button" data-console-dial="north">N</button>
-        <button type="button" data-console-dial="east">E</button>
-        <button type="button" data-console-dial="south">S</button>
-        <button type="button" data-console-dial="west">W</button>
-        <button type="button" id="reset-console-diagnostics">診断卓を戻す</button>
-        <output class="media-status" id="console-diagnostics-status" aria-live="polite">Consoleを開いてcandidate Aを確認する。</output>
-      </details>
-      <details class="poc-accordion" name="poc-probe">
-        <summary>POC-006: native media履歴probe（現行箱番号ではない）</summary>
-        <section class="media-probe" aria-labelledby="media-capability-heading">
-          <h3 id="media-capability-heading">旧B04 Media Capabilities（D-141で不採用）</h3>
-          <p>候補構成の照会だけを検証する履歴probe。native解像度選択UIではなく、製品stageの箱には使わない。</p>
-          <button type="button" id="run-media-capabilities">6候補の3灯を測定する</button>
-          <table>
-            <caption>固定codec / resolution profile</caption>
-            <thead><tr><th>候補</th><th>bitrate</th><th>supported</th><th>smooth</th><th>powerEfficient</th></tr></thead>
-            <tbody id="media-capability-results" aria-busy="true"></tbody>
-          </table>
-          <output class="media-status" id="media-capability-status" aria-live="polite">未測定</output>
-        </section>
-        <section class="media-probe" aria-labelledby="media-vfr-heading">
-          <h3 id="media-vfr-heading">旧B05 VFR 24fps区間（現行S-810-B01）</h3>
-          <button type="button" id="run-media-vfr">9秒reelを再生してframe cadenceを測定する</button>
-          <video id="media-vfr" controls muted preload="metadata" aria-label="12、24、30、60fps区間を持つVFR reel">
-            <track kind="captions" src="data:text/vtt,WEBVTT" srclang="en" label="No captions" />
-          </video>
-          <output class="media-status" id="media-vfr-status" aria-live="polite">未測定</output>
-        </section>
-        <section class="media-probe" aria-labelledby="media-resolution-heading">
-          <h3 id="media-resolution-heading">旧B06 native解像度reel（D-142で不採用）</h3>
-          <button type="button" id="run-media-resolution">3 reelのnatural / frame寸法を測定する</button>
-          <div class="media-reels">
-            <video id="media-reel-low" controls muted preload="metadata" aria-label="low resolution reel"><track kind="captions" src="data:text/vtt,WEBVTT" srclang="en" label="No captions" /></video>
-            <video id="media-reel-target" controls muted preload="metadata" aria-label="target resolution reel"><track kind="captions" src="data:text/vtt,WEBVTT" srclang="en" label="No captions" /></video>
-            <video id="media-reel-high" controls muted preload="metadata" aria-label="high resolution reel"><track kind="captions" src="data:text/vtt,WEBVTT" srclang="en" label="No captions" /></video>
-          </div>
-          <output class="media-status" id="media-resolution-status" aria-live="polite">未測定</output>
-        </section>
-        <section class="media-probe" aria-labelledby="media-subtitle-heading">
-          <h3 id="media-subtitle-heading">旧B07 native字幕track（現行S-350-B05）</h3>
-          <p>native controlsの字幕menuから <code>Busybox</code> を選ぶ。custom pickerは用意しない。</p>
-          <video id="media-subtitles" controls muted preload="metadata" aria-label="Busy、Busybox、Box字幕trackを持つreel">
-            <track id="media-subtitle-track-0" kind="captions" src="../fixtures/media/assets/captions-busy.vtt" srclang="qaa" label="Busy" default />
-            <track id="media-subtitle-track-1" kind="captions" src="../fixtures/media/assets/captions-busybox.vtt" srclang="qab" label="Busybox" />
-            <track id="media-subtitle-track-2" kind="captions" src="../fixtures/media/assets/captions-box.vtt" srclang="qac" label="Box" />
-          </video>
-          <output class="media-status" id="media-subtitle-status" aria-live="polite">native字幕変更待ち</output>
-        </section>
-        <section class="media-probe" aria-labelledby="media-audio-heading">
-          <h3 id="media-audio-heading">B08 native音声track</h3>
-          <p>対応browserではnative controlsの音声menuから <code>Busybox</code> を選ぶ。非対応時の代替pickerは用意しない。</p>
-          <video id="media-audio-tracks" controls preload="metadata" aria-label="Busy、Busybox、Box音声trackを持つreel">
-            <track kind="captions" src="data:text/vtt,WEBVTT" srclang="en" label="No captions" />
-          </video>
-          <output class="media-status" id="media-audio-status" aria-live="polite">media metadata待ち</output>
-        </section>
-      </details>
       <details class="poc-accordion" name="poc-probe" open>
         <summary>POC-031: browser / OS media controls</summary>
         <p>ゲーム製の再生・停止・seek・mute controlは置かない。各videoはブラウザ標準controlsから操作する。緑はこのページが実eventを受けたことを表し、ゲーム仕様の採用決定ではない。</p>
@@ -259,7 +193,7 @@
           </ul>
         </section>
         <section class="media-probe" aria-labelledby="pip-controls-heading">
-          <h3 id="pip-controls-heading">旧S-230／現S-350-B06: native PiP入口とPoC用page API入口</h3>
+          <h3 id="pip-controls-heading">S-350-B06: native PiP入口とpage API比較</h3>
           <p>まず標準controlsにPiP操作が提示されるか確認する。page API経路は比較用PoCに限り、製品S-350には置かない。</p>
           <video id="poc-pip-video" controls muted playsinline preload="metadata" aria-label="Picture-in-Picture確認用動画">
             <track kind="captions" src="data:text/vtt,WEBVTT" srclang="en" label="No captions" />

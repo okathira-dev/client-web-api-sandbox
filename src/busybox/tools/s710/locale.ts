@@ -1,0 +1,63 @@
+import type { Locale } from "../../i18n";
+
+export const toolLocale = {
+  ja: {
+    initial: "動画を選択するか、10秒以内で録画してください。",
+    cameraReady: "カメラ動画を用意しました。",
+    cameraUnavailable: "カメラを利用できないか、権限が拒否されました。",
+    compressing: "ブラウザ内で圧縮しています…",
+    done: "完了 — 入力に対する出力サイズ比",
+    inputDecodeFailed: "入力をデコードできません。復旧用動画を返しました。",
+    conversionFailed: "変換に失敗しました",
+    unknownError: "不明なエラー",
+    inputReady: "入力を受け付けました。",
+    unknownFile: "不明なファイルです。動画を選択してください。",
+    clipPress: "ClipPress",
+    localCompressor: "ローカル動画圧縮ツール",
+    runsInBrowser: "● ブラウザ内で処理",
+    input: "入力",
+    chooseVideo: "動画を選択",
+    record10s: "10秒録画",
+    stop: "停止",
+    inputTrack: "入力",
+    noInput: "入力未選択",
+    compress: "圧縮 →",
+    output: "出力",
+    outputTrack: "出力",
+    outputPreview: "出力プレビュー",
+    download: "WebMをダウンロード",
+    documentTitle: "ClipPress — ローカル動画圧縮",
+  },
+  en: {
+    initial: "Select a clip or record up to 10 seconds.",
+    cameraReady: "Camera clip ready.",
+    cameraUnavailable: "Camera unavailable or permission denied.",
+    compressing: "Compressing locally…",
+    done: "Done — output size ratio",
+    inputDecodeFailed:
+      "Input could not be decoded. A recovery clip was returned.",
+    conversionFailed: "Conversion failed",
+    unknownError: "unknown error",
+    inputReady: "Input ready.",
+    unknownFile: "Unknown file. Try selecting a video.",
+    clipPress: "ClipPress",
+    localCompressor: "LOCAL VIDEO COMPRESSOR",
+    runsInBrowser: "● Runs in your browser",
+    input: "Input",
+    chooseVideo: "Choose video",
+    record10s: "Record 10s",
+    stop: "Stop",
+    inputTrack: "Input",
+    noInput: "No input selected",
+    compress: "COMPRESS →",
+    output: "Output",
+    outputTrack: "Output",
+    outputPreview: "Output preview",
+    download: "Download WebM",
+    documentTitle: "ClipPress — Local Video Compressor",
+  },
+} satisfies Record<Locale, Record<string, string>>;
+
+export function toolCopy(locale: Locale) {
+  return toolLocale[locale];
+}

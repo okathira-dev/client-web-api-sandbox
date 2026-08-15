@@ -1,9 +1,21 @@
 import { useEffect, useMemo, useState } from "react";
 import type { StageComponentProps } from "../runtime/types";
 import { ProblemGiftBox } from "../ui/GiftBox";
+import { statusText } from "../ui/statusLocale";
+import { stageText } from "./locale";
+import { s650Locale } from "./S-650.locale";
 
 type PermissionKey = "geolocation" | "notifications" | "camera" | "microphone";
 type PermissionValue = PermissionState | "unknown";
+
+function permissionStateText(
+  locale: StageComponentProps["locale"],
+  state: PermissionValue,
+) {
+  return state === "unknown"
+    ? stageText(locale, s650Locale.unknown)
+    : statusText(locale, state);
+}
 
 const keys: readonly PermissionKey[] = [
   "geolocation",
@@ -25,13 +37,7 @@ function permissionLabel(
   key: PermissionKey,
   locale: StageComponentProps["locale"],
 ) {
-  const labels = {
-    geolocation: { ja: "位置情報", en: "geolocation" },
-    notifications: { ja: "通知", en: "notifications" },
-    camera: { ja: "カメラ", en: "camera" },
-    microphone: { ja: "マイク", en: "microphone" },
-  } as const;
-  return labels[key][locale];
+  return stageText(locale, s650Locale[key]);
 }
 
 /**
@@ -42,6 +48,19 @@ function permissionLabel(
  * 開かない操作: request成功だけ、promptのまま、game側の仮表示、初期値の書き換えでは開かない。
  * API/権限: Permissions API、getUserMedia、Geolocation、Notification。streamは即停止し、位置・音声・映像・履歴は保存しない。
  * cleanup/環境: change/focus listenerとmedia trackを離脱時に破棄する。H-004/H-006/H-007/H-019/H-023/H-025/H-034を確認する。
+ */
+/**
+ * S-650
+ *
+ * 目的: S-650の箱が示すブラウザ固有の状態・イベント・データ受け渡しを、プレイヤーの操作で観測する。
+ * 最初の一手: 画面の箱と説明を確認し、表示されている標準UIまたは外部機器を使って観測を開始する。
+ * 箱ごとの解法: 問題定義にある各Bxxについて、対応する実操作を行い、実APIから得た値・イベント・結果が厳密な成功条件を満たした箱だけが開く。
+ * 開かない操作: 文字列の直接編集、合成イベント、DevToolsでのDOM改変、見た目だけの変更、別箱の結果の流用では開かない。
+ * 使用API: このファイルが呼び出すWeb APIと、共通のProblem/Stage runtime。
+ * 権限・privacy: 実装が必要とする権限・保存・送信は、箱の操作に必要な最小範囲へ限定する。生の入力を回答以外の目的で扱わない。
+ * cleanup: stage離脱・取消・再試行時に、このstageが取得したlistener、timer、stream、worker、接続、blob URLを実装に応じて解除する。
+ * 対応環境: StageHostのcapability probeがavailableまたはpermission-requiredとしたブラウザ。非対応時は操作を要求せずunsupported表示とする。
+ * 人手確認: 対応するH-xxxをhuman-test-matrix.mdで確認し、権限拒否・取消・再入場も確認する。
  */
 export default function S650Stage(props: StageComponentProps) {
   const problems = useMemo(
@@ -129,9 +148,13 @@ export default function S650Stage(props: StageComponentProps) {
           track.stop();
         });
       }
-      setStatus(`${permissionLabel(key, props.locale)}: requested`);
+      setStatus(
+        `${permissionLabel(key, props.locale)}: ${stageText(props.locale, s650Locale.requested)}`,
+      );
     } catch {
-      setStatus(`${permissionLabel(key, props.locale)}: denied or unavailable`);
+      setStatus(
+        `${permissionLabel(key, props.locale)}: ${stageText(props.locale, s650Locale.denied)}`,
+      );
     }
   };
 
@@ -154,7 +177,8 @@ export default function S650Stage(props: StageComponentProps) {
             className="stage-action"
             onClick={() => void request(key)}
           >
-            {permissionLabel(key, props.locale)}: {states[key]}
+            {permissionLabel(key, props.locale)}:{" "}
+            {permissionStateText(props.locale, states[key])}
           </button>
         ))}
       </div>

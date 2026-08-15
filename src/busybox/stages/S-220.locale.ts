@@ -1,6 +1,7 @@
-import type { StageLocaleText } from "./locale";
+import { defineStageLocale } from "./locale";
 
-export const s220Locale = {
+export const s220Locale = defineStageLocale({
+  stageName: { ja: "戻る道", en: "The path back" },
   buildTrail: { ja: "道を3つ積む", en: "Build three steps" },
   useBack: { ja: "ブラウザの戻るを3回", en: "Use browser Back three times" },
   branchFromB: { ja: "AからBへ進む", en: "Go from A to B" },
@@ -21,4 +22,13 @@ export const s220Locale = {
     en: "currententrychange; canGoForward=",
   },
   disposed: { ja: "current entryを破棄しました", en: "current entry disposed" },
-} satisfies Record<string, StageLocaleText>;
+  navigationBranch: {
+    ja: "Navigation APIの分岐経路",
+    en: "Navigation API branch route",
+  },
+  browserBack: { ja: "← ブラウザの戻る →", en: "← browser Back →" },
+  B01: { ja: "履歴の箱", en: "History box" },
+  B02: { ja: "戻る・進むの箱", en: "Back-forward box" },
+  B03: { ja: "再読込の箱", en: "Reload box" },
+  B04: { ja: "分岐破棄の箱", en: "Branch-disposal box" },
+});

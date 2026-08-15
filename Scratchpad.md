@@ -4,31 +4,26 @@
 
 ## 現在のタスク
 
-### 現行実装のコミット前整理
+### 固定media asset化と最新版PoC整理
 
-- [x] S-030-B02を削除し、Selection APIだけのB01へ整理
-- [x] S-060-B02をオフラインかつService Worker制御下だけで成立するよう修正
-- [x] S-150をキーボード操作ステージへ変更（pointer-inert button、typeahead select、details）
-- [x] S-220の分岐ガイドを追加
-- [x] S-510のB01/B02のドラッグ経路を分離・検証
-- [x] S-580の認識言語をen-USへ固定
-- [x] S-640を8問・共通回答欄に整理し、B05-B08の文字化けを差別化
-- [x] S-660をステージ入場時の自動Compute Pressure観測へ変更
-- [x] S-710を小文字flag、横並び変換UI、低ビットレート、jsQR＋四辺形差替えへ更新
-- [x] S-810をMSEによるフレーム単位の可変寸法動画生成へ変更（Windows Chromeで4寸法の開箱を確認）
-- [x] Aboutから同梱ライセンス本文へ導線を追加し、全ページのshell幅を拡張
-- [x] S-710 decode失敗fixtureとS-720 WebM 9本を小文字flagの固定assetへ再生成（ローカルFFmpegを環境変数で注入）
-- [x] 旧仕様を参照する履歴ドキュメントを棚卸しし、現行結論への導線を整理（docs/README.mdへ集約）
-- [x] 今回変更したstageの表示文言を隣接locale moduleへ切り出し
-- [x] 今回変更したstageの日本語・MECE JSDocを整備
-- [x] `tsc` / Biome / Markuplint / Jest / build の最終実行
-- [x] Windows ChromeでS-640/S-710/S-720/S-810の主要経路を確認
-- [x] 変更内容と残課題を確認後にコミット
+- [x] localeは全面lazy化せず、全ステージ名・箱名を初期表示できるeager metadata registryを維持する判断を確定
+- [x] S-810の120フレーム可変寸法VP8 segmentを事前生成し、`resolution-sweep.pack` とmanifestをGit管理
+- [x] S-810実行時MediaBunnyエンコードを削除し、固定packをfetchしてMSEへ追加する経路へ置換
+- [x] S-810固定assetの意味検証testを追加
+- [x] POCページから却下済みS-270/POC-005、S-680/POC-017、S-350旧POC-006、S-430旧POC-007を削除
+- [x] `poc-latest.md`へ現行PoCの最新版索引と旧PoCの削除境界を整理
+- [x] 現行引継ぎ・ステージ状況・検証記録のS-810記載を固定asset経路へ更新
+- [x] nvs defaultのNode 24.14.0で`npm run check`（Biomeを含む）と`npm run build`を実行
+- [x] `npm run test:ci`を全件再実行（47 suites / 288 tests）
+- [ ] Windows ChromeでS-810のpack読み込み、4寸法、再試行、離脱cleanupを確認
+- [ ] PoCページで最新版項目だけが表示され、削除済み候補が見えないことを確認
+- [x] 差分・絶対パス・生成途中ファイル・asset manifestを監査（絶対パス混入なし、manifest/packの意味検証済み）
 
 ## 正本への参照
 
+- 最新PoC索引: `src/busybox/docs/poc-latest.md`
 - 現状・残問題・確認順: `src/busybox/docs/current-status-and-handoff.md`
-- 現行解法: `src/busybox/docs/stage-walkthroughs.md`
+- 現行解法: 各`S-xxx.tsx`のdefault component直前にある日本語JSDoc
 - 実装状態: `src/busybox/docs/stage-implementation-status.md`
 - 人手確認: `src/busybox/docs/human-test-matrix.md`
 - 自動検証: `src/busybox/docs/verification-record.md`

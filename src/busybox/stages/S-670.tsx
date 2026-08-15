@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import type { StageComponentProps } from "../runtime/types";
 import { ProblemGiftBox } from "../ui/GiftBox";
+import { stageText } from "./locale";
+import { s670Locale } from "./S-670.locale";
 
 const mazeRows = [
   "#######",
@@ -19,6 +21,19 @@ const start = { row: 1, column: 1 };
  * 開かない操作: Console入力、DevTools編集、盤面文字列の書き換え、壁への移動では開かない。
  * API/権限: console.logと通常のbutton/keydown。権限・保存・送信はない。
  * cleanup/環境: Console表示は再描画時に更新し、listenerはAbortSignalで外す。H-001/H-002/H-003/H-004/H-020/H-025/H-036を確認する。
+ */
+/**
+ * S-670
+ *
+ * 目的: S-670の箱が示すブラウザ固有の状態・イベント・データ受け渡しを、プレイヤーの操作で観測する。
+ * 最初の一手: 画面の箱と説明を確認し、表示されている標準UIまたは外部機器を使って観測を開始する。
+ * 箱ごとの解法: 問題定義にある各Bxxについて、対応する実操作を行い、実APIから得た値・イベント・結果が厳密な成功条件を満たした箱だけが開く。
+ * 開かない操作: 文字列の直接編集、合成イベント、DevToolsでのDOM改変、見た目だけの変更、別箱の結果の流用では開かない。
+ * 使用API: このファイルが呼び出すWeb APIと、共通のProblem/Stage runtime。
+ * 権限・privacy: 実装が必要とする権限・保存・送信は、箱の操作に必要な最小範囲へ限定する。生の入力を回答以外の目的で扱わない。
+ * cleanup: stage離脱・取消・再試行時に、このstageが取得したlistener、timer、stream、worker、接続、blob URLを実装に応じて解除する。
+ * 対応環境: StageHostのcapability probeがavailableまたはpermission-requiredとしたブラウザ。非対応時は操作を要求せずunsupported表示とする。
+ * 人手確認: 対応するH-xxxをhuman-test-matrix.mdで確認し、権限拒否・取消・再入場も確認する。
  */
 export default function S670Stage(props: StageComponentProps) {
   const problem = props.problem("S-670-B01");
@@ -46,33 +61,23 @@ export default function S670Stage(props: StageComponentProps) {
     const target = mazeRows[next.row]?.[next.column];
     if (!target || target === "#") {
       renderMaze(position);
-      setStatus(
-        props.locale === "ja"
-          ? "壁。盤面をConsoleへ再表示した。"
-          : "Wall; the board was printed again.",
-      );
+      setStatus(stageText(props.locale, s670Locale.wall));
       return;
     }
     setPosition(next);
     renderMaze(next);
     if (target === "E") {
       problem.solve(["console-maze:exit"]);
-      setStatus(props.locale === "ja" ? "出口に到達。" : "Exit reached.");
+      setStatus(stageText(props.locale, s670Locale.exit));
     } else {
-      setStatus(
-        props.locale === "ja"
-          ? "盤面をConsoleへ再表示した。"
-          : "Board printed to Console.",
-      );
+      setStatus(stageText(props.locale, s670Locale.printed));
     }
   };
 
   const reset = () => {
     setPosition(start);
     renderMaze(start);
-    setStatus(
-      props.locale === "ja" ? "開始位置へ戻した。" : "Reset to the start.",
-    );
+    setStatus(stageText(props.locale, s670Locale.resetStatus));
   };
 
   return (
@@ -82,7 +87,7 @@ export default function S670Stage(props: StageComponentProps) {
         {position.row}:{position.column}
       </p>
       <fieldset className="stage-actions">
-        <legend>{props.locale === "ja" ? "迷路操作" : "Maze controls"}</legend>
+        <legend>{stageText(props.locale, s670Locale.controls)}</legend>
         <button
           type="button"
           className="stage-action"
@@ -112,14 +117,11 @@ export default function S670Stage(props: StageComponentProps) {
           →
         </button>
         <button type="button" className="stage-action" onClick={reset}>
-          {props.locale === "ja" ? "リセット" : "Reset"}
+          {stageText(props.locale, s670Locale.reset)}
         </button>
       </fieldset>
       <p className="interaction-status" role="status">
-        {status ||
-          (props.locale === "ja"
-            ? "Consoleを開いて盤面を見る。"
-            : "Open Console to see the board.")}
+        {status || stageText(props.locale, s670Locale.initial)}
       </p>
     </div>
   );

@@ -99,8 +99,8 @@ APIが存在しても、必要なハードウェア、ドライバー、コー�
 
 | 要素 | 寿命 | 責務 |
 | --- | --- | --- |
-| `StageSpec` | 静的 | ステージID、表示専用ラベル、区分、所属する `ProblemSpec` の不変定義 |
-| `ProblemSpec` | 静的 | 問題箱ID、色、直下ヒント、アクセシブルな表示ラベル |
+| `StageSpec` | 静的 | ステージID、区分、地図情報、所属する `ProblemSpec` の不変定義。表示名は隣接localeの `stageName` から解決 |
+| `ProblemSpec` | 静的 | 問題箱ID、色、直下ヒント。アクセシブルな表示名は隣接localeの `Bxx` keyから解決 |
 | `StageRegistration` | アプリ起動中 | `StageSpec` と能力判定、ID単位の遅延コンポーネントを結ぶregistry項目 |
 | `ProblemHandle` | ステージ入場中 | 静的問題定義、今回の箱状態、安定した `solve` をまとめて個別ステージへ渡す |
 
@@ -108,7 +108,7 @@ APIが存在しても、必要なハードウェア、ドライバー、コー�
 
 複数ステージで同じ資源解放や同じ純粋判定を本当に共有する場合だけ `stages/shared/` へ置く。API固有の閾値、状態機械、権限分岐を見かけだけ共通化せず、検索時に1ステージの意図とライフサイクルを1ファイルで追えることを優先する。
 
-各 `S-xxx.tsx` のステージコンポーネント直前には、通常のJSDoc本文として `Gimmick`、`Uses`、`Success`、`Privacy/Permission`、`Cleanup`、`Human verification` を記録する。`@humanTest` のような独自タグは使わない。人手確認IDは[人手確認台帳](./human-test-matrix.md)に存在するIDだけを列挙する。
+各 `S-xxx.tsx` のステージコンポーネント直前には、日本語で `目的`、`最初の一手`、`箱ごとの解法`、`開かない操作`、`使用API`、`権限・privacy`、`cleanup`、`対応環境`、`人手確認` を記録する。`@humanTest` のような独自タグは使わない。人手確認IDは[人手確認台帳](./human-test-matrix.md)に存在するIDだけを列挙する。
 
 ### ステージを構成する5層
 

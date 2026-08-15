@@ -16,7 +16,20 @@
     <img draggable="true" data-layer="C" src="./drag-layer-c.png" alt="layer C" width="120" height="80">
   </main>
 <script>
-  const round = new URL(location.href).searchParams.get("round") || "";
+  const params = new URL(location.href).searchParams;
+  const locale = params.get("locale") === "ja" ? "ja" : "en";
+  document.documentElement.lang = locale;
+  const copy = {
+    ja: { title: "Busybox画像レイヤー", layers: { A: "レイヤーA", B: "レイヤーB", C: "レイヤーC" } },
+    en: { title: "Busybox image layers", layers: { A: "layer A", B: "layer B", C: "layer C" } },
+  }[locale];
+  document.title = copy.title;
+  const labels = copy.layers;
+  for (const image of document.querySelectorAll("img[data-layer]")) {
+    const layer = image.dataset.layer;
+    if (layer && layer in labels) image.alt = labels[layer];
+  }
+  const round = params.get("round") || "";
   for (const image of document.querySelectorAll("img[data-layer]")) {
     image.addEventListener("dragstart", (event) => {
       const source = new URL(image.getAttribute("src"), location.href).href;

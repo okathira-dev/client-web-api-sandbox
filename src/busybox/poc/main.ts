@@ -8,15 +8,6 @@ import {
   validLabelsForPosition,
 } from "../fixtures/encoding/data";
 import {
-  audioTracks,
-  bestMediaCapabilityProfile,
-  type MediaCapabilityResult,
-  mediaCapabilityProfiles,
-  resolutionReels,
-  subtitleTracks,
-  vfrSegments,
-} from "../fixtures/media/fixtures";
-import {
   unicodeExpressionText,
   unicodeFixtures,
 } from "../fixtures/unicode/data";
@@ -44,16 +35,13 @@ const encodingPreviewElement =
   document.querySelector<HTMLDivElement>("#encoding-preview");
 const unicodePreviewElement =
   document.querySelector<HTMLDivElement>("#unicode-preview");
-const mediaCapabilityBodyElement =
-  document.querySelector<HTMLTableSectionElement>("#media-capability-results");
 
 if (
   !outputElement ||
   !resultBodyElement ||
   !encodingLabelsElement ||
   !encodingPreviewElement ||
-  !unicodePreviewElement ||
-  !mediaCapabilityBodyElement
+  !unicodePreviewElement
 ) {
   throw new Error("PoC probe page is incomplete.");
 }
@@ -63,7 +51,6 @@ const resultBody: HTMLTableSectionElement = resultBodyElement;
 const encodingLabelList: HTMLUListElement = encodingLabelsElement;
 const encodingPreview: HTMLDivElement = encodingPreviewElement;
 const unicodePreview: HTMLDivElement = unicodePreviewElement;
-const mediaCapabilityBody: HTMLTableSectionElement = mediaCapabilityBodyElement;
 
 const manualReviewElement = document.querySelector<HTMLDivElement>(
   "#manual-review-results",
@@ -93,14 +80,8 @@ const windowWithExperiments = window as Window & {
 };
 
 const navigatorWithExperiments = navigator as Navigator & {
-  audioSession?: unknown;
   connection?: unknown;
   contacts?: unknown;
-  gpu?: {
-    requestAdapter: (options?: { powerPreference?: "low-power" }) => Promise<{
-      requestDevice: () => Promise<{ destroy: () => void }>;
-    } | null>;
-  };
   presentation?: unknown;
   queryLocalFonts?: unknown;
   userPreferences?: unknown;
@@ -159,19 +140,6 @@ const capabilities: Capability[] = [
     path: "Navigation API",
     supported: "navigation" in windowWithExperiments,
   },
-  { poc: "005", path: "WebGPU", supported: "gpu" in navigatorWithExperiments },
-  {
-    poc: "006",
-    path: "historical MediaCapabilities query + adopted video frame callback",
-    supported:
-      "mediaCapabilities" in navigator &&
-      "requestVideoFrameCallback" in HTMLVideoElement.prototype,
-  },
-  {
-    poc: "007",
-    path: "Audio Session",
-    supported: "audioSession" in navigatorWithExperiments,
-  },
   {
     poc: "008",
     path: "User Preferences override",
@@ -210,11 +178,6 @@ const capabilities: Capability[] = [
     supported: "PressureObserver" in windowWithExperiments,
   },
   { poc: "016", path: "Console output", supported: "console" in window },
-  {
-    poc: "017",
-    path: "Console diagnostic output",
-    supported: "console" in window,
-  },
   { poc: "018", path: "Text Fragment navigation", supported: "URL" in window },
   {
     poc: "019",
@@ -304,7 +267,6 @@ const reviewGroups: readonly ReviewGroup[] = [
       "POC-001 Custom Highlight",
       "POC-003 details / dialog",
       "POC-004 Navigation APIの入口",
-      "POC-006 fixed media fixture",
       "POC-011 Unicode fixture",
       "POC-013 Encoding fixture",
       "POC-022 WebCodecs入口",
@@ -317,16 +279,14 @@ const reviewGroups: readonly ReviewGroup[] = [
     description:
       "capability tableで有無は読めるが、成立には別fixture、長時間観測、または詳しい謎設計が必要。",
     items: [
-      "POC-005 WebGPU",
-      "POC-007 Audio Session",
       "POC-008 User Preferences",
       "POC-009 cross-window D&D",
       "POC-010 SpeechSynthesis",
       "POC-014 Permissions",
       "POC-015 Compute Pressure",
-      "POC-016 / 017 Console",
+      "POC-016 Console maze",
       "POC-018 Text Fragment",
-      "POC-021 video transform",
+      "POC-021 bounded Insertable Streams",
     ],
   },
   {
@@ -632,28 +592,10 @@ for (const item of unicodeFixtures) {
 unicodePreview.setAttribute("aria-busy", "false");
 
 const mediaAssetUrls = {
-  vfr: new URL("../fixtures/media/assets/vfr-cadence.webm", import.meta.url)
-    .href,
-  low: new URL("../fixtures/media/assets/reel-320x180.webm", import.meta.url)
-    .href,
   target: new URL("../fixtures/media/assets/reel-640x360.webm", import.meta.url)
-    .href,
-  high: new URL("../fixtures/media/assets/reel-960x540.webm", import.meta.url)
     .href,
   multiAudio: new URL(
     "../fixtures/media/assets/multi-audio.mp4",
-    import.meta.url,
-  ).href,
-  captionsBusy: new URL(
-    "../fixtures/media/assets/captions-busy.vtt",
-    import.meta.url,
-  ).href,
-  captionsBusybox: new URL(
-    "../fixtures/media/assets/captions-busybox.vtt",
-    import.meta.url,
-  ).href,
-  captionsBox: new URL(
-    "../fixtures/media/assets/captions-box.vtt",
     import.meta.url,
   ).href,
 };
@@ -691,22 +633,11 @@ const videoRecoveryAssets = {
   },
 } as const;
 
-for (const profile of mediaCapabilityProfiles) {
-  const row = document.createElement("tr");
-  row.dataset.profileId = profile.id;
-  row.innerHTML = `<th scope="row">${profile.label}</th><td>${profile.bitrate.toLocaleString()}</td><td data-field="supported">—</td><td data-field="smooth">—</td><td data-field="powerEfficient">—</td>`;
-  mediaCapabilityBody.append(row);
-}
-mediaCapabilityBody.setAttribute("aria-busy", "false");
-
 function setMediaSource(selector: string, source: string): void {
   const video = document.querySelector<HTMLVideoElement>(selector);
   if (video) video.src = source;
 }
 
-setMediaSource("#media-vfr", mediaAssetUrls.vfr);
-setMediaSource("#media-subtitles", mediaAssetUrls.target);
-setMediaSource("#media-audio-tracks", mediaAssetUrls.multiAudio);
 setMediaSource("#poc-native-controls", mediaAssetUrls.multiAudio);
 setMediaSource("#poc-pip-video", mediaAssetUrls.target);
 const mediaSessionAudio = document.querySelector<HTMLAudioElement>(
@@ -721,26 +652,6 @@ setMediaSource("#recovery-source-t3-alpha", videoRecoveryAssets.sourceT3.url);
 setMediaSource("#recovery-alpha-t3", videoRecoveryAssets.recoveredAlpha.url);
 setMediaSource("#recovery-source-t3-beta", videoRecoveryAssets.sourceT3.url);
 setMediaSource("#recovery-beta-t3", videoRecoveryAssets.recoveredBeta.url);
-for (const reel of resolutionReels) {
-  setMediaSource(`#media-reel-${reel.id}`, mediaAssetUrls[reel.id]);
-}
-
-const subtitleAssetUrls = [
-  mediaAssetUrls.captionsBusy,
-  mediaAssetUrls.captionsBusybox,
-  mediaAssetUrls.captionsBox,
-] as const;
-for (const [index, track] of subtitleTracks.entries()) {
-  const element = document.querySelector<HTMLTrackElement>(
-    `#media-subtitle-track-${index}`,
-  );
-  const source = subtitleAssetUrls[index];
-  if (!element || !source) continue;
-  element.src = source;
-  element.label = track.label;
-  element.srclang = track.language;
-  element.default = track.default;
-}
 
 function setStatus(selector: string, message: string): void {
   const status = document.querySelector<HTMLOutputElement>(selector);
@@ -941,30 +852,6 @@ for (const button of document.querySelectorAll<HTMLButtonElement>(
   });
 }
 
-document.querySelector("#run-webgpu")?.addEventListener("click", async () => {
-  const gpu = navigatorWithExperiments.gpu;
-  if (!gpu) {
-    setStatus("#webgpu-status", "WebGPU is unavailable in this browser.");
-    return;
-  }
-  try {
-    const adapter = await gpu.requestAdapter({ powerPreference: "low-power" });
-    if (!adapter) {
-      setStatus("#webgpu-status", "requestAdapter returned null.");
-      return;
-    }
-    const device = await adapter.requestDevice();
-    device.destroy();
-    setStatus(
-      "#webgpu-status",
-      "adapter / device acquired and immediately destroyed. No render loop or CPU fallback was started.",
-    );
-  } catch (error) {
-    const name = error instanceof Error ? error.name : "error";
-    setStatus("#webgpu-status", `WebGPU probe failed: ${name}.`);
-  }
-});
-
 let speechRun = 0;
 document.querySelector("#run-speech")?.addEventListener("click", () => {
   if (
@@ -1161,273 +1048,6 @@ document.querySelector("#reset-maze")?.addEventListener("click", () => {
   setStatus("#maze-status", "迷路を開始位置へ戻してConsoleへ再表示した。");
 });
 renderMaze();
-
-const consoleDialStates = {
-  north: false,
-  east: false,
-  south: false,
-  west: false,
-};
-type ConsoleDial = keyof typeof consoleDialStates;
-
-function reportConsoleDiagnostics(): void {
-  const entries = Object.entries(consoleDialStates).map(([dial, enabled]) => ({
-    dial,
-    enabled: enabled ? "on" : "off",
-    linked: dial === "north" || dial === "south" ? "vertical" : "horizontal",
-  }));
-  const vertical = consoleDialStates.north === consoleDialStates.south;
-  const horizontal = consoleDialStates.east !== consoleDialStates.west;
-  console.info(
-    `Busybox POC-017 candidate A\nvertical=${vertical}\nhorizontal=${horizontal}`,
-  );
-  console.table(entries);
-  setStatus(
-    "#console-diagnostics-status",
-    `candidate A: vertical=${vertical}, horizontal=${horizontal}. Consoleへplain textとtableを出力した。`,
-  );
-}
-
-for (const button of document.querySelectorAll<HTMLButtonElement>(
-  "[data-console-dial]",
-)) {
-  button.addEventListener("click", () => {
-    const dial = button.dataset.consoleDial as ConsoleDial | undefined;
-    if (!dial) return;
-    consoleDialStates[dial] = !consoleDialStates[dial];
-    reportConsoleDiagnostics();
-  });
-}
-document
-  .querySelector("#reset-console-diagnostics")
-  ?.addEventListener("click", () => {
-    for (const dial of Object.keys(consoleDialStates) as ConsoleDial[]) {
-      consoleDialStates[dial] = false;
-    }
-    reportConsoleDiagnostics();
-  });
-reportConsoleDiagnostics();
-
-document
-  .querySelector("#run-media-capabilities")
-  ?.addEventListener("click", async () => {
-    const results = new Map<string, MediaCapabilityResult>();
-    for (const profile of mediaCapabilityProfiles) {
-      let result: MediaCapabilityResult;
-      try {
-        result = await navigator.mediaCapabilities.decodingInfo({
-          type: "file",
-          video: {
-            contentType: profile.contentType,
-            width: profile.width,
-            height: profile.height,
-            bitrate: profile.bitrate,
-            framerate: profile.framerate,
-          },
-        });
-      } catch {
-        result = {
-          supported: false,
-          smooth: false,
-          powerEfficient: false,
-        };
-      }
-      results.set(profile.id, result);
-      const row = mediaCapabilityBody.querySelector<HTMLElement>(
-        `[data-profile-id="${profile.id}"]`,
-      );
-      for (const field of ["supported", "smooth", "powerEfficient"] as const) {
-        const cell = row?.querySelector<HTMLElement>(`[data-field="${field}"]`);
-        if (cell) {
-          cell.textContent = String(result[field]);
-          cell.className = result[field] ? "available" : "unsupported";
-        }
-      }
-    }
-    const best = bestMediaCapabilityProfile(results);
-    setStatus(
-      "#media-capability-status",
-      best
-        ? `3灯すべてtrueの最高候補: ${best.label}`
-        : "3灯すべてtrueの候補なし。この履歴probeでは未観測。",
-    );
-  });
-
-type VfrSample = { mediaTime: number; delta: number; presentedFrames: number };
-let vfrCallbackId: number | undefined;
-
-function median(values: readonly number[]): number | undefined {
-  if (values.length === 0) return undefined;
-  const sorted = [...values].sort((left, right) => left - right);
-  const middle = Math.floor(sorted.length / 2);
-  const upper = sorted[middle];
-  if (upper === undefined) return undefined;
-  return sorted.length % 2 === 1
-    ? upper
-    : ((sorted[middle - 1] ?? upper) + upper) / 2;
-}
-
-document
-  .querySelector("#run-media-vfr")
-  ?.addEventListener("click", async () => {
-    const video = document.querySelector<HTMLVideoElement>("#media-vfr");
-    if (!video || !("requestVideoFrameCallback" in video)) {
-      setStatus("#media-vfr-status", "requestVideoFrameCallback非対応。");
-      return;
-    }
-    if (vfrCallbackId !== undefined) {
-      video.cancelVideoFrameCallback(vfrCallbackId);
-    }
-    const samples: VfrSample[] = [];
-    let previousMediaTime: number | undefined;
-    let previousPresentedFrames: number | undefined;
-
-    const finish = () => {
-      const summaries = vfrSegments.map((segment) => {
-        const rates = samples
-          .filter(
-            (sample) =>
-              sample.mediaTime > segment.start + 0.1 &&
-              sample.mediaTime < segment.end - 0.1,
-          )
-          .map((sample) => 1 / sample.delta);
-        const measured = median(rates);
-        return `${segment.framerate}fps区間=${measured?.toFixed(1) ?? "—"}fps/${rates.length}差分`;
-      });
-      const stable24 = samples.filter(
-        (sample) =>
-          sample.mediaTime > 2.1 &&
-          sample.mediaTime < 4.9 &&
-          Math.abs(1 / sample.delta - 24) <= 1.5,
-      ).length;
-      setStatus(
-        "#media-vfr-status",
-        `${summaries.join("、")}。24fps安定差分=${stable24}（合格>=24）。`,
-      );
-    };
-
-    const sampleFrame: VideoFrameRequestCallback = (_now, metadata) => {
-      if (
-        previousMediaTime !== undefined &&
-        previousPresentedFrames !== undefined &&
-        metadata.mediaTime > previousMediaTime &&
-        metadata.presentedFrames > previousPresentedFrames
-      ) {
-        samples.push({
-          mediaTime: metadata.mediaTime,
-          delta: metadata.mediaTime - previousMediaTime,
-          presentedFrames: metadata.presentedFrames,
-        });
-      }
-      previousMediaTime = metadata.mediaTime;
-      previousPresentedFrames = metadata.presentedFrames;
-      if (!video.ended && !video.paused) {
-        vfrCallbackId = video.requestVideoFrameCallback(sampleFrame);
-      }
-    };
-
-    video.currentTime = 0;
-    video.addEventListener("ended", finish, { once: true });
-    vfrCallbackId = video.requestVideoFrameCallback(sampleFrame);
-    setStatus("#media-vfr-status", "9秒のVFR reelを測定中…");
-    await video.play();
-  });
-
-async function firstPresentedFrame(
-  video: HTMLVideoElement,
-): Promise<VideoFrameCallbackMetadata> {
-  if (video.readyState < HTMLMediaElement.HAVE_METADATA) {
-    await new Promise<void>((resolveReady) => {
-      video.addEventListener("loadedmetadata", () => resolveReady(), {
-        once: true,
-      });
-      video.load();
-    });
-  }
-  video.currentTime = 0;
-  const metadata = new Promise<VideoFrameCallbackMetadata>((resolveFrame) => {
-    video.requestVideoFrameCallback((_now, frameMetadata) =>
-      resolveFrame(frameMetadata),
-    );
-  });
-  await video.play();
-  const result = await metadata;
-  video.pause();
-  return result;
-}
-
-document
-  .querySelector("#run-media-resolution")
-  ?.addEventListener("click", async () => {
-    const summaries: string[] = [];
-    for (const reel of resolutionReels) {
-      const video = document.querySelector<HTMLVideoElement>(
-        `#media-reel-${reel.id}`,
-      );
-      if (!video) continue;
-      const metadata = await firstPresentedFrame(video);
-      const natural = `${video.videoWidth}x${video.videoHeight}`;
-      const presented = `${metadata.width}x${metadata.height}`;
-      const expected = `${reel.width}x${reel.height}`;
-      summaries.push(
-        `${reel.id}: natural=${natural}, frame=${presented}, expected=${expected}`,
-      );
-    }
-    setStatus("#media-resolution-status", summaries.join(" / "));
-  });
-
-const subtitleVideo =
-  document.querySelector<HTMLVideoElement>("#media-subtitles");
-subtitleVideo?.textTracks.addEventListener("change", () => {
-  const showing = [...subtitleVideo.textTracks]
-    .filter((track) => track.mode === "showing")
-    .map((track) => track.label);
-  const solved = showing.length === 1 && showing[0] === "Busybox";
-  setStatus(
-    "#media-subtitle-status",
-    `showing=${showing.join(", ") || "none"} / Busyboxのみ=${solved}`,
-  );
-});
-
-type ExperimentalAudioTrack = {
-  enabled: boolean;
-  id: string;
-  kind: string;
-  label: string;
-  language: string;
-};
-type ExperimentalAudioTrackList = EventTarget & {
-  length: number;
-  [index: number]: ExperimentalAudioTrack | undefined;
-};
-
-const audioTrackVideo = document.querySelector<HTMLVideoElement>(
-  "#media-audio-tracks",
-) as (HTMLVideoElement & { audioTracks?: ExperimentalAudioTrackList }) | null;
-const nativeAudioTrackList = audioTrackVideo?.audioTracks;
-if (!nativeAudioTrackList) {
-  setStatus(
-    "#media-audio-status",
-    "audioTracks非公開。このbrowserではB08未観測（代替pickerなし）。",
-  );
-} else {
-  const reportAudioTracks = () => {
-    const enabled: string[] = [];
-    for (let index = 0; index < nativeAudioTrackList.length; index += 1) {
-      const track = nativeAudioTrackList[index];
-      if (track?.enabled) enabled.push(track.label);
-    }
-    const solved = enabled.length === 1 && enabled[0] === audioTracks[1].label;
-    setStatus(
-      "#media-audio-status",
-      `enabled=${enabled.join(", ") || "none"} / Busyboxのみ=${solved}`,
-    );
-  };
-  nativeAudioTrackList.addEventListener("change", reportAudioTracks);
-  audioTrackVideo.addEventListener("loadedmetadata", reportAudioTracks, {
-    once: true,
-  });
-}
 
 const nativeControlsVideo = document.querySelector<HTMLVideoElement>(
   "#poc-native-controls",

@@ -1,8 +1,17 @@
 {
   "name": "Busybox: Web API Explorer",
+  "name_localized": {
+    "ja": "Busybox: Web APIエクスプローラー"
+  },
   "short_name": "Busybox",
+  "short_name_localized": {
+    "ja": "Busybox"
+  },
   "description": "A browser-powered puzzle game",
-  "lang": "ja",
+  "description_localized": {
+    "ja": "ブラウザのWeb APIを使って解くパズルゲーム"
+  },
+  "lang": "en",
   "id": "./index.html",
   "start_url": "./index.html",
   "scope": "./",
@@ -14,7 +23,9 @@
   "shortcuts": [
     {
       "name": "Shortcut box",
+      "name_localized": { "ja": "ショートカットの箱" },
       "short_name": "Shortcut",
+      "short_name_localized": { "ja": "ショートカット" },
       "url": "./index.html?stage=S-310&source=shortcut",
       "icons": [{ "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml" }]
     }

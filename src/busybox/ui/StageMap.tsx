@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { type StageId, type StageSpec, stageCatalogue } from "../domain/stages";
+import { type StageMapClusterLabel, uiText } from "./locale";
 
 const canvasWidth = 1480;
 const canvasHeight = 1650;
@@ -11,7 +12,7 @@ const clusterWidth = nodeWidth * 2 + nodeGapX;
 
 interface StageMapCluster {
   id: string;
-  label: Readonly<Record<"ja" | "en", string>>;
+  label: StageMapClusterLabel;
   x: number;
   y: number;
   stageIds: readonly StageId[];
@@ -20,7 +21,7 @@ interface StageMapCluster {
 export const stageMapClusters: readonly StageMapCluster[] = [
   {
     id: "input",
-    label: { ja: "入力と文字", en: "Input & text" },
+    label: "clusterInput",
     x: 48,
     y: 230,
     stageIds: [
@@ -40,7 +41,7 @@ export const stageMapClusters: readonly StageMapCluster[] = [
   },
   {
     id: "lifecycle",
-    label: { ja: "ページの往来", en: "Page journeys" },
+    label: "clusterLifecycle",
     x: 534,
     y: 230,
     stageIds: [
@@ -60,7 +61,7 @@ export const stageMapClusters: readonly StageMapCluster[] = [
   },
   {
     id: "media",
-    label: { ja: "音・映像・通知", en: "Media & notices" },
+    label: "clusterMedia",
     x: 1020,
     y: 230,
     stageIds: [
@@ -79,7 +80,7 @@ export const stageMapClusters: readonly StageMapCluster[] = [
   },
   {
     id: "pwa",
-    label: { ja: "PWAと認証", en: "PWA & identity" },
+    label: "clusterPwa",
     x: 48,
     y: 950,
     stageIds: [
@@ -97,7 +98,7 @@ export const stageMapClusters: readonly StageMapCluster[] = [
   },
   {
     id: "hardware",
-    label: { ja: "端末と周辺機器", en: "Device & hardware" },
+    label: "clusterHardware",
     x: 534,
     y: 950,
     stageIds: [
@@ -116,7 +117,7 @@ export const stageMapClusters: readonly StageMapCluster[] = [
   },
   {
     id: "sensors",
-    label: { ja: "位置とセンサー", en: "Location & sensors" },
+    label: "clusterSensors",
     x: 1020,
     y: 950,
     stageIds: [
@@ -205,7 +206,7 @@ export function StageMap({ locale, renderStage }: StageMapProps) {
         <button
           type="button"
           onClick={() => setScale((value) => Math.max(0.55, value - 0.1))}
-          aria-label={locale === "ja" ? "地図を縮小" : "Zoom map out"}
+          aria-label={uiText(locale, "zoomOut")}
         >
           −
         </button>
@@ -213,18 +214,18 @@ export function StageMap({ locale, renderStage }: StageMapProps) {
         <button
           type="button"
           onClick={() => setScale((value) => Math.min(1.3, value + 0.1))}
-          aria-label={locale === "ja" ? "地図を拡大" : "Zoom map in"}
+          aria-label={uiText(locale, "zoomIn")}
         >
           +
         </button>
         <button type="button" onClick={centerOnHub}>
-          {locale === "ja" ? "中央へ" : "Center"}
+          {uiText(locale, "centerMap")}
         </button>
       </div>
       <section
         className="stage-map-viewport"
         ref={viewportRef}
-        aria-label={locale === "ja" ? "ステージ地図" : "Stage map"}
+        aria-label={uiText(locale, "stageMap")}
       >
         <div
           className="stage-map-scale"
@@ -328,7 +329,7 @@ export function StageMap({ locale, renderStage }: StageMapProps) {
                 className="stage-map-cluster"
                 style={{ left: cluster.x, top: cluster.y - 48 }}
               >
-                {cluster.label[locale]}
+                {uiText(locale, cluster.label)}
               </p>
             ))}
             <ol className="stage-map-list">

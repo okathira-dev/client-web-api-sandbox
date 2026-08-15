@@ -16,6 +16,7 @@ import {
   s710Flags,
 } from "../../stages/s710Protocol";
 import { drawQrIntoQuad } from "../../stages/s710Qr";
+import { toolCopy } from "./locale";
 import "./styles.css";
 
 class DecodeFailure extends Error {}
@@ -63,12 +64,17 @@ function revoke(url: string | undefined) {
 }
 
 function Tool() {
+  const locale =
+    new URL(location.href).searchParams.get("locale") === "ja" ? "ja" : "en";
+  const copy = toolCopy(locale);
+  useEffect(() => {
+    document.documentElement.lang = locale;
+    document.title = copy.documentTitle;
+  }, [copy.documentTitle, locale]);
   const [source, setSource] = useState<File>();
   const [outputUrl, setOutputUrl] = useState<string>();
   const [outputSize, setOutputSize] = useState<number>();
-  const [status, setStatus] = useState(
-    "Select a clip or record up to 10 seconds.",
-  );
+  const [status, setStatus] = useState(copy.initial);
   const [busy, setBusy] = useState(false);
   const [recording, setRecording] = useState(false);
   const [countdown, setCountdown] = useState<number>();
@@ -159,7 +165,7 @@ function Tool() {
         recordingTimerRef.current = undefined;
         recorderRef.current = undefined;
         setBusy(false);
-        setStatus("Camera clip ready.");
+        setStatus(copy.cameraReady);
       };
       setRecordingStream(stream);
       setBusy(true);
@@ -180,7 +186,7 @@ function Tool() {
       setBusy(false);
       setRecording(false);
       setCountdown(undefined);
-      setStatus("Camera unavailable or permission denied.");
+      setStatus(copy.cameraUnavailable);
     }
   };
 
@@ -188,7 +194,7 @@ function Tool() {
     if (!source) return;
     publish({});
     setBusy(true);
-    setStatus("Compressing locally…");
+    setStatus(copy.compressing);
     let conversion: Conversion | undefined;
     try {
       const input = new Input({
@@ -308,7 +314,7 @@ function Tool() {
       setOutputSize(blob.size);
       publish({ dark: darkSeen, qr: qrSeen, second: secondPass });
       setStatus(
-        `Done — ${(blob.size / Math.max(1, source.size)).toFixed(2)}× of input size.`,
+        `${copy.done}: ${(blob.size / Math.max(1, source.size)).toFixed(2)}×.`,
       );
     } catch (error) {
       if (error instanceof DecodeFailure) {
@@ -318,10 +324,10 @@ function Tool() {
         setOutputUrl(brokenOutput);
         setOutputSize(size);
         publish({ broken: true });
-        setStatus("Input could not be decoded. A recovery clip was returned.");
+        setStatus(copy.inputDecodeFailed);
       } else {
         setStatus(
-          `Conversion failed: ${error instanceof Error ? error.message : "unknown error"}`,
+          `${copy.conversionFailed}: ${error instanceof Error ? error.message : copy.unknownError}`,
         );
       }
     } finally {
@@ -334,16 +340,16 @@ function Tool() {
     <main>
       <header>
         <div>
-          <strong>ClipPress</strong>
-          <span>LOCAL VIDEO COMPRESSOR</span>
+          <strong>{copy.clipPress}</strong>
+          <span>{copy.localCompressor}</span>
         </div>
-        <span className="privacy">● Runs in your browser</span>
+        <span className="privacy">{copy.runsInBrowser}</span>
       </header>
       <div className="workspace">
         <section className="pane">
-          <h1>Input</h1>
+          <h1>{copy.input}</h1>
           <label className="dropzone">
-            <span>Choose video</span>
+            <span>{copy.chooseVideo}</span>
             <input
               type="file"
               onChange={(event) => {
@@ -352,19 +358,19 @@ function Tool() {
                 setSource(file);
                 setStatus(
                   file.type.startsWith("video/")
-                    ? "Input ready."
-                    : "Unknown file. Try compressing it.",
+                    ? copy.inputReady
+                    : copy.unknownFile,
                 );
               }}
             />
           </label>
           <div className="buttons">
             <button type="button" onClick={() => void record()} disabled={busy}>
-              Record 10s
+              {copy.record10s}
             </button>
             {recording ? (
               <button type="button" onClick={stopRecording}>
-                Stop
+                {copy.stop}
               </button>
             ) : null}
             {recording ? (
@@ -379,11 +385,11 @@ function Tool() {
                 kind="captions"
                 src="data:text/vtt,WEBVTT"
                 srcLang="en"
-                label="Input"
+                label={copy.inputTrack}
               />
             </video>
           ) : (
-            <div className="empty">No input selected</div>
+            <div className="empty">{copy.noInput}</div>
           )}
         </section>
         <button
@@ -392,21 +398,21 @@ function Tool() {
           onClick={() => void transform()}
           disabled={!source || busy}
         >
-          COMPRESS →
+          {copy.compress}
         </button>
         <section className="pane">
-          <h1>Output</h1>
+          <h1>{copy.output}</h1>
           {outputUrl ? (
             <video controls src={outputUrl}>
               <track
                 kind="captions"
                 src="data:text/vtt,WEBVTT"
                 srcLang="en"
-                label="Output"
+                label={copy.outputTrack}
               />
             </video>
           ) : (
-            <div className="empty">Output preview</div>
+            <div className="empty">{copy.outputPreview}</div>
           )}
           <p>
             {source?.size.toLocaleString() ?? "—"} B →{" "}
@@ -418,7 +424,7 @@ function Tool() {
               href={outputUrl}
               download="clippress-compressed.webm"
             >
-              Download WebM
+              {copy.download}
             </a>
           ) : null}
         </section>

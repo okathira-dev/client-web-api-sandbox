@@ -1,6 +1,7 @@
-import type { StageLocaleText } from "./locale";
+import { defineStageLocale } from "./locale";
 
-export const s060Locale = {
+export const s060Locale = defineStageLocale({
+  stageName: { ja: "帰ってくる箱", en: "The returning box" },
   revisitClue: { ja: "また、ここで。", en: "See you here again." },
   post: { ja: "オフライン郵便を投函", en: "Post offline beacon" },
   waitingWorker: {
@@ -29,4 +30,6 @@ export const s060Locale = {
     ja: "sendBeacon()を受理。receiverへ移動します",
     en: "sendBeacon() accepted; navigating to receiver",
   },
-} satisfies Record<string, StageLocaleText>;
+  B01: { ja: "再訪の箱", en: "Return box" },
+  B02: { ja: "オフライン郵便の箱", en: "Offline-mail box" },
+});

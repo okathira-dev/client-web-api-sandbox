@@ -2,6 +2,7 @@ import type { CSSProperties, MouseEventHandler } from "react";
 import { useEffect, useRef } from "react";
 import { type Locale, messages } from "../i18n";
 import type { ProblemHandle } from "../runtime/types";
+import { problemLabelText } from "../stages/metadataLocale";
 import { ClueIcon } from "./ClueIcon";
 
 export type GiftBoxState = "ribboned" | "closed" | "open";
@@ -96,7 +97,7 @@ export function ProblemGiftBox({
     closed: copy.problemReplayReady,
     open: copy.problemSolvedThisVisit,
   }[resolvedState];
-  const label = `${presentation.label[locale]}: ${stateLabel}`;
+  const label = `${problemLabelText(locale, presentation.id)}: ${stateLabel}`;
 
   return (
     <figure className="problem-gift">
@@ -109,7 +110,9 @@ export function ProblemGiftBox({
       />
       <figcaption className="problem-gift__clue">
         <ClueIcon name={presentation.clue} />
-        <span className="sr-only">{presentation.label[locale]}</span>
+        <span className="sr-only">
+          {problemLabelText(locale, presentation.id)}
+        </span>
       </figcaption>
     </figure>
   );

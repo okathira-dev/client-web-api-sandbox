@@ -1,5 +1,19 @@
 export type Locale = "ja" | "en";
 
+/** A single player-facing message with one value per supported locale. */
+export type LocalizedText = Readonly<Record<Locale, string>>;
+
+/** Keeps common UI copy key-first, just like the stage-local bundles. */
+export function defineLocale<T extends Readonly<Record<string, LocalizedText>>>(
+  value: T,
+): T {
+  return value;
+}
+
+export function text(locale: Locale, value: LocalizedText): string {
+  return value[locale];
+}
+
 export const messages = {
   ja: {
     tagline: "いつものブラウザが、パズルになる。",

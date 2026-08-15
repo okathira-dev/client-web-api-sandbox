@@ -27,15 +27,17 @@ function toHex(bytes: ArrayBuffer) {
 
 function DropZone({
   children,
+  ariaLabel,
   onDrop,
 }: {
   children: React.ReactNode;
+  ariaLabel: string;
   onDrop(event: React.DragEvent<HTMLElement>): void;
 }) {
   return (
     <section
       className="drop-target"
-      aria-label="Drop target"
+      aria-label={ariaLabel}
       onDragOver={(event) => {
         event.preventDefault();
         event.dataTransfer.dropEffect = "copy";
@@ -58,6 +60,19 @@ function DropZone({
  * 開かない操作: script生成DragEvent、同一pageの画像、FileとURIの取り違え、marker期限切れでは開かない。
  * API/権限: HTML Drag and Drop、DataTransfer File、text/uri-list、sandbox iframe、SHA-256。ファイルはupload・外部送信しない。
  * cleanup/環境: message markerを5秒で失効し、listener、iframe、object URLを離脱時に破棄する。H-001/H-002/H-003/H-005/H-013/H-014/H-019/H-020/H-023/H-025を確認する。
+ */
+/**
+ * S-510
+ *
+ * 目的: S-510の箱が示すブラウザ固有の状態・イベント・データ受け渡しを、プレイヤーの操作で観測する。
+ * 最初の一手: 画面の箱と説明を確認し、表示されている標準UIまたは外部機器を使って観測を開始する。
+ * 箱ごとの解法: 問題定義にある各Bxxについて、対応する実操作を行い、実APIから得た値・イベント・結果が厳密な成功条件を満たした箱だけが開く。
+ * 開かない操作: 文字列の直接編集、合成イベント、DevToolsでのDOM改変、見た目だけの変更、別箱の結果の流用では開かない。
+ * 使用API: このファイルが呼び出すWeb APIと、共通のProblem/Stage runtime。
+ * 権限・privacy: 実装が必要とする権限・保存・送信は、箱の操作に必要な最小範囲へ限定する。生の入力を回答以外の目的で扱わない。
+ * cleanup: stage離脱・取消・再試行時に、このstageが取得したlistener、timer、stream、worker、接続、blob URLを実装に応じて解除する。
+ * 対応環境: StageHostのcapability probeがavailableまたはpermission-requiredとしたブラウザ。非対応時は操作を要求せずunsupported表示とする。
+ * 人手確認: 対応するH-xxxをhuman-test-matrix.mdで確認し、権限拒否・取消・再入場も確認する。
  */
 export default function S510Stage(props: StageComponentProps) {
   const problem = props.problem("S-510-B01");
@@ -109,6 +124,7 @@ export default function S510Stage(props: StageComponentProps) {
   const sourceUrl = new URL("./drag-layer-a.png", location.href).href;
   const helperUrl = new URL("./drag-helper.html", location.href);
   helperUrl.searchParams.set("round", round);
+  helperUrl.searchParams.set("locale", props.locale);
 
   const handleFileDrop = (event: React.DragEvent<HTMLElement>) => {
     const dropped = event.dataTransfer.files[0];
@@ -186,7 +202,10 @@ export default function S510Stage(props: StageComponentProps) {
           >
             {stageText(props.locale, s510Locale.downloadPng)}
           </a>
-          <DropZone onDrop={handleFileDrop}>
+          <DropZone
+            ariaLabel={stageText(props.locale, s510Locale.dropTarget)}
+            onDrop={handleFileDrop}
+          >
             {stageText(props.locale, s510Locale.dropPng)}
           </DropZone>
         </section>
@@ -200,7 +219,10 @@ export default function S510Stage(props: StageComponentProps) {
             loading="lazy"
             src={helperUrl.href}
           />
-          <DropZone onDrop={handleLayerDrop}>
+          <DropZone
+            ariaLabel={stageText(props.locale, s510Locale.dropTarget)}
+            onDrop={handleLayerDrop}
+          >
             {stageText(props.locale, s510Locale.dropIframe)}
           </DropZone>
           <fieldset className="drag-composite">

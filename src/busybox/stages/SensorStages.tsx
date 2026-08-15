@@ -1,13 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import type { StageComponentProps } from "../runtime/types";
 import { ProblemGiftBox } from "../ui/GiftBox";
+import { type CommonStatus, statusText } from "../ui/statusLocale";
+import { stageText } from "./locale";
+import { sensorStagesLocale } from "./SensorStages.locale";
 
 function useSensor<T extends Sensor>(
   props: StageComponentProps,
   create: () => T,
   reading: (sensor: T) => void,
 ) {
-  const [status, setStatus] = useState("idle");
+  const [status, setStatus] = useState<CommonStatus>("idle");
   const sensorRef = useRef<T | null>(null);
   const start = () => {
     try {
@@ -41,16 +44,16 @@ function SensorShell({
   props: StageComponentProps;
   children: React.ReactNode;
   start(): void;
-  status: string;
+  status: CommonStatus;
 }) {
   return (
     <div className="puzzle puzzle--centered">
       <div className="problem-row">{children}</div>
       <button type="button" className="stage-action" onClick={start}>
-        {props.locale === "ja" ? "センサーを開始" : "Start sensor"}
+        {stageText(props.locale, sensorStagesLocale.start)}
       </button>
       <p className="interaction-status" role="status">
-        {status}
+        {statusText(props.locale, status)}
       </p>
     </div>
   );

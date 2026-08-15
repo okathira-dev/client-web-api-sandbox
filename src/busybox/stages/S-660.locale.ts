@@ -1,6 +1,7 @@
-import type { StageLocaleText } from "./locale";
+import { defineStageLocale } from "./locale";
 
-export const s660Locale = {
+export const s660Locale = defineStageLocale({
+  stageName: { ja: "負荷の三景", en: "Pressure seasons" },
   unavailable: {
     ja: "この環境ではCPU Pressureを購読できない",
     en: "CPU Pressure is unavailable in this environment",
@@ -14,4 +15,8 @@ export const s660Locale = {
     ja: "ステージを開くと自動観測。ゲーム側で負荷は発生させない",
     en: "Observation starts on entry; the game creates no load",
   },
-} satisfies Record<string, StageLocaleText>;
+  cpuPrefix: { ja: "CPU状態", en: "CPU state" },
+  B01: { ja: "nominalの箱", en: "Nominal box" },
+  B02: { ja: "中間状態の箱", en: "Middle-state box" },
+  B03: { ja: "criticalの箱", en: "Critical box" },
+});

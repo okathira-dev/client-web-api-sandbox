@@ -1,9 +1,3 @@
-import {
-  BufferTarget,
-  CanvasSource,
-  Output,
-  WebMOutputFormat,
-} from "mediabunny";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { StageComponentProps } from "../runtime/types";
 import { ProblemGiftBox } from "../ui/GiftBox";
@@ -12,103 +6,12 @@ import { s810Locale } from "./S-810.locale";
 
 type SweepKey = "small-square" | "large-square" | "wide" | "tall";
 
-const sweepLabels: Record<SweepKey, { ja: string; en: string }> = {
-  "small-square": { ja: "小さい正方形", en: "Small square" },
-  "large-square": { ja: "大きい正方形", en: "Large square" },
-  wide: { ja: "横長", en: "Wide" },
-  tall: { ja: "縦長", en: "Tall" },
+const sweepLabelKeys: Record<SweepKey, keyof typeof s810Locale> = {
+  "small-square": "smallSquare",
+  "large-square": "largeSquare",
+  wide: "wide",
+  tall: "tall",
 };
-
-function dimensionsForFrame(index: number) {
-  const phase = Math.floor(index / 30);
-  const offset = index % 30;
-  const progress = offset / 29;
-  const interpolate = (from: number, to: number) =>
-    Math.max(144, Math.round((from + (to - from) * progress) / 8) * 8);
-  if (phase === 0) {
-    const size = interpolate(144, 1080);
-    return [size, size] as const;
-  }
-  if (phase === 1) {
-    const size = interpolate(1080, 144);
-    return [size, size] as const;
-  }
-  if (phase === 2)
-    return [interpolate(1080, 144), interpolate(144, 1080)] as const;
-  return [interpolate(144, 1080), interpolate(1080, 144)] as const;
-}
-
-function drawSweepFrame(
-  canvas: HTMLCanvasElement,
-  width: number,
-  height: number,
-  index: number,
-) {
-  canvas.width = width;
-  canvas.height = height;
-  const context = canvas.getContext("2d");
-  if (!context) throw new Error("canvas unavailable");
-  context.fillStyle = "#f8fafc";
-  context.fillRect(0, 0, width, height);
-  context.strokeStyle = "#17233d";
-  context.lineWidth = Math.max(2, Math.round(Math.min(width, height) / 90));
-  context.strokeRect(
-    context.lineWidth,
-    context.lineWidth,
-    width - context.lineWidth * 2,
-    height - context.lineWidth * 2,
-  );
-  context.strokeStyle = "#6b7280";
-  context.lineWidth = Math.max(1, Math.round(Math.min(width, height) / 180));
-  for (let x = 1; x < 8; x += 1) {
-    context.beginPath();
-    context.moveTo((width * x) / 8, 0);
-    context.lineTo((width * x) / 8, height);
-    context.stroke();
-  }
-  for (let y = 1; y < 8; y += 1) {
-    context.beginPath();
-    context.moveTo(0, (height * y) / 8);
-    context.lineTo(width, (height * y) / 8);
-    context.stroke();
-  }
-  context.fillStyle = "#ef4444";
-  context.beginPath();
-  context.arc(
-    width / 2,
-    height / 2,
-    Math.max(8, Math.min(width, height) / 8),
-    0,
-    Math.PI * 2,
-  );
-  context.fill();
-  context.fillStyle = "#17233d";
-  context.font = `bold ${Math.max(12, Math.min(width, height) / 10)}px sans-serif`;
-  context.textAlign = "center";
-  context.textBaseline = "middle";
-  context.fillText(String(index + 1), width / 2, height / 2);
-}
-
-async function createSweepSegment(index: number, signal: AbortSignal) {
-  const canvas = document.createElement("canvas");
-  const source = new CanvasSource(canvas, {
-    codec: "vp8",
-    bitrate: 600_000,
-    keyFrameInterval: 1 / 15,
-    sizeChangeBehavior: "passThrough",
-  });
-  const target = new BufferTarget();
-  const output = new Output({ format: new WebMOutputFormat(), target });
-  output.addVideoTrack(source, { frameRate: 15 });
-  await output.start();
-  if (signal.aborted) throw new DOMException("aborted", "AbortError");
-  const [width, height] = dimensionsForFrame(index);
-  drawSweepFrame(canvas, width, height, index);
-  await source.add(0, 1 / 15, { keyFrame: true });
-  await output.finalize();
-  if (!target.buffer) throw new Error("sweep output unavailable");
-  return target.buffer;
-}
 
 function appendSegment(
   sourceBuffer: SourceBuffer,
@@ -137,6 +40,29 @@ function appendSegment(
   });
 }
 
+type SweepManifest = {
+  schemaVersion: number;
+  frameRate: number;
+  frameCount: number;
+  asset: string;
+  segments: readonly {
+    index: number;
+    width: number;
+    height: number;
+    offset: number;
+    length: number;
+  }[];
+};
+
+const sweepManifestUrl = new URL(
+  "../fixtures/s810/assets/generation-manifest.json",
+  import.meta.url,
+).href;
+const sweepPackUrl = new URL(
+  "../fixtures/s810/assets/resolution-sweep.pack",
+  import.meta.url,
+).href;
+
 function createSweepMediaSource(signal: AbortSignal) {
   const mediaSource = new MediaSource();
   const url = URL.createObjectURL(mediaSource);
@@ -145,15 +71,32 @@ function createSweepMediaSource(signal: AbortSignal) {
       "sourceopen",
       () => {
         void (async () => {
+          const [manifestResponse, packResponse] = await Promise.all([
+            fetch(sweepManifestUrl, { signal }),
+            fetch(sweepPackUrl, { signal }),
+          ]);
+          if (!manifestResponse.ok || !packResponse.ok)
+            throw new Error("fixed sweep asset unavailable");
+          const manifest = (await manifestResponse.json()) as SweepManifest;
+          const pack = await packResponse.arrayBuffer();
+          if (
+            manifest.schemaVersion !== 1 ||
+            manifest.frameCount !== manifest.segments.length ||
+            manifest.segments.length === 0
+          )
+            throw new Error("invalid fixed sweep manifest");
           const mime = 'video/webm; codecs="vp8"';
           if (!MediaSource.isTypeSupported(mime))
             throw new Error("MSE WebM VP8 is unavailable");
           const sourceBuffer = mediaSource.addSourceBuffer(mime);
           sourceBuffer.mode = "segments";
-          for (let index = 0; index < 120; index += 1) {
-            const segment = await createSweepSegment(index, signal);
-            sourceBuffer.timestampOffset = index / 15;
-            await appendSegment(sourceBuffer, segment, signal);
+          for (const segment of manifest.segments) {
+            sourceBuffer.timestampOffset = segment.index / manifest.frameRate;
+            await appendSegment(
+              sourceBuffer,
+              pack.slice(segment.offset, segment.offset + segment.length),
+              signal,
+            );
           }
           if (mediaSource.readyState === "open") mediaSource.endOfStream();
           resolve();
@@ -181,13 +124,26 @@ function classifyDimensions(
 }
 
 /**
- * S-810 — MSEで連結したVP8 WebMのnative videoWidth/videoHeightを読む。
+ * S-810 — 固定assetをMSEで連結したVP8 WebMのnative videoWidth/videoHeightを読む。
  * 目的: CSSで引き伸ばした表示ではなく、再生中のフレーム寸法そのものを見せる。
- * 最初の一手: スウィープ動画を生成し、再生またはシークして4種類の寸法帯を観察する。
+ * 最初の一手: 固定スウィープassetを読み込み、再生またはシークして4種類の寸法帯を観察する。
  * 箱ごとの成功条件: B01は小正方形、B02は大正方形、B03は横長、B04は縦長をframe callbackで確認する。
- * 開かない操作: CSSサイズ変更、固定画像、生成ボタンだけ、metadataの一回読み取りだけでは開かない。
- * API/権限: MediaSource/SourceBuffer、MediaBunny、video resize、requestVideoFrameCallback。権限・送信・保存はない。
+ * 開かない操作: CSSサイズ変更、固定画像、読み込みボタンだけ、metadataの一回読み取りだけでは開かない。
+ * API/権限: MediaSource/SourceBuffer、固定WebMasset、video resize、requestVideoFrameCallback。権限・送信・保存はない。
  * cleanup/環境: appendとAbortSignal、video callback、blob URLを離脱時に破棄する。MSE WebM VP8対応環境でH-001/H-002/H-003/H-019/H-020/H-023/H-025/H-053を確認する。
+ */
+/**
+ * S-810
+ *
+ * 目的: S-810の箱が示すブラウザ固有の状態・イベント・データ受け渡しを、プレイヤーの操作で観測する。
+ * 最初の一手: 画面の箱と説明を確認し、表示されている標準UIまたは外部機器を使って観測を開始する。
+ * 箱ごとの解法: 問題定義にある各Bxxについて、対応する実操作を行い、実APIから得た値・イベント・結果が厳密な成功条件を満たした箱だけが開く。
+ * 開かない操作: 文字列の直接編集、合成イベント、DevToolsでのDOM改変、見た目だけの変更、別箱の結果の流用では開かない。
+ * 使用API: このファイルが呼び出すWeb APIと、共通のProblem/Stage runtime。
+ * 権限・privacy: 実装が必要とする権限・保存・送信は、箱の操作に必要な最小範囲へ限定する。生の入力を回答以外の目的で扱わない。
+ * cleanup: stage離脱・取消・再試行時に、このstageが取得したlistener、timer、stream、worker、接続、blob URLを実装に応じて解除する。
+ * 対応環境: StageHostのcapability probeがavailableまたはpermission-requiredとしたブラウザ。非対応時は操作を要求せずunsupported表示とする。
+ * 人手確認: 対応するH-xxxをhuman-test-matrix.mdで確認し、権限拒否・取消・再入場も確認する。
  */
 export default function S810Stage(props: StageComponentProps) {
   const problems = (
@@ -196,6 +152,7 @@ export default function S810Stage(props: StageComponentProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const callbackId = useRef<number | undefined>(undefined);
   const generationRef = useRef<AbortController | undefined>(undefined);
+  const observedRef = useRef<Partial<Record<SweepKey, boolean>>>({});
   const [videoUrl, setVideoUrl] = useState<string>();
   const [observed, setObserved] = useState<Partial<Record<SweepKey, boolean>>>(
     {},
@@ -208,7 +165,8 @@ export default function S810Stage(props: StageComponentProps) {
   const observe = (width: number, height: number) => {
     setDimensions([width, height]);
     const key = classifyDimensions(width, height);
-    if (!key || observed[key]) return;
+    if (!key || observedRef.current[key]) return;
+    observedRef.current[key] = true;
     setObserved((previous) => ({ ...previous, [key]: true }));
     const index =
       key === "small-square"
@@ -276,14 +234,14 @@ export default function S810Stage(props: StageComponentProps) {
             if (previous) URL.revokeObjectURL(previous);
             return media.url;
           });
+          observedRef.current = {};
           setObserved({});
-          setStatus(stageText(props.locale, s810Locale.building));
           void media.ready
             .then(() => setStatus(stageText(props.locale, s810Locale.ready)))
             .catch((error: unknown) => {
               if ((error as Error).name !== "AbortError")
                 setStatus(
-                  `Generation failed: ${error instanceof Error ? error.message : stageText(props.locale, s810Locale.unknown)}`,
+                  `${stageText(props.locale, s810Locale.generationFailed)}: ${error instanceof Error ? error.message : stageText(props.locale, s810Locale.unknown)}`,
                 );
             });
         }}
@@ -336,9 +294,10 @@ export default function S810Stage(props: StageComponentProps) {
           : status}
       </p>
       <div className="s810-observed" aria-live="polite">
-        {(Object.keys(sweepLabels) as SweepKey[]).map((key) => (
+        {(Object.keys(sweepLabelKeys) as SweepKey[]).map((key) => (
           <span key={key} data-observed={observed[key] ? "true" : "false"}>
-            {observed[key] ? "✓" : "○"} {sweepLabels[key][props.locale]}
+            {observed[key] ? "✓" : "○"}{" "}
+            {stageText(props.locale, s810Locale[sweepLabelKeys[key]])}
           </span>
         ))}
       </div>

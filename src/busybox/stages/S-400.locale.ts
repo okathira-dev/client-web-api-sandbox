@@ -1,0 +1,12 @@
+import { defineStageLocale } from "./locale";
+
+/** S-400 のステージ固有コピー。表示文言はここから追加する。 */
+export const s400Locale = defineStageLocale({
+  stageName: { ja: "一時間ずれた時計", en: "A clock one hour away" },
+  hint: {
+    ja: "このステージのブラウザ挙動を観察する",
+    en: "Observe the browser behavior in this stage",
+  },
+  B01: { ja: "巻き戻しの箱", en: "Rewind box" },
+  B02: { ja: "現在へ戻す箱", en: "Return-to-now box" },
+});

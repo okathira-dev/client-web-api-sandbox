@@ -1,0 +1,12 @@
+import { defineStageLocale } from "./locale";
+
+/** S-540 のステージ固有コピー。表示文言はここから追加する。 */
+export const s540Locale = defineStageLocale({
+  stageName: { ja: "光の両端", en: "Both ends of light" },
+  hint: {
+    ja: "このステージのブラウザ挙動を観察する",
+    en: "Observe the browser behavior in this stage",
+  },
+  B01: { ja: "暗闇の箱", en: "Darkness box" },
+  B02: { ja: "眩光の箱", en: "Bright-light box" },
+});

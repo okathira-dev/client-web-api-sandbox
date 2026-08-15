@@ -1,5 +1,7 @@
 # ステージ実装状況
 
+プレイヤー向けの解法と実装意図は、各 `src/busybox/stages/S-xxx.tsx` の日本語JSDocを正本とする。この表はID、API、状態、人手確認IDの索引であり、解法本文を複製しない。
+
 ## 状態の定義
 
 | 状態 | 意味 |
@@ -13,7 +15,7 @@
 
 ## 現行スナップショット
 
-2026-08-12現在、catalogue、runtime registry、地図、manifestに67stage・153箱が実装されている。S-030-B02を削除し、S-270とS-350のMedia Capabilities profile箱を不採用、S-230のPiP箱をS-350へ統合し、S-350へfullscreen箱を追加した。全採用計画の旧件数は現行コードの判断に使わない。
+2026-08-15現在、catalogue、runtime registry、地図、manifestに67stage・153箱が実装されている。S-030-B02を削除し、S-270とS-350のMedia Capabilities profile箱を不採用、S-230のPiP箱をS-350へ統合し、S-350へfullscreen箱を追加した。ステージ名・箱名は隣接locale bundleと`metadataLocale.ts`から解決する。全採用計画の旧件数は現行コードの判断に使わない。
 
 過去の60stage・97箱、68stage・156箱、69stage・156箱、79stage・187箱、80stage・187箱は、実装前または中間時点のスナップショットである。現行の箱IDと解法は[現行ステージ解法仕様](./stage-walkthroughs.md)と実装を正とし、旧展開計画やPoCの番号から導かない。
 
@@ -97,7 +99,7 @@
 | S-780 | Payment Handler / Payment Request / Service Worker | DR-129でB01〜B04承認済み・未実装 | 正しい架空handlerのtrusted event、承認success、意図的拒否fail、同一handler retry後successを別箱へ累積する。実provider、cancel / error、game製UI、結果label、固定flagを使わない | H-003, H-004, H-019, H-023, H-025, H-050 |
 | S-790 | Local Font Access / FontData / FontFace / Web Crypto | DR-137でB01承認済み・未実装 | Git管理する専用fontをOSへinstallし、対象PostScript名だけの実照会、raw font data検証、専用glyph表示で直接開く。全font列挙、既存font、upload、`local()`だけ、固定flagを使わない | H-003, H-004, H-006, H-014, H-019, H-023, H-025, H-051 |
 | S-800 | URL Fragment Text Directives / `hidden=until-found` / `beforematch` | D-136でB01 / B02承認済み・問題詳細保留 | 英文上の対象語を、B01ではpercent-encoded `textStart`とpunctuation contextから、B02では表示された単語からplayer自身がfragment URLへ組み立てる。入力欄なし。`beforematch`で対象語を出現させ対応箱を開く。英文、対象語、fragment文字列は実装前に吟味する | H-001, H-002, H-003, H-004, H-019, H-020, H-025, H-038 |
-| S-810 | MediaSource / SourceBuffer / `videoWidth` / `videoHeight` / `resize` / `requestVideoFrameCallback` | B01〜B04初版実装済み・人手確認待ち | 1フレームVP8 WebMをMSEへtimestamp offset付きで連結し、144→1080の正方形、1080→144の正方形、横長、縦長の実native寸法を観測して対応箱を開く。CSS寸法や固定画像では成功しない | H-001, H-002, H-003, H-019, H-020, H-023, H-025, H-053 |
+| S-810 | MediaSource / SourceBuffer / `videoWidth` / `videoHeight` / `resize` / `requestVideoFrameCallback` | B01〜B04初版実装済み・人手確認待ち | Git管理した120個のVP8 WebM segmentをpackとmanifestからMSEへtimestamp offset付きで連結し、144→1080の正方形、1080→144の正方形、横長、縦長の実native寸法を観測して対応箱を開く。実行時エンコード、CSS寸法、固定画像は成功条件に使わない | H-001, H-002, H-003, H-019, H-020, H-023, H-025, H-053 |
 
 H-025は全行に共通する公開前ゲートである。コード上は全問題箱が単一 `ProblemGiftBox` とID別presentationを通り、状態導出の組み合わせを自動テストしている。実API・権限・端末条件を再達成した時に各箱が開くことは、各ステージの既存人手ゲートと合わせて確認する。
 

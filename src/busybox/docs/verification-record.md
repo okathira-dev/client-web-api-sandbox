@@ -1,5 +1,19 @@
 # 検証記録
 
+## 2026-08-15 全ステージlocale・JSDoc・資料整理
+
+| 検証 | 結果 | 証跡 |
+| --- | --- | --- |
+| stage documentation audit | 合格 | 67個の`S-xxx.tsx`に隣接`S-xxx.locale.ts`、ja/en bundle、9項目の日本語JSDocを確認する`stageDocumentation.test.ts` |
+| Jest | 合格 | 47 suites / 288 tests |
+| TypeScript | 合格 | bundled TypeScript `--noEmit` |
+| Biome | 合格 | Node 24.14.0の`npm run check`で442 filesをcheck |
+| Markuplint | 合格 | `src/**/*.{jsx,tsx,html}` |
+| Vite production build | 合格 | nvs defaultのNode 24.14.0でmulti-page build、S-710 tool、S-810固定packを含む |
+| locale propagation | 合格 | Appの`document.documentElement.lang`、S-710 iframeの`locale` query、S-510 helperの`locale` query |
+| metadata locale registry | 合格 | `StageSpec` / `ProblemSpec`から表示名を切り離し、67隣接locale bundleの`stageName` / `Bxx`を解決する`metadataLocale.ts`と回帰テスト |
+| absolute path scan | 合格 | source/docsからWindows・Unix絶対パスなし |
+
 ## 2026-08-12 実装追補の検証
 
 | 検証 | 結果 | 証跡 |
@@ -9,10 +23,10 @@
 | Biome | 合格 | `src/busybox` と変更したfixture生成script |
 | Markuplint | 合格 | `src/**/*.{jsx,tsx,html}` |
 | Vite production build | 合格 | multi-page build、S-640/S-710/S-720/S-810 chunkを含む |
-| S-810 Windows Chrome | 合格 | MSE timestamp offset経路で小正方形・大正方形・横長・縦長の4箱を実再生中に開箱 |
+| S-810 Windows Chrome | 合格 | 固定pack assetのMSE timestamp offset経路で小正方形・大正方形・横長・縦長の4箱を実再生中に開箱 |
 | S-710 Windows Chrome | 合格 | Git管理QR fixtureでQR frame置換を確認し、lowercase `busybox{qr_replaced}`で開箱。JSON file入力でdecode失敗固定outputと`busybox{broken_input}`を確認 |
 | S-720 Windows Chrome / fixture QR | 合格 | `VIDEO 1 → T1 → OUTPUT`の実変換後にlowercase `busybox{swap_halves}`を入力し、T1箱を開箱。FFmpeg抽出frameをjsQRで4 routeとも `busybox{...}`へ照合 |
-| 固定media再生成 | 合格 | ローカルのWebM対応FFmpegを`BUSYBOX_FFMPEG_PATH`へ明示してS-710 decode失敗outputとS-720全9本を再生成。manifest、WebM header、lowercase QR payloadの正本を更新 |
+| 固定media再生成 | 合格 | ローカルのWebM対応FFmpegを`BUSYBOX_FFMPEG_PATH`へ明示してS-710 decode失敗output、S-720全9本、S-810の120 segment packを再生成。manifest、WebM header、lowercase QR payloadの正本を更新 |
 
 生成時のFFmpegはソースコードへ絶対パスを記録せず、実行時の`BUSYBOX_FFMPEG_PATH`で注入する。実装側も入力flagを小文字へ正規化して照合する。
 

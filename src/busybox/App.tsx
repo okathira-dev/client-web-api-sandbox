@@ -11,7 +11,9 @@ import { useServiceWorker } from "./hooks/useServiceWorker";
 import { detectLocale, messages } from "./i18n";
 import { StageHost } from "./runtime/StageHost";
 import { stageDefinitions } from "./runtime/stageDefinitions";
+import { stageNameText } from "./stages/metadataLocale";
 import { GiftBox, type GiftBoxState } from "./ui/GiftBox";
+import { stageCardLabel, uiText } from "./ui/locale";
 import { StageMap } from "./ui/StageMap";
 
 type View = "stages" | "settings" | "about";
@@ -74,6 +76,10 @@ export function App() {
   };
 
   useEffect(() => {
+    document.documentElement.lang = locale;
+  }, [locale]);
+
+  useEffect(() => {
     const syncRoute = () => {
       setSelectedStageId(stageIdFromUrl());
       setStageAttemptId((current) => current + 1);
@@ -113,7 +119,7 @@ export function App() {
         <p className="hero__subtitle">{copy.subtitle}</p>
       </header>
 
-      <nav className="nav" aria-label="Primary">
+      <nav className="nav" aria-label={uiText(locale, "primaryNav")}>
         <button
           type="button"
           aria-current={view === "stages" ? "page" : undefined}
@@ -280,9 +286,11 @@ export function App() {
             <p>{copy.aboutBody}</p>
             <div className="about-links">
               <a href="./docs/privacy-and-permissions.md">
-                Privacy &amp; permissions
+                {uiText(locale, "privacyPermissions")}
               </a>
-              <a href="./licenses/index.html">{copy.thirdPartyLicenses}</a>
+              <a href={`./licenses/index.html?locale=${locale}`}>
+                {copy.thirdPartyLicenses}
+              </a>
             </div>
           </section>
         )}
@@ -324,7 +332,7 @@ function StageCard({ stage, locale, boxes, onOpen }: StageCardProps) {
       <GiftBox
         state={giftState}
         color="var(--accent)"
-        label={`${stage.label[locale]}: ${status}`}
+        label={`${stageNameText(locale, stage.id)}: ${status}`}
         size="compact"
         decorative
       />
@@ -335,14 +343,20 @@ function StageCard({ stage, locale, boxes, onOpen }: StageCardProps) {
             {solvedBoxes}/{boxIds.length}
           </p>
         </div>
-        <h3>{stage.label[locale]}</h3>
+        <h3>{stageNameText(locale, stage.id)}</h3>
       </div>
       <button
         type="button"
         className="stage-card__hit-area"
         disabled={!definition}
         onClick={() => onOpen(stage.id)}
-        aria-label={`${stage.label[locale]}、${solvedBoxes}/${boxIds.length}、${status}`}
+        aria-label={stageCardLabel(
+          locale,
+          stageNameText(locale, stage.id),
+          solvedBoxes,
+          boxIds.length,
+          status,
+        )}
       >
         <span className="sr-only">{copy.start}</span>
       </button>
