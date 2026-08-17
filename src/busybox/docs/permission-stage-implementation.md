@@ -294,13 +294,13 @@ DR-019で追加承認したB05〜B09は、文字倍率4箱とは別にUser Prefe
 - cleanup: mediaをpauseし、track / media listenerを解除する。再生速度、track選択、languageは保存・同期・送信しない。
 - 人手確認: H-001, H-002, H-003, H-019, H-020, H-023, H-025, H-030。
 
-## S-810 frameの拍子
+## S-810 比率を止める
 
-- 12 / 24 / 30 / 60fps区間を持つsame-origin VFR fixtureを事前生成し、checksum付きでGit管理する。
-- playerによる0.5秒以上のnative seek後だけ試行をarmする。scriptから`currentTime`を目標区間へ変えない。
-- `requestVideoFrameCallback()`の`mediaTime`に、24回連続する1/24秒±0.004秒の差がある場合だけB01を開く。callback到着wall time、表示用fps、`presentedFrames`数だけでは開かない。
-- cleanup: pause / ended / 離脱 / abortでframe callbackをcancelし、media time列と表示用推定fpsを保存・同期・送信しない。
-- 人手確認: H-053。native seek後の24fps区間だけが開き、先頭通し再生と他3区間で開かないことを確認する。
+- 事前生成したsame-origin VP8 WebM segment packとmanifestをGit管理し、MSEでnative timelineへ連結する。
+- playerがnative controlsでseekを止めた`seeked`後だけ試行をarmする。scriptから`currentTime`を目標位置へ変えない。
+- `requestVideoFrameCallback()`を1回待ち、提示frameの`videoWidth / videoHeight`比を相対5%で1:1、4:3、16:9、9:20へ分類する。通常再生、pauseだけ、CSS寸法、wall clock、過去の24fps cadenceは解法にしない。ページにはscript自動seek経路を置かない。
+- cleanup: 次のseek、ended、離脱、abortでframe callbackをcancelし、MSEのAbortControllerとblob URLを破棄する。寸法列・時刻列は保存・同期・送信しない。
+- 人手確認: H-053。4比率をnative seek停止で開き、対象外比率・通常再生・pauseだけ・script自動seekでは開かないことを確認する。
 
 ## S-380 使い捨ての鍵（ラベル未定）
 
@@ -587,15 +587,15 @@ DR-019で追加承認したB05〜B09は、文字倍率4箱とは別にUser Prefe
 - OAuth redirect、popup、通常Sign-In button、game製account chooser、mock credential、別stageのDrive tokenを代替clearにしない。provider accountを持たないplayerは該当箱を未観測のままにでき、箱数や報酬で複数serviceへの登録を促さない。
 - 自動確認はprovider adapter共通contractでmanual FedCM、auto / legacy result、unexpected config URL、空token、duplicate / late callback、cancel、prompt非表示、network error、reset、離脱、非保存を検証する。Google adapterは`select_by`全値を追加確認する。H-049では採用providerごとにclient登録、実account、native FedCM UI、manual Continue、解除案内、token非保存を確認する。
 
-## S-780 四つの財布（DR-129追加、未実装）
+## S-780 三つの財布（DR-129追加、PoC確認済み・製品stage未実装）
 
-- 攻略必須経路と全箱必須報酬から外したLabsに4箱を並べる。Busyboxが管理する架空payment method manifest、payment app manifest、架空handlerのService Workerだけを使い、実payment providerをsupported methodへ混ぜない。
-- B01は複数の架空handler候補から正しいhandlerを選び、current attemptと対応するhandler Service Workerがtrusted `PaymentRequestEvent`を受けた時点で開く。page側のclick、game製picker、登録済み判定、`canMakePayment()`だけでは開かない。
-- B02はhandler windowで承認し、期待methodと固定schemaを満たす架空responseをmerchantが受けて`complete("success")`へ到達した時点で開く。
-- B03はhandler windowで意図的拒否を選び、固定の拒否responseをmerchantが検証して`complete("fail")`へ到達した時点で開く。handler例外、handler不在、browser cancel、`AbortError`、`OperationError`は拒否成功にしない。
-- B04は同じhandlerの最初のresponseへmerchantが`retry()`を行い、再提示された同じhandlerで正しい架空instrumentを選び、二度目のresponseを成功完了した時点で開く。別handler、最初から正しいresponse、game製retry UIでは開かない。
+- 攻略必須経路と全箱必須報酬から外したLabsに3箱を並べる。Busyboxが管理する架空payment method manifest、payment app manifest、架空handlerのService Workerだけを使い、実payment providerをsupported methodへ混ぜない。
+- trusted `PaymentRequestEvent`はhandler到達の証跡として記録するが、単独の箱にはしない。page側のclick、game製picker、登録済み判定、`canMakePayment()`だけでは開かない。
+- B01はhandler windowで承認し、期待methodと固定schemaを満たす架空responseをmerchantが受けて`complete("success")`へ到達した時点で開く。
+- B02はhandler windowで意図的拒否を選び、固定の拒否responseをmerchantが検証して`complete("fail")`へ到達した時点で開く。handler例外、handler不在、browser cancel、`AbortError`、`OperationError`は拒否成功にしない。
+- B03は同じhandlerの最初のresponseへmerchantが`retry()`を行い、再提示された同じhandlerの二度目のresponseを成功完了した時点で開く。開始側でApprove／Decline／retryを固定せず、返ったresponseに応じて箱を判定する。
 - 各条件が成立した瞬間に対応箱だけを開く。取引結果label、完了message、固定flagを表示しない。handler window内は承認、拒否、instrument選択に必要な非言語UIだけにし、任意のWeb UIを作れることを利用した別パズルを埋め込まない。
-- payer name / email / phone、billing / shipping address、card、実payment credential、実通貨を要求しない。架空response detailsとcurrent attemptはmemory内の判定後に破棄し、永続化するのは通常のB01〜B04解決済みproblem IDだけとする。
+- payer name / email / phone、billing / shipping address、card、実payment credential、実通貨を要求しない。架空response detailsとcurrent attemptはmemory内の判定後に破棄し、永続化するのは通常のB01〜B03解決済みproblem IDだけとする。
 - cancel、error、非対応、登録失敗、JIT install UI非表示は未観測にする。resetと離脱ではpending requestを可能な範囲でabortし、handler window、message channel、listener、一時response参照を解放する。Service Worker登録の保持・解除は他のBusybox worker scopeと衝突しない専用cleanup設計にする。
 - 自動確認はfake merchant / handler adapterでwrong handler、untrusted / stale event、approve、deliberate decline、exception、cancel、first-pass success、retry two-pass success、handler switch、late / duplicate response、reset、離脱、非保存を検証する。H-050で公開browserの候補UI、trusted event、handler window、`complete("success")` / `complete("fail")`、同一handler `retry()`を実動作確認する。
 

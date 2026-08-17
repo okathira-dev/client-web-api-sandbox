@@ -4,20 +4,35 @@
 
 ## 現在のタスク
 
-### 固定media asset化と最新版PoC整理
+### 未実装候補の個別PoC整備
 
-- [x] localeは全面lazy化せず、全ステージ名・箱名を初期表示できるeager metadata registryを維持する判断を確定
-- [x] S-810の120フレーム可変寸法VP8 segmentを事前生成し、`resolution-sweep.pack` とmanifestをGit管理
-- [x] S-810実行時MediaBunnyエンコードを削除し、固定packをfetchしてMSEへ追加する経路へ置換
-- [x] S-810固定assetの意味検証testを追加
-- [x] POCページから却下済みS-270/POC-005、S-680/POC-017、S-350旧POC-006、S-430旧POC-007を削除
-- [x] `poc-latest.md`へ現行PoCの最新版索引と旧PoCの削除境界を整理
-- [x] 現行引継ぎ・ステージ状況・検証記録のS-810記載を固定asset経路へ更新
-- [x] nvs defaultのNode 24.14.0で`npm run check`（Biomeを含む）と`npm run build`を実行
-- [x] `npm run test:ci`を全件再実行（47 suites / 288 tests）
-- [ ] Windows ChromeでS-810のpack読み込み、4寸法、再試行、離脱cleanupを確認
-- [ ] PoCページで最新版項目だけが表示され、削除済み候補が見えないことを確認
-- [x] 差分・絶対パス・生成途中ファイル・asset manifestを監査（絶対パス混入なし、manifest/packの意味検証済み）
+既存ステージの人手確認は `current-status-and-handoff.md` の待機列へ残し、現在は未実装候補のPoCを先にコード化する。feature detectionや模擬eventだけではPASSにせず、API固有のbrowser／OS所有動作を実測できた候補だけを製品実装へ昇格する。
+
+全残存PoCの対象、実装順、肯定条件、negative case、cleanup、commit境界は `src/busybox/docs/remaining-poc-implementation-plan.md` を現行計画とする。
+
+- [x] 承認済み未実装候補を、既存stage追加箱と新規stageの両方から棚卸し
+- [x] 新規PoCを巨大な`poc/main.ts`へ直書きせず、case単位のmoduleとlazy registryへ分離できる最小基盤を作る
+- [x] 各PoCに前提環境、操作手順、肯定条件、negative case、cleanup、PASS／PARTIAL／FAIL記録欄を持たせる（対応機器が必要なものは実行待ち表示）
+- [x] Wave A実装: S-690／S-800のText Fragment 2体験を別fixtureで比較し、`beforematch`観測を隔離ページへ追加した（Back／reloadの人手確認は未実施）
+- [x] Wave A実装: S-790のLocal Font Accessをdesktop Chromium向けに再PoCし、限定`queryLocalFonts()`、permission、`FontData.blob()`、Blob由来glyph、revokeを検証する入口を追加した（専用OTF install／uninstallは未実施）
+- [x] Wave A実装: S-480-B05〜B09のUser Preferences APIを専用documentでPoCし、5 preferenceのoverride、実効media query、clearを検証する入口を追加した（対応browserでの実overrideは未実施）
+- [x] S-810をnative seek停止後の4アスペクト比（各相対5%以内）判定へ変更し、固定fixture・manifest・単体テスト・解法資料を更新した（H-053の人手確認は未実施）
+- [x] Wave B実装: S-430-B02 Audio Session、S-630 Network Information、S-750 WebOTP／OTP AutoFill、S-760 Contact Pickerを実機待ち可能な独立PoCとして用意した
+- [x] Wave C実装: S-780 Payment Handlerをstatic worker／manifestで構成し、trusted eventを証跡として、承認・拒否・同一handler retryの3箱入口を用意した（正しい財布箱は再挑戦しにくいため削除。2026-08-17に技術検証PoC・stage PoCをforeground Chromeで確認済み）
+- [x] Wave C実装: S-740 Periodic Background Syncをcare store、client 0件event、asset取得、unregisterの実scheduler待ち構成にした
+- [x] Wave D実装: S-700 Remote Playback／BarcodeDetector／Presentation receiverとS-730 WebXRを、外部機器でしかPASSにならないPoCとして用意した
+- [x] Wave E実装枠: S-770は公式provider監査待ちとして、通常OAuthへ迂回しないFedCM chooser入口だけを用意した
+- [x] 各Wave完了時に`poc-latest.md`、`poc-results.md`、`human-test-matrix.md`を更新し、旧候補や模擬成功経路を残さない
+- [x] Node 24で対象test、`npm run check`、`npm run test:ci`、buildを実行し、固定asset、license、秘密情報、絶対pathを監査した（48 suites / 298 tests、447 files、絶対path該当なし）
+
+### 今回の検証結果
+
+- `npm run check`、`npm run test:ci`、`npm run build` はNode 24.14.0で合格。
+- Biomeには既存のconfig schema 2.5.5 / CLI 2.5.6 warningと、`jest.setup.ts`のoptional-chain infoだけ残る。今回の変更由来ではない。
+- Wave Aの実API挙動、専用OTF install、S-810の4比率実開箱は人手確認待ち。未対応環境でPASSへ昇格しない。
+- POCページをブラウザで再読込し、16件すべてのlazy caseが開閉・mountできること、POC-012のunsupported、POC-028のhandler登録・技術検証PoC・stage PoC、POC-034のaudioTracks unsupportedを確認。ページconsole errorなし。
+- Periodic Background Syncはpermission deniedをpartialとして記録する。Payment HandlerはlocalのLink header、manifest、worker、handler window、承認・拒否・retryの3箱を技術検証PoC・stage PoCとも確認済み。FedCM／Presentation／XR／Contact Picker／WebOTP／Remote Playback／Audio Sessionの肯定証拠は実機・外部条件待ち。
+- Periodic SyncとPayment Handlerのstatic workerはそれぞれ`/busybox/poc/periodic/`と`/busybox/poc/payment/`へ分離し、scope競合をなくした。Payment Handlerのworker応答は`PaymentHandlerResponse`形式へ修正した。
 
 ## 正本への参照
 

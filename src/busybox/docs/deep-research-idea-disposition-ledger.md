@@ -198,7 +198,7 @@
 | DR-126 | WebOTP API | 採用 | 新規G-074 / S-750の任意Labs 1箱。実OTPCredentialまたは強く検証したOTP AutoFillでcurrent round codeが入った時だけ開く | 済 |
 | DR-127 | Federated Credential Management API | 採用 | 新規G-076 / S-770の任意Labs「身分証棚」。実装時点で公式FedCM、public RP登録、managed運用、FedCM確証、独自backend不要を満たすserviceごとに箱を置く。現計画はGoogle 1箱を下限とする | 済 |
 | DR-128 | 決済リクエスト API | 却下 | 実merchant / payment methodを仲介するUIを模擬通貨へ流用せず、Deprecatedな`basic-card`、実Google Pay / Apple Pay、cancelだけの箱も使わない。架空payment appはDR-129で別相談 | 済 |
-| DR-129 | 決済ハンドラー API | 採用 | 新規G-077 / S-780の任意Labs 4箱。架空payment methodだけでhandler選択、承認、拒否、同一handler再試行を観測し、その時点で対応箱を直接開く | 済 |
+| DR-129 | 決済ハンドラー API | 採用 | 新規G-077 / S-780の任意Labs 3箱。trusted eventは証跡として扱い、架空payment methodだけで承認、拒否、同一handler再試行を観測し、そのresponseに対応する箱を直接開く。handler選択・開始経路は固定しない | 済 |
 | DR-130 | 帰属レポート API | 却下 | Chromeで非推奨化・削除予定。browser固有UIやclient側の確定eventがなく、report受信backendを要するためstage・統合・historical exhibitを作らない | 済 |
 | DR-131 | Private State Token API | 却下 | 独自issuer / redeemer backend、暗号鍵運用、issuer登録が必要で一般向けmanaged issuerもない。通常player向けbrowser UIもないためstage・統合・demo依存を作らない | 済 |
 | DR-132 | Topics API | 却下 | Chrome 144から非推奨化・削除予定。非標準、privacy、非決定性、固有UI欠如のためstage・統合・historical exhibit・設定変更箱を作らない | 済 |
@@ -1014,18 +1014,18 @@
 ### DR-129 決済ハンドラー API
 
 - 決定日: 2026-07-31
-- 最終分類: 採用。新規G-077 / S-780「四つの財布（仮）」を任意Labsとして追加する。
+- 最終分類: 採用。新規G-077 / S-780「三つの財布（仮）」3箱を任意Labsとして追加する（2026-08-17更新）。
 - 元案: 架空の「眠りの通貨」をWeb Payment Handlerで受け取り、正しい支払flowを完了すると箱が開く。
 - API固有性: BusyboxがGit管理する架空payment methodと複数の架空payment handlerだけを使う。browser所有のhandler候補、選択後にService Workerへ届くtrusted `PaymentRequestEvent`、handler window、`respondWith()`、merchant側の`complete()`と`retry()`を中心操作にする。実Google Pay / Apple Pay、card、実通貨、実merchant accountを使わない。
-- B01 handler選択: 複数の架空handlerから指定された正しいhandlerを選び、そのhandlerのService Workerがcurrent attemptのtrusted `PaymentRequestEvent`を受け取った時点で開く。page clickやgame製wallet pickerだけでは開かない。
-- B02 承認: handler windowで架空支払いを承認し、期待methodのresponseをmerchantが受け、`complete("success")`へ到達した時点で開く。
-- B03 拒否: handler windowで意図的拒否を選び、handlerが返す固定の架空拒否resultをmerchantが検証して`complete("fail")`へ到達した時点で開く。例外、handler不在、browser cancelを拒否成功へ数えない。
-- B04 再試行: 同じhandlerの最初のresponseへmerchantが`PaymentResponse.retry()`を行い、再提示された同じhandlerで正しい架空instrumentを選んで二度目のresponseを成功完了した時点で開く。別handlerへの切替、最初からの成功、game製retry UIだけでは開かない。
+- trusted event: 複数の架空handler候補からhandler windowへ到達し、Service Workerがcurrent attemptのtrusted `PaymentRequestEvent`を受けたことは経路の証跡として記録するが、単独の箱にはしない。handler選択・merchant側の開始経路は承認／拒否／再試行に固定しない。
+- B01 承認: handler windowで架空支払いを承認し、期待methodのresponseをmerchantが受け、`complete("success")`へ到達した時点で開く。
+- B02 拒否: handler windowで意図的拒否を選び、handlerが返す固定の架空拒否resultをmerchantが検証して`complete("fail")`へ到達した時点で開く。例外、handler不在、browser cancelを拒否成功へ数えない。
+- B03 再試行: 同じhandlerの最初のresponseへmerchantが`PaymentResponse.retry()`を行い、再提示された同じhandlerで二度目のresponseを成功完了した時点で開く。別handlerへの切替、最初からの成功、game製retry UIだけでは開かない。
 - 非言語演出: 各条件が成立した瞬間に対応箱だけを開く。短い取引結果、完了message、固定flagを表示せず、handler window内も承認・拒否・instrument選択などpayment lifecycleに必要な図形操作へ限定する。権限・privacy・非対応・error・accessibilityの説明だけは非言語性を理由に省かない。
 - privacy / safety: payer name / email / phone、billing / shipping address、card、実payment credential、payment tokenを要求しない。架空response detailsはcurrent attemptの判定後に破棄し、通常の解決済みproblem IDだけを保存する。handler登録、window、pending request、listener、Service Worker scopeはresetと離脱時のcleanup仕様を持たせる。
 - 対応差: Payment Handler非対応環境、handler登録失敗、JIT install UI非表示、cancel、`AbortError`、`OperationError`は未観測とし、game製payment sheetによる代替clearを作らない。候補UI、trusted event、`complete("fail")`、同一handler `retry()`を公開対象browserで実PoCしてから公開する。
 - DR-128との境界: Payment Requestは架空handlerをbrowserから起動するmerchant側配線としてだけ使う。実payment methodを模擬通貨へ流用するDR-128案を復活させず、実providerを一つでも混ぜない。
-- 件数: 新規1stage・4箱を追加し、計画値を78stage・185箱とする。
+- 件数: 新規1stage・3箱を追加し、計画値を78stage・184箱とする。PoC確認後、再挑戦しにくい「正しいhandler／財布」箱は採用しない。
 - 根拠: [Payment Handler API](https://www.w3.org/TR/payment-handler/)、[Web-based Payment Handler API](https://developer.mozilla.org/en-US/docs/Web/API/Web-Based_Payment_Handler_API)、[Payment Request API](https://www.w3.org/TR/payment-request/)、[PaymentResponse.retry()](https://developer.mozilla.org/en-US/docs/Web/API/PaymentResponse/retry)。
 
 ### DR-130 帰属レポート API

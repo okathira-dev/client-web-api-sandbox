@@ -1569,3 +1569,129 @@ input:focus-visible {
     transition-duration: 0.01ms;
   }
 }
+
+.payment-poc-panel {
+  display: grid;
+  gap: 0.8rem;
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px solid #4f4265;
+  border-radius: 0.9rem;
+  background: rgb(20 16 31 / 65%);
+}
+
+.payment-poc-panel h3,
+.payment-poc-panel p {
+  margin: 0;
+}
+
+.payment-poc-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.payment-poc-actions button,
+.payment-stage-box button {
+  border: 1px solid #806ba1;
+  border-radius: 0.55rem;
+  background: #2a203b;
+  color: inherit;
+  padding: 0.65rem 0.8rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.payment-poc-actions button:hover,
+.payment-poc-actions button:focus-visible,
+.payment-stage-box button:hover,
+.payment-stage-box button:focus-visible {
+  background: #493766;
+}
+
+.payment-trace-details {
+  border-top: 1px solid #40364f;
+  padding-top: 0.65rem;
+}
+
+.payment-trace {
+  min-height: 5rem;
+  max-height: 18rem;
+  overflow: auto;
+  margin: 0.65rem 0 0;
+  padding: 0.75rem;
+  border-radius: 0.55rem;
+  background: #0b0910;
+  color: #d8c8f0;
+  white-space: pre-wrap;
+  font:
+    0.78rem / 1.5 ui-monospace,
+    SFMono-Regular,
+    Consolas,
+    monospace;
+}
+
+.payment-stage-boxes {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.7rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.payment-stage-box {
+  display: grid;
+  align-content: start;
+  gap: 0.45rem;
+  min-height: 9rem;
+  padding: 0.8rem;
+  border: 1px solid #5a4b72;
+  border-radius: 0.75rem;
+  background: #17121f;
+  color: #d8cde5;
+}
+
+.payment-stage-box[data-payment-solved="true"] {
+  border-color: #53d39a;
+  background: #10271f;
+  box-shadow: 0 0 0 2px rgb(83 211 154 / 18%);
+}
+
+.payment-stage-box-id {
+  color: #c3a7ed;
+  font:
+    700 0.8rem / 1 ui-monospace,
+    SFMono-Regular,
+    Consolas,
+    monospace;
+  letter-spacing: 0.08em;
+}
+
+.payment-stage-box strong {
+  color: #fff;
+}
+
+.payment-stage-box span:not(.payment-stage-box-id) {
+  min-height: 2.5rem;
+  color: #bfb2cc;
+  font-size: 0.84rem;
+  line-height: 1.4;
+}
+
+.payment-poc-note {
+  color: #bfb2cc;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 760px) {
+  .payment-stage-boxes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .payment-stage-boxes {
+    grid-template-columns: 1fr;
+  }
+}

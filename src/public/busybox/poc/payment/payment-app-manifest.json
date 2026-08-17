@@ -1,0 +1,19 @@
+{
+  "name": "Busybox PoC payment handler",
+  "short_name": "Busybox Pay",
+  "description": "A fictional Busybox payment handler used only for local API verification.",
+  "icons": [
+    {
+      "src": "../../icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "start_url": "./payment-handler-window.html",
+  "display": "standalone",
+  "serviceworker": {
+    "src": "./payment-handler-sw.js",
+    "scope": "./",
+    "use_cache": false
+  }
+}

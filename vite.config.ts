@@ -1,16 +1,77 @@
 import { resolve } from "node:path";
 import react from "@vitejs/plugin-react";
-import { defineConfig } from "vite";
+import { defineConfig, type Plugin } from "vite";
 
 const root = resolve(__dirname, "src"); // srcフォルダをrootにする。マルチページのフォルダをsrcにまとめたい＆変に階層を増やしたくない。
 const outDir = resolve(__dirname, "dist"); // でも当然ビルドフォルダはsrcの外にしたい
+
+const paymentManifestRoutes = new Map([
+  [
+    "/busybox/poc/payment/method",
+    "/busybox/poc/payment/payment-method-manifest.json",
+  ],
+  [
+    "/busybox/poc/payment/decoy-method",
+    "/busybox/poc/payment/decoy-payment-method-manifest.json",
+  ],
+]);
+
+function paymentManifestLinkPlugin(): Plugin {
+  const handle = (
+    request: { url?: string },
+    response: {
+      statusCode: number;
+      setHeader(name: string, value: string): void;
+      end(body?: string): void;
+    },
+    next: () => void,
+  ) => {
+    const pathname = new URL(request.url ?? "/", "http://busybox.local")
+      .pathname;
+    const manifestPath = paymentManifestRoutes.get(pathname);
+    if (!manifestPath) {
+      next();
+      return;
+    }
+
+    response.statusCode = 204;
+    response.setHeader(
+      "Link",
+      `<${manifestPath}>; rel="payment-method-manifest"`,
+    );
+    response.setHeader("Cache-Control", "no-store");
+    response.end();
+  };
+
+  return {
+    name: "busybox-payment-method-manifest-link",
+    configureServer(server) {
+      server.middlewares.use((request, response, next) => {
+        if (request.method !== "HEAD" && request.method !== "GET") {
+          next();
+          return;
+        }
+        handle(request, response, next);
+      });
+    },
+    configurePreviewServer(server) {
+      server.middlewares.use((request, response, next) => {
+        if (request.method !== "HEAD" && request.method !== "GET") {
+          next();
+          return;
+        }
+        handle(request, response, next);
+      });
+    },
+  };
+}
 
 export default defineConfig({
   base: "./", // JSのimportが相対パスになる。ビルドしたフォルダ単体で動くので便利。
   root,
   appType: "mpa", // マルチページアプリケーションとして設定（SPAフォールバックを無効化）。kojo-xml-viewerで404の反応を見る必要があるため。
   assetsInclude: ["**/*.pack"],
-  plugins: [react()],
+  plugins: [react(), paymentManifestLinkPlugin()],
   // 開発時ファイル変更を検知できないなどあればこれを有効にする
   // server: {
   //   watch: {
@@ -67,6 +128,12 @@ export default defineConfig({
           "poc",
           "offline-beacon",
           "receiver.html",
+        ),
+        "busybox-poc-presentation-receiver": resolve(
+          root,
+          "busybox",
+          "poc",
+          "presentation-receiver.html",
         ),
         "busybox-s710-tool": resolve(
           root,

@@ -11,6 +11,9 @@ import {
   unicodeExpressionText,
   unicodeFixtures,
 } from "../fixtures/unicode/data";
+import { initPocRegistry } from "./registry";
+
+initPocRegistry();
 
 type Capability = {
   poc: string;
@@ -77,14 +80,15 @@ const windowWithExperiments = window as Window & {
   MediaStreamTrackProcessor?: unknown;
   OTPCredential?: unknown;
   IdentityCredential?: unknown;
+  queryLocalFonts?: unknown;
 };
 
 const navigatorWithExperiments = navigator as Navigator & {
   connection?: unknown;
   contacts?: unknown;
   presentation?: unknown;
-  queryLocalFonts?: unknown;
-  userPreferences?: unknown;
+  preferences?: unknown;
+  audioSession?: unknown;
 };
 
 type PressureRecord = {
@@ -143,7 +147,7 @@ const capabilities: Capability[] = [
   {
     poc: "008",
     path: "User Preferences override",
-    supported: "userPreferences" in navigatorWithExperiments,
+    supported: "preferences" in navigatorWithExperiments,
   },
   {
     poc: "009",
@@ -234,7 +238,7 @@ const capabilities: Capability[] = [
   {
     poc: "029",
     path: "Local Font Access",
-    supported: "queryLocalFonts" in navigatorWithExperiments,
+    supported: "queryLocalFonts" in windowWithExperiments,
   },
   {
     poc: "030",
@@ -247,6 +251,21 @@ const capabilities: Capability[] = [
     supported:
       "mediaSession" in navigator &&
       "requestPictureInPicture" in HTMLVideoElement.prototype,
+  },
+  {
+    poc: "032",
+    path: "Text Fragment + beforematch",
+    supported: "onbeforematch" in HTMLElement.prototype,
+  },
+  {
+    poc: "033",
+    path: "Audio Session interruption",
+    supported: "audioSession" in navigatorWithExperiments,
+  },
+  {
+    poc: "034",
+    path: "native AudioTrackList",
+    supported: "audioTracks" in HTMLMediaElement.prototype,
   },
 ];
 
@@ -267,8 +286,10 @@ const reviewGroups: readonly ReviewGroup[] = [
       "POC-001 Custom Highlight",
       "POC-003 details / dialog",
       "POC-004 Navigation APIの入口",
+      "POC-018 Text Fragment traversal",
       "POC-011 Unicode fixture",
       "POC-013 Encoding fixture",
+      "POC-032 Text Fragment assembly",
       "POC-022 WebCodecs入口",
       "POC-030 Invoker Commands",
       "POC-031 browser / OS media controls",
@@ -285,8 +306,8 @@ const reviewGroups: readonly ReviewGroup[] = [
       "POC-014 Permissions",
       "POC-015 Compute Pressure",
       "POC-016 Console maze",
-      "POC-018 Text Fragment",
       "POC-021 bounded Insertable Streams",
+      "POC-029 Local Font Access",
     ],
   },
   {
@@ -303,7 +324,8 @@ const reviewGroups: readonly ReviewGroup[] = [
       "POC-026 Contact Picker",
       "POC-027 FedCM",
       "POC-028 Payment Handler",
-      "POC-029 Local Font Access",
+      "POC-033 Audio Session interruption",
+      "POC-034 native AudioTrackList監視枠",
     ],
   },
 ];

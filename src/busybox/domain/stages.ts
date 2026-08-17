@@ -1098,7 +1098,7 @@ export const stageCatalogue = [
     problems: Array.from({ length: 4 }, (_, index) => ({
       id: `S-810-B${String(index + 1).padStart(2, "0")}` as `S-810-B${number}`,
       color: ["#84cc16", "#65a30d", "#4d7c0f", "#3f6212"][index],
-      clue: "time" as const,
+      clue: "resize" as const,
     })) as readonly ProblemFor<"S-810">[],
   }),
 ] as const satisfies readonly StageSpec[];

@@ -1,4 +1,5 @@
 import { readFile } from "node:fs/promises";
+import { classifyS810AspectRatio } from "../../stages/S-810.functions";
 
 const assetRoot = new URL("./assets/", import.meta.url);
 const webmHeader = Buffer.from([0x1a, 0x45, 0xdf, 0xa3]);
@@ -17,7 +18,7 @@ type SweepManifest = {
   }[];
 };
 
-describe("S-810 fixed resolution-sweep fixture", () => {
+describe("S-810 fixed aspect-ratio seek fixture", () => {
   it("keeps all native-size WebM segments in one portable pack", async () => {
     const manifest = JSON.parse(
       await readFile(new URL("generation-manifest.json", assetRoot), "utf8"),
@@ -62,5 +63,25 @@ describe("S-810 fixed resolution-sweep fixture", () => {
       width: 1080,
       height: 144,
     });
+  });
+
+  it("contains a seekable frame within five percent of every target ratio", async () => {
+    const manifest = JSON.parse(
+      await readFile(new URL("generation-manifest.json", assetRoot), "utf8"),
+    ) as SweepManifest;
+
+    for (const target of [
+      "square",
+      "four-three",
+      "sixteen-nine",
+      "nine-twenty",
+    ] as const) {
+      expect(
+        manifest.segments.some(
+          (segment) =>
+            classifyS810AspectRatio(segment.width, segment.height) === target,
+        ),
+      ).toBe(true);
+    }
   });
 });

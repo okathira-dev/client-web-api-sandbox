@@ -1,0 +1,19 @@
+{
+  "name": "Busybox Decoy Wallet",
+  "short_name": "Decoy Wallet",
+  "description": "A decoy payment handler used to test browser-owned selection.",
+  "icons": [
+    {
+      "src": "../../icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "start_url": "./payment-handler-window.html",
+  "display": "standalone",
+  "serviceworker": {
+    "src": "./decoy-payment-handler-sw.js",
+    "scope": "./",
+    "use_cache": false
+  }
+}

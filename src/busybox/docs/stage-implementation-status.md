@@ -54,7 +54,7 @@
 | S-320 | Device Posture / Viewport Segments | 実装済み・人手確認待ち | folded changeまたは2 segment | H-023 |
 | S-330 | Screen Wake Lock | 実装済み・人手確認待ち | 取得・visibility解放・再取得の2箱 | H-005, H-022, H-023 |
 | S-340 | View Transition | 実装済み・人手確認待ち | 3回のtransition完了、非対応隔離 | H-001, H-002, H-003, H-020 |
-| S-350 | HTMLMediaElement controls / playbackRate / media tracks / Picture-in-Picture / Fullscreen | B01〜B06・B08実装済み・人手確認待ち、将来B07の音声trackはAPI未対応で保留 | 一つのnative playerでB01 seek、B02 mute / volume 0、B03再生後の終了前pause、B04 native再生速度変更、B05 `Busybox`字幕、B06 native PiP入場、B08同じvideoのfullscreen入場を観測。終了後の先頭復帰と`ended`は除外 | H-001, H-002, H-003, H-012, H-019, H-020, H-023, H-025, H-030, H-052 |
+| S-350 | HTMLMediaElement controls / playbackRate / media tracks / Picture-in-Picture / Fullscreen | B01〜B06・B08実装済み・人手確認待ち、将来B07の音声trackはAPI未対応で保留。監視枠POC-034を追加 | 一つのnative playerでB01 seek、B02 mute / volume 0、B03再生後の終了前pause、B04 native再生速度変更、B05 `Busybox`字幕、B06 native PiP入場、B08同じvideoのfullscreen入場を観測。終了後の先頭復帰と`ended`は除外 | H-001, H-002, H-003, H-012, H-019, H-020, H-023, H-025, H-030, H-052 |
 | S-360 | WebRTC / Web Audio | 実装済み・人手確認待ち | 2タブ間の生成音声接続でB01、明示的data channel終了でB02。外部server、STUN / TURN、microphoneなし | H-013, H-019, H-020, H-023 |
 | S-370 | Battery Status | 実装済み・人手確認待ち | B01/B02は実chargingchange、B03/B04は75%境界のbrowser報告値 | H-004, H-019, H-023 |
 | S-380 | Web Authentication Conditional UI / Passkeys | 実装済み・人手確認待ち | B01作成＋credential ID保存、B02 Conditional利用成功、B03利用不成立。専用host名とpasskey残留警告が前提 | H-006, H-019, H-020, H-023 |
@@ -62,7 +62,7 @@
 | S-400 | Date / High Resolution Time / Page Visibility | 実装済み・人手確認待ち | monotonic基準からwall clockを-60分±5分へ合わせるB01、その後baseline±5分へ戻すB02 | H-004, H-019, H-022, H-023 |
 | S-410 | Notification actions / Service Worker | 実装済み・人手確認待ち | pageを開かず左右action列をnotification差替えで反復。誤入力reset、完了時だけ専用URLへ復帰 | H-005, H-006, H-019, H-022, H-023, H-025 |
 | S-420 | Notification actions / notification body click | 実装済み・人手確認待ち | 左右actionを固定長まで通知dataへ蓄積し、本文clickで金庫pageへ提出。一括照合一致でB01 | H-005, H-006, H-019, H-020, H-022, H-023, H-025 |
-| S-430 | Media Session / Audio Session / generated audio | B01実装済み・DR-065のB02承認済み未実装 | B01はexternal pause handlerをPOC-031で実入力確認する。play／seek／前後track actionは探索だけ行い、箱追加は未決定。B02はactive後に実`interrupted`を経てactiveとplayingへ復帰する列、B01との分離、type reset、cleanupを検証する | H-003, H-004, H-019, H-020, H-022, H-023, H-025, H-039, H-052 |
+| S-430 | Media Session / Audio Session / generated audio | B01実装済み・DR-065のB02承認済み。B02隔離入口POC-033を追加 | B01はexternal pause handlerをPOC-031で実入力確認する。play／seek／前後track actionは探索だけ行い、箱追加は未決定。B02はPOC-033でactive後に実`interrupted`を経てactiveとplayingへ復帰する列、B01との分離、type reset、cleanupを検証する | H-003, H-004, H-019, H-020, H-022, H-023, H-025, H-039, H-052 |
 | S-440 | File Handling / LaunchQueue | 実装済み・人手確認待ち | downloaded `.busybox`をOSから開き、実handleのroundがarmed roundと一致した場合にB01 | H-005, H-006, H-019, H-021, H-023, H-025 |
 | S-450 | Protocol Handlers / LaunchQueue | 実装済み・人手確認待ち | `web+busybox:`のround nonceをinstalled PWAのhandler URL / LaunchQueueで受けてB01 | H-005, H-006, H-019, H-021, H-023, H-025 |
 | S-460 | Window Controls Overlay | 実装済み・人手確認待ち | overlay visibleかつgetTitlebarAreaRect内のno-drag箱を実clickしてB01 | H-001, H-003, H-005, H-019, H-020, H-023, H-025 |
@@ -96,10 +96,10 @@
 | S-750 | WebOTP API / Security Code AutoFill / origin-bound SMS | DR-126でB01承認済み・未実装 | 一箱を実`OTPCredential`一致、または空のOTP専用欄へのtrustedな一括入力、current code一致、実`:autofill`状態の組合せで開く。手入力、paste、drop、composition、event列だけの推定は成功経路にしない | H-003, H-004, H-019, H-020, H-023, H-025, H-046 |
 | S-760 | Contact Picker API / ContactsManager / ContactInfo | DR-017でB01 / B02承認済み・未実装 | B01はOSへ追加した架空contact 1件のname / email / tel / address / icon一致、B02はB01後に1件を選択しながら5propertyが全空または欠損であることを検証する。contact identity、共有拒否理由、game製UIは成功条件にしない | H-003, H-004, H-019, H-023, H-025, H-047 |
 | S-770 | FedCM / provider公式SDK / managed IdP | DR-127でGoogle下限B01承認済み・未実装 | provider別の明示開始、browser所有chooser、manual FedCM結果、token非保存を検証する。追加providerは公式提供、public client登録、独自backend不要、実account PoC後に加算する | H-003, H-004, H-019, H-023, H-025, H-049 |
-| S-780 | Payment Handler / Payment Request / Service Worker | DR-129でB01〜B04承認済み・未実装 | 正しい架空handlerのtrusted event、承認success、意図的拒否fail、同一handler retry後successを別箱へ累積する。実provider、cancel / error、game製UI、結果label、固定flagを使わない | H-003, H-004, H-019, H-023, H-025, H-050 |
+| S-780 | Payment Handler / Payment Request / Service Worker | DR-129でB01〜B03承認済み・PoC試作済み、製品stage未実装 | trusted eventは証跡として扱い、承認success、意図的拒否fail、同一handler retry後successを3箱へ累積する。handler windowの選択を経路に固定せず、local Vite middlewareでmethod URLの`Link` headerを検証する。実provider、cancel / error、game製UI、結果label、固定flagを使わない | H-003, H-004, H-019, H-023, H-025, H-050 |
 | S-790 | Local Font Access / FontData / FontFace / Web Crypto | DR-137でB01承認済み・未実装 | Git管理する専用fontをOSへinstallし、対象PostScript名だけの実照会、raw font data検証、専用glyph表示で直接開く。全font列挙、既存font、upload、`local()`だけ、固定flagを使わない | H-003, H-004, H-006, H-014, H-019, H-023, H-025, H-051 |
 | S-800 | URL Fragment Text Directives / `hidden=until-found` / `beforematch` | D-136でB01 / B02承認済み・問題詳細保留 | 英文上の対象語を、B01ではpercent-encoded `textStart`とpunctuation contextから、B02では表示された単語からplayer自身がfragment URLへ組み立てる。入力欄なし。`beforematch`で対象語を出現させ対応箱を開く。英文、対象語、fragment文字列は実装前に吟味する | H-001, H-002, H-003, H-004, H-019, H-020, H-025, H-038 |
-| S-810 | MediaSource / SourceBuffer / `videoWidth` / `videoHeight` / `resize` / `requestVideoFrameCallback` | B01〜B04初版実装済み・人手確認待ち | Git管理した120個のVP8 WebM segmentをpackとmanifestからMSEへtimestamp offset付きで連結し、144→1080の正方形、1080→144の正方形、横長、縦長の実native寸法を観測して対応箱を開く。実行時エンコード、CSS寸法、固定画像は成功条件に使わない | H-001, H-002, H-003, H-019, H-020, H-023, H-025, H-053 |
+| S-810 | MediaSource / SourceBuffer / `videoWidth` / `videoHeight` / `resize` / `seeked` / `requestVideoFrameCallback` | B01〜B04初版実装済み・人手確認待ち | Git管理した120個のVP8 WebM segmentをpackとmanifestからMSEへtimestamp offset付きで連結し、native controlsでシークを止めた提示frameの比率が1:1、4:3、16:9、9:20（各相対5%以内）なら対応箱を開く。実行時エンコード、CSS寸法、固定画像、通常再生・pauseだけは成功条件に使わない | H-001, H-002, H-003, H-019, H-020, H-023, H-025, H-053 |
 
 H-025は全行に共通する公開前ゲートである。コード上は全問題箱が単一 `ProblemGiftBox` とID別presentationを通り、状態導出の組み合わせを自動テストしている。実API・権限・端末条件を再達成した時に各箱が開くことは、各ステージの既存人手ゲートと合わせて確認する。
 

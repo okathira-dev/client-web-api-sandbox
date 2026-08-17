@@ -1,0 +1,3 @@
+{
+  "default_applications": ["./payment-app-manifest.json"]
+}

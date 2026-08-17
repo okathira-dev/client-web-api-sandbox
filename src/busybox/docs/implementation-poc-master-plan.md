@@ -85,7 +85,7 @@
 | S-750 | WebOTP／Security Code AutoFill | 必要 | POC-025 |
 | S-760 | Contact Picker 2箱 | 必要 | POC-026 |
 | S-770 | FedCM provider箱 | 必要 | POC-027 |
-| S-780 | Payment Handler 4箱 | 必要 | POC-028 |
+| S-780 | Payment Handler 3箱 | 必要 | POC-028 |
 | S-790 | Local Font Access 1箱 | 必要 | POC-029 |
 | S-800 | Text Fragment組み立て2箱 | 必要。`hidden=until-found`からの実Text Fragment matchと`beforematch`の対応差を問題fixture確定後に確認する | POC-032 |
 | DR-041追加箱 | Invoker Commands統合、stage ID未予約 | 必要 | POC-030 |
@@ -340,8 +340,8 @@
 
 - 種別: browser payment lifecycle成立性PoC
 - 最小構成: Git管理する架空payment method、複数payment app manifest、handler Service Worker、handler window、merchant page。
-- 手順: browser所有候補から正しいhandlerを選びtrusted `PaymentRequestEvent`を得る。承認→`complete("success")`、意図的拒否→`complete("fail")`、最初のresponse→`retry()`→同一handler二度目成功を別々に試す。
-- 合格条件: B01〜B04を実browser lifecycleで分離でき、実provider、実通貨、payer data、game製payment sheetを使わない。
+- 手順: browser所有候補からhandlerを選びtrusted `PaymentRequestEvent`を証跡として得る。承認→`complete("success")`、意図的拒否→`complete("fail")`、最初のresponse→`retry()`→同一handler二度目成功を別々に試す。開始側でApprove／Decline／retryを固定しない。
+- 合格条件: B01〜B03を実browser lifecycleで分離でき、実provider、実通貨、payer data、game製payment sheetを使わない。
 - failure: cancel、handler不在、例外を意図的拒否へ数えない。候補UIまたはretryが成立しなければaffected boxを再相談する。
 - 成果物: manifest群、trusted event trace、window lifecycle、cleanup、H-050結果。
 

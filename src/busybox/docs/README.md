@@ -13,6 +13,7 @@
 - [決定ログ](./decision-log.md): 採用・統合・却下を確定した判断の履歴。
 - [アーキテクチャ判断](./architecture-decisions.md): 現行実装が守る境界と規約。
 - [最新PoC索引](./poc-latest.md): 現行仕様に対応する最新版PoCの入口と、削除済み旧PoCの境界。
+- [残存PoC実装計画](./remaining-poc-implementation-plan.md): 現行仕様で未実装だったPoCの実装状況、外部条件、次の確認順。
 
 ## 履歴として保存する資料
 

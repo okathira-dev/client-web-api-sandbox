@@ -2,7 +2,7 @@
 
 > JSDocとstage-localizationへ移行する前の対応履歴。現行の解法・箱番号・実装状態はこの表から導かない。JSDoc移行完了後に削除または履歴ディレクトリへの移動を再判定する。
 
-> 本文には実装前の状態語も履歴として残る。現在は67stage・155箱をコードへ反映し、G-024 / S-270とMedia Capabilities profile箱をD-141で不採用、G-080 / S-810へframe cadenceを分離、D-143でG-020のPiP箱をS-350へ統合し、D-144でfullscreen箱とmedia stage製品UXを確定した。現行状態は[ステージ実装状況](./stage-implementation-status.md)、解法は[現行ステージ解法仕様](./stage-walkthroughs.md)を正とする。
+> 本文には実装前の状態語も履歴として残る。現在は67stage・155箱をコードへ反映し、G-024 / S-270とMedia Capabilities profile箱をD-141で不採用、G-080 / S-810をnative seek後のアスペクト比判定へ更新、D-143でG-020のPiP箱をS-350へ統合し、D-144でfullscreen箱とmedia stage製品UXを確定した。過去のframe cadence案は履歴であり、現行状態は[ステージ実装状況](./stage-implementation-status.md)、解法は[現行ステージ解法仕様](./stage-walkthroughs.md)を正とする。
 
 ## 完了条件
 
@@ -101,10 +101,10 @@
 | G-074 | S-750 届いた封書（仮） | WebOTP API / Security Code AutoFill / origin-bound SMS | 採用・未実装。一箱を実`OTPCredential`一致、または空の`autocomplete="one-time-code"`欄への強く検証した`:autofill`によるcurrent code入力のどちらかで開く。手入力、paste、drop、compositionは代替clearにしない |
 | G-075 | S-760 架空の名刺（仮） | Contact Picker API / ContactsManager / ContactInfo | 採用・未実装。B01はOSへ追加した架空contactのname / email / tel / address / icon一致、B02はB01後に1件を選択しつつ5propertyを一つもpageへ渡さないことで開く。game製pickerやmanual formは代替clearにしない |
 | G-076 | S-770 身分証棚（仮） | FedCM / provider公式SDK / managed IdP | 採用・未実装。実装時点で公式FedCMと一般向けRP登録を提供するserviceを再調査し、providerごとの明示開始とbrowser所有account chooserの手動完了で独立箱を開く。Google 1箱を下限とし、OAuth redirect、broker越しの非FedCM login、game製account UIは代替clearにしない |
-| G-077 | S-780 四つの財布（仮） | Payment Handler / Payment Request / Service Worker | 採用・未実装。B01は正しい架空handlerのtrusted event、B02は承認とsuccess完了、B03は意図的拒否とfail完了、B04は同一handlerの実retry後成功で開く。実provider、game製payment sheet、cancel / errorの代替clear、結果label、固定flagを使わない |
+| G-077 | S-780 三つの財布（仮） | Payment Handler / Payment Request / Service Worker | 採用・PoC確認済み、製品stage未実装。trusted eventは証跡として扱い、B01は承認とsuccess完了、B02は意図的拒否とfail完了、B03は同一handlerの実retry後成功で開く。handler選択・開始経路は固定しない。実provider、game製payment sheet、cancel / errorの代替clear、結果label、固定flagを使わない |
 | G-078 | S-790 活字の鍵（仮） | Local Font Access / FontData / FontFace / Web Crypto | 採用・未実装。Git管理する専用OTFをplayerがOSへinstallし、対象PostScript名へ絞った`queryLocalFonts()`と`FontData.blob()`の実data検証・glyph表示で1箱を直接開く。全font列挙、既存font集合、file upload、`local()`だけ、固定flagを代替clearにしない |
 | G-079 | S-800 断片を組み立てる文書（仮） | URL Fragment Text Directives / `hidden=until-found` / `beforematch` | 採用・未実装。長い英文、fragment表示B01、単語表示B02の2箱。playerがaddress barへfragment付きURLを貼り、対象語が出現してUA highlightされた`beforematch`で対応箱を開く。page内入力欄、通常anchor、独自highlightによる代替clearを作らない。問題内容は実装前に吟味する |
-| G-080 | S-810 frameの拍子 | HTMLMediaElement / `requestVideoFrameCallback()` | 実装済み・人手確認待ち。playerの意味のあるnative seek後、VFR fixtureの実`mediaTime`に24回連続する24fps cadenceがあるとB01が開く。script自動seek、wall clock、先頭通し再生は成功条件外 |
+| G-080 | S-810 比率を止める | HTMLMediaElement / `videoWidth` / `videoHeight` / `seeked` / `requestVideoFrameCallback()` | 実装済み・人手確認待ち。playerがnative seekを止めた提示frameの比率が1:1、4:3、16:9、9:20の各相対5%以内ならB01〜B04が対応して開く。通常再生、pauseだけ、CSS寸法は解法にせず、ページにはscript自動seek経路を置かない |
 
 ## 2026-07-17 現行API確認
 

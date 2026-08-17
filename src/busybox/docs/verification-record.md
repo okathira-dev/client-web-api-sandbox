@@ -1,13 +1,13 @@
 # 検証記録
 
-## 2026-08-15 全ステージlocale・JSDoc・資料整理
+## 2026-08-16 S-810比率シーク・個別PoC追補
 
 | 検証 | 結果 | 証跡 |
 | --- | --- | --- |
 | stage documentation audit | 合格 | 67個の`S-xxx.tsx`に隣接`S-xxx.locale.ts`、ja/en bundle、9項目の日本語JSDocを確認する`stageDocumentation.test.ts` |
-| Jest | 合格 | 47 suites / 288 tests |
+| Jest | 合格 | 48 suites / 298 tests |
 | TypeScript | 合格 | bundled TypeScript `--noEmit` |
-| Biome | 合格 | Node 24.14.0の`npm run check`で442 filesをcheck |
+| Biome | 合格 | Node 24.14.0の`npm run check`で447 filesをcheck（既存warning/infoのみ） |
 | Markuplint | 合格 | `src/**/*.{jsx,tsx,html}` |
 | Vite production build | 合格 | nvs defaultのNode 24.14.0でmulti-page build、S-710 tool、S-810固定packを含む |
 | locale propagation | 合格 | Appの`document.documentElement.lang`、S-710 iframeの`locale` query、S-510 helperの`locale` query |
@@ -15,6 +15,8 @@
 | absolute path scan | 合格 | source/docsからWindows・Unix絶対パスなし |
 
 ## 2026-08-12 実装追補の検証
+
+この節は2026-08-16のS-810比率仕様変更前に行った検証の履歴である。下記の「小正方形・大正方形・横長・縦長」は旧寸法分類の結果であり、現行の1:1・4:3・16:9・9:20の4箱が開く証拠ではない。現行の実開箱はH-053で再確認する。
 
 | 検証 | 結果 | 証跡 |
 | --- | --- | --- |
@@ -44,8 +46,10 @@
 | S-640 fixture | 合格 | 8問の文字化け、元/誤表示encoding、回答非重複、fatal decode |
 | S-710 fixture | 合格 | 暗黒frame、QR frame、10秒、WebM構造、QR payload、decode失敗output |
 | S-720 route | 合格 | 4正規route、実変換関数、cycle拒否、経路判定単体test |
-| S-810 capability | 合格 | `resize` と `requestVideoFrameCallback()`の両方をprobe |
+| S-810 capability | 合格 | `resize`、`seeked`、`requestVideoFrameCallback()`をprobe。4比率の実開箱はH-053待ち |
 | licenses / path hygiene | 合格 | 第三者ライセンス内容、ソース内絶対Windows pathなし |
+
+S-810の現行判定は、固定packをnative controlsでシーク停止し、`seeked`後の提示frameを1:1、4:3、16:9、9:20（各相対5%以内）へ分類する方式である。上表のcapability probeは実APIの存在確認であり、4箱の実開箱はH-053の人手確認を待つ。過去の24fps cadence記録は履歴であり、現行条件には使わない。
 
 自動検証は人手確認の代替ではない。特にS-710の実frame差し替え、S-720のoutput再生・QR、S-810の可変寸法WebM再生は、Chrome実画面で確認する。
 

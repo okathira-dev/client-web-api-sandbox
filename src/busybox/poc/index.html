@@ -56,6 +56,25 @@
       .video-recovery-card video { background: #000; max-width: 100%; width: 22rem; }
       .video-recovery-runtime { border: 1px solid #555; margin: 1rem 0; padding: 1rem; }
       .video-recovery-runtime canvas { background: #000; display: block; image-rendering: pixelated; margin: .75rem 0; max-width: 100%; width: 22rem; }
+      .poc-grid { display: grid; gap: .75rem; grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr)); }
+      .poc-card { border: 1px solid #555; padding: .75rem; }
+      .poc-card h3, .poc-card h4 { margin-top: 0; }
+      .poc-card output { background: #1b1b1b; display: block; margin-top: .65rem; min-height: 2rem; overflow-wrap: anywhere; padding: .65rem; white-space: pre-wrap; }
+      .fragment-hidden { border: 1px dashed #777; margin: .75rem 0; padding: .75rem; }
+      .fragment-hidden[hidden] { content-visibility: hidden; }
+      .fragment-recipe { background: #1b1b1b; display: block; overflow-wrap: anywhere; padding: .65rem; }
+      #local-font-glyph { background: #1b1b1b; display: block; font-size: 4rem; line-height: 1; margin-top: .75rem; padding: .75rem; }
+      .poc-lazy-case { border-color: #666; }
+      .poc-lazy-case[data-poc-state="pass"] { border-color: #5a9; }
+      .poc-lazy-case[data-poc-state="unsupported"] { border-color: #a66; }
+      .poc-lazy-case[data-poc-state="partial"] { border-color: #c98; }
+      .poc-two-column { display: grid; gap: .75rem; grid-template-columns: repeat(auto-fit, minmax(min(20rem, 100%), 1fr)); }
+      .poc-drop-target { align-items: center; border: .2rem dashed #999; display: flex; justify-content: center; min-height: 8rem; padding: 1rem; text-align: center; }
+      .poc-drop-target[data-dragover="true"] { border-color: #9f9; background: #182818; }
+      .poc-source-frame { background: #1b1b1b; border: 1px solid #555; min-height: 9rem; width: 100%; }
+      .poc-camera { background: #000; max-width: 100%; width: 18rem; }
+      .poc-small-video { background: #000; max-width: 100%; width: 24rem; }
+      .poc-xr-box { border: 1px solid #555; min-height: 4rem; padding: .75rem; }
       ::highlight(poc-first) { background: #1e88e5; color: white; }
       ::highlight(poc-second) { background: #f4511e; color: white; }
     </style>
@@ -90,7 +109,8 @@
             <tr><td>019 / 020 / 023</td><td>receiver画面 / XR機器</td><td>remote / presentation接続、XR select ray</td></tr>
             <tr><td>024</td><td>installed PWA・公開HTTPS・長期観測</td><td>client 0件でperiodicsync event</td></tr>
             <tr><td>025 / 026</td><td>SMS送信端末 / Android contact</td><td>OTP専用autofill / Contact Picker property</td></tr>
-            <tr><td>027 / 028</td><td>公開origin・provider RP登録 / payment handler</td><td>FedCM専用result / PaymentRequest lifecycle</td></tr>
+            <tr><td>027</td><td>公開origin・provider RP登録</td><td>FedCM専用result</td></tr>
+            <tr><td>028</td><td>foregroundの対応Chrome</td><td>browser所有PaymentRequest UIとhandler lifecycle</td></tr>
             <tr><td>029</td><td>対応desktop Chromium・専用OTFをOS user install</td><td>限定font再発見とBlob検証</td></tr>
           </tbody>
         </table>
@@ -166,16 +186,58 @@
         <button type="button" id="reset-maze">迷路を戻す</button>
         <output class="media-status" id="maze-status" aria-live="polite">Consoleを開いて盤面を確認する。</output>
       </details>
-      <details class="poc-accordion" name="poc-probe">
+      <details class="poc-accordion poc-lazy-case" name="poc-probe" data-poc="018">
         <summary>POC-018: Text Fragment traversal fixture</summary>
-        <p>同一pageへのfragment linkを押し、browserのscrollとhighlightを観察する。page scriptは到達・scroll位置を判定しない。</p>
-        <p class="fragment-links"><a href="#fragment-a" data-text-fragment="Amber trains leave at dawn">A</a> <a href="#fragment-b" data-text-fragment="Blue maps fold under rain">B</a> <a href="#fragment-c" data-text-fragment="Copper keys sleep in drawers">C</a> <a href="#fragment-d" data-text-fragment="Delta lights wait for night">D</a></p>
+        <p>S-690案の最初のリンクをたどる体験。各リンクのnative fragment navigationと、プレイヤーが見つけた順番だけを記録する。scriptはscroll位置やUA highlightを判定しない。</p>
+        <p class="fragment-links"><a href="#fragment-a" data-text-fragment="Amber trains leave at dawn" data-s690-step="A">A</a> <a href="#fragment-b" data-text-fragment="Blue maps fold under rain" data-s690-step="B">B</a> <a href="#fragment-c" data-text-fragment="Copper keys sleep in drawers" data-s690-step="C">C</a> <a href="#fragment-d" data-text-fragment="Delta lights wait for night" data-s690-step="D">D</a></p>
         <div class="fragment-fixture">
           <p id="fragment-a">Amber trains leave at dawn. The first marker is ordinary text in a longer document.</p>
           <p id="fragment-b">Blue maps fold under rain. The second marker uses another unique sentence.</p>
           <p id="fragment-c">Copper keys sleep in drawers. The third marker remains deliberately plain.</p>
           <p id="fragment-d">Delta lights wait for night. The final marker completes this traversal fixture.</p>
         </div>
+        <output class="media-status" id="fragment-traversal-status" aria-live="polite">native link activationを待っています。</output>
+      </details>
+      <details class="poc-accordion poc-lazy-case" name="poc-probe" data-poc="032">
+        <summary>POC-032: S-800 Text Fragment URL組み立て</summary>
+        <p>入力欄は使わない。下のURLをアドレスバーへ貼り付け、browser自身のText Fragment検索で閉じた文章を出現させる。`beforematch`だけを成功観測に使い、通常anchorや自作highlightでは開かない。</p>
+        <div class="poc-grid">
+          <article class="poc-card">
+            <h3>B01: 文脈付きfragment</h3>
+            <p>句読点を含むfragmentを組み立て、対象語を直接入力欄へ送らずに探す。</p>
+            <code class="fragment-recipe" data-fragment-recipe="#:~:text=ink%27s%20cobalt%2C,-."></code>
+            <div id="fragment-assembly-a" class="fragment-hidden" hidden="until-found">The archivist wrote, “ink's cobalt,” beside the first sealed drawer.</div>
+          </article>
+          <article class="poc-card">
+            <h3>B02: 単語＋suffix</h3>
+            <p>空白を含む単語とピリオドsuffixで、同じ単語の別出現を避ける。</p>
+            <code class="fragment-recipe" data-fragment-recipe="#:~:text=%20ember,-."></code>
+            <div id="fragment-assembly-b" class="fragment-hidden" hidden="until-found">A single ember. rests under the second marker, never repeated elsewhere.</div>
+          </article>
+        </div>
+        <output class="media-status" id="fragment-assembly-status" aria-live="polite">beforematch待ち</output>
+      </details>
+      <details class="poc-accordion poc-lazy-case" name="poc-probe" data-poc="008">
+        <summary>POC-008: User Preferences API</summary>
+        <p><code>navigator.preferences</code>の実overrideだけを試す。各ボタンは1種類のpreferenceへuser activationから要求し、clear後にmedia queryと値を再確認する。未対応環境では模擬media queryを作らない。</p>
+        <div class="poc-grid">
+          <article class="poc-card"><h3>color scheme</h3><button type="button" data-user-preference="colorScheme">darkを要求</button><button type="button" data-user-preference-clear="colorScheme">clear</button></article>
+          <article class="poc-card"><h3>contrast</h3><button type="button" data-user-preference="contrast">moreを要求</button><button type="button" data-user-preference-clear="contrast">clear</button></article>
+          <article class="poc-card"><h3>reduced motion</h3><button type="button" data-user-preference="reducedMotion">reduceを要求</button><button type="button" data-user-preference-clear="reducedMotion">clear</button></article>
+          <article class="poc-card"><h3>reduced transparency</h3><button type="button" data-user-preference="reducedTransparency">reduceを要求</button><button type="button" data-user-preference-clear="reducedTransparency">clear</button></article>
+          <article class="poc-card"><h3>reduced data</h3><button type="button" data-user-preference="reducedData">reduceを要求</button><button type="button" data-user-preference-clear="reducedData">clear</button></article>
+        </div>
+        <output class="media-log" id="user-preferences-status" aria-live="polite">未実行</output>
+      </details>
+      <details class="poc-accordion poc-lazy-case" name="poc-probe" data-poc="029">
+        <summary>POC-029: Local Font Access</summary>
+        <p>対象PostScript名を1件だけ指定して走査する。全font列挙、font upload、<code>local()</code>だけの照合は行わない。PoC段階では対象名を編集できるが、製品S-790ではGit管理した専用OTFの固定名へ置き換える。</p>
+        <label for="local-font-postscript">対象PostScript名</label>
+        <input id="local-font-postscript" value="Arial" autocomplete="off" />
+        <button type="button" id="scan-local-font">限定fontを走査する</button>
+        <button type="button" id="clear-local-font">結果を破棄する</button>
+        <span id="local-font-glyph" role="img" aria-label="Local Font Accessで取得したfontのglyph">Aa9</span>
+        <output class="media-status" id="local-font-status" aria-live="polite">未実行</output>
       </details>
       <details class="poc-accordion" name="poc-probe" open>
         <summary>POC-031: browser / OS media controls</summary>
@@ -299,6 +361,149 @@
         <button type="button" id="run-invoker">Invoker Commands を作る</button>
         <dialog id="poc-dialog" aria-label="native dialog fixture" closedby="any"><p>native dialog fixture</p><button type="button" commandfor="poc-dialog" command="close">閉じる</button></dialog>
         <output class="media-status" id="invoker-status" aria-live="polite">未実行</output>
+      </details>
+      <details class="poc-accordion poc-lazy-case" name="poc-probe" data-poc="009">
+        <summary>POC-009: cross-window / cross-origin Drag and Drop</summary>
+        <p>sourceはsandbox iframe内に隔離しています。browser標準でdraggableな画像を実際にdragし、親documentのdrop targetへ渡してください。custom element、synthetic DragEvent、file input選択では成功にしません。</p>
+        <div class="poc-two-column">
+          <div>
+            <button type="button" data-dnd-open>source iframeをフォーカスする</button>
+            <iframe class="poc-source-frame" data-dnd-source title="sandbox drag source" loading="lazy" sandbox="allow-scripts" srcdoc="<!doctype html><html><body style='background:#111;color:#eee;font:16px system-ui'><p>この画像を親のdrop targetへdrag</p><img src='../drag-layer-a.png' alt='BUSYBOX DnD marker' draggable='true' style='display:block;margin:auto;max-height:12rem;max-width:100%'></body></html>"></iframe>
+          </div>
+          <div>
+            <div class="poc-drop-target" data-dnd-target>ここへ実dragしてください</div>
+            <button type="button" data-dnd-reset>結果をreset</button>
+          </div>
+        </div>
+        <output class="media-status" data-poc-status aria-live="polite">未実行</output>
+      </details>
+      <details class="poc-accordion poc-lazy-case" name="poc-probe" data-poc="012">
+        <summary>POC-012: Network Information connection.type</summary>
+        <p>速度、RTT、UA、online/offlineから推定せず、明示buttonを押した瞬間の実<code>connection.type</code>だけを記録します。</p>
+        <button type="button" data-network-observe>現在の接続を観測する</button>
+        <button type="button" data-network-clear>累積をreset</button>
+        <output class="media-status" data-poc-status aria-live="polite">未実行</output>
+      </details>
+      <details class="poc-accordion poc-lazy-case" name="poc-probe" data-poc="025">
+        <summary>POC-025: WebOTP / OTP AutoFill</summary>
+        <p>空のOTP専用欄に、実SMSのorigin-bound codeをOSまたはWebOTP APIから投入します。手入力、paste、drop、script代入は成功経路ではありません。</p>
+        <label>OTP専用欄 <input data-otp-input autocomplete="one-time-code" inputmode="numeric" /></label>
+        <button type="button" data-otp-request>WebOTPを待機する</button>
+        <button type="button" data-otp-reset>reset</button>
+        <output class="media-status" data-poc-status aria-live="polite">未実行</output>
+      </details>
+      <details class="poc-accordion poc-lazy-case" name="poc-probe" data-poc="026">
+        <summary>POC-026: Contact Picker</summary>
+        <p>架空名刺をOS連絡先へ一件だけ追加してから選びます。B01は5 property一致、B02はpropertyを一つも共有しない選択を実際のnative pickerで確認します。</p>
+        <dl><dt>name</dt><dd>Busybox Sample</dd><dt>email</dt><dd>sample@busybox.invalid</dd><dt>tel</dt><dd>+81-3-0000-0000</dd><dt>address</dt><dd>1-1-1 Busybox, Tokyo</dd></dl>
+        <button type="button" data-contact-full>5 propertyを共有して選択</button>
+        <button type="button" data-contact-empty>propertyなしで選択</button>
+        <button type="button" data-contact-reset>reset</button>
+        <output class="media-status" data-poc-status aria-live="polite">未実行。取得値は保存しません。</output>
+      </details>
+      <details class="poc-accordion poc-lazy-case" name="poc-probe" data-poc="033">
+        <summary>POC-033: Audio Session interruption</summary>
+        <p>Safari/WebKitなどAudio Session対応環境で、生成音声を再生中に別appや通話でaudio focusを奪い、<code>active → interrupted → active</code>と再生復帰を観測します。通常pause、Media Session actionでは成功にしません。</p>
+        <audio class="poc-small-video" data-audio-session-player controls loop preload="metadata" src="../fixtures/media/assets/multi-audio.mp4"><track kind="captions" src="data:text/vtt,WEBVTT" srclang="en" label="No captions" /></audio>
+        <button type="button" data-audio-session-start>Audio Sessionを開始</button>
+        <button type="button" data-audio-session-stop>停止・cleanup</button>
+        <output class="media-status" data-poc-status aria-live="polite">未実行</output>
+      </details>
+      <details class="poc-accordion poc-lazy-case" name="poc-probe" data-poc="034">
+        <summary>POC-034: native audio track監視枠</summary>
+        <p>現在のChromeでは保留中です。<code>audioTracks</code>とnative音声track UIを公開する環境だけで再確認し、custom pickerは作りません。</p>
+        <video class="poc-small-video" data-audio-track-video controls preload="metadata" src="../fixtures/media/assets/multi-audio.mp4"><track kind="captions" src="data:text/vtt,WEBVTT" srclang="en" label="No captions" /></video>
+        <button type="button" data-audio-track-inspect>native AudioTrackListを読む</button>
+        <output class="media-status" data-poc-status aria-live="polite">未実行</output>
+      </details>
+      <details class="poc-accordion poc-lazy-case" name="poc-probe" data-poc="019" data-remote-round="BUSYBOX_REMOTE_QR">
+        <summary>POC-019: Remote Playback / BarcodeDetector</summary>
+        <p>B01は外部再生先へ接続し、B02は外部画面に表示したcurrent round QRを手元cameraと実<code>BarcodeDetector</code>で読みます。QR読取にjsQRへ迂回しません。</p>
+        <video class="poc-small-video" data-remote-video controls preload="metadata" src="../fixtures/media/assets/reel-320x180.webm"><track kind="captions" src="data:text/vtt,WEBVTT" srclang="en" label="No captions" /></video>
+        <p>current round: <code>BUSYBOX_REMOTE_QR</code></p>
+        <button type="button" data-remote-connect>Remote Playback pickerを開く</button>
+        <button type="button" data-remote-scan>cameraでqr_codeを読む</button>
+        <button type="button" data-remote-reset>connection / cameraをcleanup</button>
+        <video class="poc-camera" data-remote-camera muted playsinline><track kind="captions" src="data:text/vtt,WEBVTT" srclang="en" label="No captions" /></video>
+        <output class="media-status" data-poc-status aria-live="polite">未実行</output>
+      </details>
+      <details class="poc-accordion poc-lazy-case" name="poc-probe" data-poc="020">
+        <summary>POC-020: Presentation receiver</summary>
+        <p>明示buttonから外部display pickerを開き、receiverの初期描画後にcurrent round付きreadyが戻った時だけ成功します。通常window、iframe、画面ミラーリングでは開きません。</p>
+        <button type="button" data-presentation-start>Presentationを開始</button>
+        <button type="button" data-presentation-reset>receiverを終了</button>
+        <output class="media-status" data-poc-status aria-live="polite">未実行</output>
+      </details>
+      <details class="poc-accordion poc-lazy-case" name="poc-probe" data-poc="023">
+        <summary>POC-023: WebXR device / select ray</summary>
+        <p>対応XR機器でimmersive sessionを開始し、最初の非null viewer poseと、実XRInputSourceのselect rayが固定XR箱へ交差したことを確認します。</p>
+        <div class="poc-xr-box">XR固定箱: 実コントローラのrayをこの箱へ向けてselect</div>
+        <button type="button" data-xr-start>immersive-vrを開始</button>
+        <button type="button" data-xr-end>XR sessionを終了</button>
+        <output class="media-status" data-poc-status aria-live="polite">未実行</output>
+      </details>
+      <details class="poc-accordion poc-lazy-case" name="poc-probe" data-poc="024">
+        <summary>POC-024: Periodic Background Sync 植物</summary>
+        <p>install済みPWAで水と光を別訪問に預け、window client 0件の異なる実<code>periodicsync</code>でphaseを進めます。通常timer、page load、debug発火は成功経路にしません。</p>
+        <button type="button" data-periodic-register>periodicSyncを登録</button>
+        <button type="button" data-periodic-water>水を預ける</button>
+        <button type="button" data-periodic-light>光を預ける</button>
+        <button type="button" data-periodic-read>stateを読む</button>
+        <button type="button" data-periodic-unregister>unregister</button>
+        <output class="media-status" data-poc-status aria-live="polite">未実行</output>
+      </details>
+      <details class="poc-accordion poc-lazy-case" name="poc-probe" data-poc="027">
+        <summary>POC-027: FedCM provider audit / chooser</summary>
+        <p>PoCでは登録不要のMockFedCMを使い、browser所有chooserまでを検証します。先にテストIdPを開き、実在しないemailとpasswordでsign inしてください。実アカウント情報は入力しないでください。製品候補は別途、公式FedCM providerだけを再監査します。</p>
+        <a href="https://mockfedcm.com/idp" target="_blank" rel="noopener noreferrer">MockFedCM IdPを開く</a>
+        <button type="button" data-fedcm-start>browserのFedCM chooserを開始</button>
+        <button type="button" data-fedcm-clear>reset</button>
+        <output class="media-status" data-poc-status aria-live="polite">未実行。PoC専用providerへ実データを入力しないでください。</output>
+      </details>
+      <details class="poc-accordion poc-lazy-case" name="poc-probe" data-poc="028">
+        <summary>POC-028: Payment Handler 技術検証 / ステージ試作</summary>
+        <p>このPoCは二つに分かれます。上段はViteのローカルLink header配信を使う技術検証、下段はS-780「三つの財布」のプレイヤー体験試作です。実通貨・payer情報・決済credentialは使いません。</p>
+        <section class="payment-poc-panel" aria-labelledby="payment-technical-title">
+          <h3 id="payment-technical-title">技術検証PoC</h3>
+          <p>開発・previewサーバーの<code>/payment/method</code>へHEADを送り、<code>Link: rel="payment-method-manifest"</code>からBusybox HandlerをJIT登録します。手動登録は診断用で、合格条件ではありません。</p>
+          <div class="payment-poc-actions">
+            <button type="button" data-payment-link>Link headerを照会</button>
+            <button type="button" data-payment-install>手動Worker登録（診断）</button>
+            <button type="button" data-payment-request>候補UI：承認</button>
+            <button type="button" data-payment-reject>候補UI：拒否</button>
+            <button type="button" data-payment-retry>候補UI：retry</button>
+            <button type="button" data-payment-reset>リセット</button>
+          </div>
+          <output class="media-status" data-poc-status aria-live="polite">未実行。まずLink headerを照会できます。</output>
+          <details class="payment-trace-details">
+            <summary>技術トレース</summary>
+            <pre class="payment-trace" data-payment-trace aria-live="polite"></pre>
+          </details>
+        </section>
+        <section class="payment-poc-panel payment-stage-panel" aria-labelledby="payment-stage-title">
+          <h3 id="payment-stage-title">S-780 ステージPoC：三つの財布</h3>
+          <p>候補UIを開いた後のhandler windowでは操作を固定しません。承認・拒否・再試行のどれを選んでも、Worker由来のresponseに対応する箱だけが開きます。</p>
+          <button type="button" data-payment-stage-start="approve">候補UIを開く</button>
+          <ul class="payment-stage-boxes" aria-label="Payment Handler stage boxes">
+            <li class="payment-stage-box" data-payment-stage-box="B01" data-payment-solved="false" aria-label="B01: closed">
+              <span class="payment-stage-box-id">B01</span>
+              <strong>承認</strong>
+              <span>approved response → complete(success)</span>
+            </li>
+            <li class="payment-stage-box" data-payment-stage-box="B02" data-payment-solved="false" aria-label="B02: closed">
+              <span class="payment-stage-box-id">B02</span>
+              <strong>拒否</strong>
+              <span>declined response → complete(fail)</span>
+            </li>
+            <li class="payment-stage-box" data-payment-stage-box="B03" data-payment-solved="false" aria-label="B03: closed">
+              <span class="payment-stage-box-id">B03</span>
+              <strong>再試行</strong>
+              <span>retry → 二回目の承認</span>
+            </li>
+          </ul>
+          <output class="media-status" data-payment-stage-status aria-live="polite">Stage PoC: 3箱は未解決です。</output>
+          <p class="payment-poc-note">比較用：<a href="https://googlechrome.github.io/samples/paymentrequest/payment-handler/" target="_blank" rel="noopener noreferrer">Chrome公式BobBucksサンプル</a>。外部モックの成功はBusybox Handlerの箱へ加算しません。</p>
+        </section>
       </details>
       <h2>結果</h2>
       <output id="probe-output" aria-live="polite">未実行</output>

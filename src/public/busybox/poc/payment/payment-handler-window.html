@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Busybox Pay</title>
+    <style>
+      :root { color-scheme: dark; font-family: system-ui, sans-serif; }
+      body { margin: 0; min-width: 18rem; background: #14111d; color: #f6f0ff; }
+      main { display: grid; gap: 1rem; padding: 1.25rem; }
+      h1 { margin: 0; font-size: 1.2rem; }
+      p { margin: 0; color: #cbbdde; line-height: 1.45; }
+      .amount { border: 1px solid #65567c; border-radius: .7rem; padding: .8rem; }
+      .actions { display: flex; gap: .65rem; flex-wrap: wrap; }
+      button { border: 1px solid #a98bd2; border-radius: .55rem; background: #2b2040; color: inherit; padding: .7rem .9rem; font: inherit; cursor: pointer; }
+      button:hover, button:focus-visible { background: #453166; }
+      #state { min-height: 1.5em; color: #d7c9ec; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Busybox Pay</h1>
+      <p>Fictional payment handler. No money or credentials are involved.</p>
+      <div class="amount" id="amount">Waiting for the payment request…</div>
+      <div class="actions" id="actions" hidden>
+        <button type="button" data-action="approve">Approve</button>
+        <button type="button" data-action="decline">Decline</button>
+        <button type="button" data-action="retry">Send first response</button>
+      </div>
+      <p id="state" aria-live="polite">Connecting…</p>
+    </main>
+    <script>
+      const params = new URLSearchParams(location.search);
+      const requestId = params.get("requestId");
+      const amount = document.querySelector("#amount");
+      const state = document.querySelector("#state");
+      const actions = document.querySelector("#actions");
+      let attempt = 1;
+      const send = (message) => navigator.serviceWorker.controller?.postMessage({
+        channel: "busybox-payment",
+        requestId,
+        ...message,
+      });
+      navigator.serviceWorker.addEventListener("message", (event) => {
+        const data = event.data;
+        if (!data || data.channel !== "busybox-payment" || data.type !== "payment-context") return;
+        attempt = data.attempt;
+        amount.textContent = `BBX 1.00 · attempt ${attempt}`;
+        actions.hidden = false;
+        actions.querySelector('[data-action="retry"]').hidden = attempt !== 1;
+        actions.querySelector('[data-action="approve"]').hidden = false;
+        actions.querySelector('[data-action="decline"]').hidden = false;
+        state.textContent = attempt === 1
+          ? "Choose Approve, Decline, or send the first response for retry."
+          : "Choose Approve or Decline for the retry response.";
+      });
+      for (const button of actions.querySelectorAll("button")) {
+        button.addEventListener("click", () => {
+          state.textContent = "Response sent. Wait for the merchant flow to finish; you may close this window manually.";
+          actions.hidden = true;
+          for (const action of actions.querySelectorAll("button")) action.disabled = true;
+          send({ type: "handler-action", action: button.dataset.action });
+        });
+      }
+      navigator.serviceWorker.ready.then(() => {
+        send({ type: "handler-ready" });
+      });
+    </script>
+  </body>
+</html>

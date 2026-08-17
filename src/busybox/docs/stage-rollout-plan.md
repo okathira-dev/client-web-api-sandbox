@@ -61,7 +61,7 @@ S-250は現行2箱をRGB三色タブと解放順の2箱へ再設計するため�
 | S-750 | DR-126をbrowser所有OTP入力1箱として追加承認 | 別送信者、origin-bound SMS、実`OTPCredential`、Security Code AutoFill、`:autofill`、current round code、manual input拒否、Android / iOS / desktop、cancel / abort、電話番号非取得をPoCする。event列だけの推定やDevTools virtual SMSを公開証跡へ使わない |
 | S-760 | DR-017を架空名刺2箱として追加承認 | Android Chromeの実Contact Pickerでname / email / tel / address / iconの返却と正規化一致、全5propertyを非共有にしたまま1件を確定できるnative UI、架空contactのOS同期説明と削除案内をPoCする |
 | S-770 | DR-127を公式FedCM providerごとの身分証棚として追加承認 | 実装時点の公式情報、public RP登録、managed IdP、provider別FedCM確証、独自backend不要を調査する。Google 1箱を下限とし、追加serviceはclient登録と実account PoC後に加算する |
-| S-780 | DR-129を架空Payment Handler 4箱として追加承認 | 複数handler候補、trusted PaymentRequestEvent、承認success、意図的拒否fail、同一handler retry、非言語開箱、実provider非使用を対応browserとHTTPS originでPoCする |
+| S-780 | DR-129を架空Payment Handler 3箱として追加承認 | 複数handler候補、trusted PaymentRequestEvent、承認success、意図的拒否fail、同一handler retry、非言語開箱、実provider非使用を対応browserとHTTPS originでPoCする。handler選択・開始経路は固定しない |
 | S-790 | DR-137を専用font再発見1箱として追加承認 | Git管理OTFのOS install、対象PostScript名だけのLocal Font Access、FontData Blob検証、glyph表示、permission / font cleanupをdesktop ChromiumでPoCする |
 | S-060-B02 | DR-100をオフライン郵便1箱として追加承認 | onlineで制御中Service Workerとcacheを準備し、server停止・offline中の明示`sendBeacon()`、receiverへのfull-document navigation、workerのPOST検証とIndexedDB receipt commitをPoCする |
 
@@ -196,7 +196,7 @@ WebAuthnはゲーム内の強い認証を目的にせず、browser UIとcredenti
 22. S-750 届いた封書1箱（実WebOTP credentialまたは強く検証したOTP AutoFillでcurrent codeを受け取る）
 23. S-760 架空の名刺2箱（架空contactの全5property一致、1件選択したまま全5propertyを非共有）
 24. S-770 身分証棚1箱以上（公式FedCM providerごとにbrowser仲介の手動提示を行う。現計画はGoogle 1箱を下限に算入）
-25. S-780 四つの財布4箱（正しい架空handlerの選択、承認、意図的拒否、同一handler再試行）
+25. S-780 三つの財布3箱（承認、意図的拒否、同一handler再試行。trusted eventは証跡で、handler選択・開始経路は固定しない）
 26. S-790 活字の鍵1箱（専用fontをOSへinstallし、限定照会した実font dataからglyphを戻す）
 27. S-800 Text Fragment組み立て2箱（fragment提示B01、単語提示B02。具体的な英文と対象語は再吟味後に確定）
 
@@ -216,7 +216,7 @@ S-760は固定のname / email / tel / address / iconを表示し、playerが架�
 
 S-770は実装着手時に公式情報を再調査し、公式FedCM提供、一般の第三者siteが行えるRP / client登録、provider自身または信頼できるmanaged IdP、FedCM経路をfallback loginと区別できる肯定的証明、Busybox独自backend / serverless function不要、の全条件を満たすserviceごとに独立箱を置く。各箱は単一providerの明示操作からbrowser所有chooserを開き、provider公式SDKのFedCM専用result、または実`navigator.credentials.get({identity})`が返す期待`configURL`の`IdentityCredential`だけで開く。Google GISでは非空credentialと`select_by === "fedcm"`を要求する。OAuth redirect、popup、broker配下でX等へ通常loginしただけの経路、auto-select、game製pickerは代替clearにしない。tokenとaccount属性はdecode・照合・保存・同期・転送せず直ちに破棄する。すべて任意Labsとし、Google 1箱だけを現計画の187箱へ算入する。追加providerはclient登録と実account PoCを完了した時点で固定problem IDと箱数を追加し、H-049のprovider別証跡が揃うまで公開しない。FedCM操作の成立時に箱だけを開き、provider別完了flagを後置しない。
 
-S-780はBusyboxが管理する架空payment methodと複数の架空handlerだけを使う。B01は正しいhandlerのService Workerへtrusted `PaymentRequestEvent`が届いた時、B02は承認responseをmerchantが検証して`complete("success")`へ到達した時、B03は意図的拒否responseを検証して`complete("fail")`へ到達した時、B04は同じhandlerの最初のresponseへ実`retry()`を行い二度目のresponseを成功完了した時に開く。各条件成立時に対応箱だけを開き、結果label、完了message、固定flagを表示しない。handler window内はpayment lifecycleに必要な非言語操作だけに限定する。実payment method、payer / shipping情報、game製payment sheet、handler不在、cancel、例外を代替clearにせず、H-050の実browser証跡が揃うまで任意Labsとして公開しない。
+S-780はBusyboxが管理する架空payment methodと複数の架空handlerだけを使う。trusted `PaymentRequestEvent`はhandler経路の証跡として記録するが単独の箱にはしない。B01は承認responseをmerchantが検証して`complete("success")`へ到達した時、B02は意図的拒否responseを検証して`complete("fail")`へ到達した時、B03は同じhandlerの最初のresponseへ実`retry()`を行い二度目のresponseを成功完了した時に開く。handler選択・merchant側の開始経路は承認／拒否／再試行のいずれにも固定せず、返ったresponseに対応する箱だけを開く。各条件成立時に対応箱だけを開き、結果label、完了message、固定flagを表示しない。handler window内はpayment lifecycleに必要な非言語操作だけに限定する。実payment method、payer / shipping情報、game製payment sheet、handler不在、cancel、例外を代替clearにせず、H-050の実browser証跡が揃うまで任意Labsとして公開しない。
 
 S-790はGit管理するBusybox専用OpenType fontを箱からdownloadし、playerがOS標準UIでuser scopeへinstallした後の明示走査だけを扱う。`queryLocalFonts({ postscriptNames: [expectedName] })`で対象faceだけを要求し、実`FontData.blob()`のmetadata / checksumとBlob由来`FontFace`の専用glyph表示が成立した時にB01だけを直接開く。全font列挙、既存font集合、permissionだけ、`local()`だけ、upload、bundled webfont、名前だけの一致、固定flagを使わない。返却dataを保存・同期・送信せず、H-051でOS install / uninstall、permission persistence / revoke、browser再起動、非対応環境まで確認してから任意Labsとして公開する。
 

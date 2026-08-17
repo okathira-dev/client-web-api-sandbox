@@ -1,6 +1,6 @@
 # 現状・残問題・人手確認への引継ぎ
 
-更新日: 2026-08-15
+更新日: 2026-08-16
 
 この文書は、現在の実装をコミットした時点での「できていること」「人手で確認すること」「次の設計課題」を一つにまとめた引継ぎメモである。結論を決めるときは、コードとこの文書を入口にし、古い計画表の件数・箱番号・成功条件を再利用しない。
 
@@ -15,7 +15,7 @@
 | 自動検証の証跡 | [検証記録](./verification-record.md) |
 | 仕様決定の履歴 | [決定ログ](./decision-log.md) |
 
-現行catalogueは67ステージで、S-230・S-270・S-680は製品stageではない。S-350のPiPはS-350-B06、S-810は可変寸法スイープ、S-640は8問の文字化け、S-720は実変換patch bayである。
+現行catalogueは67ステージで、S-230・S-270・S-680は製品stageではない。S-350のPiPはS-350-B06、S-810は4つの目標アスペクト比へnative seekする可変寸法スイープ、S-640は8問の文字化け、S-720は実変換patch bayである。
 
 ## 今回コミットする実装
 
@@ -26,21 +26,21 @@
 - S-710へClipPress風のsame-origin iframe、10秒camera録画、160kbps固定bitrate圧縮、暗黒frame・QR frame・decode失敗・再入力metadataの4経路を実装した。QRは同梱jsQRで検出し、検出した四辺形へflag QRを射影して置換する。
 - S-710の暗黒frameとQR frameを生成script、manifest、意味検証test付きの製品fixtureへ昇格した。decode失敗時は固定outputだけを配布し、入力用の壊れたfixtureはゲーム画面から提供しない。
 - S-720を動画3ノード、T1/T2/T3の2列、outputノードのpatch bayへ変更した。source→output直結、変換の連結、同一変換の2回使用を許可し、分岐とcycleを拒否する。接続された経路をMediaBunnyとCanvasで実変換する。
-- S-810は事前生成した120個のVP8 WebM segmentをpack assetとmanifestとしてGit管理し、MSEへtimestamp offset付きで追加する144〜1080pxの正方形、横長、縦長スイープへ変更した。実行時エンコードは行わず、`videoWidth`、`videoHeight`、`resize`、`requestVideoFrameCallback()`でフレームごとのnative寸法を観測する。
+- S-810は事前生成した120個のVP8 WebM segmentをpack assetとmanifestとしてGit管理し、MSEへtimestamp offset付きで追加するnative寸法スイープへ変更した。native controlsでシークを止めた提示frameの比率を`videoWidth` / `videoHeight`から読み、1:1、4:3、16:9、9:20（各相対5%以内）の4箱を開く。通常再生・pause・CSS寸法は解法にせず、ページにはscript自動seek経路を置かない。
 - 設定ページから第三者ライセンスページへ到達できるようにし、共通app shellを広げた。
 - 現行解法仕様、人手確認台帳、ステージ実装状況のS-640/S-710/S-720/S-810記載を更新した。
 
 ## 自動検証済み
 
 - TypeScript型検査: 合格
-- Jest: 47 suites / 288 tests 合格
-- Biome: Node 24.14.0の`npm run check`で442 files 合格
+- Jest: 48 suites / 298 tests 合格
+- Biome: Node 24.14.0の`npm run check`で447 files 合格（既存のschema warningとoptional-chain infoのみ）
 - Markuplint: `src` の JSX / HTML 合格
 - Vite production build: Node 24.14.0で合格（既存のnative config、browser externalization、chunk size warningのみ）
 - S-710 fixture: 10秒、暗黒frameの画素上限、QR payload、WebM構造を検証
 - S-640 fixture: 8問、元encoding・誤表示encoding、回答重複なし、fatal decodeを検証
 - S-720 route: 4正規経路、T1/T2/T3、cycle拒否、経路判定を単体検証
-- S-810 capability probe: `resize` と `requestVideoFrameCallback()`の両方を要求する。固定packの4寸法実再生は、今回のasset経路変更後にWindows Chromeで再確認する
+- S-810 capability probe: `resize`、`seeked`、`requestVideoFrameCallback()`を要求する。固定packの4比率シーク停止による実開箱はWindows Chromeで再確認する
 - ソースコード内の絶対Windowsパス検索: 該当なし
 - ライセンス配布test: jsQR、MediaBunny、GNU Unifontの同一内容を検証
 
@@ -88,9 +88,9 @@ fixtureは`src/busybox/fixtures/s710/assets/`にある。
 
 ### S-810
 
-1. 「スウィープ動画を読み込む」を押し、固定assetの構築後にnative controlsで再生・シークする。
-2. 小さい正方形、大きい正方形、横長、縦長の実`videoWidth` / `videoHeight`を観測し、B01〜B04がそれぞれ開くことを確認する。
-3. CSSの表示サイズ変更、読み込み前の操作、固定寸法動画では開かないことを確認する。
+1. 「スウィープ動画を読み込む」を押し、固定assetの構築後にnative controlsでシークを止める。
+2. 表示される`videoWidth` / `videoHeight`を見ながら、1:1、4:3、16:9、9:20の比率（各相対5%以内）でシークを止め、B01〜B04がそれぞれ開くことを確認する。
+3. 通常再生、pauseだけ、CSSの表示サイズ変更、読み込み前の操作では開かず、reload・離脱でcallbackとobject URLが残らないことを確認する。
 4. 再生成、pause、ended、reload、離脱でcallbackとobject URLが残らないことを確認する。
 
 ## 未確認・残問題
@@ -100,7 +100,7 @@ fixtureは`src/busybox/fixtures/s710/assets/`にある。
 - S-640 8問の実ブラウザ表示、共通入力欄、正答・誤答、再入場。
 - S-710はWindows ChromeでQR置換とdecode失敗を確認済み。暗黒frame、metadata再入力、camera録画、size比、download、連続試行を追加確認する。
 - S-720はWindows ChromeでT1 routeとlowercase flagを確認済み。残り3正規route、全frame再生、QR読取、分岐・cycle拒否、mobile横幅を確認する。
-- S-810は固定pack経路へ変更したため、Windows Chromeで4寸法の開箱を再確認する。再生成、pause、ended、reload、離脱でcallbackとobject URLが残らないことも同時に確認する。
+- S-810は固定pack経路へ変更したため、Windows Chromeで4比率のシーク停止による開箱を再確認する。通常再生・pauseだけでは開かず、ended、reload、離脱でcallbackとobject URLが残らないことも同時に確認する。
 - S-350のB01〜B06/B08、S-060-B02、S-150、S-220、S-580など、以前にPoCで確認した中心経路を製品stageで再確認する。
 - 全stage共通のH-025（再入場、今回開いた箱、永続進捗、reset）とH-019（生データ非送信）。
 
@@ -115,14 +115,14 @@ fixtureは`src/busybox/fixtures/s710/assets/`にある。
 - S-750 WebOTP / iOS AutoFill: 実SMSとAndroid/iOS実機が必要。手入力・pasteでは開かない。
 - S-760 Contact Picker: 対応Android実機と架空contactが必要。
 - S-770 FedCM: 公式provider、RP client、実account、browser所有chooserが必要。provider・token・backendを推測で追加しない。
-- S-780 Payment Handler: 公開HTTPS、manifest、Service Worker、browser所有payment UIが必要。
+- S-780 Payment Handler: local PoCでmethod URLの`Link` header、manifest、Service Worker、handler window、承認・拒否・retryの3箱を実装・foreground Chromeで確認済み。handler windowの選択は経路に固定しない。公開時はheaderを供給できるoriginが必要。
 - S-790 Local Font Access: 対応desktop Chromium、OSへの専用font install、実font照会が必要。
 
 ### 設計・品質上の記録と残問題
 
 1. **stage-gimmick-jsdoc** — 67 stageのdefault component直前に、目的・最初の一手・箱ごとの解法・negative case・API・privacy・cleanup・対応環境・人手確認を日本語で記載した。`stageDocumentation.test.ts`が件数と見出しを監査する。
 2. **localeとJSDocの境界** — JSDocの説明を表示文言の代替にせず、localeはUI、JSDocは実装意図と解法の開発者向け正本にする。`stage-walkthroughs.md`は互換ポインタへ縮約し、決定履歴、PoC証跡、公開前人手確認項目は残す。
-3. **S-810固定assetの再生互換性** — pack内segmentをMSEへ追加する経路は固定asset化済み。単一WebMの直接再生へ置き換えるかどうかは、`resize`と4寸法の実測を失わないことを確認してから別途判断する。
+3. **S-810固定assetの再生互換性** — pack内segmentをMSEへ追加する経路は固定asset化済み。単一WebMの直接再生へ置き換えるかどうかは、`seeked`後の4比率実測を失わないことを確認してから別途判断する。
 4. **S-720期待assetの整理** — 最新POC-022の二値照合に必要な期待assetは残し、旧候補が製品stageや最新PoCから参照されなくなった時点で生成script・manifest・testと一緒に削除する。
 5. **S-710 fixtureの配布境界** — B01/B03 fixtureはGit管理するが、ゲーム画面から直接配布すると謎を先に見せる。ローカル動作確認用としてrepoに置く現状を維持するか、開発専用のfixture indexを用意するかを決める。
 6. **実装の重さと対応差** — S-710/S-720/S-810のMediaBunny処理、Canvas frame変換、object URL、camera track、callbackの負荷と中断を、低性能desktop・mobile・連続再試行で確認する。

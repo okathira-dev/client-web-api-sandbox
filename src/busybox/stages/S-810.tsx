@@ -2,15 +2,18 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { StageComponentProps } from "../runtime/types";
 import { ProblemGiftBox } from "../ui/GiftBox";
 import { stageText } from "./locale";
+import {
+  aspectRatio,
+  classifyS810AspectRatio,
+  type S810AspectKey,
+} from "./S-810.functions";
 import { s810Locale } from "./S-810.locale";
 
-type SweepKey = "small-square" | "large-square" | "wide" | "tall";
-
-const sweepLabelKeys: Record<SweepKey, keyof typeof s810Locale> = {
-  "small-square": "smallSquare",
-  "large-square": "largeSquare",
-  wide: "wide",
-  tall: "tall",
+const sweepLabelKeys: Record<S810AspectKey, keyof typeof s810Locale> = {
+  square: "square",
+  "four-three": "fourThree",
+  "sixteen-nine": "sixteenNine",
+  "nine-twenty": "nineTwenty",
 };
 
 function appendSegment(
@@ -112,38 +115,17 @@ function createSweepMediaSource(signal: AbortSignal) {
   return { ready, url };
 }
 
-function classifyDimensions(
-  width: number,
-  height: number,
-): SweepKey | undefined {
-  if (width <= 200 && height <= 200) return "small-square";
-  if (width >= 900 && height >= 900) return "large-square";
-  if (width >= 900 && height <= 200) return "wide";
-  if (width <= 200 && height >= 900) return "tall";
-  return undefined;
-}
-
 /**
- * S-810 — 固定assetをMSEで連結したVP8 WebMのnative videoWidth/videoHeightを読む。
- * 目的: CSSで引き伸ばした表示ではなく、再生中のフレーム寸法そのものを見せる。
- * 最初の一手: 固定スウィープassetを読み込み、再生またはシークして4種類の寸法帯を観察する。
- * 箱ごとの成功条件: B01は小正方形、B02は大正方形、B03は横長、B04は縦長をframe callbackで確認する。
- * 開かない操作: CSSサイズ変更、固定画像、読み込みボタンだけ、metadataの一回読み取りだけでは開かない。
- * API/権限: MediaSource/SourceBuffer、固定WebMasset、video resize、requestVideoFrameCallback。権限・送信・保存はない。
- * cleanup/環境: appendとAbortSignal、video callback、blob URLを離脱時に破棄する。MSE WebM VP8対応環境でH-001/H-002/H-003/H-019/H-020/H-023/H-025/H-053を確認する。
- */
-/**
- * S-810
- *
- * 目的: S-810の箱が示すブラウザ固有の状態・イベント・データ受け渡しを、プレイヤーの操作で観測する。
- * 最初の一手: 画面の箱と説明を確認し、表示されている標準UIまたは外部機器を使って観測を開始する。
- * 箱ごとの解法: 問題定義にある各Bxxについて、対応する実操作を行い、実APIから得た値・イベント・結果が厳密な成功条件を満たした箱だけが開く。
- * 開かない操作: 文字列の直接編集、合成イベント、DevToolsでのDOM改変、見た目だけの変更、別箱の結果の流用では開かない。
- * 使用API: このファイルが呼び出すWeb APIと、共通のProblem/Stage runtime。
- * 権限・privacy: 実装が必要とする権限・保存・送信は、箱の操作に必要な最小範囲へ限定する。生の入力を回答以外の目的で扱わない。
- * cleanup: stage離脱・取消・再試行時に、このstageが取得したlistener、timer、stream、worker、接続、blob URLを実装に応じて解除する。
- * 対応環境: StageHostのcapability probeがavailableまたはpermission-requiredとしたブラウザ。非対応時は操作を要求せずunsupported表示とする。
- * 人手確認: 対応するH-xxxをhuman-test-matrix.mdで確認し、権限拒否・取消・再入場も確認する。
+ * S-810 — 固定assetをMSEで連結したVP8 WebMをnative controlsでシークする。
+ * 目的: CSSで引き伸ばした表示ではなく、シークを止めた実提示frameのnative寸法からアスペクト比を読む。
+ * 最初の一手: 固定スウィープassetを読み込み、native timelineを動かしてから4つの比率のどれかでシークを止める。
+ * 箱ごとの解法: B01は1:1、B02は4:3、B03は16:9、B04は9:20を、`seeked`後の`requestVideoFrameCallback()`で観測する。比率の許容差は相対5%以内。
+ * 開かない操作: 通常再生、pauseだけ、読み込みボタン、metadataの一回読み取り、CSSサイズ変更、固定画像。ページにはscript自動seek経路を置かず、native controls以外を案内しない。
+ * 使用API: MediaSource/SourceBuffer、固定WebMasset、video resize、seeked、requestVideoFrameCallback。
+ * 権限・privacy: 権限・送信・保存はなく、固定assetと表示寸法だけを扱う。
+ * cleanup: appendとAbortSignal、video callback、blob URLを離脱時に破棄する。
+ * 対応環境: MSE WebM VP8と表示中frameの寸法を観測できるbrowser。
+ * 人手確認: H-001/H-002/H-003/H-019/H-020/H-023/H-025/H-053で4比率のnative seekと再入場を確認する。
  */
 export default function S810Stage(props: StageComponentProps) {
   const problems = (
@@ -152,46 +134,70 @@ export default function S810Stage(props: StageComponentProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const callbackId = useRef<number | undefined>(undefined);
   const generationRef = useRef<AbortController | undefined>(undefined);
-  const observedRef = useRef<Partial<Record<SweepKey, boolean>>>({});
+  const seekGenerationRef = useRef(0);
+  const observedRef = useRef<Partial<Record<S810AspectKey, boolean>>>({});
   const [videoUrl, setVideoUrl] = useState<string>();
-  const [observed, setObserved] = useState<Partial<Record<SweepKey, boolean>>>(
-    {},
-  );
+  const [observed, setObserved] = useState<
+    Partial<Record<S810AspectKey, boolean>>
+  >({});
   const [dimensions, setDimensions] = useState<[number, number]>();
   const [status, setStatus] = useState(() =>
     stageText(props.locale, s810Locale.initial),
   );
 
-  const observe = (width: number, height: number) => {
+  const updateDimensions = (width: number, height: number) => {
     setDimensions([width, height]);
-    const key = classifyDimensions(width, height);
-    if (!key || observedRef.current[key]) return;
-    observedRef.current[key] = true;
-    setObserved((previous) => ({ ...previous, [key]: true }));
-    const index =
-      key === "small-square"
-        ? 0
-        : key === "large-square"
-          ? 1
-          : key === "wide"
-            ? 2
-            : 3;
-    problems[index]?.solve([`video:resize:${key}`]);
+  };
+
+  const observeSeekedFrame = () => {
+    const video = videoRef.current;
+    if (!video?.requestVideoFrameCallback) {
+      setStatus(stageText(props.locale, s810Locale.frameUnsupported));
+      return;
+    }
+    if (callbackId.current !== undefined)
+      video.cancelVideoFrameCallback?.(callbackId.current);
+    const generation = ++seekGenerationRef.current;
+    callbackId.current = video.requestVideoFrameCallback(() => {
+      if (generation !== seekGenerationRef.current) return;
+      callbackId.current = undefined;
+      const width = video.videoWidth;
+      const height = video.videoHeight;
+      updateDimensions(width, height);
+      const key = classifyS810AspectRatio(width, height);
+      if (!key) {
+        setStatus(stageText(props.locale, s810Locale.seekMiss));
+        return;
+      }
+      setStatus(
+        `${stageText(props.locale, s810Locale.seekHit)} ${stageText(props.locale, s810Locale[sweepLabelKeys[key]])}`,
+      );
+      if (observedRef.current[key]) return;
+      observedRef.current[key] = true;
+      setObserved((previous) => ({ ...previous, [key]: true }));
+      const index =
+        key === "square"
+          ? 0
+          : key === "four-three"
+            ? 1
+            : key === "sixteen-nine"
+              ? 2
+              : 3;
+      problems[index]?.solve([`video:seeked-aspect:${key}`]);
+    });
   };
 
   const stopSampling = useCallback(() => {
+    seekGenerationRef.current += 1;
     const video = videoRef.current;
     if (video && callbackId.current !== undefined)
       video.cancelVideoFrameCallback?.(callbackId.current);
     callbackId.current = undefined;
   }, []);
 
-  const sample = () => {
-    const video = videoRef.current;
-    if (!video?.requestVideoFrameCallback) return;
-    observe(video.videoWidth, video.videoHeight);
-    callbackId.current = video.requestVideoFrameCallback(sample);
-  };
+  const ratioLabel = dimensions
+    ? aspectRatio(dimensions[0], dimensions[1])?.toFixed(2)
+    : undefined;
 
   useEffect(() => {
     const stop = () => {
@@ -226,6 +232,7 @@ export default function S810Stage(props: StageComponentProps) {
         className="stage-action"
         onClick={() => {
           generationRef.current?.abort();
+          stopSampling();
           const controller = new AbortController();
           generationRef.current = controller;
           setStatus(stageText(props.locale, s810Locale.generating));
@@ -236,6 +243,7 @@ export default function S810Stage(props: StageComponentProps) {
           });
           observedRef.current = {};
           setObserved({});
+          setDimensions(undefined);
           void media.ready
             .then(() => setStatus(stageText(props.locale, s810Locale.ready)))
             .catch((error: unknown) => {
@@ -257,28 +265,24 @@ export default function S810Stage(props: StageComponentProps) {
           muted
           playsInline
           onLoadedMetadata={(event) =>
-            observe(
+            updateDimensions(
               event.currentTarget.videoWidth,
               event.currentTarget.videoHeight,
             )
           }
           onResize={(event) =>
-            observe(
+            updateDimensions(
               event.currentTarget.videoWidth,
               event.currentTarget.videoHeight,
             )
           }
-          onPlaying={() => {
+          onSeeking={stopSampling}
+          onSeeked={observeSeekedFrame}
+          onPlay={() => setStatus(stageText(props.locale, s810Locale.playing))}
+          onEnded={() => {
             stopSampling();
-            const video = videoRef.current;
-            if (!video?.requestVideoFrameCallback) {
-              setStatus(stageText(props.locale, s810Locale.frameUnsupported));
-              return;
-            }
-            callbackId.current = video.requestVideoFrameCallback(sample);
+            setStatus(stageText(props.locale, s810Locale.ended));
           }}
-          onPause={stopSampling}
-          onEnded={stopSampling}
         >
           <track
             kind="captions"
@@ -290,11 +294,11 @@ export default function S810Stage(props: StageComponentProps) {
       ) : null}
       <p className="measurement" aria-live="polite">
         {dimensions
-          ? `${dimensions[0]} × ${dimensions[1]} — ${status}`
+          ? `${dimensions[0]} × ${dimensions[1]} (${ratioLabel}:1) — ${status}`
           : status}
       </p>
       <div className="s810-observed" aria-live="polite">
-        {(Object.keys(sweepLabelKeys) as SweepKey[]).map((key) => (
+        {(Object.keys(sweepLabelKeys) as S810AspectKey[]).map((key) => (
           <span key={key} data-observed={observed[key] ? "true" : "false"}>
             {observed[key] ? "✓" : "○"}{" "}
             {stageText(props.locale, s810Locale[sweepLabelKeys[key]])}

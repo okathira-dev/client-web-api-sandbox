@@ -8,33 +8,33 @@
 
 DR-137元案の「端末へ偶然install済みのfont一覧から頭文字を作る」は、端末差で共通解を保証できずfingerprinting面も広いため破棄する。代わりに新規G-078 / S-790「活字の鍵（仮）」を任意Labs 1箱として採用する。Git管理する専用OpenType fontをplayerがOS標準UIでinstallし、対象PostScript名だけを要求した実`queryLocalFonts()`が期待faceを返し、`FontData.blob()`のmetadata / checksum検証と専用glyph表示が成功した時だけ直接開く。
 
-全font列挙、既存font集合、permissionだけ、`@font-face local()`だけ、file upload、game bundled webfont、名前だけの一致を代替clearにしない。返却font情報とraw bytesはmemory内で破棄し、表示・log・保存・Drive同期・file export・analytics・送信しない。専用font、生成source、license、再生成手順、checksumを事前生成してGit管理し、完了後にOSからfontをuninstallする方法とsite permission解除方法を案内する。D-143後の現在の計画値は78stage・185箱である。
+全font列挙、既存font集合、permissionだけ、`@font-face local()`だけ、file upload、game bundled webfont、名前だけの一致を代替clearにしない。返却font情報とraw bytesはmemory内で破棄し、表示・log・保存・Drive同期・file export・analytics・送信しない。専用font、生成source、license、再生成手順、checksumを事前生成してGit管理し、完了後にOSからfontをuninstallする方法とsite permission解除方法を案内する。D-143後の現在の計画値は78stage・184箱である（S-780の正しい財布箱を削除）。
 
 ## 2026-07-31 Topics API追加監査
 
 [Topics API](https://developer.mozilla.org/en-US/docs/Web/API/Topics_API)は、複数siteでの観測と週単位のepochからbrowserが一般的な閲覧関心を推定し、`document.browsingTopics()`やrequest headerで広告technologyへ渡す非標準APIである。Privacy Sandbox enrollmentを要し、FirefoxとSafariのstandards positionは否定的である。playerがその場で狙ったtopicを作れず、履歴不足、noise、browser設定によって結果が変わる。通常player向けのAPI固有UIもなく、gameがカテゴリを表示するだけではTopics固有体験にならない。
 
-Googleは2025-10-17にTopics APIのretireを発表し、Chromeは144からdeprecationを開始して削除を予定している。廃止予定を主理由としてDR-132の新規stage、統合、historical exhibit、browserの広告privacy設定変更を要求する箱を却下する。閲覧傾向や推定関心カテゴリを取得、表示、保存、同期、送信せず、固定カテゴリによる通常分岐へ置換しない。計画値は78stage・185箱のままとする。
+Googleは2025-10-17にTopics APIのretireを発表し、Chromeは144からdeprecationを開始して削除を予定している。廃止予定を主理由としてDR-132の新規stage、統合、historical exhibit、browserの広告privacy設定変更を要求する箱を却下する。閲覧傾向や推定関心カテゴリを取得、表示、保存、同期、送信せず、固定カテゴリによる通常分岐へ置換しない。計画値は78stage・184箱のままとする。
 
 ## 2026-07-31 Private State Token API追加監査
 
 [Private State Token API](https://privacysandbox.google.com/protections/private-state-tokens)は、issuerがbrowserへ暗号tokenを発行し、別contextのredeemerが匿名の粗いtrust signalとして償還するanti-fraud機構である。`document.hasPrivateToken()`と`document.hasRedemptionRecord()`で存在をclientから確認できるが、発行prompt、token icon、償還確認等の通常player向けbrowser UIはない。Chrome DevToolsのApplication panelには統合があるものの、DevToolsを解法に使わない本作ではgame製反応しかplayerへ見えない。
 
-API自体は2025-10-17のPrivacy Sandbox整理後も継続サポート対象だが、本番利用にはissuer登録、key commitment、token issuance、redemption endpoint、暗号鍵の保護・rotation・監視を含む独自server-side stackが必要である。[公式developer guide](https://privacysandbox.google.com/protections/private-state-tokens/developer-guide)も独自issuer / redeemer serverの構築を前提にする。Busyboxの架空儀式を任意条件にできる一般向けmanaged issuerは確認できず、`privatetokens.dev`等のdemoをproduction gameplayへ依存させない。DR-131は新規stage、統合、demo依存、historical exhibitを却下し、計画値は78stage・185箱のままとする。
+API自体は2025-10-17のPrivacy Sandbox整理後も継続サポート対象だが、本番利用にはissuer登録、key commitment、token issuance、redemption endpoint、暗号鍵の保護・rotation・監視を含む独自server-side stackが必要である。[公式developer guide](https://privacysandbox.google.com/protections/private-state-tokens/developer-guide)も独自issuer / redeemer serverの構築を前提にする。Busyboxの架空儀式を任意条件にできる一般向けmanaged issuerは確認できず、`privatetokens.dev`等のdemoをproduction gameplayへ依存させない。DR-131は新規stage、統合、demo依存、historical exhibitを却下し、計画値は78stage・184箱のままとする。
 
 ## 2026-07-31 Attribution Reporting API追加監査
 
 [Attribution Reporting API](https://developer.mozilla.org/en-US/docs/Web/API/Attribution_Reporting_API)は、`attributionsrc`、Fetch / XHR設定、HTTP response headerでsourceとtriggerを登録し、browserが非公開領域で照合した後、遅延・noise・件数制限を伴うreportをserver endpointへ送る広告効果測定APIである。source登録、trigger登録、一致、report送信にbrowser固有UIがなく、pageへ一致を通知する確定eventもない。通常のURL / referrerで導線を再現するとAPI固有性を失い、reportで成否を知るには受信backendが必要になる。
 
-Googleは2025-10-17にAttribution Reporting APIのretireを発表し、[Privacy Sandbox feature status](https://privacysandbox.google.com/overview/status)で「Deprecate and remove」としている。Chromeは[144 beta](https://developer.chrome.com/blog/chrome-144-beta)でdeprecationを開始した。廃止予定APIを新規stage、既存stage統合、historical exhibitへ固定せず、DR-130は却下する。実広告、campaign、第三者計測service、debug reportをgameplayへ導入しない。計画値は78stage・185箱のままとする。
+Googleは2025-10-17にAttribution Reporting APIのretireを発表し、[Privacy Sandbox feature status](https://privacysandbox.google.com/overview/status)で「Deprecate and remove」としている。Chromeは[144 beta](https://developer.chrome.com/blog/chrome-144-beta)でdeprecationを開始した。廃止予定APIを新規stage、既存stage統合、historical exhibitへ固定せず、DR-130は却下する。実広告、campaign、第三者計測service、debug reportをgameplayへ導入しない。計画値は78stage・184箱のままとする。
 
 ## 2026-07-31 Payment Handler API追加監査
 
 [Payment Handler API](https://www.w3.org/TR/payment-handler/)は、Service Workerへpayment appとしてのorigin権限を与え、browserが候補handlerを提示し、選択したhandlerへtrusted `PaymentRequestEvent`を配送する。[Web-based Payment Handler API](https://developer.mozilla.org/en-US/docs/Web/API/Web-Based_Payment_Handler_API)のJIT登録、handler window、`respondWith()`と、merchant側の`complete()` / [`retry()`](https://developer.mozilla.org/en-US/docs/Web/API/PaymentResponse/retry)を使えば、実決済providerを混ぜずにGit管理された架空payment methodだけでAPI固有のflowを構成できる。
 
-新規G-077 / S-780「四つの財布（仮）」を任意Labs 4箱として採用する。B01は複数の架空handlerから正しいものを選び、そのService Workerがcurrent attemptのtrusted eventを受けた時、B02は承認responseをmerchantが検証して`complete("success")`へ到達した時、B03は意図的拒否responseを検証して`complete("fail")`へ到達した時、B04は最初のresponseに`retry()`を行い、同じhandlerで二度目の正しいresponseを成功完了した時に開く。各条件が成立した瞬間に対応箱だけを開き、短い取引結果、完了message、固定flagを表示しない。
+新規G-077 / S-780「三つの財布（仮）」を任意Labs 3箱として採用する。trusted eventはhandler経路の証跡として扱い、単独の箱にはしない。B01はhandler windowで承認responseをmerchantが検証して`complete("success")`へ到達した時、B02は意図的拒否responseを検証して`complete("fail")`へ到達した時、B03は最初のresponseに`retry()`を行い、同じhandlerで二度目のresponseを成功完了した時に開く。merchant側の開始経路は承認／拒否／再試行のいずれにも固定せず、返ったresponseの結果に対応する箱だけを開く。
 
-実Google Pay / Apple Pay、card、実通貨、payer / shipping情報、payment credentialを要求せず、game製payment sheet、handler不在、browser cancel、例外を代替clearにしない。handler windowはpayment lifecycleに必要な非言語操作だけに制限し、一般的なWebパズルを埋め込まない。候補UI、trusted event、失敗完了、同一handler retryを実browserでPoCできた場合だけ公開する。DR-128のPayment Request却下は維持し、Payment Requestは架空handlerを起動する配線としてのみ使う。新規1stage・4箱を加え、計画値は78stage・185箱となる。
+実Google Pay / Apple Pay、card、実通貨、payer / shipping情報、payment credentialを要求せず、game製payment sheet、handler不在、browser cancel、例外を代替clearにしない。handler windowはpayment lifecycleに必要な非言語操作だけに制限し、一般的なWebパズルを埋め込まない。候補UI、trusted event、失敗完了、同一handler retryを実browserでPoCできた場合だけ公開する。DR-128のPayment Request却下は維持し、Payment Requestは架空handlerを起動する配線としてのみ使う。新規1stage・3箱を加え、計画値は78stage・184箱となる。
 
 ## 2026-07-30 Payment Request API追加監査
 
@@ -269,6 +269,10 @@ BB-051への利用案は、外部copy後に`readText()`する既存S-180とplaye
 
 アプリ自身は音声、transcript、confidence、alternativesを永続化・Drive同期しない。ただしbrowserのrecognition serviceが外部処理する可能性は開始前に説明し、H-027でnetwork、permission、error、abort、cleanupを確認する。
 
+## 2026-08-16 S-810 aspect-ratio seek revision
+
+S-810の採用条件を、過去に検討したVFR cadenceやページ製の解像度selectorではなく、playerがnative controlsでシークを止めた時点の提示frameへ更新した。固定MSE WebM assetの`seeked`後に`requestVideoFrameCallback()`を1回待ち、実`videoWidth / videoHeight`の比率を相対5%で1:1、4:3、16:9、9:20へ分類する。通常再生・pause・CSS寸法変更は解法にせず、ページにはscript自動seek経路を置かない。以下の旧行は監査時点の履歴であり、この更新後のS-810仕様には適用しない。
+
 ## 2026-07-21 Media Capabilities / media track追加監査
 
 Media Capabilitiesはnative playerで選択中の画質やFPSを読むAPIではない。authorがcodec、width、height、bitrate、framerate等を含む構成を渡し、`supported`、`smooth`、`powerEfficient`の予測を得る。実mediaのframeとtrack状態はHTML media APIおよび`requestVideoFrameCallback()`で別に観測する。
@@ -276,8 +280,8 @@ Media Capabilitiesはnative playerで選択中の画質やFPSを読むAPIでは�
 | Interface / member | 採否 | 割当・理由 |
 | --- | --- | --- |
 | `MediaCapabilities.decodingInfo()` | 不採用 | 候補構成の再生適性をauthorが照会するAPIであり、playerがnative controlsから解像度を選ぶ体験ではない |
-| `requestVideoFrameCallback()` / `mediaTime` / `presentedFrames` | 採用 | D-140でS-810-B01へ分離。playerの実native seek後、可変frame-rate動画の実提示frameから24fps区間を探す |
-| callback `width` / `height`、`videoWidth` / `videoHeight` | 不採用 | 実寸reelはpage製selectorしかなくbrowser特有のUIを使わないためD-142で削除 |
+| `requestVideoFrameCallback()` / `mediaTime` / `presentedFrames` | 採用（旧cadence案は履歴） | 現行S-810では`seeked`後の提示frame同期に使う。過去の24fps cadence判定は採用しない |
+| callback `width` / `height`、`videoWidth` / `videoHeight` | 採用（S-810） | native提示frameの実寸からアスペクト比を分類する。CSS表示寸法やページ製selectorは使わない |
 | `playbackRate` / `ratechange` | 採用 | S-350-B04。native controlsから1倍速以外へ変更された実media状態を観測する |
 | `textTracks` / `TextTrack.mode` / `change` | 採用 | S-350-B05。native字幕menuでlabel `Busybox`をshowingへ変更する |
 | `audioTracks` / `AudioTrack.enabled` / `change` | 条件付き採用 | 将来S-350-B07。native音声track menuとAPIがある環境でlabel `Busybox`をenabledにする |
@@ -332,7 +336,7 @@ Web APIの対応状況は時間とともに変わる。この文書は採用対�
 
 [添付Deep Researchメモの保存版](./source/deep-research-report.md)は、APIごとのギミック案を広く拾うためのアイデア源として使う。原文の引用マーカーはこのリポジトリから解決できず、WebVRのような旧API、旧来方式、広告・決済・認証など高リスクな用途も含むため、互換性表や採用判断の根拠にはしない。
 
-2026-07-20に原文145案へ`DR-001`〜`DR-145`を付け、[Deep Research元案・暫定採否台帳](./deep-research-idea-disposition-ledger.md)で未分類0まで整理した。対話結果を反映した現分類は`採用`48、`重複`51、`統合案`11、`保留`1、`却下`34である。DR-017は実連絡先を正解にする元案を架空名刺の登録・選択・全property非共有へ再設計し、G-075 / S-760へ採用済みである。DR-083はDeprecatedな旧APIで、現代のimmersive体験が既存G-072 / S-730と重複するため却下済みである。DR-086は現役標準だが固有状態をplayerへ見せるgame製UIが中心になり、既存Fetch案との差が体験にならないため却下済みである。DR-096はAPI固有性を残す継続保留、DR-097はG-073 / S-740へ採用済み、DR-098は静的配信だけでは低速転送を制御できないため却下済み、DR-102はPC browser非対応のため次期案だけを残して却下済み、DR-105はStorage Access許可前の不可視状態をclear条件へ絡めない方針から却下済み、DR-107は既存storage、cross-context通信、S-740との体験重複から却下済み、DR-115はplayer向けのbrowser固有UIがなく自作可視化が中心になるためstageとして却下済み、DR-126は別送信者から届く実SMSとbrowser確認UIを使うG-074 / S-750へ、DR-127は実装時点の公式FedCM providerごとに手動提示箱を置くG-076 / S-770へ採用済み、DR-128は実決済UIを模擬通貨へ流用せず却下済み、DR-129は架空payment handler 4箱のG-077 / S-780へ採用済み、DR-130は廃止予定のAttribution Reportingをstage・統合・historical exhibitへ使わず却下済み、DR-131は独自issuer / redeemer backendと鍵運用を要し、managed issuerや通常player向け固有UIがないため却下済み、DR-132は廃止予定のTopicsをprivacy・非決定性・固有UI欠如の観点からも却下済み、DR-134はFenced Frameの隔離を通常playerが知覚できず親進捗へ直接通知できないため却下済み、DR-137は専用fontをOSへ追加してLocal Font Accessで再発見するG-078 / S-790へ再設計して採用済みである。DR-105から派生したcross-origin iframe画像D&Dだけは既存G-049 / S-510-B02へ統合し、通常相談queueは完了した。
+2026-07-20に原文145案へ`DR-001`〜`DR-145`を付け、[Deep Research元案・暫定採否台帳](./deep-research-idea-disposition-ledger.md)で未分類0まで整理した。対話結果を反映した現分類は`採用`48、`重複`51、`統合案`11、`保留`1、`却下`34である。DR-017は実連絡先を正解にする元案を架空名刺の登録・選択・全property非共有へ再設計し、G-075 / S-760へ採用済みである。DR-083はDeprecatedな旧APIで、現代のimmersive体験が既存G-072 / S-730と重複するため却下済みである。DR-086は現役標準だが固有状態をplayerへ見せるgame製UIが中心になり、既存Fetch案との差が体験にならないため却下済みである。DR-096はAPI固有性を残す継続保留、DR-097はG-073 / S-740へ採用済み、DR-098は静的配信だけでは低速転送を制御できないため却下済み、DR-102はPC browser非対応のため次期案だけを残して却下済み、DR-105はStorage Access許可前の不可視状態をclear条件へ絡めない方針から却下済み、DR-107は既存storage、cross-context通信、S-740との体験重複から却下済み、DR-115はplayer向けのbrowser固有UIがなく自作可視化が中心になるためstageとして却下済み、DR-126は別送信者から届く実SMSとbrowser確認UIを使うG-074 / S-750へ、DR-127は実装時点の公式FedCM providerごとに手動提示箱を置くG-076 / S-770へ採用済み、DR-128は実決済UIを模擬通貨へ流用せず却下済み、DR-129は架空payment handler 3箱のG-077 / S-780へ採用済み、DR-130は廃止予定のAttribution Reportingをstage・統合・historical exhibitへ使わず却下済み、DR-131は独自issuer / redeemer backendと鍵運用を要し、managed issuerや通常player向け固有UIがないため却下済み、DR-132は廃止予定のTopicsをprivacy・非決定性・固有UI欠如の観点からも却下済み、DR-134はFenced Frameの隔離を通常playerが知覚できず親進捗へ直接通知できないため却下済み、DR-137は専用fontをOSへ追加してLocal Font Accessで再発見するG-078 / S-790へ再設計して採用済みである。DR-105から派生したcross-origin iframe画像D&Dだけは既存G-049 / S-510-B02へ統合し、通常相談queueは完了した。
 
 DR-028から派生したAPI非依存のUnicode数字問題はG-061 / S-620、DR-077から派生したframe厳密復元問題はG-071 / S-720として別途採用した。G-024 / S-270はD-141で不採用とした。対話でstage IDを予約した現行差分は、DR-101のG-062 / S-630、DR-114のG-063 / S-640、DR-121のG-064 / S-650、DR-023のG-065 / S-660、DR-120のG-066 / S-670、DR-049のG-068 / S-690と派生G-079 / S-800、DR-075 / DR-016 / DR-076のG-069 / S-700、DR-077のG-070 / S-710と派生G-071 / S-720、DR-084のG-072 / S-730、DR-097のG-073 / S-740、DR-126のG-074 / S-750、DR-017のG-075 / S-760、DR-127のG-076 / S-770、DR-129のG-077 / S-780、DR-137のG-078 / S-790である。G-067 / S-680はD-135で不採用とした。個々の採否、統合先、回答文字列の要否、privacy、cleanupは分類台帳と決定ログを正とする。
 
