@@ -75,6 +75,11 @@
       .poc-camera { background: #000; max-width: 100%; width: 18rem; }
       .poc-small-video { background: #000; max-width: 100%; width: 24rem; }
       .poc-xr-box { border: 1px solid #555; min-height: 4rem; padding: .75rem; }
+      .advanced-surface { background: #1b1b1b; border: 1px dashed #999; margin: .75rem 0; min-height: 5rem; padding: 1rem; }
+      .advanced-scroll-surface { align-items: center; display: flex; gap: .5rem; height: 9rem; max-width: 20rem; overflow-x: auto; overflow-y: hidden; padding: 1rem; white-space: nowrap; }
+      .advanced-intersection-window { align-items: center; background: #234b6e; border: 2px solid #9f9; display: inline-flex; flex: 0 0 7rem; height: 6rem; justify-content: center; margin: 0; opacity: .85; }
+      .advanced-webgl-canvas { background: #000; border: 1px solid #777; display: block; margin: .75rem 0; max-width: 100%; }
+      .advanced-message-frame { background: #111; border: 1px solid #555; display: block; height: 5rem; margin: .75rem 0; width: 100%; }
       ::highlight(poc-first) { background: #1e88e5; color: white; }
       ::highlight(poc-second) { background: #f4511e; color: white; }
     </style>
@@ -357,18 +362,24 @@
       </details>
       <details class="poc-accordion" name="poc-probe">
         <summary>POC-030: Invoker Commands</summary>
-        <p>「Invoker Commands を作る」でdialogを開いた後、dialog内の「閉じる」を押す。後者はpageのclick handlerではなく、buttonの<code>commandfor="poc-dialog" command="close"</code>をbrowserが解釈してdialogへ送るnative commandである。</p>
-        <button type="button" id="run-invoker">Invoker Commands を作る</button>
-        <dialog id="poc-dialog" aria-label="native dialog fixture" closedby="any"><p>native dialog fixture</p><button type="button" commandfor="poc-dialog" command="close">閉じる</button></dialog>
+        <p>同じPopoverへ複数buttonから宣言的commandを送り、実<code>CommandEvent.source</code>と<code>command</code>の列を記録する。Dialogのcloseだけでは成功にしない。</p>
+        <button type="button" id="run-invoker" commandfor="poc-popover" command="show-popover">Popoverを開く</button>
+        <div id="poc-popover" popover="auto"><p>native popover fixture</p><button type="button" id="run-invoker-second">別sourceから開く</button><button type="button" id="hide-invoker">Popoverを閉じる</button></div>
         <output class="media-status" id="invoker-status" aria-live="polite">未実行</output>
       </details>
       <details class="poc-accordion poc-lazy-case" name="poc-probe" data-poc="009">
         <summary>POC-009: cross-window / cross-origin Drag and Drop</summary>
-        <p>sourceはsandbox iframe内に隔離しています。browser標準でdraggableな画像を実際にdragし、親documentのdrop targetへ渡してください。custom element、synthetic DragEvent、file input選択では成功にしません。</p>
+        <p>3種類のsourceを比較します。ページ内の画像はそのまま、保存用画像はOSファイルとして、iframeの画像は別windowを開いて、親documentのdrop targetへ実際にdragしてください。custom element、synthetic DragEvent、file input選択では成功にしません。</p>
         <div class="poc-two-column">
           <div>
+            <p><strong>ページ内画像（そのままdrag）</strong></p>
+            <img src="../drag-page.png" alt="ページ内D&D fixture" draggable="true" width="240" height="120" style="display:block;max-width:100%;height:auto;cursor:grab">
+            <p><strong>保存してOSからdrag</strong></p>
+            <img src="../drag-file.png" alt="保存用D&D fixture" draggable="false" width="240" height="120" style="display:block;max-width:100%;height:auto;cursor:not-allowed">
+            <a href="../drag-file.png" download="busybox-poc-drag-file.png">保存用PNGをダウンロード</a>
             <button type="button" data-dnd-open>source iframeをフォーカスする</button>
-            <iframe class="poc-source-frame" data-dnd-source title="sandbox drag source" loading="lazy" sandbox="allow-scripts" srcdoc="<!doctype html><html><body style='background:#111;color:#eee;font:16px system-ui'><p>この画像を親のdrop targetへdrag</p><img src='../drag-layer-a.png' alt='BUSYBOX DnD marker' draggable='true' style='display:block;margin:auto;max-height:12rem;max-width:100%'></body></html>"></iframe>
+            <button type="button" data-dnd-open-window>別window sourceを開く</button>
+            <iframe class="poc-source-frame" data-dnd-source title="sandbox drag source" loading="lazy" sandbox="allow-scripts" srcdoc="<!doctype html><html><body style='background:#111;color:#eee;font:16px system-ui'><p>この画像を親のdrop targetへdrag</p><img src='../drag-window.png' alt='BUSYBOX DnD marker' draggable='true' style='display:block;margin:auto;max-height:12rem;max-width:100%'></body></html>"></iframe>
           </div>
           <div>
             <div class="poc-drop-target" data-dnd-target>ここへ実dragしてください</div>
@@ -407,13 +418,6 @@
         <audio class="poc-small-video" data-audio-session-player controls loop preload="metadata" src="../fixtures/media/assets/multi-audio.mp4"><track kind="captions" src="data:text/vtt,WEBVTT" srclang="en" label="No captions" /></audio>
         <button type="button" data-audio-session-start>Audio Sessionを開始</button>
         <button type="button" data-audio-session-stop>停止・cleanup</button>
-        <output class="media-status" data-poc-status aria-live="polite">未実行</output>
-      </details>
-      <details class="poc-accordion poc-lazy-case" name="poc-probe" data-poc="034">
-        <summary>POC-034: native audio track監視枠</summary>
-        <p>現在のChromeでは保留中です。<code>audioTracks</code>とnative音声track UIを公開する環境だけで再確認し、custom pickerは作りません。</p>
-        <video class="poc-small-video" data-audio-track-video controls preload="metadata" src="../fixtures/media/assets/multi-audio.mp4"><track kind="captions" src="data:text/vtt,WEBVTT" srclang="en" label="No captions" /></video>
-        <button type="button" data-audio-track-inspect>native AudioTrackListを読む</button>
         <output class="media-status" data-poc-status aria-live="polite">未実行</output>
       </details>
       <details class="poc-accordion poc-lazy-case" name="poc-probe" data-poc="019" data-remote-round="BUSYBOX_REMOTE_QR">
@@ -505,6 +509,18 @@
           <p class="payment-poc-note">比較用：<a href="https://googlechrome.github.io/samples/paymentrequest/payment-handler/" target="_blank" rel="noopener noreferrer">Chrome公式BobBucksサンプル</a>。外部モックの成功はBusybox Handlerの箱へ加算しません。</p>
         </section>
       </details>
+      <h2>追加候補の隔離PoC</h2>
+      <p>製品stageへ昇格したAPIについて、実装退行を検知するためのlatest PoCです。</p>
+      <details class="poc-accordion poc-lazy-case" name="poc-probe" data-poc="036"><summary>POC-036: Pointer Lock</summary><p>surfaceをクリックしてpointer lockへ入り、マウスを動かします。Esc解除と離脱cleanupを確認します。</p></details>
+      <details class="poc-accordion poc-lazy-case" name="poc-probe" data-poc="037"><summary>POC-037: Idle Detection</summary><p>明示permission後、最低60秒の実idleを観測します。page timerは使いません。</p></details>
+      <details class="poc-accordion poc-lazy-case" name="poc-probe" data-poc="038"><summary>POC-038: IntersectionObserver</summary><p>横スクロール領域でA/B/Cを同時に枠内へ入れ、各intersectionRatioが0.60以上になった時だけ成功します。アコーディオンを閉じるとobserverは破棄されます。</p></details>
+      <details class="poc-accordion poc-lazy-case" name="poc-probe" data-poc="041"><summary>POC-041: Document Picture-in-Picture</summary><p>本体とは別のDocument PiP windowを開き、閉鎖cleanupまで観測します。</p></details>
+      <details class="poc-accordion poc-lazy-case" name="poc-probe" data-poc="042"><summary>POC-042: EditContext</summary><p>textareaへ迂回せず、Canvas編集面でIME compositionを観測します。</p></details>
+      <details class="poc-accordion poc-lazy-case" name="poc-probe" data-poc="046"><summary>POC-046: File System Access</summary><p>seed fileを作成し、OS editorで変更した同じfile handleを再読込します。</p></details>
+      <details class="poc-accordion poc-lazy-case" name="poc-probe" data-poc="048"><summary>POC-048: Compression Streams</summary><p>gzipをDecompressionStreamへpipeし、展開結果を照合します。</p></details>
+      <details class="poc-accordion poc-lazy-case" name="poc-probe" data-poc="051"><summary>POC-051: Fullscreen viewport</summary><p>実fullscreen elementとviewport変化を確認します。S-350-B08との差も記録します。</p></details>
+      <details class="poc-accordion poc-lazy-case" name="poc-probe" data-poc="052"><summary>POC-052: MediaSource chunk append</summary><p>SourceBufferへ固定動画をappendし、segment分割版へ進む入口です。</p></details>
+      <details class="poc-accordion poc-lazy-case" name="poc-probe" data-poc="053"><summary>POC-053: WebVTT cue editing</summary><p>動画を再生すると、native字幕と下のactive cue表示が<code>BUSYBOX_CUE_A</code>から<code>BUSYBOX_CUE_B</code>へ変わります。アコーディオンを閉じるとtrackとlistenerを破棄します。</p></details>
       <h2>結果</h2>
       <output id="probe-output" aria-live="polite">未実行</output>
     </main>

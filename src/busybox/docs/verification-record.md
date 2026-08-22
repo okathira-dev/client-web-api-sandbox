@@ -1,11 +1,57 @@
 # 検証記録
 
+## 2026-08-21 人手確認以外の残作業完遂
+
+| 検証 | 結果 | 証跡 |
+| --- | --- | --- |
+| catalogue / registry / map / manifest | 合格 | 89stage・204箱。S-430-B02、S-480追加5箱、S-630、S-700追加2箱、S-730〜S-770、S-790をID重複なしで統合し、6地図clusterを各15stage以下に維持 |
+| stage documentation / locale | 合格 | 全89 `S-xxx.tsx`の隣接localeと9項目の日本語JSDocを`stageDocumentation.test.ts`で検証 |
+| 固定fixture | 合格 | S-700の4 VP9 WebM、S-740の植物3 SVG、S-760の架空icon、S-790の独自TTFを製品assetへ追加。S-700は生成後frameをjsQRで復号し、S-790はtable・PostScript名・SHA-256を検証 |
+| Google FedCM境界 | 合格（実accountはH-049） | Google GISの非空credentialかつ厳密な`select_by === "fedcm"`だけを受理するunit test、公開client IDの設定資料、GitHub Repository Secret経路を追加 |
+| TypeScript | 合格 | Node 24.14.0の`tsc` |
+| Jest | 合格 | 59 suites / 315 tests |
+| Markuplint | 合格 | `src/**/*.{jsx,tsx,html}` 全対象 |
+| Biome | 合格 | 560 files。schemaを2.5.6へ同期し、warning / infoなし |
+| Vite production build | 合格 | 89stageのlazy chunkと新規固定assetを含むmulti-page build。configの`__dirname`を`import.meta.dirname`へ移行。ghostpdl browser externalizationと500 kB超chunk warningは既存構成 |
+| path / secret / diff衛生 | 合格 | source・script・workflowの絶対workspace / user path 0、private key / client secret / refresh token / Google key形式0、一時拡張子0、staged / unstaged `git diff --check`合格、`package-lock.json`変更なし |
+| 人手確認 | 保留 | 実API、専用機器、公開origin、実account、実SMS、OS contact / font、長期schedulerだけをH-040〜H-051等へ残した |
+
+この節が現行コードに対する最新の自動検証結果である。下位の旧件数と未実装表現は当時の履歴であり、現行仕様の結論に使わない。
+
+## 2026-08-21 S-690〜S-920製品stage統合
+
+| 検証 | 結果 | 証跡 |
+| --- | --- | --- |
+| catalogue / registry / map / manifest | 合格 | 82stage・184箱。S-920をcatalogue、lazy registry、stage manifest、stage map、locale registryへ重複なく統合 |
+| stage documentation | 合格 | 全82 `S-xxx.tsx`に隣接localeと9項目の日本語JSDocを`stageDocumentation.test.ts`で検証 |
+| 固定fixture | 合格 | S-880、S-900、S-910のasset、生成script、README、構造検証testをGit管理。S-900はFFmpeg生成の専用5 VP8 segmentを明示timestamp offsetでappendし、S-910は3記号をFFmpeg生成動画へ焼き込む。同一toolchainで2回生成しWebM TrackUID正規化後のbyte-for-byte一致を確認 |
+| FFmpeg生成環境 | 合格 | WinGet版FFmpeg / FFprobe 8.0.1 full buildを生成時の環境変数だけで指定。実行パスをsource・manifestへ保存していない |
+| TypeScript | 合格 | Node 24.14.0の`tsc` |
+| Jest | 合格 | 54 suites / 309 tests。S-920固定treeの3終点、各部屋の最大3択、異なる手数・方向列を含む |
+| Markuplint | 合格 | `src/**/*.{jsx,tsx,html}` 全対象 |
+| Biome | 合格 | 508 files。既存のschema version infoと`jest.setup.ts` optional-chain warningのみ |
+| Vite production build | 合格 | 82stageのlazy chunk（`S-920`を含む）と新規固定assetを含むmulti-page build。既存の`__dirname`、ghostpdl externalization、500 kB chunk warningのみ |
+| S-920 browser | 合格（実端末総合確認はH-066） | production previewでiframe額縁と斜線外周を表示。B01のinline反転、B02のblock反転を確認。JavaScript座標測定を使わない影専用CSS anchor chainと、開いた実goalの`left / top / width / height`が3経路すべて差分0で一致 |
+| 人手確認 | 保留 | H-054〜H-066を追加。Text Fragment、Pointer Lock、Idle、Document PiP、EditContext、FSA、MSE、runtime WebVTT、Popover迷路は実browserでの最終確認が必要 |
+
+この節はS-690〜S-920統合時点の履歴である。
+
+## 2026-08-20 POC-035〜054採否整理
+
+| 検証 | 結果 | 証跡 |
+| --- | --- | --- |
+| 最終処遇の完全性 | 合格 | POC-035〜054の20件を、新規stage候補10件とstage不採用10件へ重複・欠落なく分類 |
+| Deep Research台帳 | 合格 | D-148で変更した10件を採用から却下へ移し、既存の変則分類も5区分へ正規化。集計を採用38 / 重複50 / 統合11 / 保留1 / 却下45 = 145へ同期 |
+| 既存stageとの差分 | 合格 | Fullscreen / MediaSource / WebVTTをS-350 / S-810の既存中心操作へ統合せず、独立stageとする理由をD-149へ記録 |
+| 件数境界 | 合格 | この採否整理時点では、新規10stage候補・計19箱はID未予約・未実装であり、当時の69stage・159箱を変更していなかった |
+| Markdown | 合格 | `git diff --check`。コード、fixture、catalogueは今回変更していないためTypeScript / Jest / buildは対象外 |
+
 ## 2026-08-16 S-810比率シーク・個別PoC追補
 
 | 検証 | 結果 | 証跡 |
 | --- | --- | --- |
 | stage documentation audit | 合格 | 67個の`S-xxx.tsx`に隣接`S-xxx.locale.ts`、ja/en bundle、9項目の日本語JSDocを確認する`stageDocumentation.test.ts` |
-| Jest | 合格 | 48 suites / 298 tests |
+| Jest | 合格 | 50 suites / 301 tests |
 | TypeScript | 合格 | bundled TypeScript `--noEmit` |
 | Biome | 合格 | Node 24.14.0の`npm run check`で447 filesをcheck（既存warning/infoのみ） |
 | Markuplint | 合格 | `src/**/*.{jsx,tsx,html}` |
@@ -352,3 +398,22 @@ S-060の最初の試行では、問題コンポーネントの遅延読込前に
 - GitHub Pages本番相当のサブパス、直接URL、Service Worker scope
 
 これらは[人手確認台帳](./human-test-matrix.md)の該当IDへ結果と環境を追記してから公開合格にする。
+
+## 2026-08-18 追加PoC・製品stage wave
+
+| 項目 | 結果 | 証跡 |
+| --- | --- | --- |
+| catalogue / registry / map / manifest | 合格 | 69stage・159箱。S-700-B03、S-780-B01〜B04、S-510-B03を`stages.ts`、lazy registry、`stageManifest.ts`、metadata localeへ同期。`stageDefinitions.test.ts`でID重複・箱数を検証 |
+| S-700-B03 | 実装済み・人手待ち | Presentation APIのround付き専用receiverを製品public assetへ昇格。通常window / iframe / Remote Playbackをclearにしない |
+| S-780 | B01〜B04実装済み・公開origin人手待ち | 架空BBX method manifest、○/◇の2 app manifestとworker scope、共有handler runtimeを製品assetへ昇格。✓ / × / ↻→✓はwallet非依存、◇選択は対象workerのtrusted eventだけで開く。fixture testで2 app構造を固定し、H-050でbrowser chooserを確認する |
+| POC-035〜054 | 実装済み・個別確認待ち | lazy accordion、共通`advanced-poc.ts`、positive / negative / cleanup方針を追加。CSP fixture、MediaSource分割fixture、WebCodecs encoded chunkはpartialとして明示 |
+| TypeScript | 合格 | bundled Node 24 runtimeで`tsc --noEmit`およびproduction `tsc` |
+| markuplint | 合格 | `src/**/*.{jsx,tsx,html}` 全対象 |
+| Biome | 合格 | 追加・変更Busybox sourceを`biome check` |
+| Jest | 合格 | 全50 suites / 301 tests。stage catalogue、metadata locale、S-810関数、S-780の2 Payment App fixtureと既存fixture検証を含む |
+| Vite production build | 合格 | stage lazy chunks、`dist/busybox/payment/`、`dist/busybox/presentation-receiver.html`を生成 |
+| diff hygiene | 合格 | `git diff --check`。source/config対象のabsolute Windows path scanとsecret-like pattern scanに該当なし |
+
+### Windows Chrome手動結果（ユーザー報告）
+
+POC-035〜054をWindows Chromeで確認した結果は、positiveが036/037/039/040/041/042/043/044/045/048/049/050/051、negativeが035/052/054だった。POC-038は旧説明が不明瞭、POC-053はpositiveに見えるものの変化が見えにくかったため、今回のコードでそれぞれ横scrollのroot付きratio表示、native字幕とactive cue previewへ修正した。未報告の項目は環境待ちとして未判定のまま残す。

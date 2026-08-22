@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Busybox Courier">
+  <rect width="512" height="512" rx="96" fill="#172554"/>
+  <path d="M112 150h288v212H112z" fill="#f8fafc" stroke="#60a5fa" stroke-width="20"/>
+  <path d="m122 166 134 108 134-108" fill="none" stroke="#2563eb" stroke-width="22" stroke-linejoin="round"/>
+  <path d="m122 346 102-94m166 94-102-94" fill="none" stroke="#93c5fd" stroke-width="18"/>
+  <circle cx="378" cy="358" r="64" fill="#facc15" stroke="#172554" stroke-width="18"/>
+  <path d="M352 358h52m-26-26v52" stroke="#172554" stroke-width="16" stroke-linecap="round"/>
+</svg>

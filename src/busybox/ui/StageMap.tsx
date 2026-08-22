@@ -3,7 +3,7 @@ import { type StageId, type StageSpec, stageCatalogue } from "../domain/stages";
 import { type StageMapClusterLabel, uiText } from "./locale";
 
 const canvasWidth = 1480;
-const canvasHeight = 1650;
+const canvasHeight = 2050;
 const nodeWidth = 196;
 const nodeHeight = 92;
 const nodeGapX = 20;
@@ -37,6 +37,9 @@ export const stageMapClusters: readonly StageMapCluster[] = [
       "S-480",
       "S-490",
       "S-500",
+      "S-800",
+      "S-860",
+      "S-910",
     ],
   },
   {
@@ -57,6 +60,9 @@ export const stageMapClusters: readonly StageMapCluster[] = [
       "S-250",
       "S-310",
       "S-400",
+      "S-690",
+      "S-840",
+      "S-920",
     ],
   },
   {
@@ -76,13 +82,17 @@ export const stageMapClusters: readonly StageMapCluster[] = [
       "S-430",
       "S-510",
       "S-580",
+      "S-760",
+      "S-850",
+      "S-890",
+      "S-900",
     ],
   },
   {
     id: "pwa",
     label: "clusterPwa",
     x: 48,
-    y: 950,
+    y: 1200,
     stageIds: [
       "S-080",
       "S-130",
@@ -94,13 +104,18 @@ export const stageMapClusters: readonly StageMapCluster[] = [
       "S-440",
       "S-450",
       "S-460",
+      "S-740",
+      "S-770",
+      "S-780",
+      "S-870",
+      "S-880",
     ],
   },
   {
     id: "hardware",
     label: "clusterHardware",
     x: 534,
-    y: 950,
+    y: 1200,
     stageIds: [
       "S-100",
       "S-200",
@@ -113,13 +128,17 @@ export const stageMapClusters: readonly StageMapCluster[] = [
       "S-650",
       "S-660",
       "S-670",
+      "S-700",
+      "S-730",
+      "S-820",
+      "S-830",
     ],
   },
   {
     id: "sensors",
     label: "clusterSensors",
     x: 1020,
-    y: 950,
+    y: 1200,
     stageIds: [
       "S-520",
       "S-530",
@@ -129,8 +148,11 @@ export const stageMapClusters: readonly StageMapCluster[] = [
       "S-570",
       "S-590",
       "S-600",
+      "S-630",
       "S-710",
       "S-720",
+      "S-750",
+      "S-790",
       "S-810",
     ],
   },

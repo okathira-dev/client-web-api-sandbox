@@ -18,7 +18,7 @@ export const uiLocale = defineLocale({
   clusterInput: { ja: "入力と文字", en: "Input & text" },
   clusterLifecycle: { ja: "ページの往来", en: "Page journeys" },
   clusterMedia: { ja: "音・映像・通知", en: "Media & notices" },
-  clusterPwa: { ja: "PWAと認証", en: "PWA & identity" },
+  clusterPwa: { ja: "ファイル・PWA・認証", en: "Files, PWA & identity" },
   clusterHardware: { ja: "端末と周辺機器", en: "Device & hardware" },
   clusterSensors: { ja: "位置とセンサー", en: "Location & sensors" },
 });

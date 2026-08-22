@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 2,
+  "generator": "ffmpeg",
+  "mimeType": "video/webm; codecs=\"vp8\"",
+  "frameRate": 15,
+  "width": 640,
+  "height": 360,
+  "leadIn": {
+    "file": "lead.webm",
+    "frames": 8
+  },
+  "reels": {
+    "A": {
+      "file": "a.webm",
+      "frames": 15
+    },
+    "B": {
+      "file": "b.webm",
+      "frames": 15
+    },
+    "C": {
+      "file": "c.webm",
+      "frames": 15
+    },
+    "D": {
+      "file": "d.webm",
+      "frames": 15
+    }
+  },
+  "probe": {
+    "codec": "vp8",
+    "width": 640,
+    "height": 360,
+    "averageFrameRate": "15/1",
+    "durationSeconds": 1
+  }
+}

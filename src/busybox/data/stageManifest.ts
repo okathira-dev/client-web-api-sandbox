@@ -136,8 +136,8 @@ const stageEvidence = {
   ],
   "S-430": [
     ["G-041"],
-    ["Media Session", "Web Audio"],
-    ["H-004", "H-019", "H-023"],
+    ["Media Session", "Audio Session", "Web Audio", "HTMLAudioElement"],
+    ["H-004", "H-019", "H-023", "H-039", "H-052"],
   ],
   "S-440": [
     ["G-042"],
@@ -156,8 +156,8 @@ const stageEvidence = {
   ],
   "S-480": [
     ["G-046"],
-    ["CSS Fonts", "devicePixelRatio"],
-    ["H-003", "H-004", "H-023"],
+    ["CSS Fonts", "devicePixelRatio", "User Preferences API", "matchMedia"],
+    ["H-003", "H-004", "H-019", "H-020", "H-023", "H-025"],
   ],
   "S-490": [
     ["G-047"],
@@ -171,8 +171,19 @@ const stageEvidence = {
   ],
   "S-510": [
     ["G-049"],
-    ["HTML Drag and Drop", "DataTransfer", "File"],
-    ["H-004", "H-013", "H-014"],
+    ["HTML Drag and Drop", "DataTransfer", "File", "window.open"],
+    [
+      "H-001",
+      "H-002",
+      "H-003",
+      "H-005",
+      "H-013",
+      "H-014",
+      "H-019",
+      "H-020",
+      "H-023",
+      "H-025",
+    ],
   ],
   "S-520": [["G-050"], ["ProximitySensor"], ["H-006", "H-019", "H-026"]],
   "S-530": [
@@ -205,6 +216,11 @@ const stageEvidence = {
     ["Unicode", "FontFace", "CSS Font Loading"],
     ["H-001", "H-002", "H-003", "H-004", "H-014", "H-020", "H-025"],
   ],
+  "S-630": [
+    ["G-062"],
+    ["Network Information", "NetworkInformation.type"],
+    ["H-004", "H-019", "H-023", "H-025", "H-032"],
+  ],
   "S-640": [
     ["G-063"],
     ["TextDecoder", "legacy encodings"],
@@ -224,6 +240,21 @@ const stageEvidence = {
     ["G-066"],
     ["Console", "console.info"],
     ["H-001", "H-002", "H-003", "H-004", "H-020", "H-025"],
+  ],
+  "S-690": [
+    ["G-068"],
+    ["URL Fragment Text Directives", "HTMLFormElement"],
+    [
+      "H-001",
+      "H-002",
+      "H-003",
+      "H-004",
+      "H-019",
+      "H-020",
+      "H-025",
+      "H-038",
+      "H-054",
+    ],
   ],
   "S-710": [
     ["G-070"],
@@ -270,6 +301,73 @@ const stageEvidence = {
       "H-043",
     ],
   ],
+  "S-700": [
+    ["G-069"],
+    [
+      "Remote Playback",
+      "BarcodeDetector",
+      "PresentationRequest",
+      "PresentationConnection",
+      "external display",
+    ],
+    [
+      "H-001",
+      "H-003",
+      "H-004",
+      "H-006",
+      "H-019",
+      "H-020",
+      "H-023",
+      "H-025",
+      "H-040",
+      "H-041",
+    ],
+  ],
+  "S-730": [
+    ["G-072"],
+    ["WebXR Device", "XRSession", "XRFrame", "XRInputSource", "Three.js"],
+    ["H-001", "H-002", "H-003", "H-004", "H-014", "H-019", "H-023", "H-044"],
+  ],
+  "S-740": [
+    ["G-073"],
+    [
+      "Periodic Background Sync",
+      "Service Worker",
+      "IndexedDB",
+      "Cache Storage",
+    ],
+    ["H-005", "H-014", "H-018", "H-019", "H-021", "H-023", "H-025", "H-045"],
+  ],
+  "S-750": [
+    ["G-074"],
+    ["WebOTP", "OTPCredential", "one-time-code", ":autofill"],
+    ["H-003", "H-004", "H-019", "H-020", "H-023", "H-025", "H-046"],
+  ],
+  "S-760": [
+    ["G-075"],
+    ["Contact Picker", "ContactsManager", "ContactInfo"],
+    ["H-003", "H-004", "H-019", "H-023", "H-025", "H-047"],
+  ],
+  "S-770": [
+    ["G-076"],
+    ["FedCM", "Google Identity Services", "IdentityCredential"],
+    ["H-003", "H-004", "H-019", "H-023", "H-025", "H-049"],
+  ],
+  "S-780": [
+    ["G-077"],
+    [
+      "PaymentRequest",
+      "Payment Handler",
+      "Service Worker",
+      "payment-method-manifest",
+    ],
+    ["H-003", "H-004", "H-019", "H-023", "H-025", "H-050"],
+  ],
+  "S-790": [
+    ["G-078"],
+    ["Local Font Access", "FontData", "FontFace", "Web Crypto"],
+    ["H-003", "H-004", "H-006", "H-014", "H-019", "H-023", "H-025", "H-051"],
+  ],
   "S-810": [
     ["G-080"],
     [
@@ -282,6 +380,82 @@ const stageEvidence = {
       "requestVideoFrameCallback",
     ],
     ["H-001", "H-002", "H-003", "H-019", "H-020", "H-023", "H-025", "H-053"],
+  ],
+  "S-820": [
+    ["G-081"],
+    ["Pointer Lock", "movementX", "movementY", "pointerlockchange"],
+    ["H-001", "H-002", "H-003", "H-019", "H-020", "H-025", "H-056"],
+  ],
+  "S-830": [
+    ["G-082"],
+    ["Idle Detection", "IdleDetector", "screenState", "userState"],
+    ["H-003", "H-004", "H-019", "H-020", "H-023", "H-025", "H-057"],
+  ],
+  "S-850": [
+    ["G-084"],
+    ["Document Picture-in-Picture", "React portal", "pagehide"],
+    ["H-001", "H-002", "H-003", "H-019", "H-020", "H-023", "H-025", "H-059"],
+  ],
+  "S-860": [
+    ["G-085"],
+    ["EditContext", "textupdate", "character bounds"],
+    ["H-001", "H-002", "H-003", "H-004", "H-019", "H-020", "H-025", "H-060"],
+  ],
+  "S-870": [
+    ["G-086"],
+    ["File System Access", "showDirectoryPicker", "FileSystemDirectoryHandle"],
+    ["H-003", "H-004", "H-019", "H-020", "H-023", "H-025", "H-061"],
+  ],
+  "S-880": [
+    ["G-087"],
+    ["Fetch ReadableStream", "DecompressionStream", "TextDecoder"],
+    ["H-001", "H-002", "H-003", "H-019", "H-020", "H-025", "H-062"],
+  ],
+  "S-900": [
+    ["G-089"],
+    ["MediaSource", "SourceBuffer", "appendBuffer", "HTMLVideoElement ended"],
+    ["H-001", "H-002", "H-003", "H-019", "H-020", "H-023", "H-025", "H-064"],
+  ],
+  "S-910": [
+    ["G-090"],
+    ["TextTrack", "VTTCue", "cuechange", "activeCues"],
+    ["H-001", "H-002", "H-003", "H-004", "H-019", "H-020", "H-025", "H-065"],
+  ],
+  "S-800": [
+    ["G-079"],
+    ["URL Fragment Text Directives", "hidden=until-found", "beforematch"],
+    [
+      "H-001",
+      "H-002",
+      "H-003",
+      "H-004",
+      "H-019",
+      "H-020",
+      "H-025",
+      "H-038",
+      "H-055",
+    ],
+  ],
+  "S-840": [
+    ["G-083"],
+    ["IntersectionObserver", "intersectionRatio", "scroll container"],
+    ["H-001", "H-002", "H-003", "H-019", "H-020", "H-025", "H-058"],
+  ],
+  "S-890": [
+    ["G-088"],
+    ["Fullscreen API", "fullscreenchange", ":fullscreen"],
+    ["H-001", "H-002", "H-003", "H-019", "H-020", "H-023", "H-025", "H-063"],
+  ],
+  "S-920": [
+    ["G-091"],
+    [
+      "Popover API",
+      "popovertarget",
+      "showPopover source",
+      "CSS Anchor Positioning",
+      "position-try-fallbacks",
+    ],
+    ["H-001", "H-002", "H-003", "H-019", "H-020", "H-023", "H-025", "H-066"],
   ],
 } as const satisfies Readonly<
   Record<

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>○ Wallet</title>
+    <style>
+      :root { color-scheme: dark; font-family: system-ui, sans-serif; }
+      body { margin: 0; min-width: 18rem; background: #18140a; color: #fef3c7; }
+      main { display: grid; gap: 1rem; padding: 1.25rem; }
+      #wallet-symbol { font-size: 2.5rem; line-height: 1; text-align: center; }
+      .amount { border: 1px solid #a16207; border-radius: .7rem; padding: .8rem; }
+      .actions { display: flex; gap: .65rem; flex-wrap: wrap; }
+      button { min-width: 3.25rem; min-height: 3.25rem; border: 1px solid #facc15; border-radius: 50%; background: #422006; color: inherit; font-size: 1.5rem; cursor: pointer; }
+      button:hover, button:focus-visible { background: #713f12; }
+      #state { min-height: 1.5em; color: #fde68a; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div id="wallet-symbol" aria-hidden="true">○</div>
+      <div class="amount" id="amount">決済要求を待っています…</div>
+      <div class="actions" id="actions" hidden>
+        <button type="button" data-action="approve" aria-label="承認">✓</button>
+        <button type="button" data-action="decline" aria-label="拒否">×</button>
+        <button type="button" data-action="retry" aria-label="再試行">↻</button>
+      </div>
+      <p id="state" aria-live="polite">接続中…</p>
+    </main>
+    <script src="../payment-handler-window.js" defer></script>
+  </body>
+</html>

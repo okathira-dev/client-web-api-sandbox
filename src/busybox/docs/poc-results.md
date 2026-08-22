@@ -2,7 +2,7 @@
 
 > この文書の箱番号はPoC実施時の履歴である。D-144後、encoding、Unicode、video recoveryのfixtureは`src/busybox/fixtures/`へ製品昇格し、製品stageはPoC pathを参照しない。PoC上の旧S-350-B04 Media Capabilitiesと旧B06実寸reelは不採用、旧B05 frame cadenceは製品S-810-B01、旧B07は現行S-350-B05、旧S-230-B01は現行S-350-B06、旧B08の音声track案は合意済みIDの将来B07に対応する。現行S-350-B04はnative再生速度、B08はfullscreen。本文のS-230とS-270は製品実装から削除済み。現行の解法は[現行ステージ解法仕様](./stage-walkthroughs.md)を正とする。
 
-> 初回実施日: 2026-08-01、POC-006 / POC-011 / POC-013 / POC-021 / POC-022 fixture更新: 2026-08-02。現行の残存PoCの実装状況・確認順は[残存PoC実装計画](./remaining-poc-implementation-plan.md)を正とする。旧マスタープランへの記載は当時の実施履歴であり、結論の根拠にしない。
+> 初回実施日: 2026-08-01、POC-006 / POC-011 / POC-013 / POC-021 / POC-022 fixture更新: 2026-08-02。現行の対象と作業順は[次のPoC・ステージ化キュー](./next-poc-and-stage-work.md)を正とする。本文は実施時点の証拠であり、旧箱番号や当時の実装順を現在の結論に使わない。
 
 > 2026-08-16現行更新: S-810はVFR cadence判定ではなく、native seek停止後の提示frame比率（1:1 / 4:3 / 16:9 / 9:20、各相対5%以内）へ変更した。実開箱はH-053の人手確認待ち。POC-008、POC-029、POC-032は対応APIの実挙動を捏造せず、User Preferences、Local Font Access、Text Fragment `beforematch`の実API呼び出しを隔離ページへ追加した。未対応環境でPASS表示へ置き換えない。
 
@@ -14,9 +14,28 @@
 - 実測: POC-006の6候補ではVP8のみ `powerEfficient=false`、VP9 / H.264 / AV1 / HEVCは3灯すべて`true`。最高pixel rateのH.264 / 1920×1080 / 60fps / 8Mbpsを正解候補として選べた。permission state は geolocation / notifications=`denied`、camera / microphone=`prompt`。`connection.type` と `CSS.highlightsFromPoint` は欠損。
 - 権限の受諾、カメラ・マイク取得、連絡先取得、フォント列挙、外部accountログイン、SMS送信、決済、機器操作、負荷生成は行っていない。これらは成功を模倣できず、専用の実機・account・公開HTTPS環境が要る。
 
+## 2026-08-18 Windows Chrome追加報告（ユーザー実測）
+
+Windows ChromeでPOC-035〜054を一括確認した結果を、実測者の報告として記録する。ここでいうpositiveは「そのPoCの中心操作を観測できた」、negativeは「この環境では成功経路を観測できなかった」を意味し、製品stageの採用や公開環境の合格を意味しない。
+
+- positive: POC-036, POC-037, POC-039, POC-040, POC-041, POC-042, POC-043, POC-044, POC-045, POC-048, POC-049, POC-050, POC-051。
+- negative: POC-035, POC-052, POC-054。
+- cleanup / 説明不足: POC-038は「3つの窓を同時に重ねる」の操作意図が不明瞭、POC-053はpositiveに見えるが何が変化したか見えない。038は横スクロールとroot付きratio表示へ、053はnative字幕とactive cue表示へ修正する。
+- 未報告の項目は、Windows Chromeで機能待ち・操作環境待ちとして結果を推測しない。
+
+### 2026-08-20 製品採否レビュー
+
+D-148でPOC-035〜054を全件レビューし、PoCのpositive / negativeとは別に製品stageの処遇を確定した。下記は結論の索引であり、成功条件と実装順は[次のPoC・ステージ化キュー](./next-poc-and-stage-work.md)を正とする。
+
+- 新規stage候補: POC-036、037、038、041、042、046、048、051、052、053。
+- stage不採用: POC-035、039、040、043、044、045、047、049、050、054。
+- POC-052の単体negativeは旧fixtureに対する証拠として残す。その後S-810の固定segment packでMediaSource / SourceBuffer経路を製品実装できたため、player自身がsegmentをappendする別体験を採用した。
+- POC-040、043、044、045、049、050は内部実装に利用できるが、問題箱・採用stage・API件数には含めない。
+- POC-051はS-350、POC-052はS-810、POC-053はS-350-B05へ統合せず、それぞれ異なる中心操作の独立stageとする。
+
 ## 2026-08-09 製品初版への反映
 
-現環境で中心経路を確認できた範囲を、S-020 / S-030 / S-060 / S-150 / S-220 / S-270 / S-350 / S-510 / S-580と、新規S-610 / S-620 / S-640 / S-650 / S-660 / S-670 / S-710 / S-720へ反映した。registryは68stage・157箱、PoCと製品stageは別entryとして維持する。
+この記録時点で中心経路を、既存stageと新規S-610 / S-620 / S-640 / S-650 / S-660 / S-670 / S-700 / S-710 / S-720 / S-780 / S-810へ反映した。ここにある69stage・159箱は当時のスナップショットであり、現行registryは81stage・181箱である。PoCと製品stageは別entryとして維持する。
 
 - S-060-B02、S-150-B02/B03、S-220-B04、S-580-B02、S-610、S-620、S-640、S-650、S-660、S-670、S-710、S-720は、実ブラウザの再確認が必要な初版実装として人手確認待ちへ移した。
 - S-030-B02、S-350-B04〜B07、S-510-B02は、対応API／native UIの実入力を製品stageで再確認する。
@@ -38,7 +57,7 @@
 | 006 S-350 | PARTIAL | 6 codec profileの3灯、12/24/30/60fps VFR、3 native解像度、3 VTT track、3 AAC trackを固定fixtureで検証。B01〜B03はPOC-031でnative seek、mute、play後pauseをユーザーが実入力して合格。B04〜B06は実browserで合格し、B07はnative字幕menuで`Busybox`へ変更すると対象trackだけが`showing`になることをユーザーが確認した。B08は3音声fixtureをffprobe検証した。 | 現browserは`audioTracks`が`undefined`のためB08は未観測で、custom pickerは設けない。 |
 | 007 S-430 | FAIL | Audio Session APIが現在のChromeにない。 | Safari/WebKit実機でのみ `active → interrupted → active` を実音声focusで再PoCする。 |
 | 008 S-480 | PARTIAL | 隔離PoCへ5 preferenceの実`requestOverride()` / `clearOverride()`入口と実効media-query表示を追加した。非対応環境ではunsupportedを表示し、CSS模倣や合成eventを使わない。 | User Preferences対応browserでの実override、`change`、permission、clear後の復帰を確認する。 |
-| 009 S-510 | PARTIAL | Windows Chromeではsandbox iframe内のcustom draggable divを親documentへ出すと禁止cursorになり、drop targetへ到達しなかった。PoC sourceをbrowser標準でdraggableな実`img`へ変更し、custom element由来かiframe境界自体かを切り分ける。 | native image版のsandbox iframe→親document実drag、別window、実第二originを再確認する。 |
+| 009 S-510 | PARTIAL | Windows Chromeではsandbox iframeから親documentへのDnDが禁止cursorとなった。一方、別windowからの実drag / dropはユーザーが成功を確認した。 | 製品stageをページ内画像、OS File、iframe拒否→別windowの3箱へ再構成し、許可／拒否cursorとdragover表示を含めて再確認する。 |
 | 010 S-580 | PARTIAL | 明示操作で一文字ずつqueueした発話が、実聴取で`aspuwiq`として聞こえた。 | voice差、cancel/error、background、複数人での聴取UXは未実施。 |
 | 011 S-620 | PASS | [17件fixture](../fixtures/unicode/data.ts)とGNU Unifont 17.0.05の[subset WOFF2・OFL](../fixtures/unicode/fonts/README.md)をGit管理した。17回答の一意性、各formatter/parserのround-trip、私用領域・置換文字不使用、font `cmap`の要求214 code point全収録を自動検証した。隔離browserでは17式、RTL 5式、漢数字、算木の位別交互表記、基数20、Mayan上位桁からの縦積みを実描画し、豆腐化0件、選択・copy glyph不一致0件を確認した。 | 製品stageでは体系名、Unicode version、基数、答えを隠し、式と共通ASCII整数欄だけを置く。Mayanのcopyでは縦列境界の改行を許すが、空白を除いたglyph列の完全一致を維持する。font load失敗を代替clearにしない。 |
 | 012 S-630 | FAIL | Network Informationの`connection.type`が欠損。 | Android / ChromeOS等の接続別実機以外で推定しない。 |
@@ -57,13 +76,39 @@
 | 025 S-750 | PARTIAL | OTPCredential APIは存在。 | 実SMS / Safari AutoFill、未汚染field、`:autofill`を未観測。 |
 | 026 S-760 | FAIL | Contact Picker APIが現在のChromeにない。 | 対応Android実機でのみ、架空contactを用いた2経路を再PoCする。 |
 | 027 S-770 | PARTIAL | IdentityCredential/FedCM入口は存在する。providerなしの旧呼出しは必須`identity.providers`欠損で失敗したため、登録不要・任意client ID／origin対応のMockFedCMをPoC専用providerとして設定した。 | MockFedCMへ架空値でsign inし、browser所有chooserとFedCM専用credentialを確認する。製品化時は公式provider、公開RP登録、実accountで再監査する。 |
-| 028 S-780 | PASS（local技術・stage PoC） | Viteのmethod URLに`Link: rel=payment-method-manifest`を返す開発／preview middleware、payment method/app manifest、Busybox／decoy handler、handler window、承認・拒否・retryの3箱stage試作を実装した。PoCページのLink header照会、手動Worker登録（`paymentManager=true`）、foreground Chromeでの技術検証・stage PoCを確認した。handler windowの選択は承認／拒否／再試行のどれにも固定しない。 | 製品公開時だけ、`Link` headerを供給できるoriginを別途確定する。 |
+| 028 S-780 | PASS（local技術・3箱stage PoC） | Viteのmethod URLに`Link: rel=payment-method-manifest`を返すmiddleware、manifest、handler、window、承認・拒否・retryの3箱stage試作を実装し、foreground Chromeで確認した。この実測はD-147以前の3箱PoCである。製品stageはその後○/◇の2 appと指定wallet B04へ拡張した。 | managed static hostの公開originでLink header、browser-owned 2候補、B01〜B03のwallet非依存、◇workerのtrusted eventで開くB04をH-050で確認する。 |
 | 029 S-790 | PARTIAL | 隔離PoCへ`window.queryLocalFonts({ postscriptNames })`の1件限定照会、`FontData.blob()`、Blob由来`FontFace` glyph表示、SHA-256証跡、revoke入口を追加した。全font列挙・upload・`local()`代替は使わない。 | desktop Chromium対応環境で専用OTFをOS user installし、permission、対象名一致、uninstall／revoke、deny／cancelを実確認する。 |
-| 030 DR-041 | PASS | `command`属性を持つbuttonからnative dialogを開き、`commandfor` / `command="close"`で閉じることを実操作で確認。 | `close`以外のcommandはこの追加箱の条件では不要。 |
+| 030 DR-041 | IMPLEMENTED / MANUAL | 一つのPopoverへ複数buttonから宣言的commandを送り、`CommandEvent.source` / `command`の列、light dismiss、button由来hideを記録する実装へ修正した。Dialogのcloseだけを成功経路にしない。 | Windows Chromeでshow→show→hide、Esc、外側クリック、誤順、details再入場、listener cleanupを確認する。 |
 | 031 S-230/S-350/S-430 | PASS | ユーザーがPoCページの全表示checkを緑にした。S-350はnative seek、mute、play後pause、S-230はnative／page PiP入場とPiP終了、S-430-B01はpage外`pause` actionを実入力で確認した。S-430探索logでは`play`、`pause`、`seekto`×2、`nexttrack`、`previoustrack`を受信し、page内安全停止はB01を通さなかった。 | `seekbackward`、`seekforward`は今回未観測だが成功条件・追加箱にはしない。H-052の別OS／browser surface確認は公開対象を広げる時の人手ゲートとして残す。 |
 | 032 S-800 | PARTIAL | 隔離PoCへ、文脈付きfragmentと「先頭空白＋suffix」の2 fixtureを追加し、`hidden="until-found"`対象の`beforematch`を実観測する。入力欄・通常anchor・自作highlightで代替しない。 | Chrome系でB01/B02のURL貼付、UA highlight、`beforematch`、Back／reload、対象外語では発火しないことを確認する。 |
 | 033 S-430-B02 | NOT_RUN | Audio Sessionのactive／interrupted／activeを観測するlazy case、外部focus操作手順、listener／audio cleanupを追加した。 | Audio Session対応Safari／WebKitで実interruptionと再生復帰を確認する。通常pause、Media Session action、synthetic eventではPASSにしない。 |
-| 034 S-350-B07 | UNSUPPORTED | native `audioTracks`を限定照会する監視枠と、既存multi-audio fixtureへの入口を追加した。custom pickerは置いていない。 | `HTMLMediaElement.audioTracks`とnative track UIを同時に公開するbrowserが現れた時だけ再実施する。 |
+
+### 2026-08-18 追加PoC wave（POC-035〜054）
+
+採用した最新版だけを共通のlazy accordionと`advanced-poc.ts`へ残した。各ケースは実APIをfeature-detectし、非対応時にfallbackでPASSへ置き換えない。`partial`は人手確認または専用fixtureが残る状態であり、製品stageへの採用を意味しない。
+
+| PoC | 状態 | 現在の証拠 | 次の確認 |
+| --- | --- | --- | --- |
+| 035 Keyboard Layout Map | IMPLEMENTED / WINDOWS CHROME NEGATIVE | trusted keydown 3件と`navigator.keyboard.getLayoutMap()`を記録する入口を実装したが、ユーザー実測では成功経路を確認できなかった | APIの実提供・permission・layout差が確認できる環境で再試行。未提供時に製品化しない |
+| 036 Pointer Lock | IMPLEMENTED / MANUAL | user activationからlock、実movement、Esc解除、pointerlockchangeを記録 | lock中の3movement、解除、離脱cleanup |
+| 037 Idle Detection | IMPLEMENTED / MANUAL | `requestPermission()`後の実IdleDetectorをthreshold 60秒で開始 | user idle / screen state、permission拒否、abort |
+| 038 IntersectionObserver | IMPLEMENTED / CLEANUP-UNCLEAR | Windows Chromeで中心操作は確認できたが、旧表示の「3窓を同時に重ねる」が不明瞭だったため、scroll rootと60%閾値を明示するUIへ修正 | 横scroll、3窓同時ratio、閉じた時のobserver disconnect |
+| 039 URL address-bar route | IMPLEMENTED / MANUAL | pathname/query/hashを実navigationし、sessionStorageで3経路を累積 | reload、Back、storage reset、別タブの分離 |
+| 040 Sanitizer API | IMPLEMENTED / MANUAL | `Sanitizer` / `Element.setHTML`でscript・event属性を除去 | 対応Chromeの安全DOM、unsupported表示、危険文字列の非実行 |
+| 041 Document PiP | IMPLEMENTED / MANUAL | 実Document PiP windowとpagehide cleanupを実装 | chooser、PiP閉鎖、離脱cleanup |
+| 042 EditContext | IMPLEMENTED / MANUAL | textarea fallbackなしのEditContext surfaceとtextupdate入口 | IME composition、selection、cancel、離脱 |
+| 043 WebGL2 projection | IMPLEMENTED / PARTIAL | WebGL2 context、viewport、framebuffer readbackを実測 | shader / projectionを問題化できるか、context loss |
+| 044 Fetch conditional | IMPLEMENTED / PARTIAL | ETagと`If-None-Match`のheader/resultを記録 | static hostの304可否とcache cleanup |
+| 045 MessageChannel | IMPLEMENTED / MANUAL | iframeへtransferしたMessagePortだけでready/ackを交換 | iframe load、port close、wrong-port負例 |
+| 046 File System Access | IMPLEMENTED / MANUAL | `showSaveFilePicker()`の同一handleを再読込 | OS editor変更、permission revoke、cancel |
+| 047 File and Directory Entries | IMPLEMENTED / MANUAL | Explorerのdirectory dropを再帰的`readEntries()`で走査 | nested tree、flat file拒否、drag cleanup |
+| 048 Compression Streams | IMPLEMENTED / PASS-CANDIDATE | gzip → `DecompressionStream` → exact payloadのstream照合 |形式負例と全量bufferを避けた製品境界 |
+| 049 Streams backpressure | IMPLEMENTED / PASS-CANDIDATE | `WritableStream`遅延sinkとwriter.ready / desiredSizeを記録 | backpressure値、abort、再実行 |
+| 050 Trusted Types | IMPLEMENTED / PARTIAL | policy由来HTMLをsinkへ渡す入口を実装 | CSP `require-trusted-types-for` fixtureでenforcementを確認 |
+| 051 Fullscreen | IMPLEMENTED / MANUAL | 実fullscreen elementとfullscreenchangeを観測 | S-350-B08との差分、Esc、離脱cleanup |
+| 052 MediaSource | IMPLEMENTED / WINDOWS CHROME NEGATIVE | SourceBufferへ固定WebMをappendし再生する入口を実装したが、ユーザー実測では成功経路を確認できなかった | segment分割fixture、updateend/error、URL revokeを観測できる環境で再試行 |
+| 053 WebVTT | IMPLEMENTED / POSITIVE-BUT-UNCLEAR | cue編集の中心操作はpositiveに見えたが、何が変化したか表示から判別できなかった。native字幕とactive cue previewを追加した | A/B cueの表示変化、cuechange、track cleanup |
+| 054 WebCodecs | IMPLEMENTED / WINDOWS CHROME NEGATIVE | `VideoDecoder.isConfigSupported()`の入口を実装したが、ユーザー実測では成功経路を確認できなかった | encoded chunk fixture、decode output、close/errorを観測できる環境で再試行 |
 
 ### POC-006 native media実測
 
@@ -98,7 +143,7 @@
 
 ## 実装判断
 
-- D-137で、現環境にAPIまたは中心経路があり、製品実装によって残る不確実性を実stage上で確認できる箱は一括実装へ進めることにした。これは当時の履歴であり、現在の残存PoCの対象とWaveは[残存PoC実装計画](./remaining-poc-implementation-plan.md)を正とする。
+- D-137で、現環境にAPIまたは中心経路があり、製品実装によって残る不確実性を実stage上で確認できる箱は一括実装へ進めることにした。これは当時の履歴であり、現在の対象と作業順は[次のPoC・ステージ化キュー](./next-poc-and-stage-work.md)を正とする。
 - `PARTIAL`をstage全体の一状態として扱わず、実装後は箱単位で「現環境確認済み」と「外部確認待ち」を分ける。S-650の未観測permission変化、S-660のfair / serious / critical等をtest doubleだけでPASSへ昇格しない。
 - `FAIL` と `BLOCKED` は「不採用」ではなく、この実施環境では肯定証拠を作れなかった状態である。今回のbatchへ含めず、対応環境、fixture、または詳細設計を用意した別batchで扱う。
 - game製UI、別API、synthetic event、固定flagだけの迂回で未確認箱を開けない。

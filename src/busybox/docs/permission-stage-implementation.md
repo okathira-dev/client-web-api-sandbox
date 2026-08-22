@@ -148,21 +148,14 @@ DR-019で追加承認したB05〜B09は、文字倍率4箱とは別にUser Prefe
 - stage mapではS-180とS-490からS-500へ手掛かりの継承edgeを引くが、到達順は強制しない。
 - 人手確認: H-001, H-002, H-003, H-004, H-006, H-014, H-020, H-025。mouse / touch / keyboard selection、OS copy UI、部分copy、別paste、複数`busybox`防止、前後空白、synthetic event、離脱cleanupを確認する。
 
-## S-510 窓を渡るステッカー（仮）
+## S-510 境界を越える画像
 
-- B01 sourceはinstalled PWA windowでだけ有効にし、通常browserで開いた同一roundのreceiver pageを別top-level contextとして用意する。共通PWA導線からinstallとsource起動方法へ到達できるようにする。
-- sourceはround ID、乱数nonce、checksumを埋めた小さなPNG Blob / Fileをplayerがdragを始める前にmemory生成する。画像表面は同じpayloadを文字として露出しない。
-- draggable stickerの同期`dragstart` handler内でだけ`event.dataTransfer.items.add(file)`を呼び、drag imageをstickerへ設定する。非同期`toBlob()`をdragstart後に開始しない。
-- receiverの実`drop` eventで`DataTransfer.items`からkind `file`、MIME `image/png`の項目を取得し、size上限内のbytesをlocal decodeする。embedded round ID、nonce、checksumが現在のarmed roundと一致した時だけS-510-B01を開く。
-- `text/plain` / custom stringだけのdrop、同一page内drop、file input、clipboard paste、download後のupload、OSの「開く」、programmatic DragEventでは開かない。
-- B02はBusyboxとはcross-siteになる専用の外部静的originを直接child iframeとして埋める。helperはcookie、storage、analytics、identity、backendを持たず、current round識別子と期待layer一覧だけをquery / initial messageで受ける。
-- helper iframeには事前生成・Git管理した透明PNG layer 3枚を直接`<img>`として置き、iframe内ではblur / cropして表示する。各画像の同期的な実`dragstart`で、browser既定の`text/uri-list`画像URLを維持したまま、layer IDとcurrent roundを標準text payloadへ追加する。非同期処理や画像生成を`dragstart`から開始しない。
-- 親Documentの現像台はtrustedな実`drop`でだけpayloadを読む。`text/uri-list`がallowlist済みhelper origin上の期待PNG URLであり、current roundとlayer IDが一致し、同じiframe instanceのactive dragとして整合する場合だけlayerを受領する。3枚をfilterなしの`<img>`として同じ座標へ重ね、全layerが一度ずつ揃った時にS-510-B02を開く。
-- B02は通常link / address barから同じURLをdragした場合、同一page内drag、file input、clipboard、download / upload、`postMessage`だけ、constructed DragEvent、想定外origin / path、stale roundでは開かない。cross-origin画像はcanvasでpixel readせず、表示だけに使う。
-- 完成時は固定flag `BUSYBOX{THE_IMAGE_ESCAPED_FROM_ITS_FOREIGN_FRAME}`をcopy可能なtextとして表示する。PNG 3枚、完成見本、生成source、生成手順、checksumを実装前にGit管理する。
-- PNG、payload、drag履歴をstorageやDriveへ保存せず、serverへ送信しない。round終了時にBlob / File参照、iframe、active drag、受領layer、receiver recordを破棄する。
-- desktop Chrome、Edge、Firefox、Safariで、B01のscript生成Fileがinstalled PWA windowからbrowser windowのdropまで保持されるか、B02の`text/uri-list`とcurrent payloadがcross-origin iframeから親Documentのdropまで保持されるかをPoCする。不成立環境へ別clear routeを追加しない。
-- 人手確認: H-001, H-002, H-003, H-005, H-013, H-014, H-019, H-020, H-023, H-025。PWA / browser境界、iframe / parent境界、window配置、取消、別画像、oversize、通常link、stale round、重複layer、同一page非clear、keyboard説明、cleanupを確認する。
+- B01はページ内の`drag-page.png`をそのままURIでdropする。期待URLとfixture SHA-256が一致したtrusted `drop`だけが開く。
+- B02は`draggable=false`の`drag-file.png`を保存してOSのファイル一覧からdropする。`DataTransfer.files`のbytesが期待SHA-256と一致した場合だけ開き、ページ内URIや別ファイルは開かない。
+- B03はsandbox iframe内の`drag-window.png`を意図的に拒否状態にする。プレイヤーが別windowを開き、そのwindowから同じ画像のURIとround markerを実dropした場合だけ開く。iframeのmarkerや通常linkは開かない。
+- 3箱のdrop欄は、許可payloadなら緑のcopy cursor、拒否payloadなら赤の禁止cursorとなり、ドラッグ中は背景とfocus ringが変わる。合成イベント、file input、postMessageだけ、clipboard、DevTools改変は判定外である。
+- fixtureは`src/public/busybox/drag-*.png`とmanifestをGit管理し、stageはFileを保存・upload・送信せず、別windowとmessage listenerを離脱時に破棄する。
+- 人手確認: H-001, H-002, H-003, H-005, H-013, H-014, H-019, H-020, H-023, H-025。3箱のcursor、dragover、OS保存、iframe拒否、popup、別画像、再入場、cleanupを確認する。
 
 ## S-520 近づく影（仮）
 
@@ -469,7 +462,9 @@ DR-019で追加承認したB05〜B09は、文字倍率4箱とは別にUser Prefe
 - Consoleをread-only表示面、pageを入力面として往復する中心体験がS-670端末迷路と重複するため、stage・問題箱を実装しない。
 - `console.table()`は内部診断へ任意利用できるが、採用API、問題箱、clear条件には数えない。
 
-## S-690 断片をたどる文書（DR-049追加、詳細保留）
+## S-690 断片をたどる文書（DR-049追加、製品実装済み）
+
+> 2026-08-20に本文の設計を製品stageへ反映した。現在の対象文、4語、固定回答、cleanup、人手確認は`S-690.tsx`の日本語JSDocとH-054を正とし、下記の未確定・実装前表現は検討履歴として読む。
 
 - 一つのstageに一箱を置く枠組みを採用する。一つの長いdocument内に複数のText Fragment linkを置き、playerが同一page内を順にjumpしてbrowserが示した一節からhint片を集め、組み合わせた最終回答をpage上の入力欄へ提出する。
 - 移動にはround用の実`<a href="...#:~:text=...">`とtrustedなlink activationを使う。scriptだけの`location`変更、`scrollIntoView()`、通常fragment ID、app独自highlight、find-in-pageを成功手順の代替にしない。
@@ -479,14 +474,16 @@ DR-019で追加承認したB05〜B09は、文字倍率4箱とは別にUser Prefe
 - long documentは通常のreading順を保ち、linkをkeyboardでactivateできるようにする。hintをUA highlightの色だけで区別せず、URLへtoken、個人情報、保存進捗を含めない。巡回順、scroll位置、誤答、閲覧時刻を保存・同期・送信しない。
 - 非対応または実link activation後にtextが示されない環境は未観測とし、模擬scrollによる代替clearを作らない。詳細確定後、自動fixture testと人手確認H-038を具体化する。
 
-## S-800 断片を組み立てる文書（D-136追加、詳細保留）
+## S-800 断片を組み立てる文書（D-136追加、製品実装済み）
+
+> 2026-08-20にB01 / B02を製品stageへ反映した。現在のfragment、対象語、`beforematch`判定、既知のCtrl+F制約、人手確認は`S-800.tsx`の日本語JSDocとH-055を正とし、下記の実装前表現は検討履歴として読む。
 
 - 同一pageの長い英文と、画面上部にB01 / B02の二箱を置く。B01は対象語を直接読めないpercent-encoded `textStart`とpunctuation contextを示し、B02は対象語そのものを示す。page内にfragmentや単語の入力欄を置かず、playerがaddress barへ同一pageのfragment付きURLを貼る。
 - `textStart`を空白、suffixを`.`とする指定は中間の任意単語を含むmatchにならないため使わない。B01 / B02とも対象語だけがUA highlightされるdirectiveをfixtureとして固定し、対象語は互いに異なり各block内で一意にする。
 - 通常の可視Text Fragment matchはauthor scriptから範囲を取得できないため、対象語を`hidden="until-found"`に置き、実matchで発生する`beforematch`を対応箱の開放条件にする。対象語は成功時に英文へ出現してhighlightされる。通常anchor、独自highlight、scroll量、`IntersectionObserver`を代替clearにしない。
 - find-in-pageでも`beforematch`が発生し得ることを既知の迂回として記録する。英文、対象語、fragment文字列、空欄が文として不自然にならない構成、誤match耐性は実装前に一組の問題として吟味し、POC-032とH-038で実browser差を確認する。
 
-## S-700 遠くの映写箱（DR-075 / DR-016 / DR-076追加、未実装）
+## S-700 遠くの映写箱（DR-075 / DR-016 / DR-076追加、B03製品実装済み）
 
 - 新規stageに3箱を置く。B01 / B02は共通してplayerの明示操作から`HTMLMediaElement.remote.prompt()`を呼び、`connect` eventまたは`remote.state === "connected"`を観測してから、current roundに割り当てたself-hosted動画区間を再生する。pickerの選択だけで解決する`prompt()`完了、`connecting`、通常local再生、PiPでは開かない。
 - 動画は外部機器から取得できる有限個のsame-origin資産とし、roundごとに文字鍵区間とQR区間を選ぶ。Blob URL、MediaStream、送信先だけの別document、外部画面への任意UI送信を前提にしない。選択区間と鍵はround ID、slot、checksumで結び、古いroundや固定の汎用鍵を拒否する。
@@ -587,17 +584,18 @@ DR-019で追加承認したB05〜B09は、文字倍率4箱とは別にUser Prefe
 - OAuth redirect、popup、通常Sign-In button、game製account chooser、mock credential、別stageのDrive tokenを代替clearにしない。provider accountを持たないplayerは該当箱を未観測のままにでき、箱数や報酬で複数serviceへの登録を促さない。
 - 自動確認はprovider adapter共通contractでmanual FedCM、auto / legacy result、unexpected config URL、空token、duplicate / late callback、cancel、prompt非表示、network error、reset、離脱、非保存を検証する。Google adapterは`select_by`全値を追加確認する。H-049では採用providerごとにclient登録、実account、native FedCM UI、manual Continue、解除案内、token非保存を確認する。
 
-## S-780 三つの財布（DR-129追加、PoC確認済み・製品stage未実装）
+## S-780 四つの財布（DR-129追加、D-147改訂、製品stage実装済み・公開origin確認待ち）
 
-- 攻略必須経路と全箱必須報酬から外したLabsに3箱を並べる。Busyboxが管理する架空payment method manifest、payment app manifest、架空handlerのService Workerだけを使い、実payment providerをsupported methodへ混ぜない。
-- trusted `PaymentRequestEvent`はhandler到達の証跡として記録するが、単独の箱にはしない。page側のclick、game製picker、登録済み判定、`canMakePayment()`だけでは開かない。
+- 攻略必須経路と全箱必須報酬から外したLabsに4箱を並べる。Busyboxが管理する架空payment method manifest、○/◇の2 payment app manifest、別scopeの架空handler Service Workerだけを使い、実payment providerをsupported methodへ混ぜない。
+- B01〜B03ではtrusted `PaymentRequestEvent`をhandler到達の証跡として扱い、財布を限定しない。B04はbrowser所有chooserで◇を選び、current request IDを伴うtrusted eventが◇workerから届いた時点で開く。page側のclick、game製picker、登録済み判定、`canMakePayment()`だけでは開かない。
 - B01はhandler windowで承認し、期待methodと固定schemaを満たす架空responseをmerchantが受けて`complete("success")`へ到達した時点で開く。
 - B02はhandler windowで意図的拒否を選び、固定の拒否responseをmerchantが検証して`complete("fail")`へ到達した時点で開く。handler例外、handler不在、browser cancel、`AbortError`、`OperationError`は拒否成功にしない。
 - B03は同じhandlerの最初のresponseへmerchantが`retry()`を行い、再提示された同じhandlerの二度目のresponseを成功完了した時点で開く。開始側でApprove／Decline／retryを固定せず、返ったresponseに応じて箱を判定する。
+- B04は◇handlerへの実到達だけを条件にし、その後の承認、拒否、再試行を限定しない。○handlerやstale / untrusted messageでは開かない。
 - 各条件が成立した瞬間に対応箱だけを開く。取引結果label、完了message、固定flagを表示しない。handler window内は承認、拒否、instrument選択に必要な非言語UIだけにし、任意のWeb UIを作れることを利用した別パズルを埋め込まない。
-- payer name / email / phone、billing / shipping address、card、実payment credential、実通貨を要求しない。架空response detailsとcurrent attemptはmemory内の判定後に破棄し、永続化するのは通常のB01〜B03解決済みproblem IDだけとする。
+- payer name / email / phone、billing / shipping address、card、実payment credential、実通貨を要求しない。架空response details、current attempt、wallet IDはmemory内の判定後に破棄し、永続化するのは通常のB01〜B04解決済みproblem IDだけとする。
 - cancel、error、非対応、登録失敗、JIT install UI非表示は未観測にする。resetと離脱ではpending requestを可能な範囲でabortし、handler window、message channel、listener、一時response参照を解放する。Service Worker登録の保持・解除は他のBusybox worker scopeと衝突しない専用cleanup設計にする。
-- 自動確認はfake merchant / handler adapterでwrong handler、untrusted / stale event、approve、deliberate decline、exception、cancel、first-pass success、retry two-pass success、handler switch、late / duplicate response、reset、離脱、非保存を検証する。H-050で公開browserの候補UI、trusted event、handler window、`complete("success")` / `complete("fail")`、同一handler `retry()`を実動作確認する。
+- fixture testはmethod manifestが2 appを列挙し、名前、worker scope、icon、共有runtimeを同梱することを検証する。H-050で公開browserの2候補UI、◇workerのtrusted event、両handler window、`complete("success")` / `complete("fail")`、同一handler `retry()`を実動作確認する。公開先は通常のGitHub Pagesではなく、method URLへ`Link: rel="payment-method-manifest"`を返せるmanaged static hostを使う。
 
 ## S-790 活字の鍵（DR-137追加、未実装）
 

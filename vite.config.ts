@@ -2,10 +2,11 @@ import { resolve } from "node:path";
 import react from "@vitejs/plugin-react";
 import { defineConfig, type Plugin } from "vite";
 
-const root = resolve(__dirname, "src"); // srcフォルダをrootにする。マルチページのフォルダをsrcにまとめたい＆変に階層を増やしたくない。
-const outDir = resolve(__dirname, "dist"); // でも当然ビルドフォルダはsrcの外にしたい
+const root = resolve(import.meta.dirname, "src"); // srcフォルダをrootにする。マルチページのフォルダをsrcにまとめたい＆変に階層を増やしたくない。
+const outDir = resolve(import.meta.dirname, "dist"); // でも当然ビルドフォルダはsrcの外にしたい
 
 const paymentManifestRoutes = new Map([
+  ["/busybox/payment/method", "/busybox/payment/payment-method-manifest.json"],
   [
     "/busybox/poc/payment/method",
     "/busybox/poc/payment/payment-method-manifest.json",
@@ -69,6 +70,9 @@ function paymentManifestLinkPlugin(): Plugin {
 export default defineConfig({
   base: "./", // JSのimportが相対パスになる。ビルドしたフォルダ単体で動くので便利。
   root,
+  // The app root is src/, but developer-only VITE_* variables live beside
+  // package.json and are intentionally excluded from Git there.
+  envDir: import.meta.dirname,
   appType: "mpa", // マルチページアプリケーションとして設定（SPAフォールバックを無効化）。kojo-xml-viewerで404の反応を見る必要があるため。
   assetsInclude: ["**/*.pack"],
   plugins: [react(), paymentManifestLinkPlugin()],

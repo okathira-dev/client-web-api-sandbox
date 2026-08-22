@@ -1,0 +1,57 @@
+{
+  "generator": "scripts/generate-busybox-s700-fixtures.mjs",
+  "assets": [
+    {
+      "id": "a",
+      "key": "silver orbit",
+      "token": "bbx-rp-a-7k3m2q",
+      "file": "remote-slot-a.webm",
+      "sha256": "35bcf3b4fd8cd0be27573b81a34b0161d03f3208221d151bb5914fc759827b77",
+      "bytes": 15915,
+      "width": 640,
+      "height": 360,
+      "seconds": 8,
+      "textRange": [0, 4],
+      "qrRange": [4, 8]
+    },
+    {
+      "id": "b",
+      "key": "quiet prism",
+      "token": "bbx-rp-b-9x4v6n",
+      "file": "remote-slot-b.webm",
+      "sha256": "aa4470e299d521e7d4889edc694a7b3a036f733dcc61b29083e27ee69dc033ef",
+      "bytes": 16032,
+      "width": 640,
+      "height": 360,
+      "seconds": 8,
+      "textRange": [0, 4],
+      "qrRange": [4, 8]
+    },
+    {
+      "id": "c",
+      "key": "amber signal",
+      "token": "bbx-rp-c-2h8w5r",
+      "file": "remote-slot-c.webm",
+      "sha256": "350a9d3939ee248ea054d3f1b5fd688e748bbd6043612c7f55eceb3b9d13deae",
+      "bytes": 16269,
+      "width": 640,
+      "height": 360,
+      "seconds": 8,
+      "textRange": [0, 4],
+      "qrRange": [4, 8]
+    },
+    {
+      "id": "d",
+      "key": "violet harbor",
+      "token": "bbx-rp-d-6p3y9t",
+      "file": "remote-slot-d.webm",
+      "sha256": "bd98ce5a5f15e914faaeb3997e30cf61f288c978c199cdffcb2f353478009235",
+      "bytes": 15462,
+      "width": 640,
+      "height": 360,
+      "seconds": 8,
+      "textRange": [0, 4],
+      "qrRange": [4, 8]
+    }
+  ]
+}

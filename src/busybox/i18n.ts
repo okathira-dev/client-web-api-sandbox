@@ -14,6 +14,13 @@ export function text(locale: Locale, value: LocalizedText): string {
   return value[locale];
 }
 
+/** Common brand text shared by the application shell and the EditContext stage. */
+export const productCopy = {
+  brandName: "Busybox",
+  descriptor: "Web API Explorer",
+  fullTitle: "Busybox: Web API Explorer",
+} as const;
+
 export const messages = {
   ja: {
     tagline: "いつものブラウザが、パズルになる。",
@@ -77,6 +84,20 @@ export const messages = {
     driveSuccess: "同期しました。両方で開いた箱を残しています。",
     driveError:
       "同期できませんでした。ローカル進捗は変更していません。もう一度試す",
+    driveFailureCorrupt:
+      "Drive上の一部バックアップを読み取れません。自動で上書き・削除していません。",
+    driveFailureFuture:
+      "新しい版で作られたDriveバックアップがあります。この版では上書きしていません。",
+    driveFailureConflict:
+      "別の端末が同時に同期しました。自動再試行後も解決しなかったため、選んで続けてください。",
+    driveFailureUnknown:
+      "Drive同期を完了できませんでした。ローカル進捗は変更していません。",
+    driveRetry: "Drive同期を再試行",
+    driveContinueLocal: "Driveを変更せずローカルで続ける",
+    driveExportReplica: "このバックアップを保存",
+    driveRemoveReplica: "このバックアップだけを削除",
+    driveRemoveReplicaConfirm:
+      "このDriveバックアップだけを削除します。保存していない進捗が含まれる可能性があります。続けますか？",
     driveDisconnect: "Google Driveとの接続を解除",
     driveDeleted:
       "Driveのバックアップを削除しました。ローカル進捗は残っています。",
@@ -144,6 +165,20 @@ export const messages = {
     driveSyncing: "Merging local and Drive progress…",
     driveSuccess: "Synced. Boxes opened on both sides were kept.",
     driveError: "Sync failed. Local progress was not changed. Try again",
+    driveFailureCorrupt:
+      "Part of the Drive backup cannot be read. It was not overwritten or deleted automatically.",
+    driveFailureFuture:
+      "A Drive backup was created by a newer version. This version has not overwritten it.",
+    driveFailureConflict:
+      "Another device synced at the same time. Automatic retries were exhausted; choose how to continue.",
+    driveFailureUnknown:
+      "Drive sync could not finish. Local progress was not changed.",
+    driveRetry: "Retry Drive sync",
+    driveContinueLocal: "Continue locally without changing Drive",
+    driveExportReplica: "Save this backup",
+    driveRemoveReplica: "Delete only this backup",
+    driveRemoveReplicaConfirm:
+      "Delete only this Drive backup? It may contain progress not saved elsewhere. Continue?",
     driveDisconnect: "Disconnect Google Drive",
     driveDeleted: "The Drive backup was deleted. Local progress remains.",
     driveDelete: "Delete Drive backup",

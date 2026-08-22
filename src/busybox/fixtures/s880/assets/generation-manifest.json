@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "parcels": [
+    {
+      "asset": "parcel-a.gz",
+      "format": "gzip",
+      "marker": "pocket compass",
+      "uncompressedBytes": 65536,
+      "compressedBytes": 303
+    },
+    {
+      "asset": "parcel-b.deflate",
+      "format": "deflate",
+      "marker": "violet ledger",
+      "uncompressedBytes": 65536,
+      "compressedBytes": 291
+    },
+    {
+      "asset": "parcel-c.raw",
+      "format": "deflate-raw",
+      "marker": "ember receipt",
+      "uncompressedBytes": 65536,
+      "compressedBytes": 284
+    }
+  ]
+}

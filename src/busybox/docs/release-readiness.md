@@ -1,6 +1,6 @@
 # リリース準備状況
 
-更新日: 2026-08-11
+更新日: 2026-08-21
 
 現行の残問題と動作確認順は[現状・残問題・人手確認への引継ぎ](./current-status-and-handoff.md)を正とする。
 
@@ -9,7 +9,7 @@
 - Viteマルチページの独立入口とGitHub Pages相対パス
 - 日英UI、一覧・設定・About、ステージ直接URL、エラー境界
 - IndexedDB version 1、version 0移行、破損・将来version保護、JSON書き出し、初期化
-- 67ステージ、現行問題箱、未着手・部分解決・完全解決の集約
+- 89ステージ・203問題箱、未着手・部分解決・完全解決の集約
 - 全問題箱を同じ箱DOM・寸法へ統一し、初回リボン、再入場時の閉箱、今回の開箱を分離
 - ステージ遅延読込、能力状態、AbortSignal、個別エラー隔離
 - Busybox scope限定PWA、実行時キャッシュ、更新導線、通知復帰
@@ -21,7 +21,10 @@
 | 条件 | 現在 | 解除方法 |
 | --- | --- | --- |
 | 必須人手ケース | 未実施 | `human-test-matrix.md` の必須ID（全問題箱共通のH-025を含む）へ実施日・環境・結果を記録 |
-| Google OAuth | 未設定 | Cloud設定後、Repository Variable `BUSYBOX_GOOGLE_CLIENT_ID` を登録しH-015〜H-018 |
+| Google Drive OAuth | 未設定 | Cloud設定後、Repository Secret `BUSYBOX_DRIVE_GOOGLE_CLIENT_ID` を登録しH-015〜H-018 |
+| Google FedCM | 未設定 | [専用手順](./google-fedcm-setup.md)でDriveとは別のWeb clientとRepository Secret `BUSYBOX_FEDCM_GOOGLE_CLIENT_ID`を登録しH-049 |
+| Payment Handler host | 公開未確認 | method manifest responseへ`Link: rel=payment-method-manifest`を付けられるmanaged hostでH-050 |
+| 専用API・実機 | 条件別に未確認 | XR、Periodic Background Sync、実SMS、Contact Picker、外部display、Local Font Access等を人手台帳の対応H-IDで確認 |
 | 本番Pages | 未配信 | main統合後のHTTPS・サブパス・直接URL・scopeをH-021で確認 |
 | PWAアイコン互換 | SVGのみ | 対象ブラウザで不足なら192/512 PNGとApple Touch Iconを追加 |
 | 名称・問い合わせ | 未確認 | `Busybox` 名称の公開前確認と公開問い合わせ先の決定 |

@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 2,
+  "generator": "ffmpeg",
+  "asset": "caption-stage.webm",
+  "frameRate": 15,
+  "durationSeconds": 4,
+  "width": 640,
+  "height": 360,
+  "visuals": [
+    {
+      "id": "circle",
+      "start": 0.4,
+      "end": 1.2
+    },
+    {
+      "id": "triangle",
+      "start": 1.55,
+      "end": 2.35
+    },
+    {
+      "id": "square",
+      "start": 2.7,
+      "end": 3.5
+    }
+  ],
+  "probe": {
+    "codec": "vp8",
+    "width": 640,
+    "height": 360,
+    "averageFrameRate": "15/1",
+    "durationSeconds": 4
+  }
+}

@@ -151,3 +151,78 @@ declare class SpeechRecognition extends EventTarget {
   start(): void;
   abort(): void;
 }
+
+type IdleDetectorUserState = "active" | "idle";
+type IdleDetectorScreenState = "locked" | "unlocked";
+
+interface IdleDetectorStartOptions {
+  threshold?: number;
+  signal?: AbortSignal;
+}
+
+declare class IdleDetector extends EventTarget {
+  static requestPermission(): Promise<PermissionState>;
+  readonly userState: IdleDetectorUserState | null;
+  readonly screenState: IdleDetectorScreenState | null;
+  start(options?: IdleDetectorStartOptions): Promise<void>;
+}
+
+interface Window {
+  readonly IdleDetector?: typeof IdleDetector;
+}
+
+interface DocumentPictureInPictureEvent extends Event {
+  readonly window: Window;
+}
+
+interface DocumentPictureInPicture extends EventTarget {
+  requestWindow(options?: { width?: number; height?: number }): Promise<Window>;
+}
+
+interface Window {
+  readonly documentPictureInPicture?: DocumentPictureInPicture;
+}
+
+interface EditContextTextUpdateEvent extends Event {
+  readonly updateRangeStart: number;
+  readonly updateRangeEnd: number;
+  readonly text: string;
+}
+
+declare class EditContext extends EventTarget {
+  constructor(options?: {
+    text?: string;
+    selectionStart?: number;
+    selectionEnd?: number;
+  });
+  readonly text: string;
+  readonly selectionStart: number;
+  readonly selectionEnd: number;
+  updateText(start: number, end: number, text: string): void;
+  updateSelection(start: number, end: number): void;
+  updateControlBounds(bounds: DOMRect): void;
+  updateSelectionBounds(anchor: DOMRect, focus: DOMRect): void;
+  updateCharacterBounds(
+    rangeStart: number,
+    characterBounds: readonly DOMRect[],
+  ): void;
+}
+
+interface HTMLElement {
+  editContext?: EditContext;
+  showPopover(options?: { source?: HTMLElement }): void;
+}
+
+interface Window {
+  readonly EditContext?: typeof EditContext;
+}
+
+interface FileSystemDirectoryHandle {
+  values(): AsyncIterableIterator<FileSystemHandle>;
+}
+
+interface Window {
+  showDirectoryPicker?: (options?: {
+    mode?: "read" | "readwrite";
+  }) => Promise<FileSystemDirectoryHandle>;
+}

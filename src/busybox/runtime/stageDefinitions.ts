@@ -530,6 +530,19 @@ export const stageDefinitions = {
       ),
     component: lazy(() => import("../stages/S-620")),
   },
+  "S-630": {
+    stage: stageById["S-630"],
+    probe: () =>
+      safeCapabilityProbe(() => {
+        const connection = (
+          navigator as Navigator & { connection?: { type?: string } }
+        ).connection;
+        return typeof connection?.type === "string"
+          ? "available"
+          : "unsupported";
+      }),
+    component: lazy(() => import("../stages/S-630")),
+  },
   "S-640": {
     stage: stageById["S-640"],
     probe: () =>
@@ -561,6 +574,23 @@ export const stageDefinitions = {
     probe: () => "available",
     component: lazy(() => import("../stages/S-670")),
   },
+  "S-690": {
+    stage: stageById["S-690"],
+    probe: () => "available",
+    component: lazy(() => import("../stages/S-690")),
+  },
+  "S-700": {
+    stage: stageById["S-700"],
+    probe: () =>
+      safeCapabilityProbe(() =>
+        isSecureContext &&
+        ("PresentationRequest" in window ||
+          "remote" in HTMLMediaElement.prototype)
+          ? "permission-required"
+          : "unsupported",
+      ),
+    component: lazy(() => import("../stages/S-700")),
+  },
   "S-710": {
     stage: stageById["S-710"],
     probe: () =>
@@ -576,6 +606,78 @@ export const stageDefinitions = {
     probe: () => "available",
     component: lazy(() => import("../stages/S-720")),
   },
+  "S-730": {
+    stage: stageById["S-730"],
+    probe: () =>
+      safeCapabilityProbe(() =>
+        isSecureContext && "xr" in navigator
+          ? "permission-required"
+          : "unsupported",
+      ),
+    component: lazy(() => import("../stages/S-730")),
+  },
+  "S-740": {
+    stage: stageById["S-740"],
+    probe: () =>
+      safeCapabilityProbe(() =>
+        isSecureContext && "serviceWorker" in navigator
+          ? "permission-required"
+          : "unsupported",
+      ),
+    component: lazy(() => import("../stages/S-740")),
+  },
+  "S-750": {
+    stage: stageById["S-750"],
+    probe: () =>
+      safeCapabilityProbe(() =>
+        isSecureContext && "credentials" in navigator
+          ? "permission-required"
+          : "unsupported",
+      ),
+    component: lazy(() => import("../stages/S-750")),
+  },
+  "S-760": {
+    stage: stageById["S-760"],
+    probe: () =>
+      safeCapabilityProbe(() =>
+        isSecureContext && "contacts" in navigator
+          ? "permission-required"
+          : "unsupported",
+      ),
+    component: lazy(() => import("../stages/S-760")),
+  },
+  "S-770": {
+    stage: stageById["S-770"],
+    probe: () =>
+      safeCapabilityProbe(() =>
+        isSecureContext && "IdentityCredential" in window
+          ? "permission-required"
+          : "unsupported",
+      ),
+    component: lazy(() => import("../stages/S-770")),
+  },
+  "S-780": {
+    stage: stageById["S-780"],
+    probe: () =>
+      safeCapabilityProbe(() =>
+        isSecureContext &&
+        "PaymentRequest" in window &&
+        "serviceWorker" in navigator
+          ? "permission-required"
+          : "unsupported",
+      ),
+    component: lazy(() => import("../stages/S-780")),
+  },
+  "S-790": {
+    stage: stageById["S-790"],
+    probe: () =>
+      safeCapabilityProbe(() =>
+        isSecureContext && "queryLocalFonts" in window
+          ? "permission-required"
+          : "unsupported",
+      ),
+    component: lazy(() => import("../stages/S-790")),
+  },
   "S-810": {
     stage: stageById["S-810"],
     probe: () =>
@@ -586,5 +688,112 @@ export const stageDefinitions = {
           : "unsupported",
       ),
     component: lazy(() => import("../stages/S-810")),
+  },
+  "S-820": {
+    stage: stageById["S-820"],
+    probe: () =>
+      safeCapabilityProbe(() =>
+        "requestPointerLock" in Element.prototype ? "available" : "unsupported",
+      ),
+    component: lazy(() => import("../stages/S-820")),
+  },
+  "S-830": {
+    stage: stageById["S-830"],
+    probe: () =>
+      safeCapabilityProbe(() =>
+        isSecureContext && window.IdleDetector
+          ? "permission-required"
+          : "unsupported",
+      ),
+    component: lazy(() => import("../stages/S-830")),
+  },
+  "S-850": {
+    stage: stageById["S-850"],
+    probe: () =>
+      safeCapabilityProbe(() =>
+        window.documentPictureInPicture ? "available" : "unsupported",
+      ),
+    component: lazy(() => import("../stages/S-850")),
+  },
+  "S-860": {
+    stage: stageById["S-860"],
+    probe: () =>
+      safeCapabilityProbe(() =>
+        window.EditContext ? "available" : "unsupported",
+      ),
+    component: lazy(() => import("../stages/S-860")),
+  },
+  "S-870": {
+    stage: stageById["S-870"],
+    probe: () =>
+      safeCapabilityProbe(() =>
+        isSecureContext && "showDirectoryPicker" in window
+          ? "permission-required"
+          : "unsupported",
+      ),
+    component: lazy(() => import("../stages/S-870")),
+  },
+  "S-880": {
+    stage: stageById["S-880"],
+    probe: () =>
+      safeCapabilityProbe(() =>
+        "DecompressionStream" in window ? "available" : "unsupported",
+      ),
+    component: lazy(() => import("../stages/S-880")),
+  },
+  "S-900": {
+    stage: stageById["S-900"],
+    probe: () =>
+      safeCapabilityProbe(() =>
+        "MediaSource" in window &&
+        MediaSource.isTypeSupported('video/webm; codecs="vp8"')
+          ? "available"
+          : "unsupported",
+      ),
+    component: lazy(() => import("../stages/S-900")),
+  },
+  "S-910": {
+    stage: stageById["S-910"],
+    probe: () =>
+      safeCapabilityProbe(() =>
+        "VTTCue" in window ? "available" : "unsupported",
+      ),
+    component: lazy(() => import("../stages/S-910")),
+  },
+  "S-800": {
+    stage: stageById["S-800"],
+    probe: () =>
+      safeCapabilityProbe(() =>
+        "onbeforematch" in HTMLElement.prototype ? "available" : "unsupported",
+      ),
+    component: lazy(() => import("../stages/S-800")),
+  },
+  "S-840": {
+    stage: stageById["S-840"],
+    probe: () =>
+      safeCapabilityProbe(() =>
+        "IntersectionObserver" in window ? "available" : "unsupported",
+      ),
+    component: lazy(() => import("../stages/S-840")),
+  },
+  "S-890": {
+    stage: stageById["S-890"],
+    probe: () =>
+      safeCapabilityProbe(() =>
+        "requestFullscreen" in Element.prototype ? "available" : "unsupported",
+      ),
+    component: lazy(() => import("../stages/S-890")),
+  },
+  "S-920": {
+    stage: stageById["S-920"],
+    probe: () =>
+      safeCapabilityProbe(() =>
+        "showPopover" in HTMLElement.prototype &&
+        CSS.supports("position-area", "right") &&
+        CSS.supports("position-try-fallbacks", "flip-inline")
+          ? "available"
+          : "unsupported",
+      ),
+    component: lazy(() => import("../stages/S-920")),
   },
 } satisfies Readonly<Record<StageId, StageRegistration>>;

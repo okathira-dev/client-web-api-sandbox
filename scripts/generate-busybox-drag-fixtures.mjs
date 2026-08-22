@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -60,10 +61,27 @@ function png(r, g, b) {
 }
 
 await mkdir(output, { recursive: true });
+const assets = [
+  ["drag-layer-a.png", png(239, 68, 68), "legacy layer fixture"],
+  ["drag-layer-b.png", png(34, 197, 94), "legacy layer fixture"],
+  ["drag-layer-c.png", png(59, 130, 246), "legacy layer fixture"],
+  ["drag-page.png", png(245, 158, 11), "native in-page image drag"],
+  ["drag-file.png", png(16, 185, 129), "OS file drag after download"],
+  ["drag-window.png", png(99, 102, 241), "separate-window image drag"],
+];
 await Promise.all(
-  [
-    ["drag-layer-a.png", png(239, 68, 68)],
-    ["drag-layer-b.png", png(34, 197, 94)],
-    ["drag-layer-c.png", png(59, 130, 246)],
-  ].map(async ([name, bytes]) => writeFile(join(output, name), bytes)),
+  assets.map(async ([name, bytes]) => writeFile(join(output, name), bytes)),
+);
+const manifest = {
+  width,
+  height,
+  assets: assets.map(([name, bytes, purpose]) => ({
+    name,
+    purpose,
+    sha256: createHash("sha256").update(bytes).digest("hex"),
+  })),
+};
+await writeFile(
+  join(output, "drag-fixtures-manifest.json"),
+  `${JSON.stringify(manifest, null, 2)}\n`,
 );

@@ -31,19 +31,19 @@
 
 | 暫定分類 | 件数 | 次の扱い |
 | --- | ---: | --- |
-| 採用 | 48 | DR-016、DR-017、DR-023、DR-025、DR-049、DR-075、DR-077、DR-084、DR-097、DR-101、DR-114、DR-120、DR-121、DR-126、DR-127、DR-129、DR-137は確定済み。DR-028から派生したG-061 / S-620と、DR-077から派生したG-071 / S-720は元案の分類外で別途採用した。通常相談は完了し、仕様化・PoC順を別途決める |
-| 重複 | 51 | DR-095はDR-118と同じ`Scheduler.postTask()`を元案にしているため確定済み。その他は既存対応を正とし、追加stage・相談対象へは数えない |
+| 採用 | 38 | DR-016、DR-017、DR-023、DR-025、DR-049、DR-075、DR-077、DR-084、DR-097、DR-101、DR-114、DR-120、DR-121、DR-126、DR-127、DR-129、DR-137に加え、D-148でPOC-035〜054のうち10件を最終採用へ確定した。DR-028から派生したG-061 / S-620と、DR-077から派生したG-071 / S-720は元案の分類外で別途採用した |
+| 重複 | 50 | DR-095はDR-118と同じ`Scheduler.postTask()`を元案にしているため確定済み。その他は既存対応を正とし、追加stage・相談対象へは数えない |
 | 統合案 | 11 | DR-002 / DR-013 / DR-019 / DR-029 / DR-047 / DR-063 / DR-065 / DR-069 / DR-076 / DR-100 / DR-136は確定済み |
 | 保留 | 1 | DR-096はAPI固有性を残して継続保留とした。通常queueの保留相談は完了 |
-| 却下 | 34 | DR-012 / DR-021 / DR-028 / DR-030 / DR-031 / DR-032 / DR-033 / DR-034 / DR-036 / DR-050 / DR-052 / DR-074 / DR-080 / DR-083 / DR-086 / DR-087 / DR-090 / DR-091 / DR-093 / DR-098 / DR-102 / DR-104 / DR-105 / DR-107 / DR-115 / DR-118 / DR-128 / DR-130 / DR-131 / DR-132 / DR-134は確定済み。通常相談は完了 |
+| 却下 | 45 | 従来のDR-082を含む35件に加え、D-148でDR-008 / DR-048 / DR-054 / DR-078 / DR-081 / DR-085 / DR-089 / DR-111 / DR-113 / DR-133をstage不採用へ確定した。内部実装での利用可否と、問題箱としての採用は区別する |
 | 合計 | 145 | 未分類0 |
 
 ## 実装状態との読み分け
 
 - `採用`案は新規候補で、まだ実装していない。DR-016はS-700-B02、DR-017はS-760、DR-023はS-660、DR-025はS-610、DR-049はS-690、DR-075はS-700、DR-077はS-710、DR-084はS-730、DR-097はS-740、DR-101はS-630、DR-114はS-640、DR-120はS-670、DR-121はS-650、DR-126はS-750、DR-127はS-770、DR-129はS-780、DR-137はS-790を対話で予約済みである。DR-120から当初予約したG-067 / S-680はD-135で不採用に変更した。DR-028は元案自体を却下したがAPI非依存の派生案G-061 / S-620を、DR-077からは別pipelineの派生案G-071 / S-720を予約した。それ以外の採用分類は「次に仕様化する価値がある」という調査判断であり、直ちにstage IDを予約する意味ではない。
-- `重複`51件は、現行stageで中心操作を実装済み、または既存案と同じため追加しない。DR-095は原文の疑似コードと中心機構がDR-118に一致するため、対話で重複へ確定した。原文の表現が異なっても、新しい問題箱の根拠にはしない。
+- `重複`50件は、現行stageで中心操作を実装済み、または既存案と同じため追加しない。DR-095は原文の疑似コードと中心機構がDR-118に一致するため、対話で重複へ確定した。原文の表現が異なっても、新しい問題箱の根拠にはしない。
 - `統合案`11件は追加作業が残る。DR-002 / DR-013 / DR-019 / DR-029 / DR-047 / DR-063 / DR-065 / DR-069 / DR-076 / DR-100 / DR-136の統合内容は確定済みである。
-- `保留`1件と`却下`34件も未実装である。DR-012 / DR-021 / DR-028 / DR-030 / DR-031 / DR-032 / DR-033 / DR-034 / DR-036 / DR-050 / DR-052 / DR-074 / DR-080 / DR-083 / DR-086 / DR-087 / DR-090 / DR-091 / DR-093 / DR-098 / DR-102 / DR-104 / DR-105 / DR-107 / DR-115 / DR-118 / DR-128 / DR-130 / DR-131 / DR-132 / DR-134の却下は確定済み。通常の対話相談queueは完了した。
+- `保留`1件と`却下`45件も未実装である。D-148でPOC-035〜054の10件を追加で却下し、PoCがpositiveでもplayer固有の操作がなければstageへ数えない方針を適用した。通常の対話相談queueは完了した。
 - とくにDR-121の端末診断は未完成である。現行StageCardは定義上の利用可否を表示する一方、実際の権限状態・機器観測・待機・拒否を端末単位で集約していない。新規候補の実装前に、個別stageのfeature detectionを共通診断へどう接続するか別仕様にする。
 
 ## 入力・感知系 DR-001〜DR-023
@@ -57,17 +57,17 @@
 | DR-005 | 端末形態 API | 重複 | S-320でpostureまたは2 viewport segmentを実際に観測済み | — |
 | DR-006 | ゲームパッド API | 重複 | S-200で軸と複数buttonの同時状態を読む | — |
 | DR-007 | 入力機器能力 API | 重複 | S-010のpointer種別判定へ統合。入力源だけで別ステージを増やさない | — |
-| DR-008 | キーボード API | 採用 | Labs候補。`getLayoutMap()`で表示文字ではなく物理位置の暗号を復元し、通常のtext inputとは異なる問題にする | — |
+| DR-008 | キーボード API | 却下 | POC-035はWindows Chromeで成功経路を確認できず、`getLayoutMap()`もexperimental / limited availabilityのままである。player操作は通常のkey入力と区別できず、OS配列変更を要求すると負担も大きいためstage化しない | 済 |
 | DR-009 | タッチイベント | 採用 | Labs候補。実`TouchList`の複数接点を保ちながら回す協調操作に限定する。単点操作はPointer Eventsへ統合する | — |
 | DR-010 | ポインターイベント | 重複 | S-010の入力種別とS-160の軌跡・速度で使用済み | — |
-| DR-011 | ポインターロック API | 採用 | Core候補。user activationでlockし、`movementX/Y`だけで内部ダイヤル迷路を解く。通常pointer座標では代替しない | — |
+| DR-011 | ポインターロック API | 採用 | POC-036から新規3箱stageへ進める。pointer lock中の`movementX/Y`だけで二次元空間を移動し、原点から1000 / 5000 / 10000 pxの各距離に置いた箱を中央reticleでクリックする。迷路や通常pointer座標の代替経路は作らない | 済 |
 | DR-012 | Force Touch events | 却下 | Apple固有の非標準vendor APIは新規stageへ入れない。標準Pointer Eventsの`pressure`へ置換するとDR-010と重複する | 済 |
 | DR-013 | UI イベント | 統合案 | S-150へ、画面上では見えないがDOMのtab順には存在する箱を追加する。Tab / Shift+Tabによるfocus到達で箱を表示・解錠し、pointerでは発見できない | 済 |
 | DR-014 | バイブレーション API | 採用 | Labs候補。振動で提示した短いリズムをpointer tapで返す。視覚ヒントも併記し、振動非対応は未観測にする | — |
 | DR-015 | EyeDropper API | 重複 | S-260で画面上の指定色を実際に採取済み | — |
 | DR-016 | バーコード検出 API | 採用 | G-069 / S-700-B02へ具体化。Remote Playback接続中の外部画面に出たround別QRを手元cameraと実`BarcodeDetector`で読み、current roundの`rawValue`一致で開く | 済 |
 | DR-017 | 連絡先ピッカー API | 採用 | G-075 / S-760の任意Labs 2箱。架空名刺をOS contactへ追加し、B01は5 property一致、B02は1件選択したまま全property非共有で開く | 済 |
-| DR-018 | Idle Detection API | 採用 | Labs候補。明示許可後、実user idleとscreen stateの組合せを短い1箱として観測する。単なるpage timerでは代替しない | — |
+| DR-018 | Idle Detection API | 採用 | POC-037から新規2箱stageへ進める。B01はpage指定の最小threshold 60秒を経た実`userState=idle`かつscreen unlocked、B02は実`screenState=locked`で開く。timer、visibility、疑似eventを代替条件にしない | 済 |
 | DR-019 | User Preferences API | 統合案 | S-480へ`prefers-color-scheme`、`prefers-contrast`、`prefers-reduced-motion`、`prefers-reduced-transparency`、`prefers-reduced-data`の独立5箱を追加する | 済 |
 | DR-020 | VirtualKeyboard API | 採用 | Labs候補。software keyboardのgeometryで隠れた層を押し上げ、正しいinsetで入力する。通常viewport resizeだけでは開かない | — |
 | DR-021 | 端末メモリー API | 却下 | 読み取り専用の粗い端末属性でplayer自身が状態を変えられない。品質・負荷調整への内部利用もAPI固有のパズルにならないため採らない | 済 |
@@ -91,10 +91,10 @@
 | DR-034 | CSSOM | 却下 | game UIでのrule編集は通常操作と重なり、DevToolsによるpage編集は解法を無制限にして本作の芯を損なうため採用しない | 済 |
 | DR-035 | CSSOM ビュー API | 重複 | S-020の実要素寸法・viewport判定へ統合済み | — |
 | DR-036 | 幾何インターフェイス | 却下 | DOMPoint / DOMMatrix等は任意の幾何計算補助とし、stage・箱・成功条件へ要求しない | 済 |
-| DR-037 | 交差オブザーバー API | 採用 | Core候補。複数の窓をscrollで重ね、実intersection ratioが同時に閾値を越えると開く | — |
+| DR-037 | 交差オブザーバー API | 採用 | POC-038から新規1箱stageへ進める。大きな二次元scroll平面で横・縦の両方を合わせ、viewport相当の対象が実`intersectionRatio >= 0.98`になった時だけ開く。scroll量や座標の直接判定には置換しない | 済 |
 | DR-038 | リサイズオブザーバー API | 重複 | S-020で実寸法変化を観測済み | — |
 | DR-039 | Selection API | 重複 | S-030とS-500で実selectionを成功条件に使用済み | — |
-| DR-040 | 全画面 API | 採用 | Core候補。user activationでfullscreenへ入り、viewport変化後にだけ整列する図と`fullscreenchange`を組み合わせる | — |
+| DR-040 | 全画面 API | 採用 | POC-051からS-350とは別の新規1箱stageへ進める。任意HTML要素だけを`requestFullscreen()`し、`document.fullscreenElement`がその要素である間に内部の箱をtrusted clickすると開く。F11、video fullscreen、CSS疑似fullscreenでは開かない | 済 |
 | DR-041 | ポップオーバー API | 採用 | Core候補。top layerの実open / close列とlight-dismissを鍵盤にする。単なるcustom modalでは代替しない | — |
 | DR-042 | ビュー遷移 API | 重複 | S-340で実View Transitionを観測済み。遷移中だけ読む原案はanimation timing依存を避け、既存設計を正とする | — |
 | DR-043 | ビューポートセグメント API | 重複 | S-320の2 segment配置へ統合済み | — |
@@ -102,20 +102,20 @@
 | DR-045 | Window Controls Overlay API | 重複 | S-460でinstalled desktop PWAの実titlebar geometryを使う | — |
 | DR-046 | 履歴 API | 重複 | S-220でsame-document履歴、back-forward復帰、reloadを分担 | — |
 | DR-047 | ナビゲーション API | 統合案 | S-220-B04へ統合。BackでAへ戻った後に別のDへ進み、旧forward entry B / Cの`dispose`と`canGoForward === false`を観測する | 済 |
-| DR-048 | URL API | 採用 | Core候補。pathname / query / hashをアドレスバーで組み立てるURLダイヤル。page内の模擬URL入力では開かない | — |
+| DR-048 | URL API | 却下 | POC-039のpathname / query / hash組み立ては新しいplayer操作にならず、S-690 / S-800の実Text Fragment URL問題と体験が重なる。URL処理の内部利用はできるがstage・箱は追加しない | 済 |
 | DR-049 | URL Fragment Text Directives | 採用 | G-068 / S-690の同一page Text Fragment巡回1箱に加え、D-136で派生G-079 / S-800のfragment組み立て2箱を採用。両stageの具体問題は実装前に再吟味する | 済 |
 | DR-050 | URL パターン API | 却下 | URLPatternは入力URLのmatch / group抽出だけでplayer操作を増やさない。DR-048の内部route判定には任意利用可 | 済 |
 | DR-051 | ウェブアニメーション API | 重複 | S-170でAnimationの時刻を成功条件に使用済み | — |
 | DR-052 | ウェブコンポーネント | 却下 | player向けのbrowser固有UIではなく実装architecture。slot案も既存D&Dと重複し、内部利用は採用実績へ数えない | 済 |
 | DR-053 | HTML ドラッグ＆ドロップ API | 重複 | S-510でwindow間の実File dropを成功条件に使用済み | — |
-| DR-054 | HTML 無害化 API | 採用 | Labs候補。危険要素を実行せず、safe sanitizerで除去されたDOM断片を組む。対応外では未観測、unsafe methodは使わない | — |
+| DR-054 | HTML 無害化 API | 却下 | POC-040のsanitize結果はplayer固有の操作やbrowser所有UIにならず、通常の入力・結果表示と区別できない。安全なDOM構築の内部実装には使えるが問題箱・採用API数へ含めない | 済 |
 | DR-055 | Houdini API | 重複 | umbrella名では1stageにせず、DR-031〜DR-033のPaint / Properties and Values / Typed OMへ分解して扱う | — |
 | DR-056 | 画面方向 API | 採用 | Mobile候補。portrait / landscapeで別断片を読み、実orientation change後に2片を統合する。orientation lock成功だけは要求しない | — |
 | DR-057 | 画面起動ロック API | 重複 | S-330でlock取得、visibility喪失、再取得を観測済み | — |
-| DR-058 | 文書ピクチャインピクチャ API | 採用 | Labs候補。任意HTMLの別windowと本体をround同期し、両方の情報で解く。video PiPのS-350-B06とは分離する | — |
+| DR-058 | 文書ピクチャインピクチャ API | 採用 | POC-041から新規1箱stageへ進める。実Document PiP window内へ問題箱そのものを移し、そのwindow内のtrusted clickだけで開く。通常popup、iframe、video PiP、本体page上のclickでは開かない | 済 |
 | DR-059 | ピクチャインピクチャ API | 重複 | S-350-B06でnative videoの実PiP入場eventを観測済み | — |
 | DR-060 | ページ可視性 API | 重複 | S-040のhidden時間とS-400のwall-clock復元へ統合済み | — |
-| DR-061 | EditContext API | 採用 | Labs候補。canvas上のcustom editable regionで実IME compositionと選択範囲を扱う。通常textarea入力では代替しない | — |
+| DR-061 | EditContext API | 採用 | POC-042から新規3箱stageへ進める。既存のBusybox共通title / subtitle / catch copyを通常の見出し・本文として表示し、titleの単語誤字、subtitleの1単語脱字、catch copyの余分な1単語を`EditContext`で直接直す。input / textarea / contenteditableは使わない | 済 |
 
 ## メディア・映像・XR系 DR-062〜DR-084
 
@@ -128,20 +128,20 @@
 | DR-066 | 画面キャプチャ API | 重複 | S-190で実`getDisplayMedia()` frameを使う | — |
 | DR-067 | メディアキャプチャとストリーム API | 重複 | S-110のcamera、S-120のmicrophoneへ分割済み | — |
 | DR-068 | MediaStream 画像キャプチャ API | 採用 | Labs候補。camera trackのcapabilitiesを確認し、playerがfocus / zoomを合わせて`takePhoto()`した実frameからround markerを読む | — |
-| DR-069 | Media Capabilities API / media tracks | 一部採用・D-140〜D-142で整理 | Media Capabilities profile箱と実寸reelは不採用。字幕track、条件付き音声trackはS-350、frame cadenceはG-080 / S-810 | 済 |
+| DR-069 | Media Capabilities API / media tracks | 統合案 | D-140〜D-142で整理。Media Capabilities profile箱と実寸reelは不採用。字幕track、条件付き音声trackはS-350、frame cadenceはG-080 / S-810へ統合した | 済 |
 | DR-070 | メディアセッション API | 重複 | S-430で外部pause actionを実際に観測する | — |
-| DR-071 | メディアソース拡張機能 API | 採用 | Labs候補。local media chunkをplayerが正順に選び、SourceBufferへappendした連続映像内のround markerで開く | — |
+| DR-071 | メディアソース拡張機能 API | 採用 | POC-052からS-810とは別の新規1箱stageへ進める。playerが複数の固定WebM segmentを順に投入し、実`SourceBuffer`へappendするたびnative timelineが延びる。正順の連続映像を最後まで再生すると開く。具体的な映像内容は実装前に再吟味する | 済 |
 | DR-072 | MediaStream 収録 API | 重複 | S-190のlocal recording問題へ統合済み | — |
-| DR-073 | WebVTT API | 採用 | Core候補。playerがcueのstart / endを合わせ、実active cue列から鍵文を得る。単なる字幕表示では終わらせない | — |
+| DR-073 | WebVTT API | 採用 | POC-053からS-350とは別の新規1箱stageへ進める。動画に現れる図形へplayerが再生中に対応操作を行い、実`VTTCue`を生成・`TextTrack.addCue()`してnative字幕へ即時表示する。完成trackを再生し直してもcueが時刻どおり再表示される | 済 |
 | DR-074 | Encrypted Media Extensions API | 却下 | Clear Keyならbackendなしで成立するが、EME専用default UIはなく、playerに見えるのがgenericな動画停止・再開に近い | 済 |
 | DR-075 | Remote Playback API | 採用 | 新規G-069 / S-700の2箱。B01は外部画面の文字鍵を手元入力、B02はDR-016のround別QRを手元cameraと実`BarcodeDetector`で読む | 済 |
 | DR-076 | Presentation API | 統合案 | G-069 / S-700-B03へ統合。明示操作でreceiver pageを外部画面へ起動し、実`connected`とreceiverの表示準備完了messageを確認した時点で開く | 済 |
 | DR-077 | Insertable Streams for MediaStreamTrack API | 採用 | 新規G-070 / S-710の動画変換4箱へ具体化。暗黒frame、decode失敗、QR frame、自己生成metadataを別条件とし、player入力依存の変換だけをruntime実行する | 済 |
-| DR-078 | WebCodecs API | 採用 | Labs候補。local encoded chunksの順序・timestampを直し、decoderが復元したframe内markerで開く | — |
+| DR-078 | WebCodecs API | 却下 | POC-054はWindows Chromeで実decodeを確認できず、2026-06時点でもW3C Working Draftかつlimited availabilityである。encoded chunk順・timestamp修復はpage製UIとなり、S-720とDR-071の体験にも重なるためstage化しない | 済 |
 | DR-079 | WebRTC API | 重複 | S-360で同一origin 2 tabの実peer接続と明示終了へ統合。遠隔2人用backendは追加しない | — |
 | DR-080 | WebTransport API | 却下 | datagram / stream差は固有だが専用HTTP/3 / QUIC backendと運用が必須。静的配信・自前backendなし方針を変更せず、新規stage・箱を作らない | 済 |
-| DR-081 | WebGL | 採用 | Core候補。実3D箱を回し、view / projection上で離れた刻印が特定角度だけ重なる。DOM 3D transformでは代替しない | — |
-| DR-082 | WebGPU API | 不採用 | player固有の体験を成立させられず、D-141でS-270ごと削除 | — |
+| DR-081 | WebGL | 却下 | POC-043で描画自体は確認したが、player操作はgame製3D sceneの回転に留まり、WebGLでなければ成立しないbrowser固有体験にならない。rendererの内部利用はできるがstage・箱は追加しない | 済 |
+| DR-082 | WebGPU API | 却下 | player固有の体験を成立させられず、D-141でS-270ごと削除 | 済 |
 | DR-083 | WebVR API | 却下 | Deprecatedな旧API。元案の箱の裏を覗く体験を現代APIへ移しても既存G-072 / S-730のWebXR 2箱と重複する | 済 |
 | DR-084 | WebXR 機器 API | 採用 | 新規G-072 / S-730の2箱。B01は実immersive sessionと最初のviewer pose、B02は実XRInputSourceのselect rayでXR空間上の箱を選ぶ。凝ったXR世界、現実marker、歩行、page上の代替clearは作らない | 済 |
 
@@ -149,11 +149,11 @@
 
 | ID | 元案 / API | 暫定分類 | 対応先・ギミック評価 | 相談 |
 | --- | --- | --- | --- | --- |
-| DR-085 | Fetch API | 採用 | Core候補。静的local fragmentへ条件付きrequestを出し、response header / bodyの手掛かりで次URLを選ぶ。単なる順番clickにしない | — |
+| DR-085 | Fetch API | 却下 | POC-044のconditional requestはplayerからは通常の読み込み結果と区別できず、header / statusの可視化はgame製診断UIになる。内部通信には使うがstage・箱・採用API数へ含めない | 済 |
 | DR-086 | XMLHttpRequest API | 却下 | 現役標準だが、readyState / ProgressEventをplayerへ見せるにはgame製UIが中心になり、既存DR-085 Fetch案と異なる体験にならない | 済 |
 | DR-087 | サーバー送信イベント | 却下 | playerからは断続的な文字を待つだけで、EventSource固有の一方向streamや自動再接続を面白い操作にできない。backendの有無にかかわらずstage・箱・統合先を追加しない | 済 |
 | DR-088 | Broadcast Channel API | 重複 | S-050、S-250、S-360の同一origin tab同期へ統合済み | — |
-| DR-089 | チャンネルメッセージング API | 採用 | Core候補。iframeへ`MessagePort`をtransferし、port経由でだけ届く半鍵を交換する。BroadcastChannelでは代替しない | — |
+| DR-089 | チャンネルメッセージング API | 却下 | POC-045のport transfer / ackはpage内部の通信方式で、playerには通常のiframe連携と区別できる固有操作がない。内部通信には使えるがstage・箱は追加しない | 済 |
 | DR-090 | WebSocket API | 却下 | 遠隔二人協力の面白さはWebSocket固有ではなく、既存S-360と別に常時接続backend、相手待ち、room運用を追加する根拠にならない。新規stage・箱・統合先を作らない | 済 |
 | DR-091 | Web Workers API | 却下 | worker完了、main threadの応答性、transfer後のdetached bufferはいずれもplayerからは任意の画面演出と区別できない。必要な重処理の内部実装には使えるが、問題箱・成功条件にはしない | 済 |
 | DR-092 | Service Worker API | 重複 | S-070、S-090、S-410、S-420とBusybox PWA基盤で使用済み | — |
@@ -174,17 +174,17 @@
 | DR-107 | Cookie Store API | 却下 | async cookie操作は既存storage、Window changeはcross-context通信、Service Worker cookiechangeはS-740とplayer体験が重なる。内部実装候補にだけ残す | 済 |
 | DR-108 | Shared Storage API | 却下 | 世界全体の進捗は得られず、cross-site local memoryの新規案もbrowser所有UIがない。WICG archive済み、Chromeでdeprecated・削除進行中の非標準APIなので統合もしない | 済 |
 | DR-109 | File API | 重複 | S-130、S-440、S-510でfile内容、OS open、window間dropを分担済み | — |
-| DR-110 | File System API | 採用 | Labs候補。round付きfileをpickerで開き、playerがOS editorで指定箇所だけ直して同じhandleへ保存・再読込する | — |
-| DR-111 | File and Directory Entries API | 採用 | Labs候補。round manifestを含む実directory treeをdropし、階層とfile内容の両方で判定する。単一file inputでは代替しない | — |
-| DR-112 | Compression Streams API | 採用 | Core候補。複数形式のlocal compressed streamから正しいdecoderを選び、展開された鍵文をstreamのまま読む | — |
-| DR-113 | ストリーム API | 採用 | Core候補。ReadableStreamの分岐・Transform・backpressureを水路として可視化し、正しいsinkへround tokenを流す | — |
+| DR-110 | File System API | 採用 | POC-046から新規3箱stageへ進める。空の作業folderを`showDirectoryPicker({mode:"readwrite"})`で選び、gameが用意した対象fileをOS側で指定内容へ編集、削除、新規作成したことを保持handleから再走査して各箱を開く。既存user fileは対象にしない | 済 |
+| DR-111 | File and Directory Entries API | 却下 | POC-047の`webkitGetAsEntry()`はprefix付きCommunity Group Draftであり、directory dropのplayer体験もS-510と重複する。階層検査はgame側ロジックに留まるためstage化しない | 済 |
+| DR-112 | Compression Streams API | 採用 | POC-048から新規3箱stageへ進める。gzip / deflate / deflate-rawの固定圧縮荷物を各展開口へ投入し、実`DecompressionStream`で逐次展開できた形式の箱を開く。playerへの伝達性が境界的なため、製品UX確認で成立しなければ統合・削除を再判断する | 済 |
+| DR-113 | ストリーム API | 却下 | POC-049の分岐・Transform・backpressureは技術的には確認できたが、水路・弁・圧力計がすべてgame製UIでplayer固有の操作にならない。DR-112等の内部stream処理には使うがstage化しない | 済 |
 | DR-114 | エンコーディング API | 採用 | 新規G-063 / S-640へ、2進byte列4箱、16進byte列4箱、文字化け4箱を置く。16文字コードを各1回だけ割り当てる | 済 |
 | DR-115 | Reporting API | 却下 | browser固有のplayer向けUIがなく、observer dataを見せる自作UIが体験の中心になる。対応環境での内部診断利用だけを任意に認める | 済 |
 | DR-116 | パフォーマンス API | 重複 | S-040のmonotonic時間とS-400のwall-clock比較へ統合済み | — |
 | DR-117 | JS Self-Profiling API | 却下 | 元案は実装者のcode最適化でplayer操作ではない。hot function診断卓もgame製表示、非決定的sampling、不要なCPU負荷が中心になるためS-680へ統合しない | 済 |
 | DR-118 | Prioritized Task Scheduling API | 却下 | priorityカード、処理権レース、動的priority切替を検討したが、いずれもplayerには通常の並べ替えや勝者選択に見え、API固有の操作として不足する | 済 |
 | DR-119 | 投機ルール API | 却下 | targetによる実prerender観測は可能だが、playerには投機中のbrowser固有UIがなくgame製演出と通常の高速読込しか見えない。元案、先に入っていた部屋案、S-220統合を却下 | 済 |
-| DR-120 | コンソール API | 一部採用 | 新規G-066 / S-670のread-only Console迷路1箱だけを置く。G-067 / S-680診断卓はD-135で体験重複のため不採用 | 済 |
+| DR-120 | コンソール API | 採用 | 新規G-066 / S-670のread-only Console迷路1箱だけを置く。G-067 / S-680診断卓はD-135で体験重複のため不採用 | 済 |
 
 ## 認証・権限・外部機器系 DR-121〜DR-145
 
@@ -198,11 +198,11 @@
 | DR-126 | WebOTP API | 採用 | 新規G-074 / S-750の任意Labs 1箱。実OTPCredentialまたは強く検証したOTP AutoFillでcurrent round codeが入った時だけ開く | 済 |
 | DR-127 | Federated Credential Management API | 採用 | 新規G-076 / S-770の任意Labs「身分証棚」。実装時点で公式FedCM、public RP登録、managed運用、FedCM確証、独自backend不要を満たすserviceごとに箱を置く。現計画はGoogle 1箱を下限とする | 済 |
 | DR-128 | 決済リクエスト API | 却下 | 実merchant / payment methodを仲介するUIを模擬通貨へ流用せず、Deprecatedな`basic-card`、実Google Pay / Apple Pay、cancelだけの箱も使わない。架空payment appはDR-129で別相談 | 済 |
-| DR-129 | 決済ハンドラー API | 採用 | 新規G-077 / S-780の任意Labs 3箱。trusted eventは証跡として扱い、架空payment methodだけで承認、拒否、同一handler再試行を観測し、そのresponseに対応する箱を直接開く。handler選択・開始経路は固定しない | 済 |
+| DR-129 | 決済ハンドラー API | 採用 | 新規G-077 / S-780。初期3箱は架空methodの承認、拒否、同一handler再試行。D-147で○/◇の2 handlerをbrowser所有chooserへ並べ、◇workerへのtrusted eventで開くB04を追加した。前三つはwallet非依存 | 済 |
 | DR-130 | 帰属レポート API | 却下 | Chromeで非推奨化・削除予定。browser固有UIやclient側の確定eventがなく、report受信backendを要するためstage・統合・historical exhibitを作らない | 済 |
 | DR-131 | Private State Token API | 却下 | 独自issuer / redeemer backend、暗号鍵運用、issuer登録が必要で一般向けmanaged issuerもない。通常player向けbrowser UIもないためstage・統合・demo依存を作らない | 済 |
 | DR-132 | Topics API | 却下 | Chrome 144から非推奨化・削除予定。非標準、privacy、非決定性、固有UI欠如のためstage・統合・historical exhibit・設定変更箱を作らない | 済 |
-| DR-133 | Trusted Types API | 採用 | Labs候補。CSPでsinkを制限し、安全なpolicyを通った断片だけを組み立てる。攻撃文字列を実行せず、HTML Sanitizer案と役割を分ける | — |
+| DR-133 | Trusted Types API | 却下 | POC-050のpolicy / sink差はplayer操作ではなく内部security境界であり、2026-02時点でもW3C Working Draftである。CSP強化の内部実装には使えるがstage・箱・採用API数へ含めない | 済 |
 | DR-134 | フェンスフレーム API | 却下 | 隔離枠内の達成を親pageへ直接通知できず、playerには普通の埋め込みcontentにしか見えない。reporting backendやgame製puzzleへ置換せずstage・統合・historical exhibitを作らない | 済 |
 | DR-135 | 起動ハンドラー API | 重複 | S-310、S-440、S-450でPWA起動、file、protocolの実LaunchQueueを分担済み | — |
 | DR-136 | 呼び出しコマンド API | 統合案 | 原文のOS外部command案は破棄する。DR-041へ、複数buttonから同じPopoverへ宣言的なcommandを送り、呼び出し元を識別する別箱を1箱追加する。DR-025のDialogには追加しない | 済 |
@@ -520,7 +520,7 @@
 - frame解像度reel案: D-142で不採用。page製selectorしかなくbrowser特有のUIを使わない。
 - S-350-B04 再生速度: native controlsで1倍速以外へ変更し、`ratechange`後の実`playbackRate`で開く。pageは速度を変更しない。
 - S-350-B05 字幕track: native controlsの字幕menuからtarget label `Busybox`を選び、targetだけが`showing`になった時に開く。
-- 将来S-350-B07 音声track: native controlsと`AudioTrackList`の双方を公開するbrowserだけでtarget label `Busybox`の選択を観測する。custom selectや別file再生では代替しない。
+- Baseline後候補（音声track）: native controlsと`AudioTrackList`の双方を公開するbrowserで、固有labelのtrack選択を観測する。custom selectや別file再生では代替しない。現行stage・PoC・fixtureには含めない。
 - cleanup / privacy: mediaをpauseし、track / media listenerを解除する。再生速度、track選択、言語、device能力は進捗以外へ保存・同期・送信しない。
 - 現状: S-350-B01〜B06とS-810-B01を実装済み。Media Capabilities profile箱は不採用。
 - 根拠: [Media Capabilities](https://www.w3.org/TR/media-capabilities/)、[HTML Standardのmedia elementとtrack API](https://html.spec.whatwg.org/multipage/media.html)、[`requestVideoFrameCallback()`仕様](https://wicg.github.io/video-rvfc/)。
@@ -933,7 +933,7 @@
 ### DR-120 コンソール API
 
 - 決定日: 2026-07-24
-- 最終分類: 一部採用。新規G-066 / S-670「端末迷路（仮）」1箱を置く。G-067 / S-680「端末診断卓（仮）」はD-135で体験重複のため不採用へ変更した。
+- 最終分類: 採用。採用範囲は新規G-066 / S-670「端末迷路（仮）」1箱だけとする。G-067 / S-680「端末診断卓（仮）」はD-135で体験重複のため不採用へ変更した。
 - 元案: 「箱はConsoleでだけ喋る」Hidden箱として、DevTools Consoleへround固有の手掛かりを出し、playerが読んだ答えをpageへ入力する案だった。`console.log("%c42", ...)`による色付きの一問一答を想定していた。
 - 共通再設計: Consoleをread-onlyの文字画面として使い、`console.log()`、`console.table()`、`console.group()`等でround状態を表示する。player入力はpage上のbutton、switch、dialだけから受け、DevTools evaluatorへのJavaScript入力、Consoleからの関数呼出し、DOM / CSS / script /進捗編集を解法として要求・承認しない。
 - S-670端末迷路: ConsoleへASCII迷路、現在位置、向きをtextで表示し、page上の上下左右buttonで1stepずつ移動する。各操作後に専用label付きgroupへ盤面を再出力し、実round stateが出口へ到達した時に1箱を開く。色、文字幅、groupの開閉状態だけへ依存せず、monospaceでなくても壁、通路、現在位置を文字として判別できるfixtureにする。
@@ -1014,18 +1014,19 @@
 ### DR-129 決済ハンドラー API
 
 - 決定日: 2026-07-31
-- 最終分類: 採用。新規G-077 / S-780「三つの財布（仮）」3箱を任意Labsとして追加する（2026-08-17更新）。
+- 最終分類: 採用。当初のG-077 / S-780「三つの財布（仮）」3箱を、D-147で指定wallet選択を加えた4箱へ改訂する（2026-08-18更新）。
 - 元案: 架空の「眠りの通貨」をWeb Payment Handlerで受け取り、正しい支払flowを完了すると箱が開く。
 - API固有性: BusyboxがGit管理する架空payment methodと複数の架空payment handlerだけを使う。browser所有のhandler候補、選択後にService Workerへ届くtrusted `PaymentRequestEvent`、handler window、`respondWith()`、merchant側の`complete()`と`retry()`を中心操作にする。実Google Pay / Apple Pay、card、実通貨、実merchant accountを使わない。
-- trusted event: 複数の架空handler候補からhandler windowへ到達し、Service Workerがcurrent attemptのtrusted `PaymentRequestEvent`を受けたことは経路の証跡として記録するが、単独の箱にはしない。handler選択・merchant側の開始経路は承認／拒否／再試行に固定しない。
+- trusted event: B01〜B03ではService Workerがcurrent attemptのtrusted `PaymentRequestEvent`を受けたことを経路の証跡とし、walletを固定しない。B04ではbrowser所有chooserから◇walletを選び、◇workerがcurrent requestのtrusted eventを受けたこと自体を成功条件にする。
 - B01 承認: handler windowで架空支払いを承認し、期待methodのresponseをmerchantが受け、`complete("success")`へ到達した時点で開く。
 - B02 拒否: handler windowで意図的拒否を選び、handlerが返す固定の架空拒否resultをmerchantが検証して`complete("fail")`へ到達した時点で開く。例外、handler不在、browser cancelを拒否成功へ数えない。
 - B03 再試行: 同じhandlerの最初のresponseへmerchantが`PaymentResponse.retry()`を行い、再提示された同じhandlerで二度目のresponseを成功完了した時点で開く。別handlerへの切替、最初からの成功、game製retry UIだけでは開かない。
+- B04 財布選択: browser所有chooserで◇walletを選び、対象workerへ実`PaymentRequestEvent`が届いた時点で開く。その後の承認、拒否、再試行は限定しない。○wallet、game製picker、stale / untrusted messageでは開かない。
 - 非言語演出: 各条件が成立した瞬間に対応箱だけを開く。短い取引結果、完了message、固定flagを表示せず、handler window内も承認・拒否・instrument選択などpayment lifecycleに必要な図形操作へ限定する。権限・privacy・非対応・error・accessibilityの説明だけは非言語性を理由に省かない。
 - privacy / safety: payer name / email / phone、billing / shipping address、card、実payment credential、payment tokenを要求しない。架空response detailsはcurrent attemptの判定後に破棄し、通常の解決済みproblem IDだけを保存する。handler登録、window、pending request、listener、Service Worker scopeはresetと離脱時のcleanup仕様を持たせる。
 - 対応差: Payment Handler非対応環境、handler登録失敗、JIT install UI非表示、cancel、`AbortError`、`OperationError`は未観測とし、game製payment sheetによる代替clearを作らない。候補UI、trusted event、`complete("fail")`、同一handler `retry()`を公開対象browserで実PoCしてから公開する。
 - DR-128との境界: Payment Requestは架空handlerをbrowserから起動するmerchant側配線としてだけ使う。実payment methodを模擬通貨へ流用するDR-128案を復活させず、実providerを一つでも混ぜない。
-- 件数: 新規1stage・3箱を追加し、計画値を78stage・184箱とする。PoC確認後、再挑戦しにくい「正しいhandler／財布」箱は採用しない。
+- 件数: 当初は新規1stage・3箱。D-147で、wallet選択後の行動経路を限定せず再挑戦しやすいB04を追加した。現行件数は実装台帳を正とする。
 - 根拠: [Payment Handler API](https://www.w3.org/TR/payment-handler/)、[Web-based Payment Handler API](https://developer.mozilla.org/en-US/docs/Web/API/Web-Based_Payment_Handler_API)、[Payment Request API](https://www.w3.org/TR/payment-request/)、[PaymentResponse.retry()](https://developer.mozilla.org/en-US/docs/Web/API/PaymentResponse/retry)。
 
 ### DR-130 帰属レポート API

@@ -20,7 +20,7 @@ const requiredHeadings = [
 
 describe("stage documentation coverage", () => {
   it("keeps every shipped stage beside a locale bundle and MECE Japanese solution JSDoc", () => {
-    expect(stageFiles).toHaveLength(67);
+    expect(stageFiles).toHaveLength(89);
     for (const file of stageFiles) {
       const id = file.slice(0, -4);
       const source = readFileSync(join(stageDirectory, file), "utf8");

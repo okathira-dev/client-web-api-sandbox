@@ -1,0 +1,6 @@
+{
+  "default_applications": [
+    "./wallet-circle/payment-app-manifest.json",
+    "./wallet-diamond/payment-app-manifest.json"
+  ]
+}

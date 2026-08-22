@@ -1,0 +1,36 @@
+{
+  "width": 240,
+  "height": 120,
+  "assets": [
+    {
+      "name": "drag-layer-a.png",
+      "purpose": "legacy layer fixture",
+      "sha256": "236acfa026ed37a7989897e1568b77d123d6d2c6d1f48daf7544f7e644230613"
+    },
+    {
+      "name": "drag-layer-b.png",
+      "purpose": "legacy layer fixture",
+      "sha256": "4376e5de7e60526bc8e23a09513b51411d995387fa49fd7f07ec1a8285fb7000"
+    },
+    {
+      "name": "drag-layer-c.png",
+      "purpose": "legacy layer fixture",
+      "sha256": "e4401cb69c104d8dccd8930e41e2efe1e2f22ee704c23bcfa05add11818c14a7"
+    },
+    {
+      "name": "drag-page.png",
+      "purpose": "native in-page image drag",
+      "sha256": "7fba1a9dd15b39c8818515ee0690b1971d0bf6416b9a93ea52155b5af91d4a17"
+    },
+    {
+      "name": "drag-file.png",
+      "purpose": "OS file drag after download",
+      "sha256": "e0d1295c4edcd5445a01409a9f0f4d6a4e31c012a5abcf4bd732b3fc6584e2dd"
+    },
+    {
+      "name": "drag-window.png",
+      "purpose": "separate-window image drag",
+      "sha256": "c88fd86bbcae73533936ed34dc47db782f7daf880c6a17e44e72bd2d37654369"
+    }
+  ]
+}

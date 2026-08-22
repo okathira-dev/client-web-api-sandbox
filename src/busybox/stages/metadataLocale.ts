@@ -60,13 +60,35 @@ import { s590Locale } from "./S-590.locale";
 import { s600Locale } from "./S-600.locale";
 import { s610Locale } from "./S-610.locale";
 import { s620Locale } from "./S-620.locale";
+import { s630Locale } from "./S-630.locale";
 import { s640Locale } from "./S-640.locale";
 import { s650Locale } from "./S-650.locale";
 import { s660Locale } from "./S-660.locale";
 import { s670Locale } from "./S-670.locale";
+import { s690Locale } from "./S-690.locale";
+import { s700Locale } from "./S-700.locale";
 import { s710Locale } from "./S-710.locale";
 import { s720Locale } from "./S-720.locale";
+import { s730Locale } from "./S-730.locale";
+import { s740Locale } from "./S-740.locale";
+import { s750Locale } from "./S-750.locale";
+import { s760Locale } from "./S-760.locale";
+import { s770Locale } from "./S-770.locale";
+import { s780Locale } from "./S-780.locale";
+import { s790Locale } from "./S-790.locale";
+import { s800Locale } from "./S-800.locale";
 import { s810Locale } from "./S-810.locale";
+import { s820Locale } from "./S-820.locale";
+import { s830Locale } from "./S-830.locale";
+import { s840Locale } from "./S-840.locale";
+import { s850Locale } from "./S-850.locale";
+import { s860Locale } from "./S-860.locale";
+import { s870Locale } from "./S-870.locale";
+import { s880Locale } from "./S-880.locale";
+import { s890Locale } from "./S-890.locale";
+import { s900Locale } from "./S-900.locale";
+import { s910Locale } from "./S-910.locale";
+import { s920Locale } from "./S-920.locale";
 
 const stageBundles: Readonly<Record<string, StageLocaleBundle>> = {
   "S-000": s000Locale,
@@ -129,13 +151,35 @@ const stageBundles: Readonly<Record<string, StageLocaleBundle>> = {
   "S-600": s600Locale,
   "S-610": s610Locale,
   "S-620": s620Locale,
+  "S-630": s630Locale,
   "S-640": s640Locale,
   "S-650": s650Locale,
   "S-660": s660Locale,
   "S-670": s670Locale,
+  "S-690": s690Locale,
+  "S-700": s700Locale,
   "S-710": s710Locale,
   "S-720": s720Locale,
+  "S-730": s730Locale,
+  "S-740": s740Locale,
+  "S-750": s750Locale,
+  "S-760": s760Locale,
+  "S-770": s770Locale,
+  "S-780": s780Locale,
+  "S-790": s790Locale,
+  "S-800": s800Locale,
   "S-810": s810Locale,
+  "S-820": s820Locale,
+  "S-830": s830Locale,
+  "S-850": s850Locale,
+  "S-860": s860Locale,
+  "S-870": s870Locale,
+  "S-880": s880Locale,
+  "S-900": s900Locale,
+  "S-910": s910Locale,
+  "S-840": s840Locale,
+  "S-890": s890Locale,
+  "S-920": s920Locale,
 };
 
 export function stageCopyText(

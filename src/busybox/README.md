@@ -9,7 +9,7 @@ _A new kind of puzzle game where the browser itself is the key._
 ## 現在の状態
 
 Viteのマルチページ構成へ独立した入口を持つReactアプリとして実装中。
-現在はアプリシェル、日英表示、ステージ台帳、基本ナビゲーション、IndexedDB進捗スキーマ、進捗の書き出し・初期化、共通ステージランタイム、入場ごとに再挑戦できる67ステージ、mind map型ステージ一覧、Busybox scope限定のPWA、任意のGoogle Driveバックアップを備える。
+現在はアプリシェル、日英表示、ステージ台帳、基本ナビゲーション、IndexedDB進捗スキーマ、進捗の書き出し・初期化、共通ステージランタイム、入場ごとに再挑戦できる89ステージ・203箱、mind map型ステージ一覧、Busybox scope限定のPWA、任意のGoogle Driveバックアップを備える。
 
 2026-08-11時点では、現環境で確認できた範囲の実装と自動検証を終え、実ブラウザ・実機での人手確認とUI品質確認を進める段階である。残問題、確認順、旧資料の扱いは[現状・残問題・人手確認への引継ぎ](./docs/current-status-and-handoff.md)を参照する。
 
@@ -32,7 +32,7 @@ Viteのマルチページ構成へ独立した入口を持つReactアプリと�
 | 文書 | 役割 |
 | --- | --- |
 - [ドキュメント入口](./docs/README.md) | 現行資料と履歴資料の境界、読む順番、実装JSDocとlocaleの規約 |
-| [現行ステージ解法仕様](./docs/stage-walkthroughs.md) | レビュー済みステージの現行体験、解法、negative caseを定義する |
+| 現行ステージ解法 | 各S-xxx.tsxのdefault component直前にある日本語JSDocを正本とする |
 | [現状メモ・人手確認への引継ぎ](./docs/current-status-and-handoff.md) | 一通りのコード化後に未確認の範囲、確認順、変更時の留意点を共有する |
 | [企画・プロダクト仕様](./docs/product-spec.md) | 体験、対象、スコープ、日英コピーを定義する |
 | [アーキテクチャ判断](./docs/architecture-decisions.md) | ローカル保存、Drive連携、配信、ステージ分離の方針を定義する |

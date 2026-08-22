@@ -1,21 +1,22 @@
+import type { ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { StageComponentProps } from "../runtime/types";
 import { ProblemGiftBox } from "../ui/GiftBox";
 import { stageText } from "./locale";
 import { s510Locale } from "./S-510.locale";
 
-const layerAssets = {
-  A: {
-    filename: "drag-layer-a.png",
-    sha256: "236acfa026ed37a7989897e1568b77d123d6d2c6d1f48daf7544f7e644230613",
+const fixtures = {
+  page: {
+    filename: "drag-page.png",
+    sha256: "7fba1a9dd15b39c8818515ee0690b1971d0bf6416b9a93ea52155b5af91d4a17",
   },
-  B: {
-    filename: "drag-layer-b.png",
-    sha256: "4376e5de7e60526bc8e23a09513b51411d995387fa49fd7f07ec1a8285fb7000",
+  file: {
+    filename: "drag-file.png",
+    sha256: "e0d1295c4edcd5445a01409a9f0f4d6a4e31c012a5abcf4bd732b3fc6584e2dd",
   },
-  C: {
-    filename: "drag-layer-c.png",
-    sha256: "e4401cb69c104d8dccd8930e41e2efe1e2f22ee704c23bcfa05add11818c14a7",
+  window: {
+    filename: "drag-window.png",
+    sha256: "c88fd86bbcae73533936ed34dc47db782f7daf880c6a17e44e72bd2d37654369",
   },
 } as const;
 
@@ -25,214 +26,357 @@ function toHex(bytes: ArrayBuffer) {
   ).join("");
 }
 
+type DropState = "idle" | "allowed" | "rejected";
+
 function DropZone({
   children,
   ariaLabel,
+  hint,
+  accepts,
   onDrop,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   ariaLabel: string;
+  hint: string;
+  accepts(event: React.DragEvent<HTMLElement>): boolean;
   onDrop(event: React.DragEvent<HTMLElement>): void;
 }) {
+  const [state, setState] = useState<DropState>("idle");
+  const [dragging, setDragging] = useState(false);
+  const dragDepth = useRef(0);
+  const updateState = (event: React.DragEvent<HTMLElement>) => {
+    setState(accepts(event) ? "allowed" : "rejected");
+  };
   return (
     <section
       className="drop-target"
       aria-label={ariaLabel}
+      data-drop-state={state}
+      data-dragging={dragging ? "true" : undefined}
+      onDragEnter={(event) => {
+        dragDepth.current += 1;
+        setDragging(true);
+        updateState(event);
+      }}
       onDragOver={(event) => {
+        setDragging(true);
+        updateState(event);
+        if (!accepts(event)) {
+          event.dataTransfer.dropEffect = "none";
+          return;
+        }
         event.preventDefault();
         event.dataTransfer.dropEffect = "copy";
       }}
+      onDragLeave={() => {
+        dragDepth.current = Math.max(0, dragDepth.current - 1);
+        if (dragDepth.current === 0) {
+          setDragging(false);
+          setState("idle");
+        }
+      }}
+      onDragEnd={() => {
+        dragDepth.current = 0;
+        setDragging(false);
+        setState("idle");
+      }}
       onDrop={(event) => {
+        const accepted = accepts(event);
         event.preventDefault();
-        if (event.isTrusted) onDrop(event);
+        dragDepth.current = 0;
+        setDragging(false);
+        setState("idle");
+        if (event.isTrusted && accepted) onDrop(event);
+        else if (!accepted) setState("rejected");
       }}
     >
-      {children}
+      <span className="drop-target__content">
+        <strong>{children}</strong>
+        <small>{hint}</small>
+      </span>
     </section>
   );
 }
 
+function uriFromTransfer(transfer: DataTransfer) {
+  return transfer
+    .getData("text/uri-list")
+    .split("\n")
+    .map((line) => line.trim())
+    .find(Boolean);
+}
+
 /**
- * S-510 — browser境界をまたぐ実ファイルとsandbox iframeのdrag-and-drop。
- * 目的: 同じD&Dでも、downloadされたFileとopaque-originのURI payloadが異なることを見せる。
- * 最初の一手: B01は固定PNGをdownloadしてOS／download shelfから最初のdrop zoneへ、B02はiframeの透明レイヤー3枚を現像台へ順にdropする。
- * 箱ごとの成功条件: B01はtrusted Fileとfixture SHA-256一致、B02はtext/uri-list・短命marker・asset SHA一致後の3枚合成で開く。
- * 開かない操作: script生成DragEvent、同一pageの画像、FileとURIの取り違え、marker期限切れでは開かない。
- * API/権限: HTML Drag and Drop、DataTransfer File、text/uri-list、sandbox iframe、SHA-256。ファイルはupload・外部送信しない。
- * cleanup/環境: message markerを5秒で失効し、listener、iframe、object URLを離脱時に破棄する。H-001/H-002/H-003/H-005/H-013/H-014/H-019/H-020/H-023/H-025を確認する。
- */
-/**
- * S-510
- *
- * 目的: S-510の箱が示すブラウザ固有の状態・イベント・データ受け渡しを、プレイヤーの操作で観測する。
- * 最初の一手: 画面の箱と説明を確認し、表示されている標準UIまたは外部機器を使って観測を開始する。
- * 箱ごとの解法: 問題定義にある各Bxxについて、対応する実操作を行い、実APIから得た値・イベント・結果が厳密な成功条件を満たした箱だけが開く。
- * 開かない操作: 文字列の直接編集、合成イベント、DevToolsでのDOM改変、見た目だけの変更、別箱の結果の流用では開かない。
- * 使用API: このファイルが呼び出すWeb APIと、共通のProblem/Stage runtime。
- * 権限・privacy: 実装が必要とする権限・保存・送信は、箱の操作に必要な最小範囲へ限定する。生の入力を回答以外の目的で扱わない。
- * cleanup: stage離脱・取消・再試行時に、このstageが取得したlistener、timer、stream、worker、接続、blob URLを実装に応じて解除する。
- * 対応環境: StageHostのcapability probeがavailableまたはpermission-requiredとしたブラウザ。非対応時は操作を要求せずunsupported表示とする。
- * 人手確認: 対応するH-xxxをhuman-test-matrix.mdで確認し、権限拒否・取消・再入場も確認する。
+ * S-510 — 同じD&Dでも、ページ内画像・OSファイル・別window画像で境界が変わることを体験する。
+ * 目的: HTML Drag and DropのDataTransferがdocument、OS、window境界でどう変わるかを、見た目とカーソルで推理できるようにする。
+ * 最初の一手: B01のページ内画像をそのまま左のドロップ欄へドラッグし、受け付けるカーソルと欄の色を確認する。
+ * 箱ごとの解法: B01は固定fixtureのページ内画像URLとSHA-256を実dropで一致させる。B02はdraggable=falseの画像を保存し、OSのファイル管理画面から`drag-file.png`を実Fileとしてdropする。B03はiframe画像が禁止カーソルになることを確認し、別windowを開いて`drag-window.png`をdropする。各箱は対応する実操作だけで開く。
+ * 開かない操作: 同じページの画像をB02へ落とす、B01/B03へFileを落とす、iframeの画像をB03へ落とす、file inputで選ぶ、script生成DragEvent、DevToolsでDOMやDataTransferを改変する操作では開かない。
+ * 使用API: HTML Drag and Drop、DataTransfer、File、`text/uri-list`、`window.open`、`postMessage`、SHA-256。画像は固定fixtureとしてGit管理し、外部へ送信しない。
+ * 権限・privacy: OSファイルはdropされた一枚のPNGをメモリ上で照合するだけで、保存・upload・外部送信を行わない。別windowは同一originの固定helperを開く。
+ * cleanup: stage離脱時にmessage listener、iframe、別window、5秒のarm timerを解除し、drop状態と一時的な照合状態を破棄する。
+ * 対応環境: desktop browserの実native D&Dを対象とする。touch-only環境やiframeからのD&Dを受け付けないbrowserでは、欄を赤い禁止状態として表示し、操作を要求しない。
+ * 人手確認: H-001/H-002/H-003/H-005/H-013/H-014/H-019/H-020/H-023/H-025で、3箱のカーソル、保存経路、別window経路、再入場とcleanupを確認する。
  */
 export default function S510Stage(props: StageComponentProps) {
-  const problem = props.problem("S-510-B01");
-  const crossWindowProblem = props.problem("S-510-B02");
+  const pageProblem = props.problem("S-510-B01");
+  const fileProblem = props.problem("S-510-B02");
+  const windowProblem = props.problem("S-510-B03");
   const params = useMemo(() => new URL(location.href).searchParams, []);
   const round = useMemo(
     () => params.get("round") ?? crypto.randomUUID(),
     [params],
   );
   const [status, setStatus] = useState("");
-  const [layers, setLayers] = useState<Readonly<Record<string, string>>>({});
-  const [armedLayer, setArmedLayer] = useState<{
-    layer: string;
-    expires: number;
-  }>();
-  const helperRef = useRef<HTMLIFrameElement>(null);
+  const [armed, setArmed] = useState<"iframe" | "window">();
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const popupRef = useRef<Window | null>(null);
+  const armTimerRef = useRef<number | undefined>(undefined);
+
+  const pageUrl = useMemo(
+    () => new URL(`./${fixtures.page.filename}`, location.href).href,
+    [],
+  );
+  const fileUrl = useMemo(
+    () => new URL(`./${fixtures.file.filename}`, location.href).href,
+    [],
+  );
+  const windowUrl = useMemo(
+    () => new URL(`./${fixtures.window.filename}`, location.href).href,
+    [],
+  );
+  const helperUrl = useMemo(() => {
+    const url = new URL("./drag-helper.html", location.href);
+    url.searchParams.set("round", round);
+    url.searchParams.set("locale", props.locale);
+    url.searchParams.set("mode", "iframe");
+    return url.href;
+  }, [props.locale, round]);
 
   useEffect(() => {
     const receiveArm = (event: MessageEvent<unknown>) => {
-      if (event.source !== helperRef.current?.contentWindow) return;
-      if (!event.data || typeof event.data !== "object") return;
+      const source =
+        event.source === iframeRef.current?.contentWindow
+          ? "iframe"
+          : event.source === popupRef.current
+            ? "window"
+            : undefined;
+      if (!source || !event.data || typeof event.data !== "object") return;
       const data = event.data as {
         channel?: unknown;
         round?: unknown;
-        layer?: unknown;
         type?: unknown;
+        asset?: unknown;
       };
       if (
         data.channel !== "busybox-s510-drag" ||
         data.type !== "start" ||
         data.round !== round ||
-        typeof data.layer !== "string" ||
-        !(data.layer in layerAssets)
+        data.asset !== "window"
       )
         return;
-      setArmedLayer({ layer: data.layer, expires: Date.now() + 5_000 });
+      setArmed(source);
+      if (armTimerRef.current !== undefined)
+        window.clearTimeout(armTimerRef.current);
+      armTimerRef.current = window.setTimeout(() => {
+        armTimerRef.current = undefined;
+        setArmed(undefined);
+      }, 5_000);
     };
     window.addEventListener("message", receiveArm);
-    return () => window.removeEventListener("message", receiveArm);
+    return () => {
+      window.removeEventListener("message", receiveArm);
+      if (armTimerRef.current !== undefined)
+        window.clearTimeout(armTimerRef.current);
+      popupRef.current?.close();
+      popupRef.current = null;
+    };
   }, [round]);
 
-  useEffect(() => {
-    if (!armedLayer) return;
-    const remaining = Math.max(0, armedLayer.expires - Date.now());
-    const timer = window.setTimeout(() => setArmedLayer(undefined), remaining);
-    return () => window.clearTimeout(timer);
-  }, [armedLayer]);
+  const verifyBytes = async (bytes: ArrayBuffer, expected: string) =>
+    toHex(await crypto.subtle.digest("SHA-256", bytes)) === expected;
 
-  const sourceUrl = new URL("./drag-layer-a.png", location.href).href;
-  const helperUrl = new URL("./drag-helper.html", location.href);
-  helperUrl.searchParams.set("round", round);
-  helperUrl.searchParams.set("locale", props.locale);
-
-  const handleFileDrop = (event: React.DragEvent<HTMLElement>) => {
-    const dropped = event.dataTransfer.files[0];
-    if (!dropped) {
-      setStatus(stageText(props.locale, s510Locale.noPng));
+  const handlePageDrop = (event: React.DragEvent<HTMLElement>) => {
+    const uri = uriFromTransfer(event.dataTransfer);
+    if (!uri) {
+      setStatus(stageText(props.locale, s510Locale.pageNeedsImage));
       return;
     }
-    void dropped
-      .arrayBuffer()
-      .then((bytes) => crypto.subtle.digest("SHA-256", bytes))
-      .then((digest) => {
-        if (toHex(digest) !== layerAssets.A.sha256) {
-          setStatus(stageText(props.locale, s510Locale.wrongImage));
-          return;
-        }
-        problem.solve(["drag-drop:png-file"]);
-        setStatus(
-          `${dropped.name} ${stageText(props.locale, s510Locale.received)}`,
-        );
-      })
-      .catch(() => setStatus(stageText(props.locale, s510Locale.unreadable)));
-  };
-
-  const handleLayerDrop = (event: React.DragEvent<HTMLElement>) => {
-    const uri = event.dataTransfer
-      .getData("text/uri-list")
-      .split("\n")[0]
-      ?.trim();
-    const label = event.dataTransfer.getData("text/plain");
-    if (!uri || !armedLayer || armedLayer.expires < Date.now()) {
-      setStatus(stageText(props.locale, s510Locale.needIframeDrag));
-      return;
-    }
-    if (label !== `busybox-round:${round}:${armedLayer.layer}`) return;
-    const layer = armedLayer.layer;
-    const asset = layerAssets[layer as keyof typeof layerAssets];
-    if (!asset) return;
     const parsed = new URL(uri, location.href);
-    const expectedPath = new URL(`./${asset.filename}`, location.href).pathname;
-    if (parsed.origin !== location.origin || parsed.pathname !== expectedPath) {
-      setStatus(stageText(props.locale, s510Locale.forbidden));
+    const expected = new URL(pageUrl);
+    if (
+      parsed.origin !== expected.origin ||
+      parsed.pathname !== expected.pathname
+    ) {
+      setStatus(stageText(props.locale, s510Locale.wrongImage));
       return;
     }
-    setArmedLayer(undefined);
     void fetch(parsed.href)
       .then((response) => response.arrayBuffer())
-      .then((bytes) => crypto.subtle.digest("SHA-256", bytes))
-      .then((digest) => {
-        if (toHex(digest) !== asset.sha256) {
+      .then((bytes) => verifyBytes(bytes, fixtures.page.sha256))
+      .then((valid) => {
+        if (!valid) {
           setStatus(stageText(props.locale, s510Locale.digestFailed));
           return;
         }
-        setLayers((current) => ({ ...current, [layer]: parsed.href }));
-        setStatus(`${layer} ${stageText(props.locale, s510Locale.received)}`);
+        pageProblem.solve(["drag-drop:page-image"]);
+        setStatus(stageText(props.locale, s510Locale.pageReceived));
       })
       .catch(() => setStatus(stageText(props.locale, s510Locale.fetchFailed)));
   };
 
-  useEffect(() => {
-    if (Object.keys(layers).length >= 3)
-      crossWindowProblem.solve(["iframe-drag:three-layers"]);
-  }, [crossWindowProblem.solve, layers]);
+  const handleFileDrop = (event: React.DragEvent<HTMLElement>) => {
+    const dropped = event.dataTransfer.files[0];
+    if (!dropped) {
+      setStatus(stageText(props.locale, s510Locale.fileNeedsPng));
+      return;
+    }
+    void dropped
+      .arrayBuffer()
+      .then((bytes) => verifyBytes(bytes, fixtures.file.sha256))
+      .then((valid) => {
+        if (!valid) {
+          setStatus(stageText(props.locale, s510Locale.wrongImage));
+          return;
+        }
+        fileProblem.solve(["drag-drop:os-file"]);
+        setStatus(stageText(props.locale, s510Locale.fileReceived));
+      })
+      .catch(() => setStatus(stageText(props.locale, s510Locale.unreadable)));
+  };
+
+  const handleWindowDrop = (event: React.DragEvent<HTMLElement>) => {
+    const uri = uriFromTransfer(event.dataTransfer);
+    const marker = event.dataTransfer.getData("text/plain");
+    const expectedMarker = `busybox-round:${round}:window`;
+    if (armed !== "window" || marker !== expectedMarker || !uri) {
+      setStatus(stageText(props.locale, s510Locale.needSeparateWindow));
+      return;
+    }
+    const parsed = new URL(uri, location.href);
+    const expected = new URL(windowUrl);
+    if (
+      parsed.origin !== expected.origin ||
+      parsed.pathname !== expected.pathname
+    ) {
+      setStatus(stageText(props.locale, s510Locale.forbidden));
+      return;
+    }
+    setArmed(undefined);
+    void fetch(parsed.href)
+      .then((response) => response.arrayBuffer())
+      .then((bytes) => verifyBytes(bytes, fixtures.window.sha256))
+      .then((valid) => {
+        if (!valid) {
+          setStatus(stageText(props.locale, s510Locale.digestFailed));
+          return;
+        }
+        windowProblem.solve(["drag-drop:separate-window"]);
+        setStatus(stageText(props.locale, s510Locale.windowReceived));
+      })
+      .catch(() => setStatus(stageText(props.locale, s510Locale.fetchFailed)));
+  };
+
+  const openSeparateWindow = () => {
+    const url = new URL("./drag-helper.html", location.href);
+    url.searchParams.set("round", round);
+    url.searchParams.set("locale", props.locale);
+    url.searchParams.set("mode", "window");
+    popupRef.current = window.open(
+      url.href,
+      "busybox-s510-source",
+      "popup,width=420,height=300",
+    );
+    if (popupRef.current) {
+      popupRef.current.focus();
+      setStatus(stageText(props.locale, s510Locale.windowOpened));
+    } else setStatus(stageText(props.locale, s510Locale.popupBlocked));
+  };
+
+  const pageAccepts = (event: React.DragEvent<HTMLElement>) =>
+    event.dataTransfer.types.includes("text/uri-list") &&
+    !event.dataTransfer.types.includes("Files");
+  const fileAccepts = (event: React.DragEvent<HTMLElement>) =>
+    event.dataTransfer.types.includes("Files");
+  const windowAccepts = (event: React.DragEvent<HTMLElement>) =>
+    armed === "window" &&
+    event.dataTransfer.types.includes("text/uri-list") &&
+    !event.dataTransfer.types.includes("Files");
 
   return (
     <div className="puzzle puzzle--centered">
-      <div className="drag-columns">
+      <div className="drag-columns drag-columns--three">
         <section className="drag-card">
-          <ProblemGiftBox problem={problem} locale={props.locale} />
-          <h2>{stageText(props.locale, s510Locale.realFile)}</h2>
-          <p>{stageText(props.locale, s510Locale.realFileHelp)}</p>
+          <ProblemGiftBox problem={pageProblem} locale={props.locale} />
+          <h2>{stageText(props.locale, s510Locale.pageImage)}</h2>
+          <p>{stageText(props.locale, s510Locale.pageImageHelp)}</p>
+          <img
+            className="drag-fixture"
+            src={pageUrl}
+            alt={stageText(props.locale, s510Locale.pageImageAlt)}
+            draggable="true"
+            width={240}
+            height={120}
+          />
+          <DropZone
+            ariaLabel={stageText(props.locale, s510Locale.dropTarget)}
+            hint={stageText(props.locale, s510Locale.dropHint)}
+            accepts={pageAccepts}
+            onDrop={handlePageDrop}
+          >
+            {stageText(props.locale, s510Locale.dropPage)}
+          </DropZone>
+        </section>
+        <section className="drag-card">
+          <ProblemGiftBox problem={fileProblem} locale={props.locale} />
+          <h2>{stageText(props.locale, s510Locale.fileImage)}</h2>
+          <p>{stageText(props.locale, s510Locale.fileImageHelp)}</p>
+          <img
+            className="drag-fixture drag-fixture--disabled"
+            src={fileUrl}
+            alt={stageText(props.locale, s510Locale.fileImageAlt)}
+            draggable={false}
+            width={240}
+            height={120}
+          />
           <a
             className="download"
-            href={sourceUrl}
-            download="busybox-sticker.png"
+            href={fileUrl}
+            download="busybox-drag-file.png"
           >
             {stageText(props.locale, s510Locale.downloadPng)}
           </a>
           <DropZone
             ariaLabel={stageText(props.locale, s510Locale.dropTarget)}
+            hint={stageText(props.locale, s510Locale.dropHint)}
+            accepts={fileAccepts}
             onDrop={handleFileDrop}
           >
-            {stageText(props.locale, s510Locale.dropPng)}
+            {stageText(props.locale, s510Locale.dropFile)}
           </DropZone>
         </section>
         <section className="drag-card">
-          <ProblemGiftBox problem={crossWindowProblem} locale={props.locale} />
-          <h2>{stageText(props.locale, s510Locale.iframeImage)}</h2>
+          <ProblemGiftBox problem={windowProblem} locale={props.locale} />
+          <h2>{stageText(props.locale, s510Locale.windowImage)}</h2>
+          <p>{stageText(props.locale, s510Locale.windowImageHelp)}</p>
           <iframe
-            ref={helperRef}
+            ref={iframeRef}
             title={stageText(props.locale, s510Locale.iframeTitle)}
             sandbox="allow-scripts"
             loading="lazy"
-            src={helperUrl.href}
+            src={helperUrl}
           />
+          <button type="button" onClick={openSeparateWindow}>
+            {stageText(props.locale, s510Locale.openWindow)}
+          </button>
           <DropZone
             ariaLabel={stageText(props.locale, s510Locale.dropTarget)}
-            onDrop={handleLayerDrop}
+            hint={stageText(props.locale, s510Locale.dropHint)}
+            accepts={windowAccepts}
+            onDrop={handleWindowDrop}
           >
-            {stageText(props.locale, s510Locale.dropIframe)}
+            {stageText(props.locale, s510Locale.dropWindow)}
           </DropZone>
-          <fieldset className="drag-composite">
-            <legend>
-              {stageText(props.locale, s510Locale.receivedLayers)}
-            </legend>
-            {Object.entries(layers).map(([layer, url]) => (
-              <img key={layer} src={url} alt={layer} width={240} height={120} />
-            ))}
-          </fieldset>
         </section>
       </div>
       <p className="interaction-status" role="status">

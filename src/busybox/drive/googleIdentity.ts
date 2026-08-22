@@ -31,7 +31,7 @@ let scriptPromise: Promise<GoogleOAuth> | undefined;
 function loadGoogleOAuth(): Promise<GoogleOAuth> {
   if (window.google) return Promise.resolve(window.google.accounts.oauth2);
   if (scriptPromise) return scriptPromise;
-  scriptPromise = new Promise((resolve, reject) => {
+  scriptPromise = new Promise<GoogleOAuth>((resolve, reject) => {
     const script = document.createElement("script");
     script.src = scriptUrl;
     script.async = true;
@@ -52,6 +52,10 @@ function loadGoogleOAuth(): Promise<GoogleOAuth> {
       },
     );
     document.head.append(script);
+  }).catch((error: unknown) => {
+    // A transient network/CSP failure must not poison all later retry attempts.
+    scriptPromise = undefined;
+    throw error;
   });
   return scriptPromise;
 }

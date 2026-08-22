@@ -35,7 +35,7 @@ manifestの `start_url`、`id`、`scope` とアイコンはすべて相対URLに
 - S-440はmanifest `file_handlers`で`.busybox`をOSへ関連付け、OSの「開く」からLaunchQueueへ渡された実file handleだけを読む。fileはclient生成し、serverへuploadしない。起動済みpageへの通常dropは判定外とする。
 - S-450はmanifest `protocol_handlers`で`web+busybox`を登録し、custom scheme経由のround payloadを受ける。初回handler確認を拒否した環境では未観測のままとする。
 - S-460はdesktop installed PWAのWindow Controls Overlayがvisibleな時だけtitlebar geometryを盤面にする。
-- S-510-B01はinstalled PWAをsticker source、通常browser windowをreceiverとして使う。共通install導線からsourceの起動とreceiver pageの並べ方を示すが、同一page内dropや通常file uploadはclearにしない。B02はPWAを要求せず、専用の外部静的originをcross-origin iframeとして埋め、iframe内の画像を親Documentへ実dropする。
+- S-510はPWAを要求しない。B01は同一ページの固定画像URI、B02は保存したPNGのOS File、B03はiframe画像を拒否した後に別windowから渡す固定画像URIを使う。ページ、OS、windowの違いをdrop欄の許可／拒否cursorと実DataTransferで見せ、同一pageの誤payload、file input、合成イベントはclearにしない。
 - S-740はinstalled PWAでperiodic syncを登録し、水と光のcare recordを別訪問で一回ずつ預ける。window client 0件の異なる実`periodicsync`だけが発芽・開花assetを取得してlocal phaseを進める。通知、timer、page load、通常Background Sync、DevTools模擬eventでは成長させず、開花・reset時にtagをunregisterして専用store / cacheを削除する。
 
 通知本文やキャッシュには進捗、生入力、端末識別子を含めない。

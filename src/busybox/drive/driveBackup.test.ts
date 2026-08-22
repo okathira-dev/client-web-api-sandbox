@@ -1,22 +1,36 @@
 import { createProgressDocument, solveBox } from "../domain/progress";
-import { deleteDriveBackup, syncDriveBackup } from "./driveBackup";
+import {
+  type DriveBackupError,
+  deleteDriveBackups,
+  syncDriveBackup,
+} from "./driveBackup";
 
 const now = "2026-01-01T00:00:00.000Z";
 
-function jsonResponse(value: unknown, status = 200) {
+function jsonResponse(
+  value: unknown,
+  status = 200,
+  headers: Record<string, string> = {},
+) {
   return new Response(JSON.stringify(value), {
     status,
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...headers },
   });
 }
 
-describe("Drive backup sync", () => {
-  it("creates an appDataFolder backup when none exists", async () => {
+function replica(id: string, name: string) {
+  return { id, name, modifiedTime: now };
+}
+
+describe("Drive replica backup sync", () => {
+  it("creates one installation-owned replica when none exists", async () => {
     const calls: Array<[RequestInfo | URL, RequestInit | undefined]> = [];
     const fetcher: typeof fetch = jest.fn(async (input, init) => {
       calls.push([input, init]);
       if (calls.length === 1) return jsonResponse({ files: [] });
-      if (calls.length === 2) return jsonResponse({ id: "file-1" });
+      if (calls.length === 2) {
+        return jsonResponse(replica("file-1", "busybox-progress-local.json"));
+      }
       return jsonResponse({});
     });
     const local = createProgressDocument("ja", now, "local");
@@ -25,11 +39,11 @@ describe("Drive backup sync", () => {
 
     expect(result.created).toBe(true);
     expect(String(calls[0]?.[0])).toContain("spaces=appDataFolder");
-    expect(calls[1]?.[1]?.body).toContain("appDataFolder");
+    expect(calls[1]?.[1]?.body).toContain("busybox-progress-local.json");
     expect(calls[2]?.[1]?.method).toBe("PATCH");
   });
 
-  it("merges remote clears before uploading", async () => {
+  it("merges every device replica before updating this device", async () => {
     const local = solveBox(
       createProgressDocument("ja", now, "local"),
       "S-000-B01",
@@ -41,8 +55,16 @@ describe("Drive backup sync", () => {
     let call = 0;
     const fetcher: typeof fetch = jest.fn(async () => {
       call += 1;
-      if (call === 1) return jsonResponse({ files: [{ id: "file-1" }] });
-      if (call === 2) return jsonResponse(remote);
+      if (call === 1) {
+        return jsonResponse({
+          files: [
+            replica("local-file", "busybox-progress-local.json"),
+            replica("remote-file", "busybox-progress-remote.json"),
+          ],
+        });
+      }
+      if (call === 2) return jsonResponse(local, 200, { etag: "local-etag" });
+      if (call === 3) return jsonResponse(remote, 200, { etag: "remote-etag" });
       return jsonResponse({});
     });
 
@@ -52,18 +74,41 @@ describe("Drive backup sync", () => {
       "S-000-B01",
       "S-020-B01",
     ]);
-    expect(result.document.settings.locale).toBe("ja");
     expect(result.remoteInstallationId).toBe("remote");
   });
 
-  it("does not upload a corrupt remote backup", async () => {
-    let calls = 0;
+  it("retries the complete merge after an ETag conflict", async () => {
+    const local = createProgressDocument("ja", now, "local");
+    let call = 0;
     const fetcher: typeof fetch = jest.fn(async () => {
-      calls += 1;
-      return calls === 1
-        ? jsonResponse({ files: [{ id: "file-1" }] })
-        : jsonResponse({ schemaVersion: 1, boxes: "broken" });
+      call += 1;
+      if (call === 1 || call === 4) {
+        return jsonResponse({
+          files: [replica("local-file", "busybox-progress-local.json")],
+        });
+      }
+      if (call === 2 || call === 5)
+        return jsonResponse(local, 200, { etag: "etag" });
+      if (call === 3) return new Response(null, { status: 412 });
+      return jsonResponse({});
     });
+
+    await expect(
+      syncDriveBackup("token", local, fetcher),
+    ).resolves.toMatchObject({
+      created: false,
+    });
+    expect(call).toBe(6);
+  });
+
+  it("does not upload after a corrupt replica", async () => {
+    const broken = replica("broken-file", "busybox-progress-broken.json");
+    const fetcher: typeof fetch = jest
+      .fn()
+      .mockResolvedValueOnce(jsonResponse({ files: [broken] }))
+      .mockResolvedValueOnce(
+        jsonResponse({ schemaVersion: 1, boxes: "broken" }),
+      );
 
     await expect(
       syncDriveBackup(
@@ -71,20 +116,29 @@ describe("Drive backup sync", () => {
         createProgressDocument("en", now, "local"),
         fetcher,
       ),
-    ).rejects.toMatchObject({ code: "corrupt" });
-    expect(calls).toBe(2);
+    ).rejects.toEqual(
+      expect.objectContaining({
+        code: "corrupt",
+        replicas: [broken],
+      }) as DriveBackupError,
+    );
+    expect(fetcher).toHaveBeenCalledTimes(2);
   });
 
-  it("permanently deletes only the appData backup", async () => {
+  it("deletes every replica, not an arbitrary newest file", async () => {
     const fetcher: typeof fetch = jest
       .fn()
-      .mockResolvedValueOnce(jsonResponse({ files: [{ id: "file-1" }] }))
-      .mockResolvedValueOnce(new Response(null, { status: 204 }));
+      .mockResolvedValueOnce(
+        jsonResponse({
+          files: [
+            replica("one", "busybox-progress-one.json"),
+            replica("two", "busybox-progress-two.json"),
+          ],
+        }),
+      )
+      .mockResolvedValue(new Response(null, { status: 204 }));
 
-    await expect(deleteDriveBackup("token", fetcher)).resolves.toBe(true);
-    expect(fetcher).toHaveBeenLastCalledWith(
-      expect.stringContaining("/files/file-1"),
-      expect.objectContaining({ method: "DELETE" }),
-    );
+    await expect(deleteDriveBackups("token", fetcher)).resolves.toBe(2);
+    expect(fetcher).toHaveBeenCalledTimes(3);
   });
 });

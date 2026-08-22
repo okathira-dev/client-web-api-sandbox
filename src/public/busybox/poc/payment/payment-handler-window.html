@@ -43,7 +43,7 @@
       });
       navigator.serviceWorker.addEventListener("message", (event) => {
         const data = event.data;
-        if (!data || data.channel !== "busybox-payment" || data.type !== "payment-context") return;
+        if (data?.channel !== "busybox-payment" || data.type !== "payment-context") return;
         attempt = data.attempt;
         amount.textContent = `BBX 1.00 · attempt ${attempt}`;
         actions.hidden = false;

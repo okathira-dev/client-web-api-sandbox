@@ -82,11 +82,12 @@ const registrations: readonly PocRegistration[] = [
     loader: () =>
       import("./cases/poc-033-audio-session").then((m) => ({ mount: m.mount })),
   },
-  {
-    id: "034",
-    loader: () =>
-      import("./cases/poc-034-audio-track").then((m) => ({ mount: m.mount })),
-  },
+  ...["036", "037", "038", "041", "042", "046", "048", "051", "052", "053"].map(
+    (id) => ({
+      id,
+      loader: () => import("./advanced-poc").then((m) => ({ mount: m.mount })),
+    }),
+  ),
 ];
 
 const loaded = new WeakMap<PocRoot, () => void>();

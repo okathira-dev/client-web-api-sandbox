@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 320" role="img" aria-label="Seed in an empty greenhouse">
+  <rect width="480" height="320" fill="#0f172a"/>
+  <path d="M40 230 95 70h290l55 160Z" fill="#e0f2fe" stroke="#7dd3fc" stroke-width="8" opacity=".78"/>
+  <path d="M240 70v160M95 70l145 160L385 70" fill="none" stroke="#38bdf8" stroke-width="5" opacity=".7"/>
+  <rect y="230" width="480" height="90" fill="#3f2a1d"/>
+  <ellipse cx="240" cy="235" rx="19" ry="10" fill="#78350f"/>
+</svg>

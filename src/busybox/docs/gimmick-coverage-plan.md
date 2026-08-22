@@ -2,7 +2,7 @@
 
 > JSDocとstage-localizationへ移行する前の対応履歴。現行の解法・箱番号・実装状態はこの表から導かない。JSDoc移行完了後に削除または履歴ディレクトリへの移動を再判定する。
 
-> 本文には実装前の状態語も履歴として残る。現在は67stage・155箱をコードへ反映し、G-024 / S-270とMedia Capabilities profile箱をD-141で不採用、G-080 / S-810をnative seek後のアスペクト比判定へ更新、D-143でG-020のPiP箱をS-350へ統合し、D-144でfullscreen箱とmedia stage製品UXを確定した。過去のframe cadence案は履歴であり、現行状態は[ステージ実装状況](./stage-implementation-status.md)、解法は[現行ステージ解法仕様](./stage-walkthroughs.md)を正とする。
+> 本文には実装前の状態語も履歴として残る。2026-08-20に81stage・181箱へ更新し、G-068、G-079、G-081〜G-090を製品stageとして実装した。G-024 / S-270とMedia Capabilities profile箱をD-141で不採用、G-080 / S-810をnative seek後のアスペクト比判定へ更新、D-143でG-020のPiP箱をS-350へ統合し、D-144でfullscreen箱とmedia stage製品UXを確定した。G-076 / S-700-B03 PresentationとG-077 / S-780 Payment Handlerも製品stageへ実装し、S-780はD-147でbrowser所有chooserの指定wallet箱を加えた。G-049 / S-510はページ内画像、OS File、iframe拒否から別windowへ進む3箱へ更新した。過去のframe cadence案は履歴であり、現行状態は[ステージ実装状況](./stage-implementation-status.md)、解法は各stage JSDocを正とする。
 
 ## 完了条件
 
@@ -65,7 +65,7 @@
 | G-038 | S-400 ラベル未定 | Date / High Resolution Time / Page Visibility | 採用。monotonic基準で現在より1時間遅れて進むアナログ時計へOS wall clockを±5分で合わせるB01と、baseline±5分へ復元するB02。実機PoC必須 |
 | G-039 | S-410 ラベル未定 | Notification actions / Service Worker / IndexedDB | 採用。page非遷移の2 action入力をnotification差替えで反復し、完了inboxを後の通常訪問でconsumeする1箱。`Notification.maxActions >= 2`の実表示とworker lifecycleをPoCする |
 | G-040 | S-420 金庫（仮） | Notification actions / notification body click / IndexedDB | 採用。左右action列をService Workerで蓄積し、本文click時の提出snapshotをpageで正解列と一括照合する1箱。金庫animationで成功・失敗を示し、失敗後は同じroundを再挑戦できる |
-| G-041 | S-430 外側の停止と復帰（仮） | Media Session / Audio Session / HTMLAudioElement | B01実装済み。生成loop音声へ届くMedia Sessionのexternal pause actionで停止する。DR-065のB02はAudio Sessionの実`active → interrupted → active`と再生復帰を観測する。B02承認済み・未実装 |
+| G-041 | S-430 外側の停止と復帰（仮） | Media Session / Audio Session / HTMLAudioElement | B01は生成loop音声へ届くMedia Sessionのexternal pause actionで停止する。B02はAudio Sessionの実`active → interrupted → active`と再生復帰を観測する。 |
 | G-042 | S-440 ファイルの鍵（仮） | File Handling / LaunchQueue / FileSystemFileHandle | 採用。round情報を含む`.busybox`をdownloadし、OSの「開く」からinstalled PWAへ渡された実file handleの内容が一致した場合に開く1箱。通常dropは判定外 |
 | G-043 | S-450 別の名前で呼ぶ（仮） | Protocol Handlers / LaunchQueue | 採用。stageで発行したround nonce入り`web+busybox:` URLをuser activationで開き、registered PWAがhandler targetを受けた場合に開く1箱 |
 | G-044 | S-460 窓の上辺（仮） | Window Controls Overlay / display_override | 採用。overlayがvisibleなdesktop PWAで、実titlebar geometry内に配置した箱を押した場合に開く1箱 |
@@ -73,7 +73,7 @@
 | G-046 | S-480 文字と好みの目盛り（仮） | text-scale meta / preferred-text-scale / CSS Fonts / User Preferences API / preference media queries | B01〜B04は実装済み。current preferred text scaleを小・標準・大・特大の4帯へ分類する。DR-019として、`prefers-color-scheme`、`prefers-contrast`、`prefers-reduced-motion`、`prefers-reduced-transparency`、`prefers-reduced-data`を`requestOverride()`して実効media queryを変える独立B05〜B09を追加承認済み・未実装。開箱後と離脱時にoverrideをclearする |
 | G-047 | S-490 名前の鍵（仮） | HTML input / InputEvent | 採用。placeholderだけで`busybox`を示し、text inputの現在値が小文字で完全一致すると開く1箱。入力方法は限定せず、値や入力履歴は保存しない |
 | G-048 | S-500 暗号の紙片（仮） | Clipboard Events / Selection | 採用。Caesar暗号文全体のtrusted copyで平文をclipboardへ入れ、trusted pasteで紙面へ戻し、そのDOM内の`busybox`だけを選ぶと開く1箱。S-180、S-490とは別stage |
-| G-049 | S-510 窓を渡るステッカー（仮） | HTML Drag and Drop / DataTransferItemList / File / `text/uri-list` | 2箱を初版実装。B01はround PNG File、B02はsandbox iframe内のGit管理済みPNG 3枚を親の現像台へ実dragし、current iframe payload、画像URL、SHA-256を照合して重ねる。通常link、同一page drag、file input、download / uploadは判定外 |
+| G-049 | S-510 境界を越える画像 | HTML Drag and Drop / DataTransfer / File / `text/uri-list` / `window.open` | 3箱を実装。B01はページ内PNGのURI、B02はdraggable=false画像を保存したOS File、B03はiframe画像を拒否し、別windowのPNG URIとround markerだけを受ける。各fixtureのSHA-256を照合し、許可／拒否cursorとdragover状態を表示する。合成イベント、file input、模擬payloadは判定外 |
 | G-050 | S-520 近づく影（仮） | ProximitySensor | 採用。実far reading後の`near === true`で開くLabs 1箱。camera / pointer代替なし |
 | G-051 | S-530 三軸の振り子（仮） | LinearAccelerationSensor | 採用。X/Y/Zそれぞれでdominantな正負加速度peakを短時間に観測して開く3箱 |
 | G-052 | S-540 光の両端（仮） | AmbientLightSensor | 採用。量子化されたilluminanceの暗所帯と非常に明るい帯をそれぞれ開く2箱。cameraは使わない |
@@ -92,8 +92,8 @@
 | G-065 | S-660 計算圧力（仮） | Compute Pressure API / PressureObserver | 初版実装・人手確認待ち。CPUの`nominal`、中間（`fair` / `serious`）、`critical`を3箱へ対応させ、実PressureRecordを訪問間で累積する。ゲーム自身はCPU負荷を生成しない |
 | G-066 | S-670 端末迷路（仮） | Console API / ASCII TUI | 初版実装・人手確認待ち。Consoleへread-onlyの迷路盤面を出し、page上の方向buttonだけで移動して出口へ到達する1箱。Console入力やpage編集を要求しない |
 | G-067 | S-680 端末診断卓（不採用） | Console API / `console.table()` | D-135でS-670 Console迷路との体験重複を理由に不採用。stage・箱を実装しない |
-| G-068 | S-690 断片をたどる文書（仮） | URL Fragment Text Directives | 枠組み採用・未実装。同一page内の複数Text Fragment linkで強調箇所を巡り、集めたhintの最終回答で1箱を開く。各jumpの成否はscriptで判定せず、謎の内容は実装前に再吟味する |
-| G-069 | S-700 遠くの映写箱（仮） | Remote Playback / Barcode Detection / camera / Presentation | 採用・未実装。B01は接続中の外部画面へ動画内の文字鍵を映して手元入力、B02はDR-016を統合し、動画内のround別QRを手元cameraと実`BarcodeDetector`で読む。B03はDR-076を統合し、Presentation receiverを外部画面へ実表示できれば開く。B01 / B02は変更しない |
+| G-068 | S-690 断片の道標 | URL Fragment Text Directives | 製品実装・人手確認待ち。4つの一意な英文targetを実linkで巡り、`text` / `fragments` / `leave` / `trails`を固定回答へ組み立てる1箱。各jumpの成否はscriptで判定しない |
+| G-069 | S-700 遠くの映写箱（仮） | Remote Playback / Barcode Detection / camera / Presentation | B01 / B02は候補保留。B03のみS-700-B03としてPresentation receiver readyを製品実装済み。 |
 | G-070 | S-710 合言葉変換所（仮） | MediaBunny / MediaRecorder / WebM metadata / jsQR / iframe | 初版実装・人手確認待ち。別サイト風ClipPress iframe内で、B01は全pixelが`#101010`以下の1 frameだけを`DARK FRAME`へ、B02はdecode失敗時の固定動画、B03はdownscale jsQR検出frameを固定flag QRへ、B04はS-710 SimpleTag付き動画の全frameを`SECOND PASS` overlayへ変換する。低bitrate、10秒上限、download、size比を含む |
 | G-071 | S-720 映像復元機（仮） | HTMLMediaElement / SVG patch cable / fixed media fixtures | 初版実装・人手確認待ち。3動画source、T1〜T3、1 outputをBezier cableで接続し、4正規routeだけでGit管理済み復元動画をoutputへ流す。QR flagは4問共通欄へ入力する |
 | G-072 | S-730 XRの箱（仮） | WebXR Device API / XRSession / XRFrame / XRInputSource | 採用・未実装。B01は実immersive sessionと最初の非null viewer pose、B02は実XRInputSourceのselect rayとXR空間上の箱との交差で開く。AR / VRのどちらでもよく、inline session、page click、DOM overlay、模擬poseは代替clearにしない |
@@ -101,10 +101,20 @@
 | G-074 | S-750 届いた封書（仮） | WebOTP API / Security Code AutoFill / origin-bound SMS | 採用・未実装。一箱を実`OTPCredential`一致、または空の`autocomplete="one-time-code"`欄への強く検証した`:autofill`によるcurrent code入力のどちらかで開く。手入力、paste、drop、compositionは代替clearにしない |
 | G-075 | S-760 架空の名刺（仮） | Contact Picker API / ContactsManager / ContactInfo | 採用・未実装。B01はOSへ追加した架空contactのname / email / tel / address / icon一致、B02はB01後に1件を選択しつつ5propertyを一つもpageへ渡さないことで開く。game製pickerやmanual formは代替clearにしない |
 | G-076 | S-770 身分証棚（仮） | FedCM / provider公式SDK / managed IdP | 採用・未実装。実装時点で公式FedCMと一般向けRP登録を提供するserviceを再調査し、providerごとの明示開始とbrowser所有account chooserの手動完了で独立箱を開く。Google 1箱を下限とし、OAuth redirect、broker越しの非FedCM login、game製account UIは代替clearにしない |
-| G-077 | S-780 三つの財布（仮） | Payment Handler / Payment Request / Service Worker | 採用・PoC確認済み、製品stage未実装。trusted eventは証跡として扱い、B01は承認とsuccess完了、B02は意図的拒否とfail完了、B03は同一handlerの実retry後成功で開く。handler選択・開始経路は固定しない。実provider、game製payment sheet、cancel / errorの代替clear、結果label、固定flagを使わない |
+| G-077 | S-780 四つの財布 | Payment Handler / Payment Request / Service Worker | B01〜B04製品stage実装済み・公開origin確認待ち。B01は✓とsuccess完了、B02は×とfail完了、B03は↻後の同一handler成功、B04はbrowser所有chooserで◇walletを選び対象workerへtrusted eventが届くと開く。B01〜B03はwallet非依存。実provider、game製picker、cancel / errorの代替clear、結果label、固定flagを使わない |
 | G-078 | S-790 活字の鍵（仮） | Local Font Access / FontData / FontFace / Web Crypto | 採用・未実装。Git管理する専用OTFをplayerがOSへinstallし、対象PostScript名へ絞った`queryLocalFonts()`と`FontData.blob()`の実data検証・glyph表示で1箱を直接開く。全font列挙、既存font集合、file upload、`local()`だけ、固定flagを代替clearにしない |
-| G-079 | S-800 断片を組み立てる文書（仮） | URL Fragment Text Directives / `hidden=until-found` / `beforematch` | 採用・未実装。長い英文、fragment表示B01、単語表示B02の2箱。playerがaddress barへfragment付きURLを貼り、対象語が出現してUA highlightされた`beforematch`で対応箱を開く。page内入力欄、通常anchor、独自highlightによる代替clearを作らない。問題内容は実装前に吟味する |
+| G-079 | S-800 URLの蛍光ペン | URL Fragment Text Directives / `hidden=until-found` / `beforematch` | B01はpercent-encoded `cobalt` fragment、B02は検索対象外canvasの`ember`からaddress bar URLを作る。専用containerの実`beforematch`を開箱に使い、UA Rangeとfind-in-pageの区別不能はH-055へ分担する |
 | G-080 | S-810 比率を止める | HTMLMediaElement / `videoWidth` / `videoHeight` / `seeked` / `requestVideoFrameCallback()` | 実装済み・人手確認待ち。playerがnative seekを止めた提示frameの比率が1:1、4:3、16:9、9:20の各相対5%以内ならB01〜B04が対応して開く。通常再生、pauseだけ、CSS寸法は解法にせず、ページにはscript自動seek経路を置かない |
+| G-081 | S-820 遠い箱 | Pointer Lock / `movementX` / `movementY` | lock中の相対移動だけで2D平面を進み、3座標のboxを中央reticleからtrusted clickする3箱 |
+| G-082 | S-830 留守番する箱 | Idle Detection | 実idle-unlockedと実screen lockedを別々に観測する2箱。timer / visibilityの代替なし |
+| G-083 | S-840 ぴったり重ねる | IntersectionObserver | 二次元scroll root内でtargetの実intersection ratioを0.98以上にする1箱 |
+| G-084 | S-850 浮かぶ箱 | Document Picture-in-Picture | Document PiPへportalした実boxだけをtrusted clickする1箱 |
+| G-085 | S-860 校正刷り | EditContext | inputでない通常copyへEditContextをattachし、単語単位の誤字・脱字・余分語を直す3箱 |
+| G-086 | S-870 外の書庫 | File System Access | 空の使い捨てfolderにseedしたfileをOS側で書換え・削除・新規作成する3箱 |
+| G-087 | S-880 圧縮された荷物 | Compression Streams | 固定gzip / deflate / deflate-raw assetを実DecompressionStreamで展開する3箱 |
+| G-088 | S-890 額縁の中だけ | Element Fullscreen | 指定HTML elementをfullscreenにして初めて内部boxを押せる1箱 |
+| G-089 | S-900 映像の継ぎ目 | MediaSource / SourceBuffer | playerのA→B→C→D append orderで完成videoを最後までnative再生する1箱 |
+| G-090 | S-910 その場でつくる字幕 | runtime WebVTT / TextTrack | 再生中に追加したVTTCueが対応した映像時刻へ重なる1箱 |
 
 ## 2026-07-17 現行API確認
 

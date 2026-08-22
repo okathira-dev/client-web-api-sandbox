@@ -6,6 +6,9 @@ export function mount(root: PocRoot): () => void {
   const sourceFrame =
     root.querySelector<HTMLIFrameElement>("[data-dnd-source]");
   const openSource = root.querySelector<HTMLButtonElement>("[data-dnd-open]");
+  const openWindow = root.querySelector<HTMLButtonElement>(
+    "[data-dnd-open-window]",
+  );
   const reset = root.querySelector<HTMLButtonElement>("[data-dnd-reset]");
   if (!status || !target) return () => undefined;
 
@@ -65,6 +68,24 @@ export function mount(root: PocRoot): () => void {
       "source iframeをフォーカスしました。sandbox内の画像を実際にこのdrop targetへdragしてください。",
     );
   };
+  let sourceWindow: Window | null = null;
+  const openSeparateWindow = () => {
+    const helperUrl = new URL("../drag-helper.html", location.href);
+    helperUrl.searchParams.set("mode", "window");
+    sourceWindow = window.open(
+      helperUrl.href,
+      "busybox-dnd-source",
+      "popup,width=420,height=360",
+    );
+    if (sourceWindow) {
+      sourceWindow.focus();
+      setStatus(
+        "別windowのnative imageをこのdrop targetへ実dragしてください。DataTransferの実payloadだけを記録します。",
+      );
+    } else {
+      setStatus("別windowを開けませんでした。popup許可を確認してください。");
+    }
+  };
   const clear = () => {
     delete root.dataset.pocState;
     setStatus("未実行。実dragのみを記録します。");
@@ -73,6 +94,7 @@ export function mount(root: PocRoot): () => void {
   target.addEventListener("dragleave", onDragLeave);
   target.addEventListener("drop", onDrop);
   openSource?.addEventListener("click", open);
+  openWindow?.addEventListener("click", openSeparateWindow);
   reset?.addEventListener("click", clear);
 
   return () => {
@@ -80,6 +102,8 @@ export function mount(root: PocRoot): () => void {
     target.removeEventListener("dragleave", onDragLeave);
     target.removeEventListener("drop", onDrop);
     openSource?.removeEventListener("click", open);
+    openWindow?.removeEventListener("click", openSeparateWindow);
     reset?.removeEventListener("click", clear);
+    sourceWindow?.close();
   };
 }

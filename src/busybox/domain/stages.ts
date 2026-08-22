@@ -692,6 +692,11 @@ export const stageCatalogue = [
         color: "#22d3ee",
         clue: "sound",
       },
+      {
+        id: "S-430-B02",
+        color: "#a78bfa",
+        clue: "sound",
+      },
     ],
   }),
   defineStage({
@@ -751,6 +756,11 @@ export const stageCatalogue = [
         color: "#fb7185",
         clue: "resize",
       },
+      { id: "S-480-B05", color: "#312e81", clue: "light" },
+      { id: "S-480-B06", color: "#f8fafc", clue: "selection" },
+      { id: "S-480-B07", color: "#22c55e", clue: "pause" },
+      { id: "S-480-B08", color: "#94a3b8", clue: "hidden" },
+      { id: "S-480-B09", color: "#38bdf8", clue: "offline" },
     ],
   }),
   defineStage({
@@ -790,6 +800,11 @@ export const stageCatalogue = [
         id: "S-510-B02",
         color: "#10b981",
         clue: "import",
+      },
+      {
+        id: "S-510-B03",
+        color: "#6366f1",
+        clue: "windows",
       },
     ],
   }),
@@ -974,6 +989,16 @@ export const stageCatalogue = [
     })) as readonly ProblemFor<"S-620">[],
   }),
   defineStage({
+    id: "S-630",
+    category: "device",
+    problems: [
+      { id: "S-630-B01", color: "#38bdf8", clue: "devices" },
+      { id: "S-630-B02", color: "#fb7185", clue: "devices" },
+      { id: "S-630-B03", color: "#34d399", clue: "devices" },
+      { id: "S-630-B04", color: "#818cf8", clue: "bluetooth" },
+    ],
+  }),
+  defineStage({
     id: "S-640",
     category: "page",
     problems: Array.from({ length: 8 }, (_, index) => ({
@@ -1041,6 +1066,38 @@ export const stageCatalogue = [
     ],
   }),
   defineStage({
+    id: "S-690",
+    category: "transition",
+    problems: [
+      {
+        id: "S-690-B01",
+        color: "#38bdf8",
+        clue: "path",
+      },
+    ],
+  }),
+  defineStage({
+    id: "S-700",
+    category: "edge",
+    problems: [
+      {
+        id: "S-700-B01",
+        color: "#f59e0b",
+        clue: "screen",
+      },
+      {
+        id: "S-700-B02",
+        color: "#22d3ee",
+        clue: "devices",
+      },
+      {
+        id: "S-700-B03",
+        color: "#0ea5e9",
+        clue: "screen",
+      },
+    ],
+  }),
+  defineStage({
     id: "S-710",
     category: "edge",
     problems: [
@@ -1093,6 +1150,68 @@ export const stageCatalogue = [
     ],
   }),
   defineStage({
+    id: "S-730",
+    category: "device",
+    problems: [
+      { id: "S-730-B01", color: "#60a5fa", clue: "devices" },
+      { id: "S-730-B02", color: "#a78bfa", clue: "selection" },
+    ],
+  }),
+  defineStage({
+    id: "S-740",
+    category: "edge",
+    problems: [{ id: "S-740-B01", color: "#4ade80", clue: "wait" }],
+  }),
+  defineStage({
+    id: "S-750",
+    category: "edge",
+    problems: [{ id: "S-750-B01", color: "#f472b6", clue: "notification" }],
+  }),
+  defineStage({
+    id: "S-760",
+    category: "device",
+    problems: [
+      { id: "S-760-B01", color: "#fbbf24", clue: "devices" },
+      { id: "S-760-B02", color: "#94a3b8", clue: "hidden" },
+    ],
+  }),
+  defineStage({
+    id: "S-770",
+    category: "edge",
+    problems: [{ id: "S-770-B01", color: "#4285f4", clue: "selection" }],
+  }),
+  defineStage({
+    id: "S-780",
+    category: "edge",
+    problems: [
+      {
+        id: "S-780-B01",
+        color: "#facc15",
+        clue: "export",
+      },
+      {
+        id: "S-780-B02",
+        color: "#eab308",
+        clue: "import",
+      },
+      {
+        id: "S-780-B03",
+        color: "#ca8a04",
+        clue: "transition",
+      },
+      {
+        id: "S-780-B04",
+        color: "#a16207",
+        clue: "selection",
+      },
+    ],
+  }),
+  defineStage({
+    id: "S-790",
+    category: "edge",
+    problems: [{ id: "S-790-B01", color: "#c084fc", clue: "install" }],
+  }),
+  defineStage({
     id: "S-810",
     category: "page",
     problems: Array.from({ length: 4 }, (_, index) => ({
@@ -1100,6 +1219,112 @@ export const stageCatalogue = [
       color: ["#84cc16", "#65a30d", "#4d7c0f", "#3f6212"][index],
       clue: "resize" as const,
     })) as readonly ProblemFor<"S-810">[],
+  }),
+  defineStage({
+    id: "S-820",
+    category: "device",
+    problems: [
+      { id: "S-820-B01", color: "#fb7185", clue: "mouse" },
+      { id: "S-820-B02", color: "#f97316", clue: "mouse" },
+      { id: "S-820-B03", color: "#facc15", clue: "mouse" },
+    ],
+  }),
+  defineStage({
+    id: "S-830",
+    category: "device",
+    problems: [
+      { id: "S-830-B01", color: "#94a3b8", clue: "wait" },
+      { id: "S-830-B02", color: "#334155", clue: "lock" },
+    ],
+  }),
+  defineStage({
+    id: "S-850",
+    category: "edge",
+    problems: [{ id: "S-850-B01", color: "#60a5fa", clue: "pip" }],
+  }),
+  defineStage({
+    id: "S-860",
+    category: "page",
+    problems: [
+      { id: "S-860-B01", color: "#fbbf24", clue: "pen" },
+      { id: "S-860-B02", color: "#f59e0b", clue: "pen" },
+      { id: "S-860-B03", color: "#d97706", clue: "pen" },
+    ],
+  }),
+  defineStage({
+    id: "S-870",
+    category: "storage",
+    problems: [
+      { id: "S-870-B01", color: "#34d399", clue: "pen" },
+      { id: "S-870-B02", color: "#10b981", clue: "hidden" },
+      { id: "S-870-B03", color: "#059669", clue: "export" },
+    ],
+  }),
+  defineStage({
+    id: "S-880",
+    category: "storage",
+    problems: [
+      { id: "S-880-B01", color: "#c084fc", clue: "import" },
+      { id: "S-880-B02", color: "#a855f7", clue: "import" },
+      { id: "S-880-B03", color: "#7e22ce", clue: "import" },
+    ],
+  }),
+  defineStage({
+    id: "S-900",
+    category: "edge",
+    problems: [{ id: "S-900-B01", color: "#f43f5e", clue: "transition" }],
+  }),
+  defineStage({
+    id: "S-910",
+    category: "page",
+    problems: [{ id: "S-910-B01", color: "#e879f9", clue: "subtitles" }],
+  }),
+  defineStage({
+    id: "S-800",
+    category: "page",
+    problems: [
+      {
+        id: "S-800-B01",
+        color: "#a78bfa",
+        clue: "selection",
+      },
+      {
+        id: "S-800-B02",
+        color: "#c084fc",
+        clue: "selection",
+      },
+    ],
+  }),
+  defineStage({
+    id: "S-840",
+    category: "transition",
+    problems: [
+      {
+        id: "S-840-B01",
+        color: "#2dd4bf",
+        clue: "selection",
+      },
+    ],
+  }),
+  defineStage({
+    id: "S-890",
+    category: "edge",
+    problems: [
+      {
+        id: "S-890-B01",
+        color: "#0ea5e9",
+        clue: "fullscreen",
+      },
+    ],
+  }),
+  defineStage({
+    id: "S-920",
+    category: "page",
+    problems: [
+      { id: "S-920-B01", color: "#f59e0b", clue: "path" },
+      { id: "S-920-B02", color: "#22d3ee", clue: "path" },
+      { id: "S-920-B03", color: "#a78bfa", clue: "path" },
+    ],
   }),
 ] as const satisfies readonly StageSpec[];
 

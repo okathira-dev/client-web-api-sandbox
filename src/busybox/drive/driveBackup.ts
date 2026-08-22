@@ -6,25 +6,30 @@ import {
 
 const apiRoot = "https://www.googleapis.com/drive/v3";
 const uploadRoot = "https://www.googleapis.com/upload/drive/v3";
-const backupName = "busybox-progress.json";
+const replicaPrefix = "busybox-progress-";
+const maxSyncAttempts = 3;
+
+export type DriveBackupErrorCode = "http" | "corrupt" | "future" | "conflict";
+
+export interface DriveReplica {
+  readonly id: string;
+  readonly name: string;
+  readonly modifiedTime?: string;
+}
 
 export class DriveBackupError extends Error {
   constructor(
-    readonly code: "http" | "corrupt" | "future",
+    readonly code: DriveBackupErrorCode,
     message: string,
+    readonly replicas: readonly DriveReplica[] = [],
   ) {
     super(message);
     this.name = "DriveBackupError";
   }
 }
 
-interface DriveFile {
-  id: string;
-  modifiedTime?: string;
-}
-
 interface FileListResponse {
-  files?: DriveFile[];
+  files?: DriveReplica[];
 }
 
 export interface DriveSyncResult {
@@ -34,6 +39,16 @@ export interface DriveSyncResult {
 }
 
 type Fetcher = typeof fetch;
+
+type DownloadedReplica = {
+  readonly replica: DriveReplica;
+  readonly raw: unknown;
+  readonly eTag: string | null;
+};
+
+function replicaName(installationId: string): string {
+  return `${replicaPrefix + installationId}.json`;
+}
 
 async function authorizedFetch(
   fetcher: Fetcher,
@@ -53,13 +68,13 @@ async function authorizedFetch(
   return response;
 }
 
-async function findBackup(fetcher: Fetcher, accessToken: string) {
+async function findReplicas(fetcher: Fetcher, accessToken: string) {
   const query = new URLSearchParams({
     spaces: "appDataFolder",
-    q: `name = '${backupName}'`,
-    fields: "files(id,modifiedTime)",
+    q: `name contains '${replicaPrefix}'`,
+    fields: "files(id,name,modifiedTime)",
     orderBy: "modifiedTime desc",
-    pageSize: "10",
+    pageSize: "100",
   });
   const response = await authorizedFetch(
     fetcher,
@@ -67,110 +82,222 @@ async function findBackup(fetcher: Fetcher, accessToken: string) {
     `${apiRoot}/files?${query}`,
   );
   const list = (await response.json()) as FileListResponse;
-  return list.files?.[0] ?? null;
+  return (list.files ?? []).filter((file) =>
+    file.name.startsWith(replicaPrefix),
+  );
 }
 
-async function createBackupFile(fetcher: Fetcher, accessToken: string) {
+async function createReplica(
+  fetcher: Fetcher,
+  accessToken: string,
+  name: string,
+): Promise<DriveReplica> {
   const response = await authorizedFetch(
     fetcher,
     accessToken,
-    `${apiRoot}/files?fields=id`,
+    `${apiRoot}/files?fields=id,name,modifiedTime`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        name: backupName,
+        name,
         mimeType: "application/json",
         parents: ["appDataFolder"],
       }),
     },
   );
-  const file = (await response.json()) as Partial<DriveFile>;
-  if (!file.id)
-    throw new DriveBackupError("http", "Drive did not return a file id");
-  return file.id;
+  const file = (await response.json()) as Partial<DriveReplica>;
+  if (!file.id || !file.name) {
+    throw new DriveBackupError("http", "Drive did not return a replica id");
+  }
+  return { id: file.id, name: file.name, modifiedTime: file.modifiedTime };
 }
 
-async function downloadBackup(
+async function downloadReplica(
   fetcher: Fetcher,
   accessToken: string,
-  fileId: string,
-) {
+  replica: DriveReplica,
+): Promise<DownloadedReplica> {
   const response = await authorizedFetch(
     fetcher,
     accessToken,
-    `${apiRoot}/files/${encodeURIComponent(fileId)}?alt=media`,
+    `${apiRoot}/files/${encodeURIComponent(replica.id)}?alt=media`,
   );
-  return response.json() as Promise<unknown>;
+  try {
+    return {
+      replica,
+      raw: (await response.json()) as unknown,
+      eTag: response.headers.get("etag"),
+    };
+  } catch {
+    throw new DriveBackupError(
+      "corrupt",
+      "A Drive replica is not valid JSON.",
+      [replica],
+    );
+  }
 }
 
-async function uploadBackup(
+async function uploadReplica(
   fetcher: Fetcher,
   accessToken: string,
-  fileId: string,
+  replica: DriveReplica,
   document: ProgressDocument,
-) {
-  await authorizedFetch(
-    fetcher,
-    accessToken,
-    `${uploadRoot}/files/${encodeURIComponent(fileId)}?uploadType=media`,
-    {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(document),
-    },
+  eTag: string | null,
+): Promise<"updated" | "conflict"> {
+  const headers = new Headers({
+    Authorization: `Bearer ${accessToken}`,
+    "Content-Type": "application/json",
+  });
+  if (eTag) headers.set("If-Match", eTag);
+  const response = await fetcher(
+    uploadRoot +
+      "/files/" +
+      encodeURIComponent(replica.id) +
+      "?uploadType=media",
+    { method: "PATCH", headers, body: JSON.stringify(document) },
   );
+  if (response.status === 412) return "conflict";
+  if (!response.ok) {
+    throw new DriveBackupError(
+      "http",
+      `Drive request failed: ${response.status}`,
+    );
+  }
+  return "updated";
 }
 
-export async function syncDriveBackup(
-  accessToken: string,
-  local: ProgressDocument,
-  fetcher: Fetcher = fetch,
-): Promise<DriveSyncResult> {
-  const existing = await findBackup(fetcher, accessToken);
-  if (!existing) {
-    const fileId = await createBackupFile(fetcher, accessToken);
-    await uploadBackup(fetcher, accessToken, fileId, local);
-    return { document: local, created: true, remoteInstallationId: null };
-  }
-
-  const rawRemote = await downloadBackup(fetcher, accessToken, existing.id);
-  const parsed = parseProgressDocument(rawRemote);
+function parseReplica(downloaded: DownloadedReplica): ProgressDocument {
+  const parsed = parseProgressDocument(downloaded.raw);
   if (parsed.status === "future") {
     throw new DriveBackupError(
       "future",
-      `Future Drive schema: ${parsed.version}`,
+      `A Drive replica uses a newer schema: ${parsed.version}`,
+      [downloaded.replica],
     );
   }
   if (parsed.status === "corrupt") {
     throw new DriveBackupError(
       "corrupt",
-      `Corrupt Drive backup: ${parsed.reason}`,
+      `A Drive replica is corrupt: ${parsed.reason}`,
+      [downloaded.replica],
     );
   }
-
-  // Download before every upload and use the same grow-only merge as local import.
-  // A failed request never replaces the caller's local document.
-  const document = mergeProgressDocuments(local, parsed.document);
-  await uploadBackup(fetcher, accessToken, existing.id, document);
-  return {
-    document,
-    created: false,
-    remoteInstallationId: parsed.document.installationId,
-  };
+  return parsed.document;
 }
 
-export async function deleteDriveBackup(
+function mergeReplicaDocuments(
+  local: ProgressDocument,
+  replicas: readonly DownloadedReplica[],
+): { document: ProgressDocument; remoteInstallationId: string | null } {
+  let document = local;
+  let remoteInstallationId: string | null = null;
+  for (const replica of replicas) {
+    const remote = parseReplica(replica);
+    if (remote.installationId !== local.installationId) {
+      remoteInstallationId ??= remote.installationId;
+    }
+    document = mergeProgressDocuments(document, remote);
+  }
+  return { document, remoteInstallationId };
+}
+
+function latestReplica(
+  replicas: readonly DownloadedReplica[],
+  name: string,
+): DownloadedReplica | undefined {
+  return replicas
+    .filter((replica) => replica.replica.name === name)
+    .sort((left, right) => {
+      const time = (right.replica.modifiedTime ?? "").localeCompare(
+        left.replica.modifiedTime ?? "",
+      );
+      return time || left.replica.id.localeCompare(right.replica.id);
+    })[0];
+}
+
+/**
+ * Merges every device-owned replica before writing only this installation's
+ * replica. Different devices therefore never overwrite each other's only copy.
+ */
+export async function syncDriveBackup(
   accessToken: string,
+  local: ProgressDocument,
   fetcher: Fetcher = fetch,
-): Promise<boolean> {
-  const existing = await findBackup(fetcher, accessToken);
-  if (!existing) return false;
+): Promise<DriveSyncResult> {
+  const ownName = replicaName(local.installationId);
+  for (let attempt = 0; attempt < maxSyncAttempts; attempt += 1) {
+    const replicas = await findReplicas(fetcher, accessToken);
+    const downloaded = await Promise.all(
+      replicas.map((replica) => downloadReplica(fetcher, accessToken, replica)),
+    );
+    const merged = mergeReplicaDocuments(local, downloaded);
+    const own = latestReplica(downloaded, ownName);
+    if (!own) {
+      const created = await createReplica(fetcher, accessToken, ownName);
+      await uploadReplica(fetcher, accessToken, created, merged.document, null);
+      return {
+        document: merged.document,
+        created: true,
+        remoteInstallationId: merged.remoteInstallationId,
+      };
+    }
+    const result = await uploadReplica(
+      fetcher,
+      accessToken,
+      own.replica,
+      merged.document,
+      own.eTag,
+    );
+    if (result === "updated") {
+      return {
+        document: merged.document,
+        created: false,
+        remoteInstallationId: merged.remoteInstallationId,
+      };
+    }
+  }
+  throw new DriveBackupError(
+    "conflict",
+    "Drive changed while syncing. Try again.",
+  );
+}
+
+export async function downloadDriveReplica(
+  accessToken: string,
+  replica: DriveReplica,
+  fetcher: Fetcher = fetch,
+): Promise<Blob> {
+  const response = await authorizedFetch(
+    fetcher,
+    accessToken,
+    `${apiRoot}/files/${encodeURIComponent(replica.id)}?alt=media`,
+  );
+  return response.blob();
+}
+
+export async function deleteDriveReplica(
+  accessToken: string,
+  replica: DriveReplica,
+  fetcher: Fetcher = fetch,
+): Promise<void> {
   await authorizedFetch(
     fetcher,
     accessToken,
-    `${apiRoot}/files/${encodeURIComponent(existing.id)}`,
+    `${apiRoot}/files/${encodeURIComponent(replica.id)}`,
     { method: "DELETE" },
   );
-  return true;
+}
+
+export async function deleteDriveBackups(
+  accessToken: string,
+  fetcher: Fetcher = fetch,
+): Promise<number> {
+  const replicas = await findReplicas(fetcher, accessToken);
+  await Promise.all(
+    replicas.map((replica) =>
+      deleteDriveReplica(accessToken, replica, fetcher),
+    ),
+  );
+  return replicas.length;
 }

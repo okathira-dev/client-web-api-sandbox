@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Busybox receiver</title>
+    <style>
+      :root { color-scheme: dark; font-family: system-ui, sans-serif; }
+      body { margin: 0; min-width: 18rem; background: #07131f; color: #e0f2fe; }
+      main { display: grid; place-items: center; min-height: 100vh; padding: 2rem; box-sizing: border-box; text-align: center; }
+      #receiver-round { font: 700 clamp(2rem, 8vw, 7rem) / 1.1 ui-monospace, monospace; overflow-wrap: anywhere; }
+      #receiver-status { color: #7dd3fc; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div>
+        <p id="receiver-status">receiverを初期化中…</p>
+        <div id="receiver-round" aria-live="polite"></div>
+      </div>
+    </main>
+    <script>
+      const status = document.querySelector("#receiver-status");
+      const output = document.querySelector("#receiver-round");
+      const round = new URL(location.href).searchParams.get("round");
+      const receiver = navigator.presentation?.receiver;
+      if (output) output.textContent = round ?? "roundなし";
+      if (!round || !receiver?.connectionList) {
+        if (status) status.textContent = "Presentation receiver APIまたはroundがありません。";
+      } else {
+        receiver.connectionList.then((list) => {
+          for (const connection of list.connections) connection.send(`ready:${round}`);
+          if (status) status.textContent = "receiver ready";
+        });
+      }
+    </script>
+  </body>
+</html>

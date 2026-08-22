@@ -2,48 +2,57 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Busybox image layers</title>
-<style>
-  body { margin: 0; background: #111827; color: #f8fafc; font: 14px system-ui, sans-serif; }
-  main { display: flex; gap: 12px; padding: 12px; flex-wrap: wrap; }
-  img { width: 120px; height: 80px; object-fit: contain; border: 1px solid #64748b; background: #0f172a; cursor: grab; }
-</style>
+  <title>Busybox drag source</title>
+  <style>
+    body { margin: 0; background: #111827; color: #f8fafc; font: 14px system-ui, sans-serif; }
+    main { display: grid; gap: 0.75rem; padding: 1rem; }
+    img { width: 240px; height: 120px; object-fit: contain; border: 1px solid #64748b; background: #0f172a; cursor: grab; }
+    small { color: #cbd5e1; }
+  </style>
 </head>
 <body>
   <main>
-    <img draggable="true" data-layer="A" src="./drag-layer-a.png" alt="layer A" width="120" height="80">
-    <img draggable="true" data-layer="B" src="./drag-layer-b.png" alt="layer B" width="120" height="80">
-    <img draggable="true" data-layer="C" src="./drag-layer-c.png" alt="layer C" width="120" height="80">
+    <strong id="heading">Busybox drag source</strong>
+    <small id="description">Drag this image to the Busybox drop zone.</small>
+    <img id="source" draggable="true" src="./drag-window.png" alt="Busybox separate-window source" width="240" height="120">
   </main>
 <script>
   const params = new URL(location.href).searchParams;
   const locale = params.get("locale") === "ja" ? "ja" : "en";
+  const mode = params.get("mode") === "window" ? "window" : "iframe";
+  const round = params.get("round") || "";
   document.documentElement.lang = locale;
   const copy = {
-    ja: { title: "Busybox画像レイヤー", layers: { A: "レイヤーA", B: "レイヤーB", C: "レイヤーC" } },
-    en: { title: "Busybox image layers", layers: { A: "layer A", B: "layer B", C: "layer C" } },
+    ja: {
+      title: mode === "window" ? "Busybox別windowの画像" : "Busybox iframeの画像",
+      heading: mode === "window" ? "別windowの画像" : "iframe内の画像",
+      description: "この画像をBusyboxのドロップ欄へドラッグしてください。",
+      alt: mode === "window" ? "別windowの画像" : "iframe内の画像",
+    },
+    en: {
+      title: mode === "window" ? "Busybox separate-window image" : "Busybox iframe image",
+      heading: mode === "window" ? "Separate-window image" : "Image inside iframe",
+      description: "Drag this image to the Busybox drop zone.",
+      alt: mode === "window" ? "Separate-window image" : "Image inside iframe",
+    },
   }[locale];
   document.title = copy.title;
-  const labels = copy.layers;
-  for (const image of document.querySelectorAll("img[data-layer]")) {
-    const layer = image.dataset.layer;
-    if (layer && layer in labels) image.alt = labels[layer];
-  }
-  const round = params.get("round") || "";
-  for (const image of document.querySelectorAll("img[data-layer]")) {
-    image.addEventListener("dragstart", (event) => {
-      const source = new URL(image.getAttribute("src"), location.href).href;
-      parent.postMessage({
-        channel: "busybox-s510-drag",
-        type: "start",
-        round,
-        layer: image.dataset.layer,
-      }, "*");
-      event.dataTransfer.setData("text/uri-list", source);
-      event.dataTransfer.setData("text/plain", `busybox-round:${round}:${image.dataset.layer}`);
-      event.dataTransfer.effectAllowed = "copy";
-    });
-  }
+  document.querySelector("#heading").textContent = copy.heading;
+  document.querySelector("#description").textContent = copy.description;
+  const image = document.querySelector("#source");
+  image.alt = copy.alt;
+  const receiver = mode === "window" ? window.opener : window.parent;
+  image.addEventListener("dragstart", (event) => {
+    receiver?.postMessage({
+      channel: "busybox-s510-drag",
+      type: "start",
+      round,
+      asset: "window",
+    }, "*");
+    event.dataTransfer.setData("text/uri-list", new URL(image.src, location.href).href);
+    event.dataTransfer.setData("text/plain", `busybox-round:${round}:window`);
+    event.dataTransfer.effectAllowed = "copy";
+  });
 </script>
 </body>
 </html>

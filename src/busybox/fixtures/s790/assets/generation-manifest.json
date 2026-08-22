@@ -1,0 +1,10 @@
+{
+  "generator": "scripts/generate-busybox-s790-font.mjs",
+  "asset": "busybox-key.ttf",
+  "postscriptName": "BusyboxKey-Regular",
+  "family": "Busybox Key",
+  "glyph": "U+E000",
+  "sha256": "4aa304e57c0f3d3d26976b44d9f908c7f449a629a764a07650a8e2ade5fd7186",
+  "bytes": 800,
+  "derivedFromThirdPartyFont": false
+}

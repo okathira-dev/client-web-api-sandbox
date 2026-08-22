@@ -620,7 +620,7 @@ memory-only案では、Dedicated Worker内でECDSA P-256鍵pairを `extractable:
 8. reset / 離脱時はaudioをpauseし、action handlersへ`null`を設定し、metadataとplaybackStateを戻し、生成Blob URLをrevokeする。再入場時は新しいsessionから再挑戦する。
 
 - 既存との差: S-350-B03はpage内のnative video controlsでplay後の`pause` eventを観測する。S-430はcontrolsなしaudioに対してMedia Session action handlerが呼ばれた事実を観測し、media element eventだけでは開かない。
-- 現行コードとの差: G-041 / S-430-B01、generated loop audio、Media Session handler、external controls用metadataは実装済みで人手確認待ち。DR-065のB02は未実装。
+- 現行コード: G-041 / S-430-B01はgenerated loop audioとMedia Session handler、B02はAudio Sessionのinterruption / recovery観測を実装済みで、人手確認待ち。
 - 技術スパイク: B01はWindows / macOS / iOS / Androidのlock screen、notification / control surface、keyboard / headset、browser media UIでpause handler、background playback、system interruption、cleanupを確認する。B02は対応Safari / WebKit環境を中心に、`active → interrupted → active`、再生復帰、type reset、B01とのevent分離を確認する。
 
 ## 現在の相談

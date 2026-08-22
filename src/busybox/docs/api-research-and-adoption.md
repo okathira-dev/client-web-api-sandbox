@@ -8,7 +8,7 @@
 
 DR-137元案の「端末へ偶然install済みのfont一覧から頭文字を作る」は、端末差で共通解を保証できずfingerprinting面も広いため破棄する。代わりに新規G-078 / S-790「活字の鍵（仮）」を任意Labs 1箱として採用する。Git管理する専用OpenType fontをplayerがOS標準UIでinstallし、対象PostScript名だけを要求した実`queryLocalFonts()`が期待faceを返し、`FontData.blob()`のmetadata / checksum検証と専用glyph表示が成功した時だけ直接開く。
 
-全font列挙、既存font集合、permissionだけ、`@font-face local()`だけ、file upload、game bundled webfont、名前だけの一致を代替clearにしない。返却font情報とraw bytesはmemory内で破棄し、表示・log・保存・Drive同期・file export・analytics・送信しない。専用font、生成source、license、再生成手順、checksumを事前生成してGit管理し、完了後にOSからfontをuninstallする方法とsite permission解除方法を案内する。D-143後の現在の計画値は78stage・184箱である（S-780の正しい財布箱を削除）。
+全font列挙、既存font集合、permissionだけ、`@font-face local()`だけ、file upload、game bundled webfont、名前だけの一致を代替clearにしない。返却font情報とraw bytesはmemory内で破棄し、表示・log・保存・Drive同期・file export・analytics・送信しない。専用font、生成source、license、再生成手順、checksumを事前生成してGit管理し、完了後にOSからfontをuninstallする方法とsite permission解除方法を案内する。現行catalogueは81stage・181箱で、S-780はD-147により4箱の架空Payment Handlerとして実装済みである。将来計画の件数はこの文書から導かない。
 
 ## 2026-07-31 Topics API追加監査
 
@@ -32,9 +32,9 @@ Googleは2025-10-17にAttribution Reporting APIのretireを発表し、[Privacy 
 
 [Payment Handler API](https://www.w3.org/TR/payment-handler/)は、Service Workerへpayment appとしてのorigin権限を与え、browserが候補handlerを提示し、選択したhandlerへtrusted `PaymentRequestEvent`を配送する。[Web-based Payment Handler API](https://developer.mozilla.org/en-US/docs/Web/API/Web-Based_Payment_Handler_API)のJIT登録、handler window、`respondWith()`と、merchant側の`complete()` / [`retry()`](https://developer.mozilla.org/en-US/docs/Web/API/PaymentResponse/retry)を使えば、実決済providerを混ぜずにGit管理された架空payment methodだけでAPI固有のflowを構成できる。
 
-新規G-077 / S-780「三つの財布（仮）」を任意Labs 3箱として採用する。trusted eventはhandler経路の証跡として扱い、単独の箱にはしない。B01はhandler windowで承認responseをmerchantが検証して`complete("success")`へ到達した時、B02は意図的拒否responseを検証して`complete("fail")`へ到達した時、B03は最初のresponseに`retry()`を行い、同じhandlerで二度目のresponseを成功完了した時に開く。merchant側の開始経路は承認／拒否／再試行のいずれにも固定せず、返ったresponseの結果に対応する箱だけを開く。
+新規G-077 / S-780は当初「三つの財布（仮）」を任意Labs 3箱として採用し、D-147で「四つの財布」へ改訂した。B01はhandler windowで承認responseをmerchantが検証して`complete("success")`へ到達した時、B02は意図的拒否responseを検証して`complete("fail")`へ到達した時、B03は最初のresponseに`retry()`を行い、同じhandlerで二度目のresponseを成功完了した時に開く。これら3箱はwalletを限定しない。B04はbrowser所有chooserで◇walletを選び、そのworkerへcurrent requestのtrusted `PaymentRequestEvent`が届いた時に開き、その後のresponseは限定しない。
 
-実Google Pay / Apple Pay、card、実通貨、payer / shipping情報、payment credentialを要求せず、game製payment sheet、handler不在、browser cancel、例外を代替clearにしない。handler windowはpayment lifecycleに必要な非言語操作だけに制限し、一般的なWebパズルを埋め込まない。候補UI、trusted event、失敗完了、同一handler retryを実browserでPoCできた場合だけ公開する。DR-128のPayment Request却下は維持し、Payment Requestは架空handlerを起動する配線としてのみ使う。新規1stage・3箱を加え、計画値は78stage・184箱となる。
+実Google Pay / Apple Pay、card、実通貨、payer / shipping情報、payment credentialを要求せず、game製payment sheet、handler不在、browser cancel、例外を代替clearにしない。handler windowはpayment lifecycleに必要な非言語操作だけに制限し、一般的なWebパズルを埋め込まない。候補UI、trusted event、失敗完了、同一handler retryを実browserで確認してから公開する。DR-128のPayment Request却下は維持し、Payment Requestは架空handlerを起動する配線としてのみ使う。通常のGitHub Pagesだけではmethod URLの`Link` response headerを設定できないため、header ruleを持つmanaged static hostを公開条件にする。当初の計画値は履歴であり、現行件数は実装台帳を正とする。
 
 ## 2026-07-30 Payment Request API追加監査
 
@@ -284,7 +284,7 @@ Media Capabilitiesはnative playerで選択中の画質やFPSを読むAPIでは�
 | callback `width` / `height`、`videoWidth` / `videoHeight` | 採用（S-810） | native提示frameの実寸からアスペクト比を分類する。CSS表示寸法やページ製selectorは使わない |
 | `playbackRate` / `ratechange` | 採用 | S-350-B04。native controlsから1倍速以外へ変更された実media状態を観測する |
 | `textTracks` / `TextTrack.mode` / `change` | 採用 | S-350-B05。native字幕menuでlabel `Busybox`をshowingへ変更する |
-| `audioTracks` / `AudioTrack.enabled` / `change` | 条件付き採用 | 将来S-350-B07。native音声track menuとAPIがある環境でlabel `Busybox`をenabledにする |
+| `audioTracks` / `AudioTrack.enabled` / `change` | Baseline後の候補 | native音声track menuとAPIが同時に使える環境で、固有labelのtrackを選択する小規模な候補。現行stage・PoC・fixtureには含めない |
 
 PiPはD-143でG-020 / S-350-B06へ統合し、同じnative videoの`enterpictureinpicture`を観測する。独立S-230とpage製PiP buttonは削除した。
 | UA固有の画質menu / 選択中FPS | 不採用 | native controlsの内部DOMや「720p」等の現在選択labelを読む標準APIがない |

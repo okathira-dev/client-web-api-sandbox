@@ -13,6 +13,12 @@ import {
 } from "../fixtures/unicode/data";
 import { initPocRegistry } from "./registry";
 
+const requestedPoc = new URL(location.href).searchParams.get("poc");
+if (requestedPoc) {
+  document
+    .querySelector<HTMLElement>(`[data-poc="${CSS.escape(requestedPoc)}"]`)
+    ?.setAttribute("open", "");
+}
 initPocRegistry();
 
 type Capability = {
@@ -263,9 +269,87 @@ const capabilities: Capability[] = [
     supported: "audioSession" in navigatorWithExperiments,
   },
   {
-    poc: "034",
-    path: "native AudioTrackList",
-    supported: "audioTracks" in HTMLMediaElement.prototype,
+    poc: "035",
+    path: "Keyboard Layout Map",
+    supported: (() => {
+      const keyboard = (navigator as Navigator & { keyboard?: unknown })
+        .keyboard;
+      return Boolean(
+        keyboard && typeof keyboard === "object" && "getLayoutMap" in keyboard,
+      );
+    })(),
+  },
+  {
+    poc: "036",
+    path: "Pointer Lock",
+    supported: "requestPointerLock" in HTMLElement.prototype,
+  },
+  { poc: "037", path: "Idle Detection", supported: "IdleDetector" in window },
+  {
+    poc: "038",
+    path: "IntersectionObserver",
+    supported: "IntersectionObserver" in window,
+  },
+  { poc: "039", path: "URL address-bar route", supported: "URL" in window },
+  {
+    poc: "040",
+    path: "Sanitizer API",
+    supported: "Sanitizer" in window && "setHTML" in HTMLElement.prototype,
+  },
+  {
+    poc: "041",
+    path: "Document Picture-in-Picture",
+    supported: "documentPictureInPicture" in window,
+  },
+  { poc: "042", path: "EditContext", supported: "EditContext" in window },
+  {
+    poc: "043",
+    path: "WebGL2 projection",
+    supported: Boolean(document.createElement("canvas").getContext("webgl2")),
+  },
+  {
+    poc: "044",
+    path: "Fetch conditional request",
+    supported: "fetch" in window,
+  },
+  { poc: "045", path: "MessageChannel", supported: "MessageChannel" in window },
+  {
+    poc: "046",
+    path: "File System Access",
+    supported: "showSaveFilePicker" in window,
+  },
+  {
+    poc: "047",
+    path: "File and Directory Entries",
+    supported: "DataTransferItem" in window,
+  },
+  {
+    poc: "048",
+    path: "Compression Streams",
+    supported: "CompressionStream" in window && "DecompressionStream" in window,
+  },
+  {
+    poc: "049",
+    path: "Streams backpressure",
+    supported: "ReadableStream" in window && "TransformStream" in window,
+  },
+  { poc: "050", path: "Trusted Types", supported: "trustedTypes" in window },
+  {
+    poc: "051",
+    path: "Fullscreen",
+    supported: "requestFullscreen" in HTMLElement.prototype,
+  },
+  { poc: "052", path: "MediaSource", supported: "MediaSource" in window },
+  {
+    poc: "053",
+    path: "WebVTT",
+    supported:
+      "VTTCue" in window && "addTextTrack" in HTMLMediaElement.prototype,
+  },
+  {
+    poc: "054",
+    path: "WebCodecs VideoDecoder",
+    supported: "VideoDecoder" in window,
   },
 ];
 
@@ -325,7 +409,16 @@ const reviewGroups: readonly ReviewGroup[] = [
       "POC-027 FedCM",
       "POC-028 Payment Handler",
       "POC-033 Audio Session interruption",
-      "POC-034 native AudioTrackList監視枠",
+    ],
+  },
+  {
+    heading: "追加候補の隔離PoC",
+    description:
+      "製品化したものだけの最新PoC。実event・実data・cleanupを、実装後の退行確認として再確認する。",
+    items: [
+      "POC-036 / 037 / 038 Pointer Lock / Idle Detection / IntersectionObserver",
+      "POC-041 / 042 / 046 Document PiP / EditContext / File System Access",
+      "POC-048 / 051 / 052 / 053 Compression / Fullscreen / MediaSource / WebVTT",
     ],
   },
 ];
@@ -1647,39 +1740,44 @@ for (const button of document.querySelectorAll<HTMLButtonElement>(
   });
 }
 
-document.querySelector("#run-invoker")?.addEventListener("click", () => {
-  const dialog = document.querySelector<HTMLDialogElement>("#poc-dialog");
-  if (!dialog) {
-    report("Dialog fixture is unavailable.");
-    return;
-  }
-  dialog.showModal();
-  setStatus(
-    "#invoker-status",
-    "dialogを開いた。内側の「閉じる」を押すとnative commandを記録する。",
-  );
-  report(
-    `Dialog opened through the native API; command attribute supported=${"command" in HTMLButtonElement.prototype}.`,
-  );
-});
-
-const invokerDialog = document.querySelector<HTMLDialogElement>("#poc-dialog");
-invokerDialog?.addEventListener("command", (event) => {
+const invokerPopover = document.querySelector<HTMLElement>("#poc-popover");
+for (const [id, command] of [
+  ["run-invoker-second", "show-popover"],
+  ["hide-invoker", "hide-popover"],
+] as const) {
+  const trigger = document.querySelector<HTMLButtonElement>(`#${id}`);
+  trigger?.setAttribute("commandfor", "poc-popover");
+  trigger?.setAttribute("command", command);
+}
+const invokerCommands: string[] = [];
+invokerPopover?.addEventListener("command", (event) => {
   const commandEvent = event as Event & {
     command?: string;
     source?: EventTarget | null;
   };
+  const command = commandEvent.command ?? "unknown";
+  invokerCommands.push(command);
   setStatus(
     "#invoker-status",
-    `native CommandEvent: command=${commandEvent.command ?? "unknown"}, source=${commandEvent.source instanceof HTMLButtonElement ? "button" : "unknown"}.`,
+    `native CommandEvent: command=${command}, source=${commandEvent.source instanceof HTMLButtonElement ? "button" : "unknown"}; sequence=${invokerCommands.join(" → ")}`,
   );
-});
-invokerDialog?.addEventListener("close", () => {
-  const status = document.querySelector<HTMLOutputElement>("#invoker-status");
-  if (status?.value.startsWith("dialogを開いた")) {
+  if (
+    invokerCommands.includes("show-popover") &&
+    invokerCommands.includes("hide-popover") &&
+    invokerCommands.filter((value) => value === "show-popover").length >= 2
+  ) {
     setStatus(
       "#invoker-status",
-      "dialogが閉じた。CommandEvent非公開のbrowserでは属性経路だけを確認する。",
+      `PASS: Popover command sequence=${invokerCommands.join(" → ")}; sourceはbrowserから受信。`,
+    );
+  }
+});
+invokerPopover?.addEventListener("toggle", (event) => {
+  const toggle = event as ToggleEvent;
+  if (toggle.newState === "closed") {
+    setStatus(
+      "#invoker-status",
+      `${document.activeElement?.id === "hide-invoker" ? "command close" : "light dismiss"}; sequence=${invokerCommands.join(" → ")}`,
     );
   }
 });

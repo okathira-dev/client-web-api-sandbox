@@ -8,7 +8,7 @@ import {
 import { useDriveBackup } from "./hooks/useDriveBackup";
 import { type ProgressController, useProgress } from "./hooks/useProgress";
 import { useServiceWorker } from "./hooks/useServiceWorker";
-import { detectLocale, messages } from "./i18n";
+import { detectLocale, messages, productCopy } from "./i18n";
 import { StageHost } from "./runtime/StageHost";
 import { stageDefinitions } from "./runtime/stageDefinitions";
 import { stageNameText } from "./stages/metadataLocale";
@@ -74,6 +74,14 @@ export function App() {
   const resetProgress = () => {
     if (window.confirm(copy.resetConfirm)) void progress.reset();
   };
+  const driveFailureMessage =
+    drive.failure?.code === "corrupt"
+      ? copy.driveFailureCorrupt
+      : drive.failure?.code === "future"
+        ? copy.driveFailureFuture
+        : drive.failure?.code === "conflict"
+          ? copy.driveFailureConflict
+          : copy.driveFailureUnknown;
 
   useEffect(() => {
     document.documentElement.lang = locale;
@@ -112,9 +120,9 @@ export function App() {
     <div className="app-shell">
       <header className="hero">
         <a className="eyebrow" href="../index.html">
-          Web API Explorer
+          {productCopy.descriptor}
         </a>
-        <h1>Busybox</h1>
+        <h1>{productCopy.brandName}</h1>
         <p className="hero__tagline">{copy.tagline}</p>
         <p className="hero__subtitle">{copy.subtitle}</p>
       </header>
@@ -254,6 +262,52 @@ export function App() {
               }
             </button>
             <p className="privacy-note">{copy.driveMergeNotice}</p>
+            {drive.failure && (
+              <div className="drive-recovery" role="alert">
+                <p>{driveFailureMessage}</p>
+                <div className="drive-secondary-actions">
+                  <button
+                    type="button"
+                    className="text-button"
+                    onClick={() => void drive.sync()}
+                  >
+                    {copy.driveRetry}
+                  </button>
+                  <button
+                    type="button"
+                    className="text-button"
+                    onClick={drive.dismissFailure}
+                  >
+                    {copy.driveContinueLocal}
+                  </button>
+                </div>
+                {drive.failure.replicas.map((replica) => (
+                  <div className="drive-recovery__replica" key={replica.id}>
+                    <code>{replica.name}</code>
+                    <div className="drive-secondary-actions">
+                      <button
+                        type="button"
+                        className="text-button"
+                        onClick={() => void drive.exportFailedReplica(replica)}
+                      >
+                        {copy.driveExportReplica}
+                      </button>
+                      <button
+                        type="button"
+                        className="text-button danger-text"
+                        onClick={() => {
+                          if (window.confirm(copy.driveRemoveReplicaConfirm)) {
+                            void drive.removeFailedReplica(replica);
+                          }
+                        }}
+                      >
+                        {copy.driveRemoveReplica}
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
             {drive.connected && (
               <div className="drive-secondary-actions">
                 <button

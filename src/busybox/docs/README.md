@@ -1,7 +1,7 @@
 # Busybox ドキュメント入口
 
 このディレクトリでは、現行コードの確認に使う資料と、設計・調査の履歴を分けて管理する。
-現在の箱ID、解法、実装状態を履歴資料から再構成してはいけない。現行コードと次の3資料を正本とする。
+現在の箱ID、解法、実装状態を履歴資料から再構成してはいけない。現行コードと次の資料を正本とする。
 
 ## 現行確認に使う資料
 
@@ -10,10 +10,11 @@
 - [現状・残問題・人手確認への引継ぎ](./current-status-and-handoff.md): 最新の実装状態、未解決事項、次の確認順。
 - [検証記録](./verification-record.md): 自動検証と人手確認の証跡。
 - [人手確認台帳](./human-test-matrix.md): 実ブラウザ・実機で確認する手順。
+- [次のPoC・ステージ化キュー](./next-poc-and-stage-work.md): 製品化待ち件数と、外部条件による人手確認だけを残した現行キュー。
+- [Google FedCM設定](./google-fedcm-setup.md): S-770の公開client ID、GitHub Variable、成功境界。
+- [Google Drive設定と運用](./google-drive-setup.md): OAuth設定、端末別replica同期、復旧選択、削除、公開ゲート。
 - [決定ログ](./decision-log.md): 採用・統合・却下を確定した判断の履歴。
 - [アーキテクチャ判断](./architecture-decisions.md): 現行実装が守る境界と規約。
-- [最新PoC索引](./poc-latest.md): 現行仕様に対応する最新版PoCの入口と、削除済み旧PoCの境界。
-- [残存PoC実装計画](./remaining-poc-implementation-plan.md): 現行仕様で未実装だったPoCの実装状況、外部条件、次の確認順。
 
 ## 履歴として保存する資料
 
@@ -22,16 +23,15 @@
 履歴資料の整理方針は [`history/README.md`](./history/README.md) を参照する。既存の相互リンクを壊さないため、移行途中の旧ファイルは当面この階層に残し、現行資料から参照しない。
 
 - `current-environment-implementation-plan.md`
-- `implementation-poc-master-plan.md`
 - `stage-rollout-plan.md`
 - `gimmick-backlog.md`
 - `gimmick-coverage-plan.md`
-- `poc-results.md`（旧時系列結果。最新版の入口は`poc-latest.md`）
+- `poc-results.md`（PoCの時系列証拠。現在の作業順は`next-poc-and-stage-work.md`）
 - `deep-research-idea-disposition-ledger.md`
 - `api-research-and-adoption.md`
 - `blackbox-mechanism-ledger.md`
 
-履歴資料に現行情報へのリンクが残っていても、リンク先の現行資料を優先する。古い文面を削除せず、後から判断の経緯を追えるようにするためである。
+履歴資料に現行情報へのリンクが残っていても、リンク先の現行資料を優先する。完了済みのPoC Wave計画、旧PoC索引、S-690〜S-920の一時実装計画は、コード横JSDoc・現行台帳・検証記録へ一意な情報を移したため削除した。
 
 ## 実装側の正本
 
