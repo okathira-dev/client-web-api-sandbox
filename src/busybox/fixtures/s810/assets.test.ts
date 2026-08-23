@@ -47,22 +47,34 @@ describe("S-810 fixed aspect-ratio seek fixture", () => {
       width: 144,
       height: 144,
     });
-    expect(manifest.segments[29]).toMatchObject({
-      width: 1080,
-      height: 1080,
-    });
-    expect(manifest.segments[59]).toMatchObject({
-      width: 144,
+    expect(manifest.segments[39]).toMatchObject({
+      width: 3840,
       height: 144,
     });
-    expect(manifest.segments[89]).toMatchObject({
+    expect(manifest.segments[79]).toMatchObject({
       width: 144,
-      height: 1080,
+      height: 3840,
     });
     expect(manifest.segments[119]).toMatchObject({
-      width: 1080,
-      height: 144,
+      width: 3840,
+      height: 3840,
     });
+
+    expect(
+      manifest.segments.slice(0, 40).every((segment) => segment.height === 144),
+    ).toBe(true);
+    expect(
+      manifest.segments.slice(40, 80).every((segment, index) => {
+        const previous = manifest.segments[39 + index];
+        return (
+          segment.width <= (previous?.width ?? Number.POSITIVE_INFINITY) &&
+          segment.height >= (previous?.height ?? 0)
+        );
+      }),
+    ).toBe(true);
+    expect(
+      manifest.segments.slice(80).every((segment) => segment.height === 3840),
+    ).toBe(true);
   });
 
   it("contains a seekable frame within five percent of every target ratio", async () => {

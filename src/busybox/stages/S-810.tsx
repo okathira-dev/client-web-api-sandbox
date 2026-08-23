@@ -2,11 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { StageComponentProps } from "../runtime/types";
 import { ProblemGiftBox } from "../ui/GiftBox";
 import { stageText } from "./locale";
-import {
-  aspectRatio,
-  classifyS810AspectRatio,
-  type S810AspectKey,
-} from "./S-810.functions";
+import { classifyS810AspectRatio, type S810AspectKey } from "./S-810.functions";
 import { s810Locale } from "./S-810.locale";
 
 const sweepLabelKeys: Record<S810AspectKey, keyof typeof s810Locale> = {
@@ -118,9 +114,9 @@ function createSweepMediaSource(signal: AbortSignal) {
 /**
  * S-810 — 固定assetをMSEで連結したVP8 WebMをnative controlsでシークする。
  * 目的: CSSで引き伸ばした表示ではなく、シークを止めた実提示frameのnative寸法からアスペクト比を読む。
- * 最初の一手: 固定スウィープassetを読み込み、native timelineを動かしてから4つの比率のどれかでシークを止める。
- * 箱ごとの解法: B01は1:1、B02は4:3、B03は16:9、B04は9:20を、`seeked`後の`requestVideoFrameCallback()`で観測する。比率の許容差は相対5%以内。
- * 開かない操作: 通常再生、pauseだけ、読み込みボタン、metadataの一回読み取り、CSSサイズ変更、固定画像。ページにはscript自動seek経路を置かず、native controls以外を案内しない。
+ * 最初の一手: 入場時に表示される固定スウィープassetを、native controlsで止めるか停止中にシークする。
+ * 箱ごとの解法: B01は1:1、B02は4:3、B03は16:9、B04は9:20を、停止中の提示frameのnative寸法で観測する。初期frameは1:1なのでB01は入場直後に開く。寸法がまだ取得できない場合だけ`requestVideoFrameCallback()`を待つ。比率の許容差は相対5%以内。
+ * 開かない操作: 通常再生中の比率通過、CSSサイズ変更、固定画像では開かない。pause、ended、停止中のnative seekは提示frameの実寸で判定する。
  * 使用API: MediaSource/SourceBuffer、固定WebMasset、video resize、seeked、requestVideoFrameCallback。
  * 権限・privacy: 権限・送信・保存はなく、固定assetと表示寸法だけを扱う。
  * cleanup: appendとAbortSignal、video callback、blob URLを離脱時に破棄する。
@@ -135,24 +131,32 @@ export default function S810Stage(props: StageComponentProps) {
   const callbackId = useRef<number | undefined>(undefined);
   const generationRef = useRef<AbortController | undefined>(undefined);
   const seekGenerationRef = useRef(0);
-  const observedRef = useRef<Partial<Record<S810AspectKey, boolean>>>({});
   const [videoUrl, setVideoUrl] = useState<string>();
-  const [observed, setObserved] = useState<
-    Partial<Record<S810AspectKey, boolean>>
-  >({});
-  const [dimensions, setDimensions] = useState<[number, number]>();
-  const [status, setStatus] = useState(() =>
-    stageText(props.locale, s810Locale.initial),
-  );
+  const [error, setError] = useState<string>();
 
-  const updateDimensions = (width: number, height: number) => {
-    setDimensions([width, height]);
+  const solveObservedFrame = (video: HTMLVideoElement) => {
+    const key = classifyS810AspectRatio(video.videoWidth, video.videoHeight);
+    if (!key) return;
+    const index =
+      key === "square"
+        ? 0
+        : key === "four-three"
+          ? 1
+          : key === "sixteen-nine"
+            ? 2
+            : 3;
+    problems[index]?.solve([`video:seeked-aspect:${key}`]);
   };
 
-  const observeSeekedFrame = () => {
+  const observeStoppedFrame = () => {
     const video = videoRef.current;
+    if (!video?.paused || video.seeking) return;
+    if (video.videoWidth > 0 && video.videoHeight > 0) {
+      solveObservedFrame(video);
+      return;
+    }
     if (!video?.requestVideoFrameCallback) {
-      setStatus(stageText(props.locale, s810Locale.frameUnsupported));
+      setError(stageText(props.locale, s810Locale.frameUnsupported));
       return;
     }
     if (callbackId.current !== undefined)
@@ -161,29 +165,7 @@ export default function S810Stage(props: StageComponentProps) {
     callbackId.current = video.requestVideoFrameCallback(() => {
       if (generation !== seekGenerationRef.current) return;
       callbackId.current = undefined;
-      const width = video.videoWidth;
-      const height = video.videoHeight;
-      updateDimensions(width, height);
-      const key = classifyS810AspectRatio(width, height);
-      if (!key) {
-        setStatus(stageText(props.locale, s810Locale.seekMiss));
-        return;
-      }
-      setStatus(
-        `${stageText(props.locale, s810Locale.seekHit)} ${stageText(props.locale, s810Locale[sweepLabelKeys[key]])}`,
-      );
-      if (observedRef.current[key]) return;
-      observedRef.current[key] = true;
-      setObserved((previous) => ({ ...previous, [key]: true }));
-      const index =
-        key === "square"
-          ? 0
-          : key === "four-three"
-            ? 1
-            : key === "sixteen-nine"
-              ? 2
-              : 3;
-      problems[index]?.solve([`video:seeked-aspect:${key}`]);
+      solveObservedFrame(video);
     });
   };
 
@@ -195,9 +177,24 @@ export default function S810Stage(props: StageComponentProps) {
     callbackId.current = undefined;
   }, []);
 
-  const ratioLabel = dimensions
-    ? aspectRatio(dimensions[0], dimensions[1])?.toFixed(2)
-    : undefined;
+  const loadSweep = useCallback(() => {
+    generationRef.current?.abort();
+    stopSampling();
+    const controller = new AbortController();
+    generationRef.current = controller;
+    const media = createSweepMediaSource(controller.signal);
+    setVideoUrl((previous) => {
+      if (previous) URL.revokeObjectURL(previous);
+      return media.url;
+    });
+    setError(undefined);
+    void media.ready.catch((loadError: unknown) => {
+      if ((loadError as Error).name !== "AbortError")
+        setError(
+          `${stageText(props.locale, s810Locale.generationFailed)}: ${loadError instanceof Error ? loadError.message : stageText(props.locale, s810Locale.unknown)}`,
+        );
+    });
+  }, [props.locale, stopSampling]);
 
   useEffect(() => {
     const stop = () => {
@@ -205,6 +202,7 @@ export default function S810Stage(props: StageComponentProps) {
       videoRef.current?.pause();
     };
     props.signal.addEventListener("abort", stop, { once: true });
+    loadSweep();
     return () => {
       props.signal.removeEventListener("abort", stop);
       stop();
@@ -214,48 +212,26 @@ export default function S810Stage(props: StageComponentProps) {
         return undefined;
       });
     };
-  }, [props.signal, stopSampling]);
+  }, [loadSweep, props.signal, stopSampling]);
 
   return (
     <div className="puzzle puzzle--centered s810-stage">
-      <div className="problem-row">
-        {problems.map((problem) => (
-          <ProblemGiftBox
-            key={problem.definition.id}
-            problem={problem}
-            locale={props.locale}
-          />
-        ))}
+      <div className="problem-row s810-problem-row">
+        {problems.map((problem, index) => {
+          const key = (
+            ["square", "four-three", "sixteen-nine", "nine-twenty"] as const
+          )[index];
+          if (!key) return null;
+          return (
+            <div className="s810-problem" key={problem.definition.id}>
+              <ProblemGiftBox problem={problem} locale={props.locale} />
+              <span>
+                {stageText(props.locale, s810Locale[sweepLabelKeys[key]])}
+              </span>
+            </div>
+          );
+        })}
       </div>
-      <button
-        type="button"
-        className="stage-action"
-        onClick={() => {
-          generationRef.current?.abort();
-          stopSampling();
-          const controller = new AbortController();
-          generationRef.current = controller;
-          setStatus(stageText(props.locale, s810Locale.generating));
-          const media = createSweepMediaSource(controller.signal);
-          setVideoUrl((previous) => {
-            if (previous) URL.revokeObjectURL(previous);
-            return media.url;
-          });
-          observedRef.current = {};
-          setObserved({});
-          setDimensions(undefined);
-          void media.ready
-            .then(() => setStatus(stageText(props.locale, s810Locale.ready)))
-            .catch((error: unknown) => {
-              if ((error as Error).name !== "AbortError")
-                setStatus(
-                  `${stageText(props.locale, s810Locale.generationFailed)}: ${error instanceof Error ? error.message : stageText(props.locale, s810Locale.unknown)}`,
-                );
-            });
-        }}
-      >
-        {stageText(props.locale, s810Locale.generate)}
-      </button>
       {videoUrl ? (
         <video
           ref={videoRef}
@@ -264,25 +240,12 @@ export default function S810Stage(props: StageComponentProps) {
           controls
           muted
           playsInline
-          onLoadedMetadata={(event) =>
-            updateDimensions(
-              event.currentTarget.videoWidth,
-              event.currentTarget.videoHeight,
-            )
-          }
-          onResize={(event) =>
-            updateDimensions(
-              event.currentTarget.videoWidth,
-              event.currentTarget.videoHeight,
-            )
-          }
+          onLoadedData={observeStoppedFrame}
           onSeeking={stopSampling}
-          onSeeked={observeSeekedFrame}
-          onPlay={() => setStatus(stageText(props.locale, s810Locale.playing))}
-          onEnded={() => {
-            stopSampling();
-            setStatus(stageText(props.locale, s810Locale.ended));
-          }}
+          onSeeked={observeStoppedFrame}
+          onPause={observeStoppedFrame}
+          onPlay={stopSampling}
+          onEnded={observeStoppedFrame}
         >
           <track
             kind="captions"
@@ -292,19 +255,7 @@ export default function S810Stage(props: StageComponentProps) {
           />
         </video>
       ) : null}
-      <p className="measurement" aria-live="polite">
-        {dimensions
-          ? `${dimensions[0]} × ${dimensions[1]} (${ratioLabel}:1) — ${status}`
-          : status}
-      </p>
-      <div className="s810-observed" aria-live="polite">
-        {(Object.keys(sweepLabelKeys) as S810AspectKey[]).map((key) => (
-          <span key={key} data-observed={observed[key] ? "true" : "false"}>
-            {observed[key] ? "✓" : "○"}{" "}
-            {stageText(props.locale, s810Locale[sweepLabelKeys[key]])}
-          </span>
-        ))}
-      </div>
+      {error ? <p className="measurement">{error}</p> : null}
     </div>
   );
 }

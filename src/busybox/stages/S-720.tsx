@@ -267,7 +267,7 @@ function routeDetails(path: readonly NodeId[]) {
  * 目的: 動画を実際に変換し、QRが読める正しい経路だけを発見する。
  * 最初の一手: sourceのoutを変換in、変換outを次のin、最後をoutputへ順に接続する。
  * 箱ごとの成功条件: B01〜B04は正規routeを実行して出力QRを読み、共通flagを入力する。
- * 開かない操作: 分岐、cycle、入力側から始める接続、変換を表示だけで済ませた入力では開かない。
+ * 開かない操作: 分岐、cycle、入力側から始める接続、異なるflag、文字列の一部一致では開かない。固定flagの正答入力は、ギミックの事前達成状態に依存しない。
  * API/権限: SVG/Canvasケーブル、HTMLMediaElement、MediaBunny、Canvas。権限・送信・回答保存はない。
  * cleanup/環境: 変換中のAbortSignalとblob URLを破棄し、出力videoを停止する。H-001/H-002/H-003/H-004/H-014/H-019/H-020/H-023/H-025/H-043を確認する。
  */
@@ -282,16 +282,12 @@ export default function S720Stage(props: StageComponentProps) {
   const cableCanvasRef = useRef<HTMLCanvasElement>(null);
   const [cables, setCables] = useState<VideoPatchCable[]>([]);
   const [pendingFrom, setPendingFrom] = useState<VideoPatchCable["from"]>();
-  const [available, setAvailable] = useState<
-    Partial<Record<VideoRecoveryRoute, boolean>>
-  >({});
   const [outputUrl, setOutputUrl] = useState<string>();
   const [status, setStatus] = useState(() =>
     stageText(props.locale, s720Locale.connectPrompt),
   );
   const [answer, setAnswer] = useState("");
   const activePath = useMemo(() => pathForCables(cables), [cables]);
-  const activeRoute = useMemo(() => findVideoRecoveryRoute(cables), [cables]);
 
   useEffect(() => {
     const context = cableCanvasRef.current?.getContext("2d");
@@ -353,9 +349,6 @@ export default function S720Stage(props: StageComponentProps) {
             return next;
           });
           setStatus(stageText(props.locale, s720Locale.ready));
-          if (activeRoute) {
-            setAvailable((previous) => ({ ...previous, [activeRoute]: true }));
-          }
         })
         .catch((error: unknown) => {
           if (!disposed && (error as Error).name !== "AbortError") {
@@ -369,7 +362,7 @@ export default function S720Stage(props: StageComponentProps) {
       disposed = true;
       controller.abort();
     };
-  }, [activePath, activeRoute, props.locale]);
+  }, [activePath, props.locale]);
 
   useEffect(
     () => () => {
@@ -543,9 +536,7 @@ export default function S720Stage(props: StageComponentProps) {
               const route = (
                 Object.keys(videoRecoveryFlags) as VideoRecoveryRoute[]
               ).find(
-                (candidate) =>
-                  available[candidate] &&
-                  videoRecoveryFlags[candidate] === normalized,
+                (candidate) => videoRecoveryFlags[candidate] === normalized,
               );
               if (!route) return;
               const index =

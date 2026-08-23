@@ -7,9 +7,9 @@ export const s710Flags = {
 
 export type S710FlagKind = keyof typeof s710Flags;
 
-export interface S710EligibilityMessage {
+export interface S710LayoutMessage {
   channel: "busybox-s710-tool";
+  height: number;
   session: string;
-  type: "eligibility";
-  eligible: Partial<Record<S710FlagKind, boolean>>;
+  type: "layout";
 }

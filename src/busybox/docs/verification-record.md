@@ -1,5 +1,18 @@
 # 検証記録
 
+## 2026-08-23 S-710 / S-720 / S-810 レビュー反映
+
+| 検証 | 結果 | 証跡 |
+| --- | --- | --- |
+| S-710固定動画 | 合格 | `decode-failure-output.webm`を再生成し、先頭frameを抽出して`busybox{broken_input}`が小文字であることを目視確認 |
+| S-710 QR / iframe | 合格（実画面） | 各出力frameを従来のdownscale条件で検出し、QRを検出したframeだけを当該frameの四隅へ置換する実装へ変更。ClipPressはResizeObserverでcontent高を親へ通知し、local previewでiframeの表示高588pxと内部overflowなしを確認 |
+| 固定flag入力 | 合格（コード・関連test） | S-710とS-720の事前ギミック達成条件を削除。正答固定flagは状態、経路、session unlockに依存せず該当箱だけを開く共通方針をarchitecture decisionへ記録 |
+| S-810実画面 | 合格（初期frame） | local previewで固定assetの自動表示、停止中144×144のnative寸法、入場直後のB01開箱、4箱下の`1:1` / `4:3` / `16:9` / `9:20`表示、console warning/errorなしを確認。残る3比率のnative seekはH-053で実機確認 |
+| fixture / unit | 合格 | S-710とS-810 fixture再生成、関連Jest 4 suites / 17 tests |
+| 品質チェック | 合格 | TypeScript、Jest 59 suites / 316 tests、Markuplint、Biome 559 files、Vite production build、`git diff --check`。buildのghostpdl externalizationと500 kB超chunk warningは既存構成 |
+
+この節が本レビュー反映分の現行検証結果である。既存のH-042/H-043/H-053は外部実機・実操作を要するため残す。
+
 ## 2026-08-21 人手確認以外の残作業完遂
 
 | 検証 | 結果 | 証跡 |

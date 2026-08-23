@@ -74,7 +74,7 @@
 fixtureは`src/busybox/fixtures/s710/assets/`にある。
 
 1. `dark-frame-input.webm`を入力し、変換後の暗黒frameだけが白文字へ差し替わることを確認する。
-2. `qr-frame-input.webm`を入力し、downscaleした同じframe単位でQRがflag QRへ差し替わることを確認する。
+2. `qr-frame-input.webm`を入力し、downscale QRを検出したframeだけ、そのframeの四辺形へflag QRが差し替わることを確認する。
 3. 動画でない壊れたfileを入力し、通常のInsertable Streams変換ではなく固定のdecode失敗outputが返ることを確認する。
 4. 10秒録画を開始し、REC表示、カウントダウン、停止、録画fileの変換、camera track停止を確認する。
 5. 変換後の実file sizeと入力比、download、output再生を確認する。
@@ -96,10 +96,10 @@ fixtureは`src/busybox/fixtures/s710/assets/`にある。
 
 ### S-810
 
-1. 「スウィープ動画を読み込む」を押し、固定assetの構築後にnative controlsでシークを止める。
-2. 表示される`videoWidth` / `videoHeight`を見ながら、1:1、4:3、16:9、9:20の比率（各相対5%以内）でシークを止め、B01〜B04がそれぞれ開くことを確認する。
-3. 通常再生、pauseだけ、CSSの表示サイズ変更、読み込み前の操作では開かず、reload・離脱でcallbackとobject URLが残らないことを確認する。
-4. 再生成、pause、ended、reload、離脱でcallbackとobject URLが残らないことを確認する。
+1. 入場直後に固定assetが表示され、初期の停止frameで1:1のB01が開くことを確認する。
+2. native controlsで動画を停止するか、停止中にシークして4:3、16:9、9:20の比率（各相対5%以内）へ合わせ、B02〜B04がそれぞれ開くことを確認する。
+3. 通常再生中の比率通過、CSSの表示サイズ変更では開かず、3840pxの最大辺を含むことを確認する。
+4. pause、ended、reload、離脱でcallbackとobject URLが残らないことを確認する。
 
 ## 未確認・残問題
 
@@ -108,7 +108,7 @@ fixtureは`src/busybox/fixtures/s710/assets/`にある。
 - S-640 8問の実ブラウザ表示、共通入力欄、正答・誤答、再入場。
 - S-710はWindows ChromeでQR置換とdecode失敗を確認済み。暗黒frame、metadata再入力、camera録画、size比、download、連続試行を追加確認する。
 - S-720はWindows ChromeでT1 routeとlowercase flagを確認済み。残り3正規route、全frame再生、QR読取、分岐・cycle拒否、mobile横幅を確認する。
-- S-810は固定pack経路へ変更したため、Windows Chromeで4比率のシーク停止による開箱を再確認する。通常再生・pauseだけでは開かず、ended、reload、離脱でcallbackとobject URLが残らないことも同時に確認する。
+- S-810は3840pxの固定pack経路へ変更したため、Windows Chromeで初期1:1と、停止中の4:3／16:9／9:20による開箱を再確認する。通常再生中は開かず、pause、ended、reload、離脱でcallbackとobject URLが残らないことも同時に確認する。
 - S-350のB01〜B06/B08、S-060-B02、S-150、S-220、S-580など、以前にPoCで確認した中心経路を製品stageで再確認する。
 - 全stage共通のH-025（再入場、今回開いた箱、永続進捗、reset）とH-019（生データ非送信）。
 

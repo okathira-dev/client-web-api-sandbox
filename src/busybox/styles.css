@@ -269,17 +269,17 @@ input:focus-visible {
     width 80ms linear,
     height 80ms linear;
 }
-.s810-observed {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.6rem 1rem;
-  color: #bfb7cf;
-  font-family: ui-monospace, monospace;
-  font-size: 0.8rem;
+.s810-problem-row {
+  align-items: start;
 }
-.s810-observed span[data-observed="true"] {
-  color: #bef264;
+.s810-problem {
+  display: grid;
+  justify-items: center;
+  gap: 0.25rem;
+  color: #d8cfdf;
+  font:
+    700 0.8rem ui-monospace,
+    monospace;
 }
 
 .cipher-text,
@@ -2037,7 +2037,6 @@ input:focus-visible {
 }
 .s710-tool-frame {
   width: 100%;
-  height: min(70vh, 610px);
   min-height: 34rem;
   border: 1px solid #5b4e70;
   border-radius: 1rem;

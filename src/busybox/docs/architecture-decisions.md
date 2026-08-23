@@ -132,6 +132,8 @@ APIが存在しても、必要なハードウェア、ドライバー、コー�
 
 同期やリアルタイム性が成功条件の本質でなく、文字列回答を必要とする問題では、round token、nonce、時刻、入場IDを合言葉へ混ぜず、再訪しても同じ固定回答を使う。DOM、decoder結果、downloaded textなどから直接copyできる回答は、`BUSYBOX{descriptive_gimmick_phrase}`形式の長いCTF風flagとする。映像内文字、外部画面、音声など転記が必要な回答は、空白区切りで最大2語の短い固定語にする。API操作やbrowser所有UIの完了だけで箱が開く問題には、入力先や後続用途のない固定flagを追加しない。
 
+固定flagを入力して解く問題では、正答入力をギミックの達成状態、検出履歴、現在のroute、session内の解禁状態で制限しない。ギミックはflagを発見するための体験として残し、正答flagの照合だけで対応する箱を開く。複数tabやService Worker等でreplay拒否が本質となる問題は、flag入力ではなく個別の実イベント照合として設計する。
+
 round tokenやnonceを残してよいのは、複数tab、Service Worker inbox、外部画面とのcurrent-session handshakeなど、古い成果物のreplayを拒否しなければ中心機構が失われる場合だけである。その場合もtokenは内部照合値とし、固定回答で成立する問題へ便宜的に追加しない。stage仕様では「固定回答」または「同期上必要なround値」のどちらかと、その理由を明示する。
 
 ## PWAとService Worker

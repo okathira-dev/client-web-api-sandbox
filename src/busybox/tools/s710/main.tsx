@@ -10,11 +10,7 @@ import {
 import { StrictMode, useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { decodeQrCanvas } from "../../media/qrDecoder";
-import {
-  type S710EligibilityMessage,
-  type S710FlagKind,
-  s710Flags,
-} from "../../stages/s710Protocol";
+import { type S710LayoutMessage, s710Flags } from "../../stages/s710Protocol";
 import { drawQrIntoQuad } from "../../stages/s710Qr";
 import { toolCopy } from "./locale";
 import "./styles.css";
@@ -96,15 +92,37 @@ function Tool() {
     [source],
   );
 
-  const publish = (eligible: Partial<Record<S710FlagKind, boolean>>) => {
-    const message: S710EligibilityMessage = {
-      channel: "busybox-s710-tool",
-      session,
-      type: "eligibility",
-      eligible,
+  useEffect(() => {
+    let frame: number | undefined;
+    const publishHeight = () => {
+      frame = undefined;
+      const message: S710LayoutMessage = {
+        channel: "busybox-s710-tool",
+        height: Math.ceil(
+          Math.max(
+            document.body.scrollHeight,
+            document.documentElement.scrollHeight,
+          ),
+        ),
+        session,
+        type: "layout",
+      };
+      parent.postMessage(message, location.origin);
     };
-    parent.postMessage(message, location.origin);
-  };
+    const schedule = () => {
+      if (frame !== undefined) return;
+      frame = requestAnimationFrame(publishHeight);
+    };
+    const observer = new ResizeObserver(schedule);
+    observer.observe(document.body);
+    window.addEventListener("resize", schedule);
+    schedule();
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", schedule);
+      if (frame !== undefined) cancelAnimationFrame(frame);
+    };
+  }, [session]);
 
   useEffect(() => () => revoke(sourceUrl), [sourceUrl]);
   useEffect(() => () => revoke(outputUrl), [outputUrl]);
@@ -192,7 +210,6 @@ function Tool() {
 
   const transform = async () => {
     if (!source) return;
-    publish({});
     setBusy(true);
     setStatus(copy.compressing);
     let conversion: Conversion | undefined;
@@ -209,8 +226,6 @@ function Tool() {
       const output = new Output({ format: new WebMOutputFormat(), target });
       const frameCanvas = document.createElement("canvas");
       const scanCanvas = document.createElement("canvas");
-      let darkSeen = false;
-      let qrSeen = false;
       conversion = await Conversion.init({
         input,
         output,
@@ -237,7 +252,6 @@ function Tool() {
               frameCanvas.height,
             );
             if (isDarkFrame(image)) {
-              darkSeen = true;
               drawMessage(
                 context,
                 frameCanvas.width,
@@ -245,41 +259,32 @@ function Tool() {
                 s710Flags.dark,
               );
             }
-            if (!qrSeen) {
-              scanCanvas.width = Math.max(1, Math.floor(frameCanvas.width / 2));
-              scanCanvas.height = Math.max(
-                1,
-                Math.floor(frameCanvas.height / 2),
+            scanCanvas.width = Math.max(1, Math.floor(frameCanvas.width / 2));
+            scanCanvas.height = Math.max(1, Math.floor(frameCanvas.height / 2));
+            scanCanvas
+              .getContext("2d")
+              ?.drawImage(
+                frameCanvas,
+                0,
+                0,
+                scanCanvas.width,
+                scanCanvas.height,
               );
-              scanCanvas
-                .getContext("2d")
-                ?.drawImage(
-                  frameCanvas,
-                  0,
-                  0,
-                  scanCanvas.width,
-                  scanCanvas.height,
-                );
-              const decoded = decodeQrCanvas(scanCanvas);
-              if (decoded) {
-                qrSeen = true;
-                const scaleX = frameCanvas.width / scanCanvas.width;
-                const scaleY = frameCanvas.height / scanCanvas.height;
-                const scalePoint = (point: { x: number; y: number }) => ({
-                  x: point.x * scaleX,
-                  y: point.y * scaleY,
-                });
-                drawQrIntoQuad(
-                  context,
-                  [
-                    scalePoint(decoded.location.topLeftCorner),
-                    scalePoint(decoded.location.topRightCorner),
-                    scalePoint(decoded.location.bottomRightCorner),
-                    scalePoint(decoded.location.bottomLeftCorner),
-                  ],
-                  s710Flags.qr,
-                );
-              }
+            const decoded = decodeQrCanvas(scanCanvas);
+            if (decoded) {
+              const scaleX = frameCanvas.width / scanCanvas.width;
+              const scaleY = frameCanvas.height / scanCanvas.height;
+              const scalePoint = (point: { x: number; y: number }) => ({
+                x: point.x * scaleX,
+                y: point.y * scaleY,
+              });
+              const qrQuad: Parameters<typeof drawQrIntoQuad>[1] = [
+                scalePoint(decoded.location.topLeftCorner),
+                scalePoint(decoded.location.topRightCorner),
+                scalePoint(decoded.location.bottomRightCorner),
+                scalePoint(decoded.location.bottomLeftCorner),
+              ];
+              drawQrIntoQuad(context, qrQuad, s710Flags.qr);
             }
             if (secondPass)
               drawMessage(
@@ -312,7 +317,6 @@ function Tool() {
         return nextUrl;
       });
       setOutputSize(blob.size);
-      publish({ dark: darkSeen, qr: qrSeen, second: secondPass });
       setStatus(
         `${copy.done}: ${(blob.size / Math.max(1, source.size)).toFixed(2)}×.`,
       );
@@ -323,7 +327,6 @@ function Tool() {
           .then((blob) => blob.size);
         setOutputUrl(brokenOutput);
         setOutputSize(size);
-        publish({ broken: true });
         setStatus(copy.inputDecodeFailed);
       } else {
         setStatus(

@@ -25,21 +25,28 @@ async function run(args) {
 }
 
 function dimensionsForFrame(index) {
-  const phase = Math.floor(index / 30);
-  const offset = index % 30;
-  const progress = offset / 29;
+  const minimum = 144;
+  const maximum = 3840;
+  const phase = Math.floor(index / 40);
+  const offset = index % 40;
+  const progress = offset / 39;
   const interpolate = (from, to) =>
-    Math.max(144, Math.round((from + (to - from) * progress) / 8) * 8);
+    Math.round((from + (to - from) * progress) / 8) * 8;
   if (phase === 0) {
-    const size = interpolate(144, 1080);
-    return [size, size];
+    if (offset === 0) return [minimum, minimum];
+    if (offset === 1) return [192, minimum];
+    if (offset === 2) return [256, minimum];
+    const remainingProgress = (offset - 2) / 37;
+    return [
+      Math.round((256 + (maximum - 256) * remainingProgress) / 8) * 8,
+      minimum,
+    ];
   }
   if (phase === 1) {
-    const size = interpolate(1080, 144);
-    return [size, size];
+    if (offset === 28) return [1224, 2720];
+    return [interpolate(maximum, minimum), interpolate(minimum, maximum)];
   }
-  if (phase === 2) return [interpolate(1080, 144), interpolate(144, 1080)];
-  return [interpolate(144, 1080), interpolate(1080, 144)];
+  return [interpolate(minimum, maximum), maximum];
 }
 
 async function generateSegment(index) {
