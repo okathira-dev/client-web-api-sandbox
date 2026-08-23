@@ -10,6 +10,7 @@
 - [現状・残問題・人手確認への引継ぎ](./current-status-and-handoff.md): 最新の実装状態、未解決事項、次の確認順。
 - [検証記録](./verification-record.md): 自動検証と人手確認の証跡。
 - [人手確認台帳](./human-test-matrix.md): 実ブラウザ・実機で確認する手順。
+- [全ステージレビュー・チェックリスト](./stage-review-checklist.md): 89ステージ・204箱を画面で順に確認し、指摘と完了状態を記録する作業台帳。
 - [次のPoC・ステージ化キュー](./next-poc-and-stage-work.md): 製品化待ち件数と、外部条件による人手確認だけを残した現行キュー。
 - [Google FedCM設定](./google-fedcm-setup.md): S-770の公開client ID、GitHub Repository Secret、成功境界。
 - [Google Drive設定と運用](./google-drive-setup.md): OAuth設定、端末別replica同期、復旧選択、削除、公開ゲート。

@@ -19,12 +19,17 @@ describe("Busybox stage registry", () => {
     }
   });
 
-  it("gives every problem exactly one color and clue presentation", () => {
+  it("gives every problem exactly one color and icon presentation", () => {
     const plannedBoxIds = stageCatalogue.flatMap((stage) =>
       stage.problems.map((problem) => problem.id),
     );
     expect(Object.keys(problemById).sort()).toEqual([...plannedBoxIds].sort());
     expect(new Set(plannedBoxIds).size).toBe(totalBoxCount);
+    for (const stage of stageCatalogue) {
+      for (const problem of stage.problems) {
+        expect(problem.icon).toBeDefined();
+      }
+    }
   });
 
   it("gives every stage one deterministic map position", () => {

@@ -3,7 +3,6 @@ import { useEffect, useRef } from "react";
 import { type Locale, messages } from "../i18n";
 import type { ProblemHandle } from "../runtime/types";
 import { problemLabelText } from "../stages/metadataLocale";
-import { ClueIcon } from "./ClueIcon";
 
 export type GiftBoxState = "ribboned" | "closed" | "open";
 
@@ -98,6 +97,7 @@ export function ProblemGiftBox({
     open: copy.problemSolvedThisVisit,
   }[resolvedState];
   const label = `${problemLabelText(locale, presentation.id)}: ${stateLabel}`;
+  const Icon = presentation.icon;
 
   return (
     <figure className="problem-gift">
@@ -109,7 +109,7 @@ export function ProblemGiftBox({
         onPointerDown={onPointerDown}
       />
       <figcaption className="problem-gift__clue">
-        <ClueIcon name={presentation.clue} />
+        <Icon fontSize="inherit" aria-hidden="true" />
         <span className="sr-only">
           {problemLabelText(locale, presentation.id)}
         </span>

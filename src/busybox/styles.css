@@ -664,20 +664,14 @@ input:focus-visible {
   margin: 0;
 }
 .problem-gift__clue {
+  --problem-gift-clue-size: 2rem;
+
   display: grid;
   place-items: center;
-  width: 2.4rem;
-  height: 2.4rem;
+  width: var(--problem-gift-clue-size);
+  height: var(--problem-gift-clue-size);
+  font-size: var(--problem-gift-clue-size);
   color: #d8cfdf;
-}
-.clue-icon {
-  width: 2rem;
-  height: 2rem;
-  fill: none;
-  stroke: currentcolor;
-  stroke-width: 1.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
 }
 
 .panel {

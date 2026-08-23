@@ -1,4 +1,48 @@
-import type { ClueIconName } from "../ui/ClueIcon";
+import AccountTreeOutlined from "@mui/icons-material/AccountTreeOutlined";
+import AdsClickOutlined from "@mui/icons-material/AdsClickOutlined";
+import AspectRatioOutlined from "@mui/icons-material/AspectRatioOutlined";
+import BadgeOutlined from "@mui/icons-material/BadgeOutlined";
+import BluetoothOutlined from "@mui/icons-material/BluetoothOutlined";
+import CloudUploadOutlined from "@mui/icons-material/CloudUploadOutlined";
+import ColorizeOutlined from "@mui/icons-material/ColorizeOutlined";
+import ContentCopyOutlined from "@mui/icons-material/ContentCopyOutlined";
+import DesktopWindowsOutlined from "@mui/icons-material/DesktopWindowsOutlined";
+import DevicesFoldOutlined from "@mui/icons-material/DevicesFoldOutlined";
+import DevicesOutlined from "@mui/icons-material/DevicesOutlined";
+import EditOutlined from "@mui/icons-material/EditOutlined";
+import FileDownloadOutlined from "@mui/icons-material/FileDownloadOutlined";
+import FileUploadOutlined from "@mui/icons-material/FileUploadOutlined";
+import FullscreenOutlined from "@mui/icons-material/FullscreenOutlined";
+import HistoryOutlined from "@mui/icons-material/HistoryOutlined";
+import HourglassEmptyOutlined from "@mui/icons-material/HourglassEmptyOutlined";
+import InstallDesktopOutlined from "@mui/icons-material/InstallDesktopOutlined";
+import KeyboardOutlined from "@mui/icons-material/KeyboardOutlined";
+import KeyboardReturnOutlined from "@mui/icons-material/KeyboardReturnOutlined";
+import LightModeOutlined from "@mui/icons-material/LightModeOutlined";
+import LockOutlined from "@mui/icons-material/LockOutlined";
+import MemoryOutlined from "@mui/icons-material/MemoryOutlined";
+import MouseOutlined from "@mui/icons-material/MouseOutlined";
+import NotificationsOutlined from "@mui/icons-material/NotificationsOutlined";
+import OpenInNewOutlined from "@mui/icons-material/OpenInNewOutlined";
+import PauseOutlined from "@mui/icons-material/PauseOutlined";
+import PictureInPictureAltOutlined from "@mui/icons-material/PictureInPictureAltOutlined";
+import RouteOutlined from "@mui/icons-material/RouteOutlined";
+import ScheduleOutlined from "@mui/icons-material/ScheduleOutlined";
+import ScreenRotationOutlined from "@mui/icons-material/ScreenRotationOutlined";
+import SelectAllOutlined from "@mui/icons-material/SelectAllOutlined";
+import ShareOutlined from "@mui/icons-material/ShareOutlined";
+import SignalWifiOffOutlined from "@mui/icons-material/SignalWifiOffOutlined";
+import SpeedOutlined from "@mui/icons-material/SpeedOutlined";
+import SportsEsportsOutlined from "@mui/icons-material/SportsEsportsOutlined";
+import SubtitlesOutlined from "@mui/icons-material/SubtitlesOutlined";
+import SwapHorizOutlined from "@mui/icons-material/SwapHorizOutlined";
+import TouchAppOutlined from "@mui/icons-material/TouchAppOutlined";
+import UsbOutlined from "@mui/icons-material/UsbOutlined";
+import VisibilityOffOutlined from "@mui/icons-material/VisibilityOffOutlined";
+import VolumeUpOutlined from "@mui/icons-material/VolumeUpOutlined";
+import WbSunnyOutlined from "@mui/icons-material/WbSunnyOutlined";
+import WindowOutlined from "@mui/icons-material/WindowOutlined";
+import type SvgIcon from "@mui/material/SvgIcon";
 
 export type StageCategory =
   | "page"
@@ -15,7 +59,7 @@ type ProblemBoxIdFormat = `${StageIdFormat}-B${number}`;
 export interface ProblemSpec {
   readonly id: ProblemBoxIdFormat;
   readonly color: string;
-  readonly clue: ClueIconName;
+  readonly icon: typeof SvgIcon;
 }
 
 export interface StageSpec {
@@ -74,7 +118,7 @@ export const stageCatalogue = [
       {
         id: "S-000-B01",
         color: "#a78bfa",
-        clue: "click",
+        icon: AdsClickOutlined,
       },
     ],
   }),
@@ -85,17 +129,17 @@ export const stageCatalogue = [
       {
         id: "S-010-B01",
         color: "#60a5fa",
-        clue: "mouse",
+        icon: MouseOutlined,
       },
       {
         id: "S-010-B02",
         color: "#fb7185",
-        clue: "touch",
+        icon: TouchAppOutlined,
       },
       {
         id: "S-010-B03",
         color: "#34d399",
-        clue: "pen",
+        icon: EditOutlined,
       },
     ],
   }),
@@ -106,7 +150,7 @@ export const stageCatalogue = [
       {
         id: "S-020-B01",
         color: "#818cf8",
-        clue: "resize",
+        icon: AspectRatioOutlined,
       },
     ],
   }),
@@ -117,7 +161,7 @@ export const stageCatalogue = [
       {
         id: "S-030-B01",
         color: "#fbbf24",
-        clue: "selection",
+        icon: SelectAllOutlined,
       },
     ],
   }),
@@ -128,12 +172,12 @@ export const stageCatalogue = [
       {
         id: "S-040-B01",
         color: "#94a3b8",
-        clue: "hidden",
+        icon: VisibilityOffOutlined,
       },
       {
         id: "S-040-B02",
         color: "#64748b",
-        clue: "hidden",
+        icon: VisibilityOffOutlined,
       },
     ],
   }),
@@ -144,7 +188,7 @@ export const stageCatalogue = [
       {
         id: "S-050-B01",
         color: "#38bdf8",
-        clue: "windows",
+        icon: WindowOutlined,
       },
     ],
   }),
@@ -155,12 +199,12 @@ export const stageCatalogue = [
       {
         id: "S-060-B01",
         color: "#c084fc",
-        clue: "return",
+        icon: KeyboardReturnOutlined,
       },
       {
         id: "S-060-B02",
         color: "#a855f7",
-        clue: "offline",
+        icon: SignalWifiOffOutlined,
       },
     ],
   }),
@@ -171,7 +215,7 @@ export const stageCatalogue = [
       {
         id: "S-070-B01",
         color: "#2dd4bf",
-        clue: "offline",
+        icon: SignalWifiOffOutlined,
       },
     ],
   }),
@@ -182,7 +226,7 @@ export const stageCatalogue = [
       {
         id: "S-080-B01",
         color: "#f59e0b",
-        clue: "install",
+        icon: InstallDesktopOutlined,
       },
     ],
   }),
@@ -193,7 +237,7 @@ export const stageCatalogue = [
       {
         id: "S-090-B01",
         color: "#f472b6",
-        clue: "notification",
+        icon: NotificationsOutlined,
       },
     ],
   }),
@@ -204,7 +248,7 @@ export const stageCatalogue = [
       {
         id: "S-100-B01",
         color: "#fb7185",
-        clue: "orientation",
+        icon: ScreenRotationOutlined,
       },
     ],
   }),
@@ -215,7 +259,7 @@ export const stageCatalogue = [
       {
         id: "S-110-B01",
         color: "#facc15",
-        clue: "light",
+        icon: LightModeOutlined,
       },
     ],
   }),
@@ -226,7 +270,7 @@ export const stageCatalogue = [
       {
         id: "S-120-B01",
         color: "#22d3ee",
-        clue: "sound",
+        icon: VolumeUpOutlined,
       },
     ],
   }),
@@ -237,12 +281,12 @@ export const stageCatalogue = [
       {
         id: "S-130-B01",
         color: "#34d399",
-        clue: "export",
+        icon: FileUploadOutlined,
       },
       {
         id: "S-130-B02",
         color: "#10b981",
-        clue: "import",
+        icon: FileDownloadOutlined,
       },
     ],
   }),
@@ -253,12 +297,12 @@ export const stageCatalogue = [
       {
         id: "S-140-B01",
         color: "#60a5fa",
-        clue: "backup",
+        icon: CloudUploadOutlined,
       },
       {
         id: "S-140-B02",
         color: "#a78bfa",
-        clue: "devices",
+        icon: DevicesOutlined,
       },
     ],
   }),
@@ -269,17 +313,17 @@ export const stageCatalogue = [
       {
         id: "S-150-B01",
         color: "#c084fc",
-        clue: "hidden",
+        icon: VisibilityOffOutlined,
       },
       {
         id: "S-150-B02",
         color: "#a78bfa",
-        clue: "selection",
+        icon: SelectAllOutlined,
       },
       {
         id: "S-150-B03",
         color: "#8b5cf6",
-        clue: "dom",
+        icon: AccountTreeOutlined,
       },
     ],
   }),
@@ -290,7 +334,7 @@ export const stageCatalogue = [
       {
         id: "S-160-B01",
         color: "#38bdf8",
-        clue: "path",
+        icon: RouteOutlined,
       },
     ],
   }),
@@ -301,7 +345,7 @@ export const stageCatalogue = [
       {
         id: "S-170-B01",
         color: "#fbbf24",
-        clue: "time",
+        icon: ScheduleOutlined,
       },
     ],
   }),
@@ -312,7 +356,7 @@ export const stageCatalogue = [
       {
         id: "S-180-B01",
         color: "#a78bfa",
-        clue: "copy",
+        icon: ContentCopyOutlined,
       },
     ],
   }),
@@ -323,22 +367,22 @@ export const stageCatalogue = [
       {
         id: "S-190-B01",
         color: "#22d3ee",
-        clue: "screen",
+        icon: DesktopWindowsOutlined,
       },
       {
         id: "S-190-B02",
         color: "#38bdf8",
-        clue: "screen",
+        icon: DesktopWindowsOutlined,
       },
       {
         id: "S-190-B03",
         color: "#818cf8",
-        clue: "windows",
+        icon: WindowOutlined,
       },
       {
         id: "S-190-B04",
         color: "#facc15",
-        clue: "eyedropper",
+        icon: ColorizeOutlined,
       },
     ],
   }),
@@ -349,7 +393,7 @@ export const stageCatalogue = [
       {
         id: "S-200-B01",
         color: "#fb7185",
-        clue: "gamepad",
+        icon: SportsEsportsOutlined,
       },
     ],
   }),
@@ -360,7 +404,7 @@ export const stageCatalogue = [
       {
         id: "S-210-B01",
         color: "#fbbf24",
-        clue: "badge",
+        icon: BadgeOutlined,
       },
     ],
   }),
@@ -371,22 +415,22 @@ export const stageCatalogue = [
       {
         id: "S-220-B01",
         color: "#fb7185",
-        clue: "history",
+        icon: HistoryOutlined,
       },
       {
         id: "S-220-B02",
         color: "#f59e0b",
-        clue: "return",
+        icon: KeyboardReturnOutlined,
       },
       {
         id: "S-220-B03",
         color: "#fbbf24",
-        clue: "transition",
+        icon: SwapHorizOutlined,
       },
       {
         id: "S-220-B04",
         color: "#06b6d4",
-        clue: "transition",
+        icon: SwapHorizOutlined,
       },
     ],
   }),
@@ -397,12 +441,12 @@ export const stageCatalogue = [
       {
         id: "S-240-B01",
         color: "#34d399",
-        clue: "share",
+        icon: ShareOutlined,
       },
       {
         id: "S-240-B02",
         color: "#10b981",
-        clue: "install",
+        icon: InstallDesktopOutlined,
       },
     ],
   }),
@@ -413,12 +457,12 @@ export const stageCatalogue = [
       {
         id: "S-250-B01",
         color: "#fbbf24",
-        clue: "lock",
+        icon: LockOutlined,
       },
       {
         id: "S-250-B02",
         color: "#fb7185",
-        clue: "wait",
+        icon: HourglassEmptyOutlined,
       },
     ],
   }),
@@ -429,7 +473,7 @@ export const stageCatalogue = [
       {
         id: "S-260-B01",
         color: "#a78bfa",
-        clue: "eyedropper",
+        icon: ColorizeOutlined,
       },
     ],
   }),
@@ -440,7 +484,7 @@ export const stageCatalogue = [
       {
         id: "S-280-B01",
         color: "#22d3ee",
-        clue: "bluetooth",
+        icon: BluetoothOutlined,
       },
     ],
   }),
@@ -451,7 +495,7 @@ export const stageCatalogue = [
       {
         id: "S-290-B01",
         color: "#60a5fa",
-        clue: "hid",
+        icon: KeyboardOutlined,
       },
     ],
   }),
@@ -462,7 +506,7 @@ export const stageCatalogue = [
       {
         id: "S-300-B01",
         color: "#818cf8",
-        clue: "usb",
+        icon: UsbOutlined,
       },
     ],
   }),
@@ -473,17 +517,17 @@ export const stageCatalogue = [
       {
         id: "S-310-B01",
         color: "#c084fc",
-        clue: "launch",
+        icon: OpenInNewOutlined,
       },
       {
         id: "S-310-B02",
         color: "#a78bfa",
-        clue: "launch",
+        icon: OpenInNewOutlined,
       },
       {
         id: "S-310-B03",
         color: "#818cf8",
-        clue: "launch",
+        icon: OpenInNewOutlined,
       },
     ],
   }),
@@ -494,7 +538,7 @@ export const stageCatalogue = [
       {
         id: "S-320-B01",
         color: "#c084fc",
-        clue: "fold",
+        icon: DevicesFoldOutlined,
       },
     ],
   }),
@@ -505,12 +549,12 @@ export const stageCatalogue = [
       {
         id: "S-330-B01",
         color: "#facc15",
-        clue: "wake",
+        icon: WbSunnyOutlined,
       },
       {
         id: "S-330-B02",
         color: "#fde68a",
-        clue: "return",
+        icon: KeyboardReturnOutlined,
       },
     ],
   }),
@@ -521,7 +565,7 @@ export const stageCatalogue = [
       {
         id: "S-340-B01",
         color: "#34d399",
-        clue: "transition",
+        icon: SwapHorizOutlined,
       },
     ],
   }),
@@ -532,37 +576,37 @@ export const stageCatalogue = [
       {
         id: "S-350-B01",
         color: "#60a5fa",
-        clue: "time",
+        icon: ScheduleOutlined,
       },
       {
         id: "S-350-B02",
         color: "#f472b6",
-        clue: "sound",
+        icon: VolumeUpOutlined,
       },
       {
         id: "S-350-B03",
         color: "#34d399",
-        clue: "pause",
+        icon: PauseOutlined,
       },
       {
         id: "S-350-B04",
         color: "#65a30d",
-        clue: "speed",
+        icon: SpeedOutlined,
       },
       {
         id: "S-350-B05",
         color: "#4d7c0f",
-        clue: "subtitles",
+        icon: SubtitlesOutlined,
       },
       {
         id: "S-350-B06",
         color: "#60a5fa",
-        clue: "pip",
+        icon: PictureInPictureAltOutlined,
       },
       {
         id: "S-350-B08",
         color: "#38bdf8",
-        clue: "fullscreen",
+        icon: FullscreenOutlined,
       },
     ],
   }),
@@ -573,12 +617,12 @@ export const stageCatalogue = [
       {
         id: "S-360-B01",
         color: "#22d3ee",
-        clue: "sound",
+        icon: VolumeUpOutlined,
       },
       {
         id: "S-360-B02",
         color: "#fb7185",
-        clue: "windows",
+        icon: WindowOutlined,
       },
     ],
   }),
@@ -589,22 +633,22 @@ export const stageCatalogue = [
       {
         id: "S-370-B01",
         color: "#34d399",
-        clue: "wake",
+        icon: WbSunnyOutlined,
       },
       {
         id: "S-370-B02",
         color: "#fb7185",
-        clue: "wake",
+        icon: WbSunnyOutlined,
       },
       {
         id: "S-370-B03",
         color: "#facc15",
-        clue: "badge",
+        icon: BadgeOutlined,
       },
       {
         id: "S-370-B04",
         color: "#f59e0b",
-        clue: "badge",
+        icon: BadgeOutlined,
       },
     ],
   }),
@@ -615,17 +659,17 @@ export const stageCatalogue = [
       {
         id: "S-380-B01",
         color: "#a78bfa",
-        clue: "export",
+        icon: FileUploadOutlined,
       },
       {
         id: "S-380-B02",
         color: "#34d399",
-        clue: "lock",
+        icon: LockOutlined,
       },
       {
         id: "S-380-B03",
         color: "#fb7185",
-        clue: "lock",
+        icon: LockOutlined,
       },
     ],
   }),
@@ -636,12 +680,12 @@ export const stageCatalogue = [
       {
         id: "S-390-B01",
         color: "#f59e0b",
-        clue: "wait",
+        icon: HourglassEmptyOutlined,
       },
       {
         id: "S-390-B02",
         color: "#94a3b8",
-        clue: "wait",
+        icon: HourglassEmptyOutlined,
       },
     ],
   }),
@@ -652,12 +696,12 @@ export const stageCatalogue = [
       {
         id: "S-400-B01",
         color: "#818cf8",
-        clue: "time",
+        icon: ScheduleOutlined,
       },
       {
         id: "S-400-B02",
         color: "#34d399",
-        clue: "return",
+        icon: KeyboardReturnOutlined,
       },
     ],
   }),
@@ -668,7 +712,7 @@ export const stageCatalogue = [
       {
         id: "S-410-B01",
         color: "#f472b6",
-        clue: "notification",
+        icon: NotificationsOutlined,
       },
     ],
   }),
@@ -679,7 +723,7 @@ export const stageCatalogue = [
       {
         id: "S-420-B01",
         color: "#fbbf24",
-        clue: "lock",
+        icon: LockOutlined,
       },
     ],
   }),
@@ -690,12 +734,12 @@ export const stageCatalogue = [
       {
         id: "S-430-B01",
         color: "#22d3ee",
-        clue: "sound",
+        icon: VolumeUpOutlined,
       },
       {
         id: "S-430-B02",
         color: "#a78bfa",
-        clue: "sound",
+        icon: VolumeUpOutlined,
       },
     ],
   }),
@@ -706,7 +750,7 @@ export const stageCatalogue = [
       {
         id: "S-440-B01",
         color: "#a78bfa",
-        clue: "import",
+        icon: FileDownloadOutlined,
       },
     ],
   }),
@@ -717,7 +761,7 @@ export const stageCatalogue = [
       {
         id: "S-450-B01",
         color: "#60a5fa",
-        clue: "launch",
+        icon: OpenInNewOutlined,
       },
     ],
   }),
@@ -728,7 +772,7 @@ export const stageCatalogue = [
       {
         id: "S-460-B01",
         color: "#c084fc",
-        clue: "windows",
+        icon: WindowOutlined,
       },
     ],
   }),
@@ -739,28 +783,28 @@ export const stageCatalogue = [
       {
         id: "S-480-B01",
         color: "#60a5fa",
-        clue: "resize",
+        icon: AspectRatioOutlined,
       },
       {
         id: "S-480-B02",
         color: "#34d399",
-        clue: "resize",
+        icon: AspectRatioOutlined,
       },
       {
         id: "S-480-B03",
         color: "#fbbf24",
-        clue: "resize",
+        icon: AspectRatioOutlined,
       },
       {
         id: "S-480-B04",
         color: "#fb7185",
-        clue: "resize",
+        icon: AspectRatioOutlined,
       },
-      { id: "S-480-B05", color: "#312e81", clue: "light" },
-      { id: "S-480-B06", color: "#f8fafc", clue: "selection" },
-      { id: "S-480-B07", color: "#22c55e", clue: "pause" },
-      { id: "S-480-B08", color: "#94a3b8", clue: "hidden" },
-      { id: "S-480-B09", color: "#38bdf8", clue: "offline" },
+      { id: "S-480-B05", color: "#312e81", icon: LightModeOutlined },
+      { id: "S-480-B06", color: "#f8fafc", icon: SelectAllOutlined },
+      { id: "S-480-B07", color: "#22c55e", icon: PauseOutlined },
+      { id: "S-480-B08", color: "#94a3b8", icon: VisibilityOffOutlined },
+      { id: "S-480-B09", color: "#38bdf8", icon: SignalWifiOffOutlined },
     ],
   }),
   defineStage({
@@ -771,7 +815,7 @@ export const stageCatalogue = [
       {
         id: "S-490-B01",
         color: "#a78bfa",
-        clue: "dom",
+        icon: AccountTreeOutlined,
       },
     ],
   }),
@@ -783,7 +827,7 @@ export const stageCatalogue = [
       {
         id: "S-500-B01",
         color: "#818cf8",
-        clue: "selection",
+        icon: SelectAllOutlined,
       },
     ],
   }),
@@ -794,17 +838,17 @@ export const stageCatalogue = [
       {
         id: "S-510-B01",
         color: "#34d399",
-        clue: "export",
+        icon: FileUploadOutlined,
       },
       {
         id: "S-510-B02",
         color: "#10b981",
-        clue: "import",
+        icon: FileDownloadOutlined,
       },
       {
         id: "S-510-B03",
         color: "#6366f1",
-        clue: "windows",
+        icon: WindowOutlined,
       },
     ],
   }),
@@ -815,7 +859,7 @@ export const stageCatalogue = [
       {
         id: "S-520-B01",
         color: "#f472b6",
-        clue: "devices",
+        icon: DevicesOutlined,
       },
     ],
   }),
@@ -826,17 +870,17 @@ export const stageCatalogue = [
       {
         id: "S-530-B01",
         color: "#fb7185",
-        clue: "path",
+        icon: RouteOutlined,
       },
       {
         id: "S-530-B02",
         color: "#34d399",
-        clue: "path",
+        icon: RouteOutlined,
       },
       {
         id: "S-530-B03",
         color: "#60a5fa",
-        clue: "path",
+        icon: RouteOutlined,
       },
     ],
   }),
@@ -847,12 +891,12 @@ export const stageCatalogue = [
       {
         id: "S-540-B01",
         color: "#0f172a",
-        clue: "light",
+        icon: LightModeOutlined,
       },
       {
         id: "S-540-B02",
         color: "#fef08a",
-        clue: "light",
+        icon: LightModeOutlined,
       },
     ],
   }),
@@ -863,7 +907,7 @@ export const stageCatalogue = [
       {
         id: "S-550-B01",
         color: "#c084fc",
-        clue: "wait",
+        icon: HourglassEmptyOutlined,
       },
     ],
   }),
@@ -874,17 +918,17 @@ export const stageCatalogue = [
       {
         id: "S-560-B01",
         color: "#fb7185",
-        clue: "orientation",
+        icon: ScreenRotationOutlined,
       },
       {
         id: "S-560-B02",
         color: "#34d399",
-        clue: "orientation",
+        icon: ScreenRotationOutlined,
       },
       {
         id: "S-560-B03",
         color: "#60a5fa",
-        clue: "orientation",
+        icon: ScreenRotationOutlined,
       },
     ],
   }),
@@ -895,7 +939,7 @@ export const stageCatalogue = [
       {
         id: "S-570-B01",
         color: "#22d3ee",
-        clue: "orientation",
+        icon: ScreenRotationOutlined,
       },
     ],
   }),
@@ -907,12 +951,12 @@ export const stageCatalogue = [
       {
         id: "S-580-B01",
         color: "#f472b6",
-        clue: "sound",
+        icon: VolumeUpOutlined,
       },
       {
         id: "S-580-B02",
         color: "#ec4899",
-        clue: "sound",
+        icon: VolumeUpOutlined,
       },
     ],
   }),
@@ -923,17 +967,17 @@ export const stageCatalogue = [
       {
         id: "S-590-B01",
         color: "#34d399",
-        clue: "path",
+        icon: RouteOutlined,
       },
       {
         id: "S-590-B02",
         color: "#fbbf24",
-        clue: "path",
+        icon: RouteOutlined,
       },
       {
         id: "S-590-B03",
         color: "#fb7185",
-        clue: "path",
+        icon: RouteOutlined,
       },
     ],
   }),
@@ -944,17 +988,17 @@ export const stageCatalogue = [
       {
         id: "S-600-B01",
         color: "#34d399",
-        clue: "path",
+        icon: RouteOutlined,
       },
       {
         id: "S-600-B02",
         color: "#fbbf24",
-        clue: "path",
+        icon: RouteOutlined,
       },
       {
         id: "S-600-B03",
         color: "#60a5fa",
-        clue: "path",
+        icon: RouteOutlined,
       },
     ],
   }),
@@ -965,17 +1009,17 @@ export const stageCatalogue = [
       {
         id: "S-610-B01",
         color: "#f97316",
-        clue: "windows",
+        icon: WindowOutlined,
       },
       {
         id: "S-610-B02",
         color: "#ea580c",
-        clue: "click",
+        icon: AdsClickOutlined,
       },
       {
         id: "S-610-B03",
         color: "#c2410c",
-        clue: "return",
+        icon: KeyboardReturnOutlined,
       },
     ],
   }),
@@ -985,17 +1029,17 @@ export const stageCatalogue = [
     problems: Array.from({ length: 17 }, (_, index) => ({
       id: `S-620-B${String(index + 1).padStart(2, "0")}` as `S-620-B${number}`,
       color: ["#38bdf8", "#22d3ee", "#2dd4bf", "#34d399", "#4ade80"][index % 5],
-      clue: "selection" as const,
+      icon: SelectAllOutlined,
     })) as readonly ProblemFor<"S-620">[],
   }),
   defineStage({
     id: "S-630",
     category: "device",
     problems: [
-      { id: "S-630-B01", color: "#38bdf8", clue: "devices" },
-      { id: "S-630-B02", color: "#fb7185", clue: "devices" },
-      { id: "S-630-B03", color: "#34d399", clue: "devices" },
-      { id: "S-630-B04", color: "#818cf8", clue: "bluetooth" },
+      { id: "S-630-B01", color: "#38bdf8", icon: DevicesOutlined },
+      { id: "S-630-B02", color: "#fb7185", icon: DevicesOutlined },
+      { id: "S-630-B03", color: "#34d399", icon: DevicesOutlined },
+      { id: "S-630-B04", color: "#818cf8", icon: BluetoothOutlined },
     ],
   }),
   defineStage({
@@ -1004,7 +1048,7 @@ export const stageCatalogue = [
     problems: Array.from({ length: 8 }, (_, index) => ({
       id: `S-640-B${String(index + 1).padStart(2, "0")}` as `S-640-B${number}`,
       color: ["#818cf8", "#6366f1", "#4f46e5", "#4338ca"][index % 4],
-      clue: "hidden" as const,
+      icon: VisibilityOffOutlined,
     })) as readonly ProblemFor<"S-640">[],
   }),
   defineStage({
@@ -1014,22 +1058,22 @@ export const stageCatalogue = [
       {
         id: "S-650-B01",
         color: "#22c55e",
-        clue: "path",
+        icon: RouteOutlined,
       },
       {
         id: "S-650-B02",
         color: "#16a34a",
-        clue: "notification",
+        icon: NotificationsOutlined,
       },
       {
         id: "S-650-B03",
         color: "#15803d",
-        clue: "screen",
+        icon: DesktopWindowsOutlined,
       },
       {
         id: "S-650-B04",
         color: "#166534",
-        clue: "sound",
+        icon: VolumeUpOutlined,
       },
     ],
   }),
@@ -1040,17 +1084,17 @@ export const stageCatalogue = [
       {
         id: "S-660-B01",
         color: "#a7f3d0",
-        clue: "gpu",
+        icon: MemoryOutlined,
       },
       {
         id: "S-660-B02",
         color: "#6ee7b7",
-        clue: "gpu",
+        icon: MemoryOutlined,
       },
       {
         id: "S-660-B03",
         color: "#10b981",
-        clue: "gpu",
+        icon: MemoryOutlined,
       },
     ],
   }),
@@ -1061,7 +1105,7 @@ export const stageCatalogue = [
       {
         id: "S-670-B01",
         color: "#eab308",
-        clue: "hidden",
+        icon: VisibilityOffOutlined,
       },
     ],
   }),
@@ -1072,7 +1116,7 @@ export const stageCatalogue = [
       {
         id: "S-690-B01",
         color: "#38bdf8",
-        clue: "path",
+        icon: RouteOutlined,
       },
     ],
   }),
@@ -1083,17 +1127,17 @@ export const stageCatalogue = [
       {
         id: "S-700-B01",
         color: "#f59e0b",
-        clue: "screen",
+        icon: DesktopWindowsOutlined,
       },
       {
         id: "S-700-B02",
         color: "#22d3ee",
-        clue: "devices",
+        icon: DevicesOutlined,
       },
       {
         id: "S-700-B03",
         color: "#0ea5e9",
-        clue: "screen",
+        icon: DesktopWindowsOutlined,
       },
     ],
   }),
@@ -1104,22 +1148,22 @@ export const stageCatalogue = [
       {
         id: "S-710-B01",
         color: "#f8fafc",
-        clue: "hidden",
+        icon: VisibilityOffOutlined,
       },
       {
         id: "S-710-B02",
         color: "#94a3b8",
-        clue: "import",
+        icon: FileDownloadOutlined,
       },
       {
         id: "S-710-B03",
         color: "#64748b",
-        clue: "devices",
+        icon: DevicesOutlined,
       },
       {
         id: "S-710-B04",
         color: "#475569",
-        clue: "export",
+        icon: FileUploadOutlined,
       },
     ],
   }),
@@ -1130,22 +1174,22 @@ export const stageCatalogue = [
       {
         id: "S-720-B01",
         color: "#f43f5e",
-        clue: "transition",
+        icon: SwapHorizOutlined,
       },
       {
         id: "S-720-B02",
         color: "#e11d48",
-        clue: "transition",
+        icon: SwapHorizOutlined,
       },
       {
         id: "S-720-B03",
         color: "#be123c",
-        clue: "transition",
+        icon: SwapHorizOutlined,
       },
       {
         id: "S-720-B04",
         color: "#9f1239",
-        clue: "devices",
+        icon: DevicesOutlined,
       },
     ],
   }),
@@ -1153,32 +1197,36 @@ export const stageCatalogue = [
     id: "S-730",
     category: "device",
     problems: [
-      { id: "S-730-B01", color: "#60a5fa", clue: "devices" },
-      { id: "S-730-B02", color: "#a78bfa", clue: "selection" },
+      { id: "S-730-B01", color: "#60a5fa", icon: DevicesOutlined },
+      { id: "S-730-B02", color: "#a78bfa", icon: SelectAllOutlined },
     ],
   }),
   defineStage({
     id: "S-740",
     category: "edge",
-    problems: [{ id: "S-740-B01", color: "#4ade80", clue: "wait" }],
+    problems: [
+      { id: "S-740-B01", color: "#4ade80", icon: HourglassEmptyOutlined },
+    ],
   }),
   defineStage({
     id: "S-750",
     category: "edge",
-    problems: [{ id: "S-750-B01", color: "#f472b6", clue: "notification" }],
+    problems: [
+      { id: "S-750-B01", color: "#f472b6", icon: NotificationsOutlined },
+    ],
   }),
   defineStage({
     id: "S-760",
     category: "device",
     problems: [
-      { id: "S-760-B01", color: "#fbbf24", clue: "devices" },
-      { id: "S-760-B02", color: "#94a3b8", clue: "hidden" },
+      { id: "S-760-B01", color: "#fbbf24", icon: DevicesOutlined },
+      { id: "S-760-B02", color: "#94a3b8", icon: VisibilityOffOutlined },
     ],
   }),
   defineStage({
     id: "S-770",
     category: "edge",
-    problems: [{ id: "S-770-B01", color: "#4285f4", clue: "selection" }],
+    problems: [{ id: "S-770-B01", color: "#4285f4", icon: SelectAllOutlined }],
   }),
   defineStage({
     id: "S-780",
@@ -1187,29 +1235,31 @@ export const stageCatalogue = [
       {
         id: "S-780-B01",
         color: "#facc15",
-        clue: "export",
+        icon: FileUploadOutlined,
       },
       {
         id: "S-780-B02",
         color: "#eab308",
-        clue: "import",
+        icon: FileDownloadOutlined,
       },
       {
         id: "S-780-B03",
         color: "#ca8a04",
-        clue: "transition",
+        icon: SwapHorizOutlined,
       },
       {
         id: "S-780-B04",
         color: "#a16207",
-        clue: "selection",
+        icon: SelectAllOutlined,
       },
     ],
   }),
   defineStage({
     id: "S-790",
     category: "edge",
-    problems: [{ id: "S-790-B01", color: "#c084fc", clue: "install" }],
+    problems: [
+      { id: "S-790-B01", color: "#c084fc", icon: InstallDesktopOutlined },
+    ],
   }),
   defineStage({
     id: "S-810",
@@ -1217,67 +1267,69 @@ export const stageCatalogue = [
     problems: Array.from({ length: 4 }, (_, index) => ({
       id: `S-810-B${String(index + 1).padStart(2, "0")}` as `S-810-B${number}`,
       color: ["#84cc16", "#65a30d", "#4d7c0f", "#3f6212"][index],
-      clue: "resize" as const,
+      icon: AspectRatioOutlined,
     })) as readonly ProblemFor<"S-810">[],
   }),
   defineStage({
     id: "S-820",
     category: "device",
     problems: [
-      { id: "S-820-B01", color: "#fb7185", clue: "mouse" },
-      { id: "S-820-B02", color: "#f97316", clue: "mouse" },
-      { id: "S-820-B03", color: "#facc15", clue: "mouse" },
+      { id: "S-820-B01", color: "#fb7185", icon: MouseOutlined },
+      { id: "S-820-B02", color: "#f97316", icon: MouseOutlined },
+      { id: "S-820-B03", color: "#facc15", icon: MouseOutlined },
     ],
   }),
   defineStage({
     id: "S-830",
     category: "device",
     problems: [
-      { id: "S-830-B01", color: "#94a3b8", clue: "wait" },
-      { id: "S-830-B02", color: "#334155", clue: "lock" },
+      { id: "S-830-B01", color: "#94a3b8", icon: HourglassEmptyOutlined },
+      { id: "S-830-B02", color: "#334155", icon: LockOutlined },
     ],
   }),
   defineStage({
     id: "S-850",
     category: "edge",
-    problems: [{ id: "S-850-B01", color: "#60a5fa", clue: "pip" }],
+    problems: [
+      { id: "S-850-B01", color: "#60a5fa", icon: PictureInPictureAltOutlined },
+    ],
   }),
   defineStage({
     id: "S-860",
     category: "page",
     problems: [
-      { id: "S-860-B01", color: "#fbbf24", clue: "pen" },
-      { id: "S-860-B02", color: "#f59e0b", clue: "pen" },
-      { id: "S-860-B03", color: "#d97706", clue: "pen" },
+      { id: "S-860-B01", color: "#fbbf24", icon: EditOutlined },
+      { id: "S-860-B02", color: "#f59e0b", icon: EditOutlined },
+      { id: "S-860-B03", color: "#d97706", icon: EditOutlined },
     ],
   }),
   defineStage({
     id: "S-870",
     category: "storage",
     problems: [
-      { id: "S-870-B01", color: "#34d399", clue: "pen" },
-      { id: "S-870-B02", color: "#10b981", clue: "hidden" },
-      { id: "S-870-B03", color: "#059669", clue: "export" },
+      { id: "S-870-B01", color: "#34d399", icon: EditOutlined },
+      { id: "S-870-B02", color: "#10b981", icon: VisibilityOffOutlined },
+      { id: "S-870-B03", color: "#059669", icon: FileUploadOutlined },
     ],
   }),
   defineStage({
     id: "S-880",
     category: "storage",
     problems: [
-      { id: "S-880-B01", color: "#c084fc", clue: "import" },
-      { id: "S-880-B02", color: "#a855f7", clue: "import" },
-      { id: "S-880-B03", color: "#7e22ce", clue: "import" },
+      { id: "S-880-B01", color: "#c084fc", icon: FileDownloadOutlined },
+      { id: "S-880-B02", color: "#a855f7", icon: FileDownloadOutlined },
+      { id: "S-880-B03", color: "#7e22ce", icon: FileDownloadOutlined },
     ],
   }),
   defineStage({
     id: "S-900",
     category: "edge",
-    problems: [{ id: "S-900-B01", color: "#f43f5e", clue: "transition" }],
+    problems: [{ id: "S-900-B01", color: "#f43f5e", icon: SwapHorizOutlined }],
   }),
   defineStage({
     id: "S-910",
     category: "page",
-    problems: [{ id: "S-910-B01", color: "#e879f9", clue: "subtitles" }],
+    problems: [{ id: "S-910-B01", color: "#e879f9", icon: SubtitlesOutlined }],
   }),
   defineStage({
     id: "S-800",
@@ -1286,12 +1338,12 @@ export const stageCatalogue = [
       {
         id: "S-800-B01",
         color: "#a78bfa",
-        clue: "selection",
+        icon: SelectAllOutlined,
       },
       {
         id: "S-800-B02",
         color: "#c084fc",
-        clue: "selection",
+        icon: SelectAllOutlined,
       },
     ],
   }),
@@ -1302,7 +1354,7 @@ export const stageCatalogue = [
       {
         id: "S-840-B01",
         color: "#2dd4bf",
-        clue: "selection",
+        icon: SelectAllOutlined,
       },
     ],
   }),
@@ -1313,7 +1365,7 @@ export const stageCatalogue = [
       {
         id: "S-890-B01",
         color: "#0ea5e9",
-        clue: "fullscreen",
+        icon: FullscreenOutlined,
       },
     ],
   }),
@@ -1321,9 +1373,9 @@ export const stageCatalogue = [
     id: "S-920",
     category: "page",
     problems: [
-      { id: "S-920-B01", color: "#f59e0b", clue: "path" },
-      { id: "S-920-B02", color: "#22d3ee", clue: "path" },
-      { id: "S-920-B03", color: "#a78bfa", clue: "path" },
+      { id: "S-920-B01", color: "#f59e0b", icon: RouteOutlined },
+      { id: "S-920-B02", color: "#22d3ee", icon: RouteOutlined },
+      { id: "S-920-B03", color: "#a78bfa", icon: RouteOutlined },
     ],
   }),
 ] as const satisfies readonly StageSpec[];

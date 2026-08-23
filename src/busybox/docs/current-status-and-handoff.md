@@ -12,6 +12,7 @@
 | 現行プレイヤー体験と解法 | 各`src/busybox/stages/S-xxx.tsx`の日本語JSDoc（[互換ポインタ](./stage-walkthroughs.md)） |
 | 実装・未確認・外部条件の状態 | [ステージ実装状況](./stage-implementation-status.md) |
 | 実機・ブラウザ確認項目 | [人手確認台帳](./human-test-matrix.md) |
+| 画面レビューの進捗と指摘メモ | [全ステージレビュー・チェックリスト](./stage-review-checklist.md) |
 | 自動検証の証跡 | [検証記録](./verification-record.md) |
 | 次のPoCと製品化の順序 | [次のPoC・ステージ化キュー](./next-poc-and-stage-work.md) |
 | 仕様決定の履歴 | [決定ログ](./decision-log.md) |
@@ -105,11 +106,13 @@ fixtureは`src/busybox/fixtures/s710/assets/`にある。
 
 ### 必ず次の動作確認で見るもの
 
-- S-640 8問の実ブラウザ表示、共通入力欄、正答・誤答、再入場。
+- S-640はAIブラウザで8つの正答を順に入力し、`1/8`から`8/8`まで対応箱だけが開くことを確認済み。Unicode文字の見た目、誤答、再入場は人手で確認する。
 - S-710はWindows ChromeでQR置換とdecode失敗を確認済み。暗黒frame、metadata再入力、camera録画、size比、download、連続試行を追加確認する。
 - S-720はWindows ChromeでT1 routeとlowercase flagを確認済み。残り3正規route、全frame再生、QR読取、分岐・cycle拒否、mobile横幅を確認する。
 - S-810は3840pxの固定pack経路へ変更したため、Windows Chromeで初期1:1と、停止中の4:3／16:9／9:20による開箱を再確認する。通常再生中は開かず、pause、ended、reload、離脱でcallbackとobject URLが残らないことも同時に確認する。
 - S-350のB01〜B06/B08、S-060-B02、S-150、S-220、S-580など、以前にPoCで確認した中心経路を製品stageで再確認する。
+- S-880はAIブラウザでB02（deflate）／B03（deflate-raw）は開いたが、B01（gzip）は正しい形式を選んでも「形式を開けない」となった。gzip fixtureまたはブラウザ経路を修正後に再確認する。
+- S-890はAIブラウザで表示できるが、別stageへの離脱時にcleanupの`document.exitFullscreen()`が`Document not active`例外になった。fullscreen解除をactive文書で安全に行う修正後に再確認する。
 - 全stage共通のH-025（再入場、今回開いた箱、永続進捗、reset）とH-019（生データ非送信）。
 
 ### PoC・製品化の次キュー
