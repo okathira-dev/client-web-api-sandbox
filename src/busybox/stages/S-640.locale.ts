@@ -3,10 +3,6 @@ import { defineStageLocale } from "./locale";
 /** S-640 のステージ固有コピー。表示文言はここから追加する。 */
 export const s640Locale = defineStageLocale({
   stageName: { ja: "読めない文字列", en: "Unreadable strings" },
-  hint: {
-    ja: "このステージのブラウザ挙動を観察する",
-    en: "Observe the browser behavior in this stage",
-  },
   mojibake: { ja: "文字化け", en: "Mojibake" },
   decoded: { ja: "復号した文字列", en: "Decoded text" },
   sharedAnswer: { ja: "共通の復号回答", en: "Shared decoded answer" },

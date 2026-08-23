@@ -6,18 +6,6 @@ const stageFiles = readdirSync(stageDirectory)
   .filter((name) => /^S-\d{3}\.tsx$/.test(name))
   .sort();
 
-const requiredHeadings = [
-  "目的:",
-  "最初の一手:",
-  "箱ごとの解法:",
-  "開かない操作:",
-  "使用API:",
-  "権限・privacy:",
-  "cleanup:",
-  "対応環境:",
-  "人手確認:",
-] as const;
-
 describe("stage documentation coverage", () => {
   it("keeps every shipped stage beside a locale bundle and MECE Japanese solution JSDoc", () => {
     expect(stageFiles).toHaveLength(89);
@@ -30,6 +18,16 @@ describe("stage documentation coverage", () => {
       );
       expect(localeSource).toMatch(/ja:/);
       expect(localeSource).toMatch(/en:/);
+      expect(source).not.toContain(
+        "の箱が示すブラウザ固有の状態・イベント・データ受け渡し",
+      );
+      expect(localeSource).not.toContain(
+        "このステージのブラウザ挙動を観察する",
+      );
+      expect(localeSource).not.toContain(
+        "Observe the browser behavior in this stage",
+      );
+      expect(localeSource).not.toMatch(/^\s+hint:/m);
       const jaKeys = [
         ...localeSource.matchAll(/^\s+(\w+):\s*\{[\s\S]*?\bja:/gm),
       ]
@@ -41,14 +39,22 @@ describe("stage documentation coverage", () => {
         .map((match) => match[1])
         .sort();
       expect(jaKeys).toEqual(enKeys);
-      const exportIndex = source.search(/export (?:default function|\{)/);
-      expect(exportIndex).toBeGreaterThanOrEqual(0);
-      const documentation = source.slice(
-        Math.max(0, exportIndex - 1600),
-        exportIndex,
+      expect(source).not.toContain("Gimmick:");
+      const documentation = [...source.matchAll(/\/\*\*[\s\S]*?\*\//g)].map(
+        (match) => match[0],
       );
-      for (const heading of requiredHeadings)
-        expect(documentation).toContain(heading);
+      expect(documentation).toHaveLength(1);
+      const stageJSDoc = documentation[0] ?? "";
+      expect(stageJSDoc).toMatch(/[ぁ-んァ-ヶ一-龯]/);
+      expect(stageJSDoc).toContain("目的:");
+      expect(stageJSDoc).toContain("最初の一手:");
+      expect(stageJSDoc).toMatch(/箱ごとの(?:解法|成功条件):/);
+      expect(stageJSDoc).toContain("開かない操作:");
+      expect(stageJSDoc).toMatch(/(?:使用API:|API\/権限:)/);
+      expect(stageJSDoc).toMatch(/(?:権限・privacy:|API\/権限:)/);
+      expect(stageJSDoc).toMatch(/(?:cleanup:|cleanup\/環境:)/);
+      expect(stageJSDoc).toMatch(/(?:対応環境:|cleanup\/環境:)/);
+      expect(stageJSDoc).toMatch(/(?:人手確認:|H-\d{3})/);
     }
   });
 });

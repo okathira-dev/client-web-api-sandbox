@@ -4,17 +4,16 @@
 
 ## 現在のタスク
 
-### 人手確認前の品質整理
+### ステージ単位のブラッシュアップ・レビュー・動作確認
 
-- [x] Google Driveを端末別replica同期へ変更し、復旧選択UIと自動testを追加する
-- [x] S-430-B02 Audio Session interruptionを製品stageへ追加する
-- [x] S-350-B07 / POC-034と不採用PoCを削除し、Baseline後アイデアだけを残す
-- [ ] 全stageのJSDocとlocaleから汎用・重複文をなくし、検査を強化する（個別解法の旧英語JSDocと汎用日本語JSDocが63stageに残る）
-- [x] 現行資料、環境変数例、PoC導線、Git indexを整理する（最終commit前にindexを再確認する）
-- [x] Node 24で全自動検証と静的監査を実行する
+- [ ] 各ステージを一つずつ、体験意図・各箱の解法と手掛かり・UX・negative caseの順にレビューする
+- [ ] レビューで確定した修正を実装し、そのステージに対応する自動検証と実機確認を行う
+- [ ] 実機確認結果を`src/busybox/docs/human-test-matrix.md`と`verification-record.md`へ記録する
 
-## 現時点の確認
+## 引継ぎ
 
-- Drive用の環境変数は`VITE_BUSYBOX_DRIVE_GOOGLE_CLIENT_ID`、FedCM用は`VITE_BUSYBOX_FEDCM_GOOGLE_CLIENT_ID`へ明確に分離する。Viteのapp rootは`src/`だが、`envDir`をproject rootへ固定した。
-- Google Drive同期は端末別replicaを全件mergeして、自端末replicaだけをETag条件付き更新する。破損・未来版・競合にはローカル続行、再試行、該当replicaの保存／削除を提示する。
-- S-430-B02は製品stageへ追加済み。Audio Session対応環境での実機確認が残る。
+- 製品化待ち・追加PoC実装待ちは0件。次の作業は新規実装ではなく、既存89ステージ・204箱の一件ずつの品質確認である。
+- Drive用の環境変数は`VITE_BUSYBOX_DRIVE_GOOGLE_CLIENT_ID`、FedCM用は`VITE_BUSYBOX_FEDCM_GOOGLE_CLIENT_ID`。公開CIはRepository Secretを使う。
+- Google Drive同期は端末別replicaを全件mergeし、自端末replicaだけをETag条件付き更新する。破損・未来版・競合時はローカル続行、再試行、該当replicaの保存／削除を提示する。
+- S-430-B02は製品stageへ追加済みで、Audio Session対応環境での実機確認が残る。
+- 非人手検証はNode 24で通過済み。全stageは一つの日本語JSDocとstage-local localeを持つ。未使用の共通`hint`キーは削除済みで、ヒントUIは問題のブラッシュアップ後に別途設計する。

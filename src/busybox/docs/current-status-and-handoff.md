@@ -1,6 +1,6 @@
 # 現状・残問題・人手確認への引継ぎ
 
-更新日: 2026-08-21
+更新日: 2026-08-23
 
 この文書は、現在の実装に対する「できていること」「人手で確認すること」「次の設計課題」を一つにまとめた引継ぎメモである。結論を決めるときは、コードとこの文書を入口にし、古い計画表の件数・箱番号・成功条件を再利用しない。
 
@@ -39,7 +39,7 @@
 ## 自動検証済み
 
 - TypeScript型検査: 合格
-- Jest: 59 suites / 315 tests 合格
+- Jest: 59 suites / 316 tests 合格
 - Biome: Node 24.14.0で560 files、warning / infoなし
 - Markuplint: `src` の JSX / HTML 合格
 - Vite production build: Node 24.14.0で合格。`__dirname`は`import.meta.dirname`へ移行済み（既存のghostpdl browser externalization、chunk size warningのみ）
@@ -118,7 +118,7 @@ fixtureは`src/busybox/fixtures/s710/assets/`にある。
 
 ### 設計・品質上の記録と残問題
 
-1. **stage-gimmick-jsdoc** — 89 stageのdefault component直前に、目的・最初の一手・箱ごとの解法・negative case・API・privacy・cleanup・対応環境・人手確認を日本語で記載した。`stageDocumentation.test.ts`が件数と見出しを監査する。
+1. **stage-gimmick-jsdoc** — 89 stageに一つずつ、目的・最初の一手・箱ごとの解法・negative case・API・privacy・cleanup・対応環境・人手確認を日本語で記載した。`stageDocumentation.test.ts`が件数、重複、英語の旧形式、必要項目を監査する。未使用の共通`hint`キーは削除し、ヒントUIは各問題のブラッシュアップ後に別途設計する。
 2. **localeとJSDocの境界** — JSDocの説明を表示文言の代替にせず、localeはUI、JSDocは実装意図と解法の開発者向け正本にする。`stage-walkthroughs.md`は互換ポインタへ縮約し、決定履歴、PoC証跡、公開前人手確認項目は残す。
 3. **S-810固定asset** — pack内segmentをMSEへ追加する現行経路を確定し、単一WebMへの置換候補は残さない。実`seeked`後の4比率はH-053で確認する。
 4. **S-710 fixture配布境界** — B01/B03 fixtureはローカル動作確認用としてGit管理するが、ゲーム画面から直接配布しない方針で確定した。

@@ -3,10 +3,6 @@ import { defineStageLocale } from "./locale";
 /** S-650 のステージ固有コピー。表示文言はここから追加する。 */
 export const s650Locale = defineStageLocale({
   stageName: { ja: "許可の四扉", en: "Four permission doors" },
-  hint: {
-    ja: "このステージのブラウザ挙動を観察する",
-    en: "Observe the browser behavior in this stage",
-  },
   geolocation: { ja: "位置情報", en: "geolocation" },
   notifications: { ja: "通知", en: "notifications" },
   camera: { ja: "カメラ", en: "camera" },

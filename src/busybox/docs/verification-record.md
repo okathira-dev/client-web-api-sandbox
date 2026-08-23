@@ -9,7 +9,7 @@
 | 固定fixture | 合格 | S-700の4 VP9 WebM、S-740の植物3 SVG、S-760の架空icon、S-790の独自TTFを製品assetへ追加。S-700は生成後frameをjsQRで復号し、S-790はtable・PostScript名・SHA-256を検証 |
 | Google FedCM境界 | 合格（実accountはH-049） | Google GISの非空credentialかつ厳密な`select_by === "fedcm"`だけを受理するunit test、公開client IDの設定資料、GitHub Repository Secret経路を追加 |
 | TypeScript | 合格 | Node 24.14.0の`tsc` |
-| Jest | 合格 | 59 suites / 315 tests |
+| Jest | 合格 | 59 suites / 316 tests |
 | Markuplint | 合格 | `src/**/*.{jsx,tsx,html}` 全対象 |
 | Biome | 合格 | 560 files。schemaを2.5.6へ同期し、warning / infoなし |
 | Vite production build | 合格 | 89stageのlazy chunkと新規固定assetを含むmulti-page build。configの`__dirname`を`import.meta.dirname`へ移行。ghostpdl browser externalizationと500 kB超chunk warningは既存構成 |

@@ -25,15 +25,6 @@ type TransformNode = "t1a" | "t2a" | "t3a" | "t1b" | "t2b" | "t3b";
 type NodeId = SourceNode | TransformNode | "output";
 type TransformKind = "t1" | "t2" | "t3";
 
-/**
- * S-720 — 動画ノードと変換ノードをBezierケーブルで配線するpatch bay。
- * 目的: 動画を実際に変換し、QRが読める正しい経路だけを発見する。
- * 最初の一手: sourceのoutを変換in、変換outを次のin、最後をoutputへ順に接続する。
- * 箱ごとの成功条件: B01〜B04は正規routeを実行して出力QRを読み、共通flagを入力する。
- * 開かない操作: 分岐、cycle、入力側から始める接続、変換を表示だけで済ませた入力では開かない。
- * API/権限: SVG/Canvasケーブル、HTMLMediaElement、MediaBunny、Canvas。権限・送信・回答保存はない。
- * cleanup/環境: 変換中のAbortSignalとblob URLを破棄し、出力videoを停止する。H-001/H-002/H-003/H-004/H-014/H-019/H-020/H-023/H-025/H-043を確認する。
- */
 export interface VideoPatchCable {
   from: Exclude<NodeId, "output">;
   to: Exclude<NodeId, SourceNode>;
@@ -279,19 +270,6 @@ function routeDetails(path: readonly NodeId[]) {
  * 開かない操作: 分岐、cycle、入力側から始める接続、変換を表示だけで済ませた入力では開かない。
  * API/権限: SVG/Canvasケーブル、HTMLMediaElement、MediaBunny、Canvas。権限・送信・回答保存はない。
  * cleanup/環境: 変換中のAbortSignalとblob URLを破棄し、出力videoを停止する。H-001/H-002/H-003/H-004/H-014/H-019/H-020/H-023/H-025/H-043を確認する。
- */
-/**
- * S-720
- *
- * 目的: S-720の箱が示すブラウザ固有の状態・イベント・データ受け渡しを、プレイヤーの操作で観測する。
- * 最初の一手: 画面の箱と説明を確認し、表示されている標準UIまたは外部機器を使って観測を開始する。
- * 箱ごとの解法: 問題定義にある各Bxxについて、対応する実操作を行い、実APIから得た値・イベント・結果が厳密な成功条件を満たした箱だけが開く。
- * 開かない操作: 文字列の直接編集、合成イベント、DevToolsでのDOM改変、見た目だけの変更、別箱の結果の流用では開かない。
- * 使用API: このファイルが呼び出すWeb APIと、共通のProblem/Stage runtime。
- * 権限・privacy: 実装が必要とする権限・保存・送信は、箱の操作に必要な最小範囲へ限定する。生の入力を回答以外の目的で扱わない。
- * cleanup: stage離脱・取消・再試行時に、このstageが取得したlistener、timer、stream、worker、接続、blob URLを実装に応じて解除する。
- * 対応環境: StageHostのcapability probeがavailableまたはpermission-requiredとしたブラウザ。非対応時は操作を要求せずunsupported表示とする。
- * 人手確認: 対応するH-xxxをhuman-test-matrix.mdで確認し、権限拒否・取消・再入場も確認する。
  */
 export default function S720Stage(props: StageComponentProps) {
   const problems = useMemo(

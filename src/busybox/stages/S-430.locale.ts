@@ -2,10 +2,6 @@ import { defineStageLocale } from "./locale";
 
 export const s430Locale = defineStageLocale({
   stageName: { ja: "外側から止める", en: "Pause from outside" },
-  hint: {
-    ja: "ページの外から届く音声制御と、端末が奪って返す音声フォーカスを観察する。",
-    en: "Observe audio control arriving from outside the page and audio focus leaving and returning.",
-  },
   startSound: { ja: "音を始める", en: "Start sound" },
   startRecovery: {
     ja: "復帰を待つ音を始める",

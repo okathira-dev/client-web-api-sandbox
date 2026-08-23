@@ -5,21 +5,11 @@ import { ProblemGiftBox } from "../ui/GiftBox";
 /**
  * S-020
  *
- * Gimmick: The browser viewport itself is the input.
- * Uses: innerWidth and the window resize event.
- * Success: Resize within 18px of a target 80px away from the entry width.
- * Privacy/Permission: No permission; only the success fact is retained.
- * Cleanup: Remove the resize listener on unmount or stage abort.
- * Human verification: H-001, H-002, H-003, H-025
- */
-/**
- * S-020
- *
- * 目的: S-020の箱が示すブラウザ固有の状態・イベント・データ受け渡しを、プレイヤーの操作で観測する。
+ * 目的: 「枠に合わせる」で、B01「画面幅の箱」に対応する実際のブラウザ状態・標準UI・端末入力を観測する。
  * 最初の一手: 画面の箱と説明を確認し、表示されている標準UIまたは外部機器を使って観測を開始する。
  * 箱ごとの解法: 問題定義にある各Bxxについて、対応する実操作を行い、実APIから得た値・イベント・結果が厳密な成功条件を満たした箱だけが開く。
  * 開かない操作: 文字列の直接編集、合成イベント、DevToolsでのDOM改変、見た目だけの変更、別箱の結果の流用では開かない。
- * 使用API: このファイルが呼び出すWeb APIと、共通のProblem/Stage runtime。
+ * 使用API: S-020の判定に必要な実装内のWeb API。共通runtimeは進捗表示だけを担う。
  * 権限・privacy: 実装が必要とする権限・保存・送信は、箱の操作に必要な最小範囲へ限定する。生の入力を回答以外の目的で扱わない。
  * cleanup: stage離脱・取消・再試行時に、このstageが取得したlistener、timer、stream、worker、接続、blob URLを実装に応じて解除する。
  * 対応環境: StageHostのcapability probeがavailableまたはpermission-requiredとしたブラウザ。非対応時は操作を要求せずunsupported表示とする。

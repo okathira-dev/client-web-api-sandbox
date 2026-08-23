@@ -3,10 +3,6 @@ import { defineStageLocale } from "./locale";
 /** S-040 のステージ固有コピー。表示文言はここから追加する。 */
 export const s040Locale = defineStageLocale({
   stageName: { ja: "見ない時間", en: "Time unseen" },
-  hint: {
-    ja: "このステージのブラウザ挙動を観察する",
-    en: "Observe the browser behavior in this stage",
-  },
   B01: { ja: "見ない時間の箱", en: "Hidden-time box" },
   B02: { ja: "長い不在の箱", en: "Long-absence box" },
 });

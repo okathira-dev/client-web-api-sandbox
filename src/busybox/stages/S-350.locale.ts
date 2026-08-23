@@ -3,10 +3,6 @@ import { defineStageLocale } from "./locale";
 /** S-350 のステージ固有コピー。表示文言はここから追加する。 */
 export const s350Locale = defineStageLocale({
   stageName: { ja: "映像の手触り", en: "Touching the timeline" },
-  hint: {
-    ja: "このステージのブラウザ挙動を観察する",
-    en: "Observe the browser behavior in this stage",
-  },
   videoToOperate: { ja: "操作する映像", en: "Video to operate" },
   B01: { ja: "シークの箱", en: "Seek box" },
   B02: { ja: "ミュートの箱", en: "Mute box" },

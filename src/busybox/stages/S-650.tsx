@@ -24,15 +24,6 @@ const keys: readonly PermissionKey[] = [
   "microphone",
 ];
 
-/**
- * S-650 — PermissionStatusの状態を、許可要求そのものと分けて観測する。
- * 目的: 位置情報・通知・カメラ・マイクの4権限についてbrowserの実状態変化を読む。
- * 最初の一手: 各権限の要求を明示的に行い、設定変更後に再照会する。
- * 箱ごとの成功条件: B01〜B04は対応PermissionStatusがgrantedになった時だけ開く。
- * 開かない操作: request成功だけ、promptのまま、game側の仮表示、初期値の書き換えでは開かない。
- * API/権限: Permissions API、getUserMedia、Geolocation、Notification。streamは即停止し、位置・音声・映像・履歴は保存しない。
- * cleanup/環境: change/focus listenerとmedia trackを離脱時に破棄する。H-004/H-006/H-007/H-019/H-023/H-025/H-034を確認する。
- */
 function permissionLabel(
   key: PermissionKey,
   locale: StageComponentProps["locale"],
@@ -48,19 +39,6 @@ function permissionLabel(
  * 開かない操作: request成功だけ、promptのまま、game側の仮表示、初期値の書き換えでは開かない。
  * API/権限: Permissions API、getUserMedia、Geolocation、Notification。streamは即停止し、位置・音声・映像・履歴は保存しない。
  * cleanup/環境: change/focus listenerとmedia trackを離脱時に破棄する。H-004/H-006/H-007/H-019/H-023/H-025/H-034を確認する。
- */
-/**
- * S-650
- *
- * 目的: S-650の箱が示すブラウザ固有の状態・イベント・データ受け渡しを、プレイヤーの操作で観測する。
- * 最初の一手: 画面の箱と説明を確認し、表示されている標準UIまたは外部機器を使って観測を開始する。
- * 箱ごとの解法: 問題定義にある各Bxxについて、対応する実操作を行い、実APIから得た値・イベント・結果が厳密な成功条件を満たした箱だけが開く。
- * 開かない操作: 文字列の直接編集、合成イベント、DevToolsでのDOM改変、見た目だけの変更、別箱の結果の流用では開かない。
- * 使用API: このファイルが呼び出すWeb APIと、共通のProblem/Stage runtime。
- * 権限・privacy: 実装が必要とする権限・保存・送信は、箱の操作に必要な最小範囲へ限定する。生の入力を回答以外の目的で扱わない。
- * cleanup: stage離脱・取消・再試行時に、このstageが取得したlistener、timer、stream、worker、接続、blob URLを実装に応じて解除する。
- * 対応環境: StageHostのcapability probeがavailableまたはpermission-requiredとしたブラウザ。非対応時は操作を要求せずunsupported表示とする。
- * 人手確認: 対応するH-xxxをhuman-test-matrix.mdで確認し、権限拒否・取消・再入場も確認する。
  */
 export default function S650Stage(props: StageComponentProps) {
   const problems = useMemo(

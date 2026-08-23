@@ -11,7 +11,7 @@
 - [検証記録](./verification-record.md): 自動検証と人手確認の証跡。
 - [人手確認台帳](./human-test-matrix.md): 実ブラウザ・実機で確認する手順。
 - [次のPoC・ステージ化キュー](./next-poc-and-stage-work.md): 製品化待ち件数と、外部条件による人手確認だけを残した現行キュー。
-- [Google FedCM設定](./google-fedcm-setup.md): S-770の公開client ID、GitHub Variable、成功境界。
+- [Google FedCM設定](./google-fedcm-setup.md): S-770の公開client ID、GitHub Repository Secret、成功境界。
 - [Google Drive設定と運用](./google-drive-setup.md): OAuth設定、端末別replica同期、復旧選択、削除、公開ゲート。
 - [決定ログ](./decision-log.md): 採用・統合・却下を確定した判断の履歴。
 - [アーキテクチャ判断](./architecture-decisions.md): 現行実装が守る境界と規約。
@@ -36,5 +36,5 @@
 ## 実装側の正本
 
 プレイヤー向けの表示文言は各 stage の隣にある `S-xxx.locale.ts` へsemantic keyで置く。ステージ名は `stageName`、箱名は `B01` のような問題ID末尾キーとし、`stages/metadataLocale.ts` が `StageSpec` / `ProblemSpec` のIDから解決する。共通UIは `ui/locale.ts`、状態語は `ui/statusLocale.ts`、S-710の独立ツールは `tools/s710/locale.ts` を正本とする。
-プレイヤーの解法と実装意図は、各 `S-xxx.tsx` の日本語JSDocに、API・成功条件・negative case・権限・保存／送信・cleanup・人手確認IDを分けて記録する。
+プレイヤーの解法と実装意図は、各 `S-xxx.tsx` の一つの日本語JSDocに、API・成功条件・negative case・権限・保存／送信・cleanup・人手確認IDを分けて記録する。共通`hint`キーは未使用のため置かず、ヒントUIの設計が確定した問題だけに追加する。
 表示文言とJSDocを同じ文章の重複コピーとして扱わない。

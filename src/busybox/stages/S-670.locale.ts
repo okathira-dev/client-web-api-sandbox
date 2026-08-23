@@ -3,10 +3,6 @@ import { defineStageLocale } from "./locale";
 /** S-670 のステージ固有コピー。表示文言はここから追加する。 */
 export const s670Locale = defineStageLocale({
   stageName: { ja: "Console迷路", en: "Console maze" },
-  hint: {
-    ja: "このステージのブラウザ挙動を観察する",
-    en: "Observe the browser behavior in this stage",
-  },
   wall: {
     ja: "壁。盤面をConsoleへ再表示した。",
     en: "Wall; the board was printed again.",

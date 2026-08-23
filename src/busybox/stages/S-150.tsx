@@ -17,37 +17,17 @@ const selectOptions = [
 ];
 
 /**
- * S-150 — keyboard paths.
+ * S-150 — キーボードだけで届く場所
  *
- * B01 is a visible native button that does not receive pointer activation.
- * A player must reach it with the browser's focus navigation. The box opens
- * from the trusted focus event; script focus and pointer clicks are not part
- * of the intended solution.
- *
- * B02 is a native select with one meaningful option hidden among decoys. Its
- * incremental-search/typeahead behavior is the puzzle: focus the select and
- * type `open` until the target option is selected. The box opens only after
- * the native select reports that selection.
- *
- * B03 keeps the browser's native named-details exclusivity. Open more than
- * one disclosure in sequence and observe that the browser closes the prior
- * one, leaving exactly one open at a time.
- *
- * No permissions or persistent data are used. All listeners are removed when
- * the stage is left. Human verification: H-001, H-002, H-003, H-020, H-025.
- */
-/**
- * S-150
- *
- * 目的: S-150の箱が示すブラウザ固有の状態・イベント・データ受け渡しを、プレイヤーの操作で観測する。
- * 最初の一手: 画面の箱と説明を確認し、表示されている標準UIまたは外部機器を使って観測を開始する。
- * 箱ごとの解法: 問題定義にある各Bxxについて、対応する実操作を行い、実APIから得た値・イベント・結果が厳密な成功条件を満たした箱だけが開く。
- * 開かない操作: 文字列の直接編集、合成イベント、DevToolsでのDOM改変、見た目だけの変更、別箱の結果の流用では開かない。
- * 使用API: このファイルが呼び出すWeb APIと、共通のProblem/Stage runtime。
- * 権限・privacy: 実装が必要とする権限・保存・送信は、箱の操作に必要な最小範囲へ限定する。生の入力を回答以外の目的で扱わない。
- * cleanup: stage離脱・取消・再試行時に、このstageが取得したlistener、timer、stream、worker、接続、blob URLを実装に応じて解除する。
- * 対応環境: StageHostのcapability probeがavailableまたはpermission-requiredとしたブラウザ。非対応時は操作を要求せずunsupported表示とする。
- * 人手確認: 対応するH-xxxをhuman-test-matrix.mdで確認し、権限拒否・取消・再入場も確認する。
+ * 目的: ポインターでクリックできない標準UIにも、ブラウザのfocus移動・selectのtypeahead・detailsの排他表示という別の操作経路があることを体験する。
+ * 最初の一手: B01はTabでフォーカスを移動する。B02はselectをフォーカスしてから「open」と入力する。B03は同じnameを持つ複数のdetailsを順に開く。
+ * 箱ごとの解法: B01はtrustedなfocusイベント、B02はnative selectが`open busybox`を選んだchangeイベント、B03は一つだけopenになるnative detailsの状態で開く。
+ * 開かない操作: B01のポインタークリックやscriptによるfocus、B02の文字列だけの入力、B03のDOM属性を書き換えるだけの操作は成功に数えない。
+ * 使用API: HTMLButtonElement、HTMLSelectElement、details/nameの標準挙動とtrusted event。
+ * 権限・privacy: 権限要求・外部送信・永続保存は行わない。
+ * cleanup: stageを離れるとdetailsのlistenerを解除する。
+ * 対応環境: 標準HTML controlsとキーボード操作に対応するブラウザ。
+ * 人手確認: H-001/H-002/H-003/H-020/H-025。
  */
 export default function S150Stage(props: StageComponentProps) {
   const focusProblem = props.problem("S-150-B01");

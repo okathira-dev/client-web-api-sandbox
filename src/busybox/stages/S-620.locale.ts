@@ -11,10 +11,6 @@ export const s620Locale = defineStageLocale({
     en: "Unicode fixture font unavailable",
   },
   stageName: { ja: "数字の遠い親戚", en: "Distant relatives of digits" },
-  hint: {
-    ja: "このステージのブラウザ挙動を観察する",
-    en: "Observe the browser behavior in this stage",
-  },
   answer: { ja: "答え", en: "Answer" },
   sharedAnswer: { ja: "共通の答え", en: "Shared answer" },
   B01: { ja: "異体数字 1", en: "Numeral variant 1" },

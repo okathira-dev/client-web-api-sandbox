@@ -3,10 +3,6 @@ import { defineStageLocale } from "./locale";
 /** S-420 のステージ固有コピー。表示文言はここから追加する。 */
 export const s420Locale = defineStageLocale({
   stageName: { ja: "通知の金庫", en: "Notification vault" },
-  hint: {
-    ja: "このステージのブラウザ挙動を観察する",
-    en: "Observe the browser behavior in this stage",
-  },
   vaultBody: {
     ja: "← → で入力し、本文で提出",
     en: "Enter with ← →, submit with the body",

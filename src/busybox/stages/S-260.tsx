@@ -24,21 +24,11 @@ const EYEDROPPER_TARGET = "#a78bfa";
 /**
  * S-260
  *
- * Gimmick: Pick the exact purple rendered by the stage from anywhere on screen.
- * Uses: EyeDropper API with the stage AbortSignal.
- * Success: The normalized sRGB result equals #a78bfa.
- * Privacy/Permission: Open the picker only from an action; retain only the chosen hex value.
- * Cleanup: Abort an open picker automatically when the stage exits.
- * Human verification: H-006, H-023, H-025
- */
-/**
- * S-260
- *
- * 目的: S-260の箱が示すブラウザ固有の状態・イベント・データ受け渡しを、プレイヤーの操作で観測する。
+ * 目的: 「画面の一滴」で、B01「色を採る箱」に対応する実際のブラウザ状態・標準UI・端末入力を観測する。
  * 最初の一手: 画面の箱と説明を確認し、表示されている標準UIまたは外部機器を使って観測を開始する。
  * 箱ごとの解法: 問題定義にある各Bxxについて、対応する実操作を行い、実APIから得た値・イベント・結果が厳密な成功条件を満たした箱だけが開く。
  * 開かない操作: 文字列の直接編集、合成イベント、DevToolsでのDOM改変、見た目だけの変更、別箱の結果の流用では開かない。
- * 使用API: このファイルが呼び出すWeb APIと、共通のProblem/Stage runtime。
+ * 使用API: S-260の判定に必要な実装内のWeb API。共通runtimeは進捗表示だけを担う。
  * 権限・privacy: 実装が必要とする権限・保存・送信は、箱の操作に必要な最小範囲へ限定する。生の入力を回答以外の目的で扱わない。
  * cleanup: stage離脱・取消・再試行時に、このstageが取得したlistener、timer、stream、worker、接続、blob URLを実装に応じて解除する。
  * 対応環境: StageHostのcapability probeがavailableまたはpermission-requiredとしたブラウザ。非対応時は操作を要求せずunsupported表示とする。

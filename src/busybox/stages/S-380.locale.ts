@@ -3,10 +3,6 @@ import { defineStageLocale } from "./locale";
 /** S-380 のステージ固有コピー。表示文言はここから追加する。 */
 export const s380Locale = defineStageLocale({
   stageName: { ja: "三つの資格情報", en: "Three credentials" },
-  hint: {
-    ja: "このステージのブラウザ挙動を観察する",
-    en: "Observe the browser behavior in this stage",
-  },
   passkeyAccount: { ja: "passkeyアカウント", en: "Passkey account" },
   passkeyNote: {
     ja: "作成したpasskeyは端末のpasskey管理画面に残る。遊び終えたらBusybox用passkeyをそこで削除できる。",
