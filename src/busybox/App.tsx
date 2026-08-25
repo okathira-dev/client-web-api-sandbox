@@ -1,22 +1,25 @@
 import { useEffect, useState } from "react";
-import { deriveStageProgress } from "./domain/stageRuntime";
-import {
-  type StageId,
-  type stageCatalogue,
-  totalBoxCount,
-} from "./domain/stages";
+import { countSolvedBoxes, deriveStageProgress } from "./domain/stageRuntime";
 import { useDriveBackup } from "./hooks/useDriveBackup";
 import { type ProgressController, useProgress } from "./hooks/useProgress";
 import { useServiceWorker } from "./hooks/useServiceWorker";
 import { detectLocale, messages, productCopy } from "./i18n";
-import { StageHost } from "./runtime/StageHost";
-import { stageDefinitions } from "./runtime/stageDefinitions";
-import { stageNameText } from "./stages/metadataLocale";
+import { ManifestStageHost } from "./runtime/ManifestStageHost";
+import { stageIndex } from "./runtime/stage-index.generated";
+import {
+  deriveStageAccessKind,
+  type StageManifest,
+} from "./runtime/stageContract";
 import { GiftBox, type GiftBoxState } from "./ui/GiftBox";
 import { stageCardLabel, uiText } from "./ui/locale";
-import { StageMap } from "./ui/StageMap";
+import { StageCatalogue } from "./ui/StageCatalogue";
 
 type View = "stages" | "settings" | "about";
+type StageId = (typeof stageIndex)[number]["id"];
+const totalBoxCount = stageIndex.reduce(
+  (total, stage) => total + stage.boxIds.length,
+  0,
+);
 
 const headingIds = {
   stages: "busybox-stages-heading",
@@ -25,7 +28,7 @@ const headingIds = {
 } as const;
 
 function isStageId(value: string): value is StageId {
-  return Object.hasOwn(stageDefinitions, value);
+  return stageIndex.some((stage) => stage.id === value);
 }
 
 function stageIdFromUrl(): StageId | null {
@@ -42,7 +45,12 @@ export function App() {
   const [selectedStageId, setSelectedStageId] = useState(stageIdFromUrl);
   const [stageAttemptId, setStageAttemptId] = useState(0);
   const copy = messages[locale];
-  const solvedCount = Object.keys(progress.document.boxes).length;
+  const solvedCount = stageIndex.reduce((total, stage) => {
+    const solvedBoxIds = new Set(
+      progress.document.stages[stage.id]?.solvedBoxIds ?? [],
+    );
+    return total + countSolvedBoxes(stage.boxIds, solvedBoxIds);
+  }, 0);
   const storageMessage = {
     loading: copy.storageLoading,
     ready: copy.storageReady,
@@ -112,8 +120,8 @@ export function App() {
     setSelectedStageId(null);
   };
 
-  const selectedDefinition = selectedStageId
-    ? stageDefinitions[selectedStageId]
+  const selectedManifest = selectedStageId
+    ? stageIndex.find((stage) => stage.id === selectedStageId)
     : undefined;
 
   return (
@@ -153,11 +161,11 @@ export function App() {
 
       <main className="content">
         {view === "stages" &&
-        selectedDefinition &&
+        selectedManifest &&
         progress.storageState !== "loading" ? (
-          <StageHost
-            key={`${selectedDefinition.stage.id}:${stageAttemptId}`}
-            definition={selectedDefinition}
+          <ManifestStageHost
+            key={`${selectedManifest.id}:${stageAttemptId}`}
+            manifest={selectedManifest}
             locale={locale}
             progress={progress}
             services={{
@@ -173,13 +181,14 @@ export function App() {
                 {copy.progress}: {solvedCount} / {totalBoxCount}
               </p>
             </div>
-            <StageMap
+            <StageCatalogue
               locale={locale}
+              stages={stageIndex}
               renderStage={(stage) => (
                 <StageCard
                   stage={stage}
                   locale={locale}
-                  boxes={progress.document.boxes}
+                  stages={progress.document.stages}
                   onOpen={openStage}
                 />
               )}
@@ -354,39 +363,37 @@ export function App() {
 }
 
 interface StageCardProps {
-  stage: (typeof stageCatalogue)[number];
+  stage: StageManifest;
   locale: "ja" | "en";
-  boxes: ProgressController["document"]["boxes"];
+  stages: ProgressController["document"]["stages"];
   onOpen(stageId: string): void;
 }
 
-function StageCard({ stage, locale, boxes, onOpen }: StageCardProps) {
+function StageCard({ stage, locale, stages, onOpen }: StageCardProps) {
   const copy = messages[locale];
-  const definition = stageDefinitions[stage.id];
-  const boxIds = stage.problems.map((problem) => problem.id);
-  const state = deriveStageProgress(boxIds, boxes);
+  const boxIds = stage.boxIds;
+  const solvedBoxIds = new Set(stages[stage.id]?.solvedBoxIds ?? []);
+  const accessKind = deriveStageAccessKind(stage.platform);
+  const state = deriveStageProgress(boxIds, solvedBoxIds);
   const status =
     state === "solved"
       ? copy.solved
       : state === "partial"
         ? copy.partial
-        : definition
-          ? copy.available
-          : copy.planned;
+        : copy.available;
   const giftState: GiftBoxState =
     state === "solved" ? "open" : state === "partial" ? "closed" : "ribboned";
-  const solvedBoxes = boxIds.filter(
-    (boxId) => boxes[boxId] !== undefined,
-  ).length;
+  const solvedBoxes = boxIds.filter((boxId) => solvedBoxIds.has(boxId)).length;
 
   return (
     <article
-      className={`stage-card stage-card--${stage.category} stage-card--${state}`}
+      className={`stage-card stage-card--${accessKind}`}
+      data-progress={state}
     >
       <GiftBox
         state={giftState}
-        color="var(--accent)"
-        label={`${stageNameText(locale, stage.id)}: ${status}`}
+        color="var(--stage-access-color, #60a5fa)"
+        label={`${stage.name[locale]}: ${status}`}
         size="compact"
         decorative
       />
@@ -397,16 +404,15 @@ function StageCard({ stage, locale, boxes, onOpen }: StageCardProps) {
             {solvedBoxes}/{boxIds.length}
           </p>
         </div>
-        <h3>{stageNameText(locale, stage.id)}</h3>
+        <h3>{stage.name[locale]}</h3>
       </div>
       <button
         type="button"
         className="stage-card__hit-area"
-        disabled={!definition}
         onClick={() => onOpen(stage.id)}
         aria-label={stageCardLabel(
           locale,
-          stageNameText(locale, stage.id),
+          stage.name[locale],
           solvedBoxes,
           boxIds.length,
           status,

@@ -352,7 +352,7 @@ DR-019で追加承認したB05〜B09は、文字倍率4箱とは別にUser Prefe
 
 - B01はstage pageで示した左右2記号の短い列を、persistent notificationの2 actionだけで再生する。action handlerはpageをopen / focusせず、同じround tagのnotificationを次の入力へ差し替える。
 - 正解actionはcursorを進め、誤入力はcursor 0へ戻す。完了まで回数制限なく再挑戦でき、通知本文clickは入力に数えない。
-- round stateはnotification `data`とService Worker用IndexedDB recordに持つ。完了時は専用inboxへcommitし、後の通常訪問でpageが一度consumeしてProblemHandleへ渡す。action列と誤入力履歴は通常進捗やDriveへ保存しない。
+- round stateはnotification `data`とService Worker用IndexedDB recordに持つ。完了時は専用inboxへcommitし、後の通常訪問でpageが一度consumeしてstageのローカル箱handleへ渡す。action列と誤入力履歴は通常進捗やDriveへ保存しない。
 - `Notification.maxActions >= 2`かつ実notificationに2 actionが表示される環境だけを対象とする。page内button、通常link、S-090の復帰URLによる代替clearは用意しない。
 - Service Workerの`notificationclick`はtagでS-090 / S-410を分岐する。reset / cancel / 新roundではS-410のnotificationとrecordだけを削除する。
 - 人手確認: H-005, H-006, H-019, H-022, H-023, H-025。page非遷移、action ID、連続差替え、worker再起動、誤入力reset、完了inbox、再挑戦、他stageとの分離を確認する。

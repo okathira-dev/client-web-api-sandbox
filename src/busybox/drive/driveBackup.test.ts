@@ -33,7 +33,7 @@ describe("Drive replica backup sync", () => {
       }
       return jsonResponse({});
     });
-    const local = createProgressDocument("ja", now, "local");
+    const local = createProgressDocument("ja", "local");
 
     const result = await syncDriveBackup("token", local, fetcher);
 
@@ -45,12 +45,14 @@ describe("Drive replica backup sync", () => {
 
   it("merges every device replica before updating this device", async () => {
     const local = solveBox(
-      createProgressDocument("ja", now, "local"),
-      "S-000-B01",
+      createProgressDocument("ja", "local"),
+      "S-000",
+      "B01",
     );
     const remote = solveBox(
-      createProgressDocument("en", now, "remote"),
-      "S-020-B01",
+      createProgressDocument("en", "remote"),
+      "S-020",
+      "B01",
     );
     let call = 0;
     const fetcher: typeof fetch = jest.fn(async () => {
@@ -70,15 +72,15 @@ describe("Drive replica backup sync", () => {
 
     const result = await syncDriveBackup("token", local, fetcher);
 
-    expect(Object.keys(result.document.boxes).sort()).toEqual([
-      "S-000-B01",
-      "S-020-B01",
-    ]);
+    expect(result.document.stages).toEqual({
+      "S-000": { solvedBoxIds: ["B01"] },
+      "S-020": { solvedBoxIds: ["B01"] },
+    });
     expect(result.remoteInstallationId).toBe("remote");
   });
 
   it("retries the complete merge after an ETag conflict", async () => {
-    const local = createProgressDocument("ja", now, "local");
+    const local = createProgressDocument("ja", "local");
     let call = 0;
     const fetcher: typeof fetch = jest.fn(async () => {
       call += 1;
@@ -111,11 +113,7 @@ describe("Drive replica backup sync", () => {
       );
 
     await expect(
-      syncDriveBackup(
-        "token",
-        createProgressDocument("en", now, "local"),
-        fetcher,
-      ),
+      syncDriveBackup("token", createProgressDocument("en", "local"), fetcher),
     ).rejects.toEqual(
       expect.objectContaining({
         code: "corrupt",

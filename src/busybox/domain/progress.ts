@@ -1,37 +1,26 @@
 import type { Locale } from "../i18n";
 
+/** This is a clean pre-release schema. Older development saves are discarded. */
 export const progressSchemaVersion = 1 as const;
 
-export interface BoxProgress {
-  [key: string]: unknown;
-  solvedAt: string;
-  facts: string[];
+export interface StageProgress {
+  solvedBoxIds: string[];
+  markers?: string[];
 }
 
 export interface ProgressSettings {
-  [key: string]: unknown;
   locale: Locale;
 }
 
-export interface ObservationProgress {
-  [key: string]: unknown;
-  observedAt: string;
-  facts: string[];
-}
-
 export interface ProgressDocument {
-  [key: string]: unknown;
   schemaVersion: typeof progressSchemaVersion;
   installationId: string;
-  createdAt: string;
-  updatedAt: string;
-  boxes: Record<string, BoxProgress>;
-  observations: Record<string, ObservationProgress>;
+  stages: Record<string, StageProgress>;
   settings: ProgressSettings;
 }
 
 export type ProgressParseResult =
-  | { status: "valid"; document: ProgressDocument; migrated: boolean }
+  | { status: "valid"; document: ProgressDocument }
   | { status: "corrupt"; reason: string }
   | { status: "future"; version: number };
 
@@ -43,13 +32,31 @@ function isLocale(value: unknown): value is Locale {
   return value === "ja" || value === "en";
 }
 
-function isIsoDate(value: unknown): value is string {
-  return typeof value === "string" && !Number.isNaN(Date.parse(value));
+function uniqueStrings(values: readonly string[]): string[] {
+  return [...new Set(values)].sort();
+}
+
+function parseStringArray(value: unknown): string[] | null {
+  if (!Array.isArray(value) || value.some((item) => typeof item !== "string")) {
+    return null;
+  }
+  return uniqueStrings(value);
+}
+
+function parseStageProgress(value: unknown): StageProgress | null {
+  if (!isRecord(value)) return null;
+  const solvedBoxIds = parseStringArray(value.solvedBoxIds);
+  if (!solvedBoxIds) return null;
+  const markers =
+    value.markers === undefined ? undefined : parseStringArray(value.markers);
+  if (markers === null) return null;
+  return markers && markers.length > 0
+    ? { solvedBoxIds, markers }
+    : { solvedBoxIds };
 }
 
 function makeInstallationId(): string {
   if (typeof crypto.randomUUID === "function") return crypto.randomUUID();
-
   const bytes = crypto.getRandomValues(new Uint8Array(16));
   return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join(
     "",
@@ -58,141 +65,13 @@ function makeInstallationId(): string {
 
 export function createProgressDocument(
   locale: Locale,
-  now = new Date().toISOString(),
   installationId = makeInstallationId(),
 ): ProgressDocument {
   return {
     schemaVersion: progressSchemaVersion,
     installationId,
-    createdAt: now,
-    updatedAt: now,
-    boxes: {},
-    observations: {},
+    stages: {},
     settings: { locale },
-  };
-}
-
-function parseBox(value: unknown): BoxProgress | null {
-  if (
-    !isRecord(value) ||
-    !isIsoDate(value.solvedAt) ||
-    !Array.isArray(value.facts)
-  ) {
-    return null;
-  }
-  const facts = value.facts.filter(
-    (fact): fact is string => typeof fact === "string",
-  );
-  if (facts.length !== value.facts.length) return null;
-
-  // Unknown fields survive a read/write cycle so an older client does not erase
-  // observations added by a newer client using the same schema version.
-  return { ...value, solvedAt: value.solvedAt, facts };
-}
-
-function parseObservation(value: unknown): ObservationProgress | null {
-  if (
-    !isRecord(value) ||
-    !isIsoDate(value.observedAt) ||
-    !Array.isArray(value.facts)
-  ) {
-    return null;
-  }
-  const facts = value.facts.filter(
-    (fact): fact is string => typeof fact === "string",
-  );
-  if (facts.length !== value.facts.length) return null;
-  return { ...value, observedAt: value.observedAt, facts };
-}
-
-function parseStructuredDocument(
-  value: Record<string, unknown>,
-): ProgressParseResult {
-  if (
-    typeof value.installationId !== "string" ||
-    !isIsoDate(value.createdAt) ||
-    !isIsoDate(value.updatedAt) ||
-    !isRecord(value.boxes) ||
-    !isRecord(value.settings) ||
-    !isLocale(value.settings.locale)
-  ) {
-    return { status: "corrupt", reason: "required-fields" };
-  }
-
-  const boxes: Record<string, BoxProgress> = {};
-  for (const [boxId, rawBox] of Object.entries(value.boxes)) {
-    const box = parseBox(rawBox);
-    if (!box) return { status: "corrupt", reason: `box:${boxId}` };
-    boxes[boxId] = box;
-  }
-
-  const observations: Record<string, ObservationProgress> = {};
-  const rawObservations = value.observations ?? {};
-  if (!isRecord(rawObservations)) {
-    return { status: "corrupt", reason: "observations" };
-  }
-  for (const [observationId, rawObservation] of Object.entries(
-    rawObservations,
-  )) {
-    const observation = parseObservation(rawObservation);
-    if (!observation) {
-      return { status: "corrupt", reason: `observation:${observationId}` };
-    }
-    observations[observationId] = observation;
-  }
-
-  return {
-    status: "valid",
-    migrated: false,
-    document: {
-      ...value,
-      schemaVersion: progressSchemaVersion,
-      installationId: value.installationId,
-      createdAt: value.createdAt,
-      updatedAt: value.updatedAt,
-      boxes,
-      observations,
-      settings: { ...value.settings, locale: value.settings.locale },
-    },
-  };
-}
-
-function migrateVersionZero(
-  value: Record<string, unknown>,
-): ProgressParseResult {
-  if (
-    typeof value.installationId !== "string" ||
-    !isIsoDate(value.createdAt) ||
-    !Array.isArray(value.solvedBoxes)
-  ) {
-    return { status: "corrupt", reason: "legacy-fields" };
-  }
-
-  const solvedBoxes = value.solvedBoxes.filter(
-    (boxId): boxId is string => typeof boxId === "string",
-  );
-  if (solvedBoxes.length !== value.solvedBoxes.length) {
-    return { status: "corrupt", reason: "legacy-boxes" };
-  }
-
-  const locale = isLocale(value.locale) ? value.locale : "en";
-  const createdAt = value.createdAt;
-  const boxes = Object.fromEntries(
-    solvedBoxes.map((boxId) => [boxId, { solvedAt: createdAt, facts: [] }]),
-  );
-
-  return {
-    status: "valid",
-    migrated: true,
-    document: {
-      schemaVersion: progressSchemaVersion,
-      installationId: value.installationId,
-      createdAt,
-      updatedAt: createdAt,
-      boxes,
-      observations: {},
-      settings: { locale },
-    },
   };
 }
 
@@ -203,128 +82,128 @@ export function parseProgressDocument(value: unknown): ProgressParseResult {
   if (value.schemaVersion > progressSchemaVersion) {
     return { status: "future", version: value.schemaVersion };
   }
-  if (value.schemaVersion === 0) return migrateVersionZero(value);
-  if (value.schemaVersion === progressSchemaVersion)
-    return parseStructuredDocument(value);
-  return { status: "corrupt", reason: "unsupported-schema" };
-}
-
-function earlierIsoDate(left: string, right: string): string {
-  return Date.parse(left) <= Date.parse(right) ? left : right;
-}
-
-function laterIsoDate(left: string, right: string): string {
-  return Date.parse(left) >= Date.parse(right) ? left : right;
-}
-
-export function mergeProgressDocuments(
-  local: ProgressDocument,
-  remote: ProgressDocument,
-  now = new Date().toISOString(),
-): ProgressDocument {
-  const boxes: Record<string, BoxProgress> = { ...local.boxes };
-  for (const [boxId, remoteBox] of Object.entries(remote.boxes)) {
-    const localBox = boxes[boxId];
-    boxes[boxId] = localBox
-      ? {
-          ...remoteBox,
-          ...localBox,
-          solvedAt: earlierIsoDate(localBox.solvedAt, remoteBox.solvedAt),
-          facts: [...new Set([...localBox.facts, ...remoteBox.facts])].sort(),
-        }
-      : remoteBox;
+  if (value.schemaVersion !== progressSchemaVersion) {
+    return { status: "corrupt", reason: "unsupported-schema" };
+  }
+  if (
+    typeof value.installationId !== "string" ||
+    !isRecord(value.stages) ||
+    !isRecord(value.settings) ||
+    !isLocale(value.settings.locale)
+  ) {
+    return { status: "corrupt", reason: "required-fields" };
   }
 
-  const observations: Record<string, ObservationProgress> = {
-    ...local.observations,
-  };
-  for (const [observationId, remoteObservation] of Object.entries(
-    remote.observations,
-  )) {
-    const localObservation = observations[observationId];
-    observations[observationId] = localObservation
-      ? {
-          ...remoteObservation,
-          ...localObservation,
-          observedAt: earlierIsoDate(
-            localObservation.observedAt,
-            remoteObservation.observedAt,
-          ),
-          facts: [
-            ...new Set([...localObservation.facts, ...remoteObservation.facts]),
-          ].sort(),
-        }
-      : remoteObservation;
-  }
-
-  // Cleared boxes are a grow-only set. Device-local settings stay local; a Drive
-  // restore must never silently change the language chosen on this device.
-  return {
-    ...remote,
-    ...local,
-    schemaVersion: progressSchemaVersion,
-    createdAt: earlierIsoDate(local.createdAt, remote.createdAt),
-    updatedAt: laterIsoDate(
-      now,
-      laterIsoDate(local.updatedAt, remote.updatedAt),
-    ),
-    boxes,
-    observations,
-    settings: local.settings,
-  };
-}
-
-export function recordObservation(
-  document: ProgressDocument,
-  observationId: string,
-  facts: readonly string[] = [],
-  now = new Date().toISOString(),
-): ProgressDocument {
-  const current = document.observations[observationId];
-  if (current) {
-    const mergedFacts = [...new Set([...current.facts, ...facts])].sort();
-    if (mergedFacts.length === current.facts.length) return document;
-    return {
-      ...document,
-      updatedAt: now,
-      observations: {
-        ...document.observations,
-        [observationId]: { ...current, facts: mergedFacts },
-      },
-    };
+  const stages: Record<string, StageProgress> = {};
+  for (const [stageId, rawStage] of Object.entries(value.stages)) {
+    const stage = parseStageProgress(rawStage);
+    if (!stage) return { status: "corrupt", reason: `stage:${stageId}` };
+    stages[stageId] = stage;
   }
   return {
-    ...document,
-    updatedAt: now,
-    observations: {
-      ...document.observations,
-      [observationId]: { observedAt: now, facts: [...new Set(facts)].sort() },
+    status: "valid",
+    document: {
+      schemaVersion: progressSchemaVersion,
+      installationId: value.installationId,
+      stages,
+      settings: { locale: value.settings.locale },
     },
   };
 }
 
-export function solveBox(
-  document: ProgressDocument,
-  boxId: string,
-  facts: readonly string[] = [],
-  now = new Date().toISOString(),
+function mergeStageProgress(
+  left: StageProgress | undefined,
+  right: StageProgress | undefined,
+): StageProgress | undefined {
+  if (!left) return right;
+  if (!right) return left;
+  const solvedBoxIds = uniqueStrings([
+    ...left.solvedBoxIds,
+    ...right.solvedBoxIds,
+  ]);
+  const markers = uniqueStrings([
+    ...(left.markers ?? []),
+    ...(right.markers ?? []),
+  ]);
+  return markers.length > 0 ? { solvedBoxIds, markers } : { solvedBoxIds };
+}
+
+/** Stage and box IDs are grow-only sets, so merging never loses a clear. */
+export function mergeProgressDocuments(
+  local: ProgressDocument,
+  remote: ProgressDocument,
 ): ProgressDocument {
-  const current = document.boxes[boxId];
-  if (current) {
-    const mergedFacts = [...new Set([...current.facts, ...facts])].sort();
-    if (mergedFacts.length === current.facts.length) return document;
-    return {
-      ...document,
-      updatedAt: now,
-      boxes: { ...document.boxes, [boxId]: { ...current, facts: mergedFacts } },
-    };
+  const stageIds = new Set([
+    ...Object.keys(local.stages),
+    ...Object.keys(remote.stages),
+  ]);
+  const stages: Record<string, StageProgress> = {};
+  for (const stageId of stageIds) {
+    const progress = mergeStageProgress(
+      local.stages[stageId],
+      remote.stages[stageId],
+    );
+    if (progress) stages[stageId] = progress;
   }
   return {
+    schemaVersion: progressSchemaVersion,
+    installationId: local.installationId,
+    stages,
+    // Settings are device-local even when the progress document is synchronized.
+    settings: local.settings,
+  };
+}
+
+export function isBoxSolved(
+  document: ProgressDocument,
+  stageId: string,
+  boxId: string,
+): boolean {
+  return document.stages[stageId]?.solvedBoxIds.includes(boxId) ?? false;
+}
+
+export function solveBox(
+  document: ProgressDocument,
+  stageId: string,
+  boxId: string,
+): ProgressDocument {
+  const current = document.stages[stageId];
+  if (current?.solvedBoxIds.includes(boxId)) return document;
+  return {
     ...document,
-    updatedAt: now,
-    boxes: {
-      ...document.boxes,
-      [boxId]: { solvedAt: now, facts: [...new Set(facts)].sort() },
+    stages: {
+      ...document.stages,
+      [stageId]: {
+        solvedBoxIds: uniqueStrings([...(current?.solvedBoxIds ?? []), boxId]),
+        ...(current?.markers?.length ? { markers: current.markers } : {}),
+      },
+    },
+  };
+}
+
+export function hasStageMarker(
+  document: ProgressDocument,
+  stageId: string,
+  marker: string,
+): boolean {
+  return document.stages[stageId]?.markers?.includes(marker) ?? false;
+}
+
+export function markStage(
+  document: ProgressDocument,
+  stageId: string,
+  marker: string,
+): ProgressDocument {
+  const current = document.stages[stageId];
+  if (current?.markers?.includes(marker)) return document;
+  return {
+    ...document,
+    stages: {
+      ...document.stages,
+      [stageId]: {
+        solvedBoxIds: current?.solvedBoxIds ?? [],
+        markers: uniqueStrings([...(current?.markers ?? []), marker]),
+      },
     },
   };
 }

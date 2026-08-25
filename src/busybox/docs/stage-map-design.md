@@ -1,5 +1,7 @@
 # ステージMind Map設計
 
+> 履歴資料。2026-08-25にステージ一覧は関連線・map metadataを持たない独立カードへ移行した。現行のステージ契約は各`stages/S-xxx/manifest.ts`、生成index、[アーキテクチャ判断](./architecture-decisions.md)を参照する。
+
 ## 目的
 
 現在の`stage-grid`はステージを均等に列挙できる一方、操作や発見の近さ、別ステージで得た手掛かりの継承を表せない。最終一覧は、箱をnode、関係をedgeとして見せる決定的配置のmind mapへ置き換える。

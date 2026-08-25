@@ -124,121 +124,34 @@ input:focus-visible {
 .stage-grid > li {
   display: contents;
 }
-.stage-map-shell {
+.stage-catalogue {
+  display: grid;
+  gap: 2rem;
+}
+.stage-catalogue__group {
   display: grid;
   gap: 0.75rem;
 }
-.stage-map-controls {
+.stage-catalogue__group h3 {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-}
-.stage-map-controls button {
-  border: 1px solid #665979;
-  border-radius: 0.65rem;
-  padding: 0.5rem 0.75rem;
-  color: #f7f3ff;
-  background: #241c38;
-  cursor: pointer;
-}
-.stage-map-controls output {
-  min-width: 3.8rem;
-  text-align: center;
-  color: #cfc7db;
-}
-.stage-map-viewport {
-  height: min(72vh, 820px);
-  overflow: auto;
-  overscroll-behavior: contain;
-  border: 1px solid #443a59;
-  border-radius: 1.2rem;
-  background:
-    linear-gradient(#ffffff05 1px, transparent 1px),
-    linear-gradient(90deg, #ffffff05 1px, transparent 1px), #120e20;
-  background-size: 32px 32px;
-  scrollbar-color: #786895 #171226;
-}
-.stage-map-scale {
-  position: relative;
-}
-.stage-map-canvas {
-  position: absolute;
-  inset: 0 auto auto 0;
-  transform-origin: top left;
-}
-.stage-map-hub {
-  position: absolute;
-  z-index: 2;
-  display: grid;
-  place-items: center;
-  width: 156px;
-  height: 60px;
-  border: 1px solid #d8c5ff;
-  border-radius: 999px;
-  color: #171020;
-  background: #f2e8ff;
-  font-family: Georgia, serif;
-  font-size: 1.15rem;
-  font-weight: 700;
-}
-.stage-map-edges {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
-.stage-map-edge {
-  fill: none;
-  stroke: #58486f;
-  stroke-width: 3;
-}
-.stage-map-edge--cluster {
-  stroke: #4f4264;
-  stroke-width: 2;
-}
-.stage-map-edge--related {
-  stroke: #8c7aa8;
-  stroke-width: 2;
-  stroke-dasharray: 8 9;
-}
-.stage-map-edge--clue {
-  stroke: #ffd166;
-  stroke-width: 2.5;
-  stroke-dasharray: 3 8;
-}
-.stage-map-cluster {
-  position: absolute;
-  z-index: 1;
-  width: 412px;
+  gap: 0.45rem;
   margin: 0;
-  color: #c7bcd8;
-  text-align: center;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-size: 0.7rem;
-  font-weight: 700;
+  color: #e6dff0;
+  font-size: 1rem;
 }
-.stage-map-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+.stage-catalogue__group h3 svg {
+  font-size: 1.3em;
 }
-.stage-map-list > li {
-  position: absolute;
-  z-index: 2;
-  width: 196px;
-}
-.stage-map-marker-slot {
-  position: absolute;
+.stage-catalogue__marker {
   width: 72px;
   height: 72px;
+  justify-self: end;
   border: 2px dashed #413550;
   border-radius: 0.5rem;
   opacity: 0.35;
 }
-
-.stage-map-marker-slot--active {
+.stage-catalogue__marker--active {
   border: 8px solid #fff;
   background: conic-gradient(
     #00ffff 0 25%,
@@ -246,11 +159,9 @@ input:focus-visible {
     #ffff00 0 75%,
     #000 0
   );
-  box-shadow:
-    0 0 0 6px #000,
-    0 0 32px #fff;
+  box-shadow: 0 0 0 6px #000;
+  opacity: 1;
 }
-
 .stage-video,
 .capture-preview {
   max-width: min(100%, 640px);
@@ -448,27 +359,25 @@ input:focus-visible {
   width: 6rem;
   height: 6rem;
   border-radius: 50%;
-  background: var(--accent, #8668be);
+  background: var(--stage-access-color, #60a5fa);
   opacity: 0.1;
   filter: blur(5px);
 }
-.stage-card--page {
-  --accent: #a78bfa;
+.stage-card--baseline-direct {
+  --stage-access-color: #60a5fa;
 }
-.stage-card--transition {
-  --accent: #60a5fa;
+.stage-card--baseline-permission {
+  --stage-access-color: #fbbf24;
 }
-.stage-card--storage {
-  --accent: #34d399;
-}
-.stage-card--device {
-  --accent: #fb7185;
-}
-.stage-card--edge {
-  --accent: #fbbf24;
+.stage-card--limited {
+  --stage-access-color: #c084fc;
 }
 .stage-card:has(.stage-card__hit-area:not(:disabled)):hover {
-  border-color: color-mix(in srgb, var(--accent), #fff 24%);
+  border-color: color-mix(
+    in srgb,
+    var(--stage-access-color, #60a5fa),
+    #fff 24%
+  );
   background: linear-gradient(145deg, #2a2140f2, #1b152cf2);
   transform: translateY(-2px);
 }
@@ -499,16 +408,13 @@ input:focus-visible {
   font-size: 0.7rem;
 }
 .stage-card p.stage-card__id {
-  color: var(--accent);
+  color: var(--stage-access-color, #60a5fa);
   font-family: ui-monospace, monospace;
 }
 .stage-card p.stage-card__progress {
   color: #e6dff0;
   font-variant-numeric: tabular-nums;
   font-weight: 700;
-}
-.stage-map-list .stage-card {
-  min-height: 92px;
 }
 .stage-card__hit-area {
   position: absolute;

@@ -2,13 +2,9 @@
 
 ## 保存先と責務
 
-主進捗はIndexedDBの `busybox-progress` データベースへ保存する。キーは `documents/current`。`localStorage`、Cache Storage、Service Workerのキャッシュは主進捗として使わない。
+主進捗は IndexedDB の `busybox-progress-v1` データベース、`documents/current` に保存する。保存するのはステージ単位の解決済み箱ID、ステージ内の最小限のmarker、言語設定、インストールIDだけである。クリア日時、判定facts、観測ログ、生入力は保存しない。
 
-例外としてS-060の「一度表示した」というbooleanだけは `busybox:S-060:seen` としてlocalStorageにも同期保存する。初回表示直後にタブを閉じると、非同期のIndexedDB transactionがcommit前に破棄されうるためである。このフラグから他の進捗は復元せず、設定画面のローカル初期化でIndexedDBと同時に削除する。
-
-S-060-B02のBeacon receiptは主進捗storeや上記localStorage flagへ直接書かず、Service Workerだけが書ける専用IndexedDB storeへcurrent attempt IDと固定protocol結果だけを保存する。receiverがmatching receiptをconsumeして通常の箱解決済みIDへ反映した後、receiptを削除する。Drive同期、file export、analyticsへは含めず、resetとsite data削除でattemptとともに消す。
-
-保存するのは箱を解いた時刻、判定に必要な最小限の観測事実、言語設定、インストール単位のランダムIDである。カメラ、マイク、センサー、選択文字列、ファイル内容などの生入力は保存しない。
+S-060 の再訪用booleanだけは、初回表示直後の終了に備えて localStorage にも保持する。この補助値は主進捗を復元せず、初期化時に同時に消える。
 
 ## version 1
 
@@ -16,33 +12,21 @@ S-060-B02のBeacon receiptは主進捗storeや上記localStorage flagへ直接�
 ProgressDocument
 ├── schemaVersion: 1
 ├── installationId: string
-├── createdAt: ISO 8601 string
-├── updatedAt: ISO 8601 string
-├── boxes: Record<BoxId, { solvedAt, facts[] }>
-├── observations: Record<ObservationId, { observedAt, facts[] }>
+├── stages: Record<StageId, {
+│   ├── solvedBoxIds: LocalBoxId[]
+│   └── markers?: string[]
+│ }>
 └── settings: { locale: "ja" | "en" }
 ```
 
-ステージ箱の状態は保存せず、各問題箱の解決状況から導出する。`observations` は再訪など、未解決のまま次回へ持ち越す事実を保持する。`facts` は正解の生入力ではなく、`mouse` や `installed-display-mode` のような非機密の判定結果だけを持つ。
+箱IDは `B01` のようにステージ内でだけ識別し、永続化では `stages[stageId]` に入れる。総問題数とステージ進捗は、各ステージmanifestの `boxIds` とこの集合から導出するため保存しない。入場中に開いた箱の集合もメモリだけに置き、再入場時には閉じた状態から始める。
 
-現在のステージ入場で開いた問題箱の集合は保存しない。ステージへ入るたびメモリ上に空の集合を作り、永続 `boxes` はリボンの有無、入場中の集合は蓋の開閉だけに使う。再挑戦しても初回 `solvedAt` は維持し、新しい `facts` がある場合だけ和集合へ追加する。この分離はversion 1の形式を変更しない。
+## マージと互換性
 
-## 互換性
-
-- 同じversionに未知フィールドがあれば、読込・保存で保持する。
-- version 0の試作形式（`solvedBoxes` 配列）はversion 1へ移行する。
-- 現在より新しいversionは読み取り専用扱いとし、自動保存しない。
-- 必須フィールドや箱レコードが壊れていれば、自動上書きしない。
-- 破損・将来versionからの復旧は、設定画面でユーザーが明示的に初期化した場合だけ行う。
-
-## マージ規則
-
-問題箱の解決集合と観測集合はgrow-only setとして扱う。ローカルとバックアップのどちらかで解決・観測済みなら記録を残し、同じ項目の時刻は早い方、`facts` は和集合を採用する。端末固有の言語設定はローカルを優先する。
-
-この規則は端末時計の正確さへクリア可否を依存させないためのものでもある。時刻は表示・診断用で、後の時刻を理由に箱を閉じ直さない。
+解決済み箱IDとmarkerは grow-only set として和集合を取る。言語設定はローカルを優先する。公開前のため旧形式への移行は行わず、旧データとは別のデータベース名を使う。必須構造が壊れた文書や将来versionは自動で上書きしない。
 
 ## ユーザー操作
 
-- 書き出し: 現在の進捗を整形済みJSONとしてダウンロードする。
-- 初期化: 確認ダイアログ後、このアプリの `documents/current` だけを削除して新規文書を作る。
-- 将来の取込み: S-130の仕様と妥当性検証を通して追加する。任意JSONを現在の進捗へ直接代入しない。
+- 書き出し: 現在の文書を整形済みJSONとしてダウンロードする。
+- 初期化: 確認後に `documents/current` を削除して新規文書を作る。
+- 取込み: S-130の仕様と妥当性検証を通して追加する。任意JSONを現在の進捗へ直接代入しない。

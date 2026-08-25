@@ -1,6 +1,7 @@
 import type { ProgressDocument } from "../domain/progress";
 
-const databaseName = "busybox-progress";
+// Pre-release schema reset: old development saves intentionally stay untouched.
+const databaseName = "busybox-progress-v1";
 const objectStoreName = "documents";
 const progressKey = "current";
 

@@ -6,8 +6,10 @@
 
 - ステージID:
 - 表示ラベル（日英、後で推敲可）:
-- 実装ファイル: `stages/S-xxx.tsx`
-- stage-localization: `stages/S-xxx.locale.ts`（UIに表示する日本語・英語を置く）
+- 実装ディレクトリ: `stages/S-xxx/`
+- manifest: `stages/S-xxx/manifest.ts`（ID、表示名、play条件、ローカル箱ID、lazy loadだけを置く）
+- stage module: `stages/S-xxx/stage.tsx`（箱の見た目、配置、解法を置く）
+- stage-localization: `stages/S-xxx/locale.ts`（UIに表示する日本語・英語を置く）
 - 対応ギミックID:
 - 問題箱ID:
 - 大区分:
@@ -97,4 +99,4 @@
  */
 ```
 
-表示ラベル、button、status、aria-label、エラーなどのUI文言はstage-localizationへ置き、JSDocへ重複させない。ステージ名と箱名も各 `S-xxx.locale.ts` の `stageName` / `Bxx` semantic keyへ置き、`metadataLocale.ts` が表示時に解決する。`StageSpec` / `ProblemSpec` はID・色・ヒント・構造だけを持ち、ファイル名、export名、テスト名、URL、保存キーへ表示文言を転記しない。
+表示ラベル、button、status、aria-label、エラーなどのUI文言はstage-localizationへ置き、JSDocへ重複させない。ステージ名と箱名は各 `S-xxx/locale.ts` の `stageName` / `Bxx` semantic keyへ置く。`manifest.ts` はローカル箱IDだけを公開し、アイコン・色・ヒント・構造は `stage.tsx` のstage moduleへ置く。ファイル名、export名、テスト名、URL、保存キーへ表示文言を転記しない。

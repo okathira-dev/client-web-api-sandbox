@@ -8,7 +8,9 @@
     "npm": ">=11.12.0"
   },
   "scripts": {
+    "predev": "npm run busybox:stages:generate",
     "dev": "vite --host",
+    "prebuild": "npm run busybox:stages:generate",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "lint": "biome lint",
@@ -19,12 +21,16 @@
     "markup:fix": "markuplint \"src/**/*.{jsx,tsx,html}\" --fix",
     "check-biome": "biome check",
     "check-biome:fix": "biome check --write",
-    "check": "npm run markup && npm run check-biome",
+    "check": "npm run busybox:stages:check && npm run markup && npm run check-biome",
     "check:fix": "npm run markup:fix && npm run check-biome:fix",
+    "pretest": "npm run busybox:stages:check",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
+    "pretest:ci": "npm run busybox:stages:check",
     "test:ci": "jest --coverage --watchAll=false",
+    "busybox:stages:generate": "node scripts/generateBusyboxStageIndex.mjs",
+    "busybox:stages:check": "node scripts/generateBusyboxStageIndex.mjs --check",
     "inspector:samples": "node src/encoder-capability-inspector/scripts/generateSyntheticSamples.ts",
     "inspector:samples:check": "node src/encoder-capability-inspector/scripts/generateSyntheticSamples.ts --check",
     "prepare": "husky"

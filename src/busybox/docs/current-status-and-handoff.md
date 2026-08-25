@@ -1,6 +1,6 @@
 # 現状・残問題・人手確認への引継ぎ
 
-更新日: 2026-08-23
+更新日: 2026-08-25
 
 この文書は、現在の実装に対する「できていること」「人手で確認すること」「次の設計課題」を一つにまとめた引継ぎメモである。結論を決めるときは、コードとこの文書を入口にし、古い計画表の件数・箱番号・成功条件を再利用しない。
 
@@ -8,8 +8,8 @@
 
 | 内容 | 正本 |
 | --- | --- |
-| ステージと問題箱のID | `src/busybox/domain/stages.ts`、`src/busybox/runtime/stageDefinitions.ts` |
-| 現行プレイヤー体験と解法 | 各`src/busybox/stages/S-xxx.tsx`の日本語JSDoc（[互換ポインタ](./stage-walkthroughs.md)） |
+| ステージと問題箱のID | 各 `src/busybox/stages/S-xxx/manifest.ts`。横断indexは生成された `src/busybox/runtime/stage-index.generated.ts` |
+| 現行プレイヤー体験と解法 | 各`src/busybox/stages/S-xxx/stage.tsx`の日本語JSDoc（[互換ポインタ](./stage-walkthroughs.md)） |
 | 実装・未確認・外部条件の状態 | [ステージ実装状況](./stage-implementation-status.md) |
 | 実機・ブラウザ確認項目 | [人手確認台帳](./human-test-matrix.md) |
 | 画面レビューの進捗と指摘メモ | [全ステージレビュー・チェックリスト](./stage-review-checklist.md) |
@@ -18,6 +18,8 @@
 | 仕様決定の履歴 | [決定ログ](./decision-log.md) |
 
 現行catalogueは89ステージ・204箱で、S-230・S-270・S-680は製品stageではない。採用済みで製品未実装だったS-430-B02、S-480追加5箱、S-630、S-700追加2箱、S-730〜S-770、S-790はすべて製品stageへ移した。S-700は固定4slotのRemote Playback文字鍵／native QRとPresentation、S-780はPayment Handlerの4箱、S-790は独自生成TTFをOSへinstallして戻す1箱である。S-350のPiPはS-350-B06、S-810は4つの目標アスペクト比へnative seekする可変寸法スイープ、S-640は8問の文字化け、S-720は実変換patch bay、S-920はCSS Anchor Positioningのfallback補正を体験するクリック迷路である。製品化待ちと追加PoC実装待ちは0件で、残るものは人手台帳に記録した実環境ゲートだけである。
+
+2026-08-25にステージ契約を完全移行した。全体の生成indexは各`manifest.ts`のID、表示名、play条件、ローカル箱IDだけを持ち、箱の見た目・意味・配置・解法は各stage folderの遅延moduleだけが所有する。保存済み進捗は既知のmanifest箱だけを集計し、未知IDは総数へ加えない。開発・build・CIは生成indexの更新漏れを検査する。
 
 ## 現行実装スナップショット
 
@@ -28,7 +30,7 @@
 - S-710へClipPress風のsame-origin iframe、10秒camera録画、160kbps固定bitrate圧縮、暗黒frame・QR frame・decode失敗・再入力metadataの4経路を実装した。QRは同梱jsQRで検出し、検出した四辺形へflag QRを射影して置換する。
 - S-710の暗黒frameとQR frameを生成script、manifest、意味検証test付きの製品fixtureへ昇格した。decode失敗時は固定outputだけを配布し、入力用の壊れたfixtureはゲーム画面から提供しない。
 - S-720を動画3ノード、T1/T2/T3の2列、outputノードのpatch bayへ変更した。source→output直結、変換の連結、同一変換の2回使用を許可し、分岐とcycleを拒否する。接続された経路をMediaBunnyとCanvasで実変換する。
-- S-810は事前生成した120個のVP8 WebM segmentをpack assetとmanifestとしてGit管理し、MSEへtimestamp offset付きで追加するnative寸法スイープへ変更した。native controlsでシークを止めた提示frameの比率を`videoWidth` / `videoHeight`から読み、1:1、4:3、16:9、9:20（各相対5%以内）の4箱を開く。通常再生・pause・CSS寸法は解法にせず、ページにはscript自動seek経路を置かない。
+- S-810は事前生成した120個のVP8 WebM segmentをpack assetとmanifestとしてGit管理し、MSEへtimestamp offset付きで追加するnative寸法sweepへ変更した。native controlsでシークを止めた、またはpauseした提示frameの比率を`videoWidth` / `videoHeight`から読み、1:1、4:3、16:9、9:20（各相対5%以内）の4箱を開く。通常再生中の通過とCSS寸法は解法にせず、ページにはscript自動seek経路を置かない。
 - 設定ページから第三者ライセンスページへ到達できるようにし、共通app shellを広げた。
 - S-700-B03をPresentation APIの外部receiver readyで開く製品stageへ、S-780を架空BBX Payment Handlerの承認・拒否・retry後成功・◇財布選択の4箱へ実装した。S-780は○/◇の2 Payment Appを別worker scopeで同梱し、B04を対象workerのtrusted `PaymentRequestEvent`だけで開く。製品stageはPoC moduleを参照しない。
 - S-690 / S-800とS-820〜S-920を製品stageへ統合した。S-920は同一origin iframeの額縁内に実Popover経路と影専用CSS anchor chainを置き、同じ部屋寸法・十字button位置・`position-area`・fallback列で3つの終点を一致させる。
@@ -107,12 +109,12 @@ fixtureは`src/busybox/fixtures/s710/assets/`にある。
 ### 必ず次の動作確認で見るもの
 
 - S-640はAIブラウザで8つの正答を順に入力し、`1/8`から`8/8`まで対応箱だけが開くことを確認済み。Unicode文字の見た目、誤答、再入場は人手で確認する。
-- S-710はWindows ChromeでQR置換とdecode失敗を確認済み。暗黒frame、metadata再入力、camera録画、size比、download、連続試行を追加確認する。
-- S-720はWindows ChromeでT1 routeとlowercase flagを確認済み。残り3正規route、全frame再生、QR読取、分岐・cycle拒否、mobile横幅を確認する。
-- S-810は3840pxの固定pack経路へ変更したため、Windows Chromeで初期1:1と、停止中の4:3／16:9／9:20による開箱を再確認する。通常再生中は開かず、pause、ended、reload、離脱でcallbackとobject URLが残らないことも同時に確認する。
+- S-710は暗黒frame、decode失敗の小文字flag、QRを検出した各frameだけの置換、metadata再入力、iframe内スクロールなしを確認済み。camera録画、size比、download、連続試行は正式人手確認で扱う。
+- S-720は4正規routeと、想定routeを事前達成しなくても固定flagだけで開く入力を確認済み。実動画の全frame再生、QR読取、分岐・cycle拒否、mobile横幅は正式人手確認で扱う。
+- S-810は入場直後の動画表示、3840pxの寸法sweep、停止中の4比率による開箱、通常再生中に開かないこと、pauseでの判定を確認済み。低性能端末・連続操作は正式人手確認で扱う。
 - S-350のB01〜B06/B08、S-060-B02、S-150、S-220、S-580など、以前にPoCで確認した中心経路を製品stageで再確認する。
-- S-880はAIブラウザでB02（deflate）／B03（deflate-raw）は開いたが、B01（gzip）は正しい形式を選んでも「形式を開けない」となった。gzip fixtureまたはブラウザ経路を修正後に再確認する。
-- S-890はAIブラウザで表示できるが、別stageへの離脱時にcleanupの`document.exitFullscreen()`が`Document not active`例外になった。fullscreen解除をactive文書で安全に行う修正後に再確認する。
+- S-880はgzip / deflate / deflate-rawの3形式すべてを確認済み。UIの最終人手確認だけが残る。
+- S-890は非アクティブdocumentへの重複`exitFullscreen()`を抑止する修正済み。実fullscreenから別stageへ離脱する確認が残る。
 - 全stage共通のH-025（再入場、今回開いた箱、永続進捗、reset）とH-019（生データ非送信）。
 
 ### PoC・製品化の次キュー

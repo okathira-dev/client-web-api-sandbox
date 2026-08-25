@@ -10,8 +10,8 @@ import {
 import { StrictMode, useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { decodeQrCanvas } from "../../media/qrDecoder";
-import { type S710LayoutMessage, s710Flags } from "../../stages/s710Protocol";
-import { drawQrIntoQuad } from "../../stages/s710Qr";
+import { type S710LayoutMessage, s710Flags } from "../../stages/S-710/protocol";
+import { drawQrIntoQuad } from "../../stages/S-710/qr";
 import { toolCopy } from "./locale";
 import "./styles.css";
 

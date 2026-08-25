@@ -4,14 +4,18 @@
 
 ## 現在のタスク
 
-### BusyboxのMUIアイコン運用
+### Busyboxステージ契約の完全移行
 
-- [x] `@mui/icons-material`のbarrel importを個別パスimportへ置換する
-- [x] MUIの`fontSize="inherit"`で、箱ヒントのアイコン寸法を親要素の`3rem`へ統一する
-- [x] アイコンを装飾として隠し、既存の問題名テキストを代替ラベルとして残す
-- [x] 型検査、Biome、Markuplint、stage registry test、production build、実ブラウザ表示を確認する
+- [x] 一覧を3種類のプレイ条件の色・アイコンへ統一する
+- [x] 完全修飾Box IDと旧helperを削除する
+- [x] 個別ステージの実装・locale・テストを各フォルダへ集約する
+- [x] 生成索引をbuild/CIへ接続し、固定件数テストを撤廃する
+- [x] S-890 cleanupと進捗の既知ID集計を修正する
+- [x] 文書を新契約へ更新し、検証を完了する
 
 ## 結果
 
-- 箱ヒントのMUI Outlinedアイコンは個別パスimportを使い、`48px`（`3rem`）で表示される。
-- スクリーンリーダーにはSVGを隠し、対応する問題名のテキストを提供する。
+- 一覧は Baseline直接・Baseline要権限・Limited の3分類を色で示す。進捗表示は分類と独立させた。
+- `manifest.ts` が公開するのはステージ情報とローカル箱IDだけ。個別stage folderが箱の表示と解法を所有し、開いた時だけ読み込む。
+- `npm run dev` / `build` はindexを生成し、`check` / `test` / `test:ci` は生成漏れを検出する。
+- 型検査、Jest（57 suites / 311 tests）、Biome、Markuplint、Vite production build、生成index検査、`git diff --check`を通過した。

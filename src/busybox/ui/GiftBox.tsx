@@ -1,8 +1,10 @@
 import type { CSSProperties, MouseEventHandler } from "react";
 import { useEffect, useRef } from "react";
 import { type Locale, messages } from "../i18n";
-import type { ProblemHandle } from "../runtime/types";
-import { problemLabelText } from "../stages/metadataLocale";
+import {
+  resolveStageBoxColor,
+  type StageBoxHandle,
+} from "../runtime/stageContract";
 
 export type GiftBoxState = "ribboned" | "closed" | "open";
 
@@ -75,44 +77,41 @@ export function GiftBox({
   );
 }
 
-interface ProblemGiftBoxProps {
-  problem: ProblemHandle;
+interface StageProblemGiftBoxProps {
+  box: StageBoxHandle;
   locale: Locale;
   onClick?: MouseEventHandler<HTMLButtonElement>;
   onPointerDown?: (event: PointerEvent) => void;
 }
 
-export function ProblemGiftBox({
-  problem,
+/** Box presentation for the colocated lazy-stage contract. */
+export function StageProblemGiftBox({
+  box,
   locale,
   onClick,
   onPointerDown,
-}: ProblemGiftBoxProps) {
-  const presentation = problem.definition;
-  const resolvedState = problem.state;
+}: StageProblemGiftBoxProps) {
   const copy = messages[locale];
   const stateLabel = {
     ribboned: copy.problemNeverSolved,
     closed: copy.problemReplayReady,
     open: copy.problemSolvedThisVisit,
-  }[resolvedState];
-  const label = `${problemLabelText(locale, presentation.id)}: ${stateLabel}`;
-  const Icon = presentation.icon;
+  }[box.state];
+  const label = `${box.definition.label[locale]}: ${stateLabel}`;
+  const Icon = box.definition.icon;
 
   return (
     <figure className="problem-gift">
       <GiftBox
-        state={resolvedState}
-        color={presentation.color}
+        state={box.state}
+        color={resolveStageBoxColor(box.definition)}
         label={label}
         onClick={onClick}
         onPointerDown={onPointerDown}
       />
       <figcaption className="problem-gift__clue">
         <Icon fontSize="inherit" aria-hidden="true" />
-        <span className="sr-only">
-          {problemLabelText(locale, presentation.id)}
-        </span>
+        <span className="sr-only">{box.definition.label[locale]}</span>
       </figcaption>
     </figure>
   );

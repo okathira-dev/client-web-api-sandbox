@@ -1,6 +1,6 @@
 # ステージ実装状況
 
-プレイヤー向けの解法と実装意図は、各 `src/busybox/stages/S-xxx.tsx` の日本語JSDocを正本とする。この表はID、API、状態、人手確認IDの索引であり、解法本文を複製しない。
+プレイヤー向けの解法と実装意図は、各 `src/busybox/stages/S-xxx/stage.tsx` の日本語JSDocを正本とする。この表はID、API、状態、人手確認IDの索引であり、解法本文を複製しない。
 
 ## 状態の定義
 
@@ -15,7 +15,7 @@
 
 ## 現行スナップショット
 
-2026-08-23現在、catalogue、runtime registry、地図、manifestに89stage・204箱が実装されている。従来の82stageに、S-630 Network Information、S-730 WebXR、S-740 Periodic Background Sync、S-750 WebOTP、S-760 Contact Picker、S-770 Google FedCM、S-790 Local Font Accessを追加した。S-430-B02はAudio Sessionの実interruptionと再生復帰を観測する箱として追加した。S-480はUser Preferencesの5箱、S-700はRemote Playbackの2箱を追加し、Git管理fixture・生成script・意味検証testを製品側へ置いた。S-920は実Popover経路と影専用経路を同じCSS Anchor Positioning規則でlayoutする3箱の迷路である。ステージ名・箱名は隣接locale bundleとmetadataLocale.tsから解決し、各stageの解法はコード横JSDocを正とする。旧件数や実装前計画は現行判断に使わない。
+2026-08-25現在、生成catalogueと各manifestに89stage・204箱が実装されている。全体はID、表示名、play条件、ローカル箱IDだけを知り、各stage folderが箱のアイコン、色、配置、解法を所有して開いた時だけ読み込む。S-920は実Popover経路と影専用経路を同じCSS Anchor Positioning規則でlayoutする3箱の迷路である。ステージ名・箱名は隣接する`locale.ts`、各stageの解法は`stage.tsx`のJSDocを正とする。旧件数や実装前計画は現行判断に使わない。
 
 過去の60stage・97箱、68stage・156箱、69stage・156箱、79stage・187箱、80stage・187箱は、実装前または中間時点のスナップショットである。現行の箱IDと解法は[現行ステージ解法仕様](./stage-walkthroughs.md)と実装を正とし、旧展開計画やPoCの番号から導かない。
 
@@ -119,7 +119,7 @@ H-025は全行に共通する公開前ゲートである。コード上は全問
 | 層 | 現在の実装 |
 | --- | --- |
 | 観測 | 各ステージコンポーネントがイベントを購読し、権限不要の能力判定を一覧とは分離する |
-| 判定 | `ProblemHandle` を通して生イベントを問題箱IDと非機密な `facts` へ変換する |
+| 判定 | `StageBoxHandle` を通して生イベントをステージ内ローカル箱IDと非機密な事実へ変換する |
 | 演出 | 単一 `GiftBox` の同じDOMで、問題箱はリボン付き・閉箱・開箱、一覧は集約3状態を表示する |
 | 永続化 | ステージはIndexedDBへ直接触らず、共通進捗コントローラーへ解決・観測だけを渡す |
 | 再挑戦 | `StageHost` が入場時の永続履歴snapshotと今回開いた集合を分離し、入場ごとに閉箱へ戻す。AbortSignalとReact effect cleanupでイベント、stream、lock、channelを破棄する |

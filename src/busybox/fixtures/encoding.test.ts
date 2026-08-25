@@ -1,18 +1,10 @@
-import { problemById } from "../domain/stages";
-import {
-  encodingFixtures,
-  encodingProblemIds,
-  encodingQuestionText,
-} from "./encoding";
+import { manifest } from "../stages/S-640/manifest";
+import { encodingFixtures, encodingQuestionText } from "./encoding";
 
 describe("S-640 product encoding fixture", () => {
-  it("maps every fixture to the registered B01-B08 problem", () => {
-    expect(encodingProblemIds).toHaveLength(encodingFixtures.length);
-    expect(new Set(encodingProblemIds).size).toBe(encodingProblemIds.length);
-
-    for (const problemId of encodingProblemIds) {
-      expect(problemById[problemId]?.id).toBe(problemId);
-    }
+  it("contains one fixture for each box in the stage", () => {
+    expect(encodingFixtures).toHaveLength(manifest.boxIds.length);
+    expect(new Set(encodingFixtures).size).toBe(encodingFixtures.length);
   });
 
   it("shows only the intended puzzle representation, never the direct answer", () => {

@@ -12,7 +12,7 @@ import {
   requestDriveAccessToken,
   revokeDriveAccessToken,
 } from "../drive/googleIdentity";
-import type { DriveStageSyncResult } from "../runtime/types";
+import type { DriveStageSyncResult } from "../runtime/stageContract";
 import type { ProgressController } from "./useProgress";
 
 export type DriveState =
@@ -74,16 +74,10 @@ export function useDriveBackup(progress: ProgressController) {
       const localInstallationId = progress.document.installationId;
       const result = await syncDriveBackup(token, progress.document);
       progress.replaceDocument(() => result.document);
-      progress.observe("drive:backup", [
-        result.created ? "created" : "updated",
-      ]);
       const remoteDevice = Boolean(
         result.remoteInstallationId &&
           result.remoteInstallationId !== localInstallationId,
       );
-      if (remoteDevice) {
-        progress.observe("drive:remote-device", ["merged"]);
-      }
       setState("success");
       return { synced: true, remoteDevice };
     } catch (error) {

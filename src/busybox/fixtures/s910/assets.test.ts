@@ -1,5 +1,5 @@
 import { readFile } from "node:fs/promises";
-import { activeS910CueId, s910Cues } from "../../stages/S-910.functions";
+import { activeS910CueId, s910Cues } from "../../stages/S-910/functions";
 
 const assetRoot = new URL("./assets/", import.meta.url);
 const webmHeader = Buffer.from([0x1a, 0x45, 0xdf, 0xa3]);

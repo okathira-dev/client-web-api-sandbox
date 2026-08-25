@@ -1,5 +1,3 @@
-import type { BoxProgress } from "./progress";
-
 export type CapabilityState =
   | "available"
   | "permission-required"
@@ -20,16 +18,16 @@ export function deriveProblemBoxVisualState(
 
 export function countSolvedBoxes(
   boxIds: readonly string[],
-  solvedBoxes: Readonly<Record<string, BoxProgress>>,
+  solvedBoxIds: ReadonlySet<string>,
 ): number {
-  return boxIds.filter((boxId) => solvedBoxes[boxId] !== undefined).length;
+  return boxIds.filter((boxId) => solvedBoxIds.has(boxId)).length;
 }
 
 export function deriveStageProgress(
   boxIds: readonly string[],
-  solvedBoxes: Readonly<Record<string, BoxProgress>>,
+  solvedBoxIds: ReadonlySet<string>,
 ): StageProgressState {
-  const solved = countSolvedBoxes(boxIds, solvedBoxes);
+  const solved = countSolvedBoxes(boxIds, solvedBoxIds);
   if (solved === 0) return "untouched";
   if (solved === boxIds.length) return "solved";
   return "partial";

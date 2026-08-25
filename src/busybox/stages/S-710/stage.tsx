@@ -1,0 +1,157 @@
+import DevicesOutlined from "@mui/icons-material/DevicesOutlined";
+import FileDownloadOutlined from "@mui/icons-material/FileDownloadOutlined";
+import FileUploadOutlined from "@mui/icons-material/FileUploadOutlined";
+import VisibilityOffOutlined from "@mui/icons-material/VisibilityOffOutlined";
+import { safeCapabilityProbe } from "../../domain/stageRuntime";
+import {
+  defineStageModule,
+  type StageComponentProps,
+} from "../../runtime/stageContract";
+import { StageProblemGiftBox } from "../../ui/GiftBox";
+import { manifest } from "./manifest";
+
+type Props = StageComponentProps<(typeof manifest.boxIds)[number]>;
+
+import { useEffect, useMemo, useRef, useState } from "react";
+import { stageText } from "../locale";
+import { locale } from "./locale";
+import {
+  type S710FlagKind,
+  type S710LayoutMessage,
+  s710Flags,
+} from "./protocol";
+
+const flagKinds = Object.keys(s710Flags) as S710FlagKind[];
+
+/**
+ * S-710 — same-origin iframeの動画圧縮ツールで、変換結果を観察する。
+ * 目的: 普通の変換UIから、特定フレームの差し替えとmetadata再入力を見つける。
+ * 最初の一手: 入力動画または10秒録画を選び、右の変換動画を再生・downloadする。
+ * 箱ごとの成功条件: B01は暗黒frame、B02はdecode失敗、B03は検出QRの四辺形差し替え、B04はmetadata overlayを確認してflagを入力する。
+ * 開かない操作: iframe外の直接solve、異なるflag、文字列の一部一致では開かない。固定flagの正答入力は、ギミックの事前達成状態に依存しない。
+ * API/権限: MediaBunny、MediaRecorder、jsQR、Canvas、postMessage、カメラ（録画時のみ）。媒体は送信・永続保存しない。
+ * cleanup/環境: session付きmessage、object URL、録画streamを離脱時に破棄する。H-003/H-004/H-006/H-007/H-014/H-019/H-020/H-023/H-025/H-042を確認する。
+ */
+function S710Stage(props: Props) {
+  const problems = [
+    props.boxes.B01,
+    props.boxes.B02,
+    props.boxes.B03,
+    props.boxes.B04,
+  ] as const;
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const session = useMemo(() => crypto.randomUUID(), []);
+  const [iframeHeight, setIframeHeight] = useState(560);
+  const [answer, setAnswer] = useState("");
+  const toolUrl = useMemo(() => {
+    const url = new URL("./tools/s710/index.html", document.baseURI);
+    url.searchParams.set("session", session);
+    url.searchParams.set("locale", props.locale);
+    return url.href;
+  }, [props.locale, session]);
+
+  useEffect(() => {
+    const receive = (event: MessageEvent<unknown>) => {
+      if (
+        event.origin !== location.origin ||
+        event.source !== iframeRef.current?.contentWindow ||
+        !event.data ||
+        typeof event.data !== "object"
+      )
+        return;
+      const message = event.data as Partial<S710LayoutMessage>;
+      if (
+        message.channel !== "busybox-s710-tool" ||
+        message.type !== "layout" ||
+        message.session !== session ||
+        typeof message.height !== "number" ||
+        !Number.isFinite(message.height)
+      )
+        return;
+      setIframeHeight(Math.max(560, Math.ceil(message.height)));
+    };
+    window.addEventListener("message", receive);
+    return () => window.removeEventListener("message", receive);
+  }, [session]);
+
+  return (
+    <div className="puzzle s710-stage">
+      <div className="problem-row">
+        {problems.map((problem) => (
+          <StageProblemGiftBox
+            key={problem.id}
+            box={problem}
+            locale={props.locale}
+          />
+        ))}
+      </div>
+      <iframe
+        ref={iframeRef}
+        className="s710-tool-frame"
+        src={toolUrl}
+        title={stageText(props.locale, locale.iframeTitle)}
+        allow="camera"
+        loading="lazy"
+        sandbox="allow-scripts allow-same-origin allow-downloads"
+        style={{ height: iframeHeight }}
+      />
+      <label className="parallel-answer s710-answer">
+        {stageText(props.locale, locale.answer)}
+        <input
+          value={answer}
+          placeholder={stageText(props.locale, locale.placeholder)}
+          onChange={(event) => {
+            const next = event.currentTarget.value;
+            setAnswer(next);
+            const normalized = next.trim().toLowerCase();
+            const kind = flagKinds.find(
+              (candidate) => s710Flags[candidate] === normalized,
+            );
+            if (!kind) return;
+            const index =
+              kind === "dark"
+                ? 0
+                : kind === "broken"
+                  ? 1
+                  : kind === "qr"
+                    ? 2
+                    : 3;
+            problems[index]?.solve();
+          }}
+        />
+      </label>
+    </div>
+  );
+}
+
+export const stage = defineStageModule(manifest, {
+  boxes: {
+    [manifest.box.B01]: {
+      icon: VisibilityOffOutlined,
+      color: "#f8fafc",
+      label: locale.B01,
+    },
+    [manifest.box.B02]: {
+      icon: FileDownloadOutlined,
+      color: "#94a3b8",
+      label: locale.B02,
+    },
+    [manifest.box.B03]: {
+      icon: DevicesOutlined,
+      color: "#64748b",
+      label: locale.B03,
+    },
+    [manifest.box.B04]: {
+      icon: FileUploadOutlined,
+      color: "#475569",
+      label: locale.B04,
+    },
+  },
+  probe: () =>
+    safeCapabilityProbe(() =>
+      "MediaRecorder" in window && "HTMLVideoElement" in window
+        ? "available"
+        : "unsupported",
+    ),
+  Component: S710Stage,
+});

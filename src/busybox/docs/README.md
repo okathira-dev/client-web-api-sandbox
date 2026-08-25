@@ -5,7 +5,7 @@
 
 ## 現行確認に使う資料
 
-- 現行ステージ解法仕様: 各 `stages/S-xxx.tsx` の直前にある日本語JSDoc。プレイヤーが何を見て、何を操作し、どの箱が開くかをここに集約する。
+- 現行ステージ解法仕様: 各 `stages/S-xxx/stage.tsx` の直前にある日本語JSDoc。プレイヤーが何を見て、何を操作し、どの箱が開くかをここに集約する。
 - [ステージ実装状況](./stage-implementation-status.md): stage・boxの現行ID、API、状態、人手確認ID。
 - [現状・残問題・人手確認への引継ぎ](./current-status-and-handoff.md): 最新の実装状態、未解決事項、次の確認順。
 - [検証記録](./verification-record.md): 自動検証と人手確認の証跡。
@@ -36,6 +36,6 @@
 
 ## 実装側の正本
 
-プレイヤー向けの表示文言は各 stage の隣にある `S-xxx.locale.ts` へsemantic keyで置く。ステージ名は `stageName`、箱名は `B01` のような問題ID末尾キーとし、`stages/metadataLocale.ts` が `StageSpec` / `ProblemSpec` のIDから解決する。共通UIは `ui/locale.ts`、状態語は `ui/statusLocale.ts`、S-710の独立ツールは `tools/s710/locale.ts` を正本とする。
-プレイヤーの解法と実装意図は、各 `S-xxx.tsx` の一つの日本語JSDocに、API・成功条件・negative case・権限・保存／送信・cleanup・人手確認IDを分けて記録する。共通`hint`キーは未使用のため置かず、ヒントUIの設計が確定した問題だけに追加する。
+プレイヤー向けの表示文言は各stageフォルダの `locale.ts` へsemantic keyで置く。ステージ名は `stageName`、箱名はローカルID `B01` のようなkeyとし、`manifest.ts` と遅延stage moduleが直接利用する。共通UIは `ui/locale.ts`、状態語は `ui/statusLocale.ts`、S-710の独立ツールは `tools/s710/locale.ts` を正本とする。
+プレイヤーの解法と実装意図は、各 `S-xxx/stage.tsx` の一つの日本語JSDocに、API・成功条件・権限・保存／送信・cleanup・人手確認IDを分けて記録する。`manifest.ts` は箱の数とローカルIDだけを公開し、箱のアイコン・色・意味・配置・解法はstage moduleが所有する。
 表示文言とJSDocを同じ文章の重複コピーとして扱わない。

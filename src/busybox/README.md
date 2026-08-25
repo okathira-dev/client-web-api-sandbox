@@ -9,7 +9,7 @@ _A new kind of puzzle game where the browser itself is the key._
 ## 現在の状態
 
 Viteのマルチページ構成へ独立した入口を持つReactアプリとして実装中。
-現在はアプリシェル、日英表示、ステージ台帳、基本ナビゲーション、IndexedDB進捗スキーマ、進捗の書き出し・初期化、共通ステージランタイム、入場ごとに再挑戦できる89ステージ・203箱、mind map型ステージ一覧、Busybox scope限定のPWA、任意のGoogle Driveバックアップを備える。
+現在はアプリシェル、日英表示、ステージ台帳、基本ナビゲーション、IndexedDB進捗スキーマ、進捗の書き出し・初期化、共通ステージランタイム、入場ごとに再挑戦できる89ステージ・204箱、ステージ一覧、Busybox scope限定のPWA、任意のGoogle Driveバックアップを備える。
 
 2026-08-11時点では、現環境で確認できた範囲の実装と自動検証を終え、実ブラウザ・実機での人手確認とUI品質確認を進める段階である。残問題、確認順、旧資料の扱いは[現状・残問題・人手確認への引継ぎ](./docs/current-status-and-handoff.md)を参照する。
 
@@ -17,8 +17,9 @@ Viteのマルチページ構成へ独立した入口を持つReactアプリと�
 
 ## ステージ実装の境界
 
-- 個別ステージはIDだけを使った `stages/S-xxx.tsx` に1ファイルずつ置く。
-- `StageSpec` と `ProblemSpec` は静的・不変な台帳、`ProblemHandle` は今回の入場だけの状態と解決操作を表す。
+- 個別ステージは `stages/S-xxx/` を一つの境界にし、`manifest.ts`、`locale.ts`、`stage.tsx` と隣接する補助ロジック・テストを置く。
+- `StageManifest` はID・表示名・play条件・ローカル箱IDだけを公開し、遅延ロードする `StageModule` が箱のアイコン、色、配置、解法を所有する。
+- `StageBoxHandle` は今回の入場だけの箱の状態と解決操作を表す。保存時は `stageId` とローカル `Bxx` を分けて保持する。
 - 日英のステージラベルは表示専用で、ファイル名、変数名、URL、保存ID、テスト名には使わない。
 - 共通処理は複数ステージで同じ意味とライフサイクルを持つ場合だけ `stages/shared/` へ置く。
 - 事前生成可能な動画・音声・画像は生成手順と形式・寸法・内容などの意味検証を添えてGit管理し、player入力やlive同期に依存する媒体だけを実行時生成する。Gitのコミットが固定assetの版管理を担い、ゲーム判定そのものではないSHA一覧は別管理しない。
@@ -32,14 +33,14 @@ Viteのマルチページ構成へ独立した入口を持つReactアプリと�
 | 文書 | 役割 |
 | --- | --- |
 - [ドキュメント入口](./docs/README.md) | 現行資料と履歴資料の境界、読む順番、実装JSDocとlocaleの規約 |
-| 現行ステージ解法 | 各S-xxx.tsxのdefault component直前にある日本語JSDocを正本とする |
+| 現行ステージ解法 | 各`stages/S-xxx/stage.tsx`のコンポーネント直前にある日本語JSDocを正本とする |
 | [現状メモ・人手確認への引継ぎ](./docs/current-status-and-handoff.md) | 一通りのコード化後に未確認の範囲、確認順、変更時の留意点を共有する |
 | [企画・プロダクト仕様](./docs/product-spec.md) | 体験、対象、スコープ、日英コピーを定義する |
 | [アーキテクチャ判断](./docs/architecture-decisions.md) | ローカル保存、Drive連携、配信、ステージ分離の方針を定義する |
 | [ステージ実装状況](./docs/stage-implementation-status.md) | コード化、自動確認、人手確認待ちを区別する |
 | [ステージ仕様テンプレート](./docs/stage-spec-template.md) | 各ステージの意図、権限、後片付け、検証を同じ形式で記録する |
 | [問題箱の形状と再挑戦モデル](./docs/problem-box-state-model.md) | 全問題で共通する箱形状、リボン、入場単位の開閉を定義する |
-| [ステージMind Map設計](./docs/stage-map-design.md) | ステージ同士の近さと手掛かり関係を示す一覧地図を定義する |
+| ステージ一覧 | `runtime/stage-index.generated.ts` と各 `stages/S-xxx/manifest.ts` を正本とし、対応状況ごとの独立グループで表示する |
 | [人手確認台帳](./docs/human-test-matrix.md) | 自動テストだけでは保証できない環境・権限・機器の確認を管理する |
 | [検証記録](./docs/verification-record.md) | 自動チェック、ブラウザシナリオ、未実施ゲートの証跡を残す |
 | [リリース準備状況](./docs/release-readiness.md) | 実装完了範囲と公開を止める外部条件を分離する |

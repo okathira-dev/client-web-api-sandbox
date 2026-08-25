@@ -1,5 +1,5 @@
 import { readFile } from "node:fs/promises";
-import { hasS900CorrectOrder } from "../../stages/S-900.functions";
+import { hasS900CorrectOrder } from "../../stages/S-900/functions";
 
 const assetRoot = new URL("./assets/", import.meta.url);
 const webmHeader = Buffer.from([0x1a, 0x45, 0xdf, 0xa3]);

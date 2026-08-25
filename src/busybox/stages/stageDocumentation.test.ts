@@ -1,19 +1,22 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { stageIndex } from "../runtime/stage-index.generated";
 
 const stageDirectory = join(process.cwd(), "src", "busybox", "stages");
-const stageFiles = readdirSync(stageDirectory)
-  .filter((name) => /^S-\d{3}\.tsx$/.test(name))
+const stageIds = readdirSync(stageDirectory)
+  .filter((name) => /^S-\d{3}$/.test(name))
   .sort();
 
 describe("stage documentation coverage", () => {
   it("keeps every shipped stage beside a locale bundle and MECE Japanese solution JSDoc", () => {
-    expect(stageFiles).toHaveLength(89);
-    for (const file of stageFiles) {
-      const id = file.slice(0, -4);
-      const source = readFileSync(join(stageDirectory, file), "utf8");
+    expect(stageIds).toEqual(stageIndex.map((stage) => stage.id));
+    for (const id of stageIds) {
+      const source = readFileSync(
+        join(stageDirectory, id, "stage.tsx"),
+        "utf8",
+      );
       const localeSource = readFileSync(
-        join(stageDirectory, `${id}.locale.ts`),
+        join(stageDirectory, id, "locale.ts"),
         "utf8",
       );
       expect(localeSource).toMatch(/ja:/);

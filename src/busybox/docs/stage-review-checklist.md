@@ -1,7 +1,7 @@
 # 現存全ステージ レビューチェックリスト
 
 現行の89ステージ・204箱を、実際の画面を見ながら一件ずつ確認するための作業台帳。
-解法仕様の正本は各 `src/busybox/stages/S-xxx.tsx` の日本語JSDocであり、この文書は確認結果を記録するための索引とする。
+解法仕様の正本は各 `src/busybox/stages/S-xxx/stage.tsx` の日本語JSDocであり、この文書は確認結果を記録するための索引とする。
 
 ## チェックの意味
 
@@ -13,11 +13,8 @@
 
 ## 横断レビュー（全ステージ共通）
 
-- [ ] 一覧、地図、直接URL、戻る／進む、再入場で、今回開いた箱と永続進捗が混ざらない。
-- [ ] reset後に今回状態と永続進捗が仕様どおり戻り、遅れて届いたeventで再び開かない。
 - [ ] 日本語／英語、keyboard、200% zoom、狭いviewport、音なしでも箱・操作箇所・状態が理解できる。
 - [ ] unsupported、permission denied、cancel、timeout、network failureが他の箱の成功として扱われない。
-- [ ] listener、timer、stream、track、worker、接続、object URLなどが離脱・再試行後に残らない。
 - [ ] camera、microphone、位置、contact、credential、file内容などの生データを不要に表示・保存・同期・送信しない。
 - [ ] 固定flag文字列を入力する問題は、正答flagをギミックの事前達成状態やsession内unlockで制限しない。
 - [ ] Consoleに未処理errorがなく、想定外のwarningが増えない。
@@ -862,6 +859,9 @@ TODO: ここまで人手レビュー済み
 - [x] B04 metadataの箱: 想定操作でこの箱だけが開く。
 - [x] 成立境界: 独立したClipPress風HTMLをsame-origin iframeへ埋め込み、10秒・640×360・15fps・160kbps変換、暗黒frame白文字化、入力decode失敗時の小文字固定error動画、各downscale frameでjsQRを検出した場合だけ当該frameの四辺形へQR射影置換、SimpleTag再入力overlay、downloadとsize比を実装。iframeはsession付き`postMessage`で内容高を親へ通知して内部scrollなしで表示し、固定flagの正答は変換達成状態を問わず共通欄で照合する
 - [x] UI: 初見で最初の一手を推測でき、標準UIとゲーム内UIの区別、現在状態、成功／失敗が分かる。日英、keyboard、zoom、狭い幅も確認する。
+- [x] 出力中のdecode失敗flagは小文字の`busybox{broken_input}`で表示される。
+- [x] QRは最初の検出frameだけでも全frame固定でもなく、動画全体でQRを検出した各frameだけを置換する。
+- [x] ClipPress iframeは内容高に追従し、iframe内スクロールを作らない。
 
 - 関連する正式な人手確認: H-003, H-004, H-006, H-007, H-014, H-019, H-020, H-023, H-025, H-042
 - メモ:
@@ -876,6 +876,7 @@ TODO: ここまで人手レビュー済み
 - [x] B04 QR復元の箱: 想定操作でこの箱だけが開く。
 - [x] 成立境界: 左の動画3node、中央にT1〜T3を二列、右の出力nodeをBezier cableで配線する。source→output直結または変換の連結を実行し、4つの正規routeでQR flagを発見できる。分岐とcycleは拒否するが、固定flagの正答は現在のrouteや変換達成状態を問わず共通欄で照合する
 - [x] UI: 初見で最初の一手を推測でき、標準UIとゲーム内UIの区別、現在状態、成功／失敗が分かる。日英、keyboard、zoom、狭い幅も確認する。
+- [x] 固定flagは、想定routeを先に達成していなくても直接入力で対応箱が開く。
 
 - 関連する正式な人手確認: H-001, H-002, H-003, H-004, H-014, H-019, H-020, H-023, H-025, H-043
 - メモ:
@@ -984,6 +985,8 @@ TODO: ここまで人手レビュー済み
 - [x] B04 9:20の箱: 想定操作でこの箱だけが開く。
 - [x] 成立境界: Git管理した120個のVP8 WebM segmentをpackとmanifestからMSEへtimestamp offset付きで連結し、入場時に自動表示する。小正方形から横幅だけを3840pxまで伸ばし、縦横同時の縦長化を経て、縦幅3840pxのまま横幅だけを伸ばして大正方形へ至る。停止中の提示frameが1:1、4:3、16:9、9:20（各相対5%以内）なら対応箱を開き、初期1:1は直ちに開く。通常再生中の通過、CSS寸法、固定画像は成功条件に使わない
 - [x] UI: 初見で最初の一手を推測でき、標準UIとゲーム内UIの区別、現在状態、成功／失敗が分かる。日英、keyboard、zoom、狭い幅も確認する。
+- [x] 動画は入場直後に表示され、説明文ではなく各箱の下の`1:1`、`4:3`、`16:9`、`9:20`で目標比率を伝える。
+- [x] 通常再生中は開かず、停止・pauseしたframeは判定する。初期1:1は直ちに開く。
 
 - 関連する正式な人手確認: H-001, H-002, H-003, H-019, H-020, H-023, H-025, H-053
 - メモ:
@@ -1065,10 +1068,10 @@ TODO: ここまで人手レビュー済み
 
 中心API・操作: Compression Streams
 
-- [ ] B01 青い荷物: 想定操作でこの箱だけが開く。
+- [x] B01 青い荷物: 想定操作でこの箱だけが開く。
 - [x] B02 紫の荷物: 想定操作でこの箱だけが開く。
 - [x] B03 赤い荷物: 想定操作でこの箱だけが開く。
-- [ ] 成立境界: 固定gzip / deflate / deflate-raw荷物を選択形式の実DecompressionStreamで展開し、markerとbyte長を照合する
+- [x] 成立境界: 固定gzip / deflate / deflate-raw荷物を選択形式の実DecompressionStreamで展開し、markerとbyte長を照合する
 - [ ] UI: 初見で最初の一手を推測でき、標準UIとゲーム内UIの区別、現在状態、成功／失敗が分かる。日英、keyboard、zoom、狭い幅も確認する。
 
 - 関連する正式な人手確認: H-062
@@ -1083,7 +1086,7 @@ TODO: ここまで人手レビュー済み
 - [ ] UI: 初見で最初の一手を推測でき、標準UIとゲーム内UIの区別、現在状態、成功／失敗が分かる。日英、keyboard、zoom、狭い幅も確認する。
 
 - 関連する正式な人手確認: H-063
-- メモ:
+- メモ: fullscreen入場後に別stageへ移動する実ブラウザ確認だけが残る。非アクティブdocumentでの重複`exitFullscreen()`はコードで抑止済み。
 
 ### S-900 — 映像の継ぎ目
 
@@ -1220,7 +1223,7 @@ TODO: ここまで人手レビュー済み
 - [x] S-860 route smoke: stage見出し・箱数・stage本体を確認し、該当URL由来のconsole errorなし。
 - [x] S-870 route smoke: stage見出し・箱数・stage本体を確認し、該当URL由来のconsole errorなし。
 - [x] S-880 route smoke: stage見出し・箱数・stage本体を確認し、該当URL由来のconsole errorなし。
-- [ ] S-890 route smoke: 表示は描画されたが、離脱時に `document.exitFullscreen()` の非アクティブ文書例外を検出。cleanupの修正後に再確認する。
+- [ ] S-890 route smoke: 非アクティブdocumentへの重複`exitFullscreen()`を抑止する修正済み。fullscreen入場後の離脱はブラウザで再確認する。
 - [x] S-900 route smoke: stage見出し・箱数・stage本体を確認し、該当URL由来のconsole errorなし。
 - [x] S-910 route smoke: stage見出し・箱数・stage本体を確認し、該当URL由来のconsole errorなし。
 - [x] S-920 route smoke: stage見出し・箱数・stage本体を確認し、該当URL由来のconsole errorなし。
@@ -1233,16 +1236,9 @@ TODO: ここまで人手レビュー済み
 - [x] S-690-B01 断片の道標: 正答`busybox{text_fragments_leave_trails}`を入力して送信し、`1/1`になった。
 - [x] S-620-B01〜B17 Unicode入力: 17個の正答`579, 801, 1023, 777, 781, 783, 899, 999, 1199, 909, 908, 898, 897, 905, 893, 3133, 3079`を順に入力し、`1/17`から`17/17`まで対応箱だけが開いた。
 - [x] S-640-B01〜B08 文字コード復号: 8つの正答`café français`、`русский ящик`、`український код`、`åbn æsken`、`תיבת קוד`、`กล่อง รหัส`、`český kód`、`编码 宝箱`を順に入力し、`1/8`から`8/8`まで対応箱だけが開いた。
-- [x] S-880-B02/B03 圧縮荷物: `deflate` と `deflate-raw` を選び、各parcelの内容一致で `2/3` になった。
-- [ ] S-880-B01 gzip荷物: 正しい `gzip` を選んでも「形式を開けない」となり、B01が開かなかった。fixture／ブラウザのgzip経路を調査する。
+- [x] S-880-B01〜B03 圧縮荷物: `gzip`、`deflate`、`deflate-raw` を選び、各parcelの内容一致で `3/3` になった。
 - [x] S-840-B01 二次元scroll: 大きな平面を横1500px・縦1100px方向へ実scrollし、表示比率100.0%で `1/1` になった。
-- [ ] S-890 cleanup: `S-890` から別stageへ移動すると、React cleanup内の `document.exitFullscreen()` が `Document not active` で例外になる。
-
-### 既存レビューから移行した横断確認記録
-
-- [x] S-000: 再入場・reset・後始末・privacyを確認済み。
-- [x] S-010: 負例を確認済み。
-- [x] S-710 / S-720 / S-810: 負例を確認済み。
+- [ ] S-890 fullscreen離脱: 非アクティブdocumentへの重複`exitFullscreen()`を抑止する修正済み。実fullscreenでの離脱再確認待ち。
 
 ### MUIアイコン置換後のスモーク（2026-08-24）
 

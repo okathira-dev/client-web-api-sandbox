@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   createProgressDocument,
+  hasStageMarker,
+  markStage,
   type ProgressDocument,
   parseProgressDocument,
-  recordObservation,
   solveBox,
 } from "../domain/progress";
 import type { Locale } from "../i18n";
@@ -24,8 +25,9 @@ export interface ProgressController {
   document: ProgressDocument;
   storageState: StorageState;
   setLocale(locale: Locale): void;
-  solve(boxId: string, facts?: readonly string[]): void;
-  observe(observationId: string, facts?: readonly string[]): void;
+  solve(stageId: string, boxId: string): void;
+  hasMarker(stageId: string, marker: string): boolean;
+  mark(stageId: string, marker: string): void;
   replaceDocument(
     change: (current: ProgressDocument) => ProgressDocument,
   ): void;
@@ -67,7 +69,6 @@ export function useProgress(
 
         setDocument(parsed.document);
         setStorageState("ready");
-        if (parsed.migrated) await storeRef.current.save(parsed.document);
       })
       .catch(() => {
         if (active) setStorageState("unavailable");
@@ -99,7 +100,6 @@ export function useProgress(
           ? current
           : {
               ...current,
-              updatedAt: new Date().toISOString(),
               settings: { ...current.settings, locale },
             },
       );
@@ -117,17 +117,21 @@ export function useProgress(
   }, [document.settings.locale]);
 
   const solve = useCallback(
-    (boxId: string, facts: readonly string[] = []) => {
-      replaceDocument((current) => solveBox(current, boxId, facts));
+    (stageId: string, boxId: string) => {
+      replaceDocument((current) => solveBox(current, stageId, boxId));
     },
     [replaceDocument],
   );
 
-  const observe = useCallback(
-    (observationId: string, facts: readonly string[] = []) => {
-      replaceDocument((current) =>
-        recordObservation(current, observationId, facts),
-      );
+  const hasMarker = useCallback(
+    (stageId: string, marker: string) =>
+      hasStageMarker(document, stageId, marker),
+    [document],
+  );
+
+  const mark = useCallback(
+    (stageId: string, marker: string) => {
+      replaceDocument((current) => markStage(current, stageId, marker));
     },
     [replaceDocument],
   );
@@ -137,7 +141,8 @@ export function useProgress(
     storageState,
     setLocale,
     solve,
-    observe,
+    hasMarker,
+    mark,
     replaceDocument,
     reset,
   };
