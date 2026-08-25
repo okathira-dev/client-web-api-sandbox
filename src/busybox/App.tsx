@@ -1,17 +1,12 @@
 import { useEffect, useState } from "react";
-import { countSolvedBoxes, deriveStageProgress } from "./domain/stageRuntime";
+import { countSolvedBoxes } from "./domain/stageRuntime";
 import { useDriveBackup } from "./hooks/useDriveBackup";
-import { type ProgressController, useProgress } from "./hooks/useProgress";
+import { useProgress } from "./hooks/useProgress";
 import { useServiceWorker } from "./hooks/useServiceWorker";
 import { detectLocale, messages, productCopy } from "./i18n";
 import { ManifestStageHost } from "./runtime/ManifestStageHost";
 import { stageIndex } from "./runtime/stage-index.generated";
-import {
-  deriveStageAccessKind,
-  type StageManifest,
-} from "./runtime/stageContract";
-import { GiftBox, type GiftBoxState } from "./ui/GiftBox";
-import { stageCardLabel, uiText } from "./ui/locale";
+import { uiText } from "./ui/locale";
 import { StageCatalogue } from "./ui/StageCatalogue";
 
 type View = "stages" | "settings" | "about";
@@ -174,26 +169,17 @@ export function App() {
             onBack={showStageList}
           />
         ) : view === "stages" ? (
-          <section aria-labelledby={headingIds.stages}>
-            <div className="section-heading">
-              <h2 id={headingIds.stages}>{copy.stages}</h2>
-              <p>
-                {copy.progress}: {solvedCount} / {totalBoxCount}
-              </p>
-            </div>
-            <StageCatalogue
-              locale={locale}
-              stages={stageIndex}
-              renderStage={(stage) => (
-                <StageCard
-                  stage={stage}
-                  locale={locale}
-                  stages={progress.document.stages}
-                  onOpen={openStage}
-                />
-              )}
-            />
-          </section>
+          <StageCatalogue
+            headingId={headingIds.stages}
+            heading={copy.stages}
+            progressLabel={copy.progress}
+            solvedCount={solvedCount}
+            totalBoxCount={totalBoxCount}
+            locale={locale}
+            stages={stageIndex}
+            progressStages={progress.document.stages}
+            onOpen={openStage}
+          />
         ) : null}
 
         {view === "settings" && (
@@ -359,67 +345,5 @@ export function App() {
         )}
       </main>
     </div>
-  );
-}
-
-interface StageCardProps {
-  stage: StageManifest;
-  locale: "ja" | "en";
-  stages: ProgressController["document"]["stages"];
-  onOpen(stageId: string): void;
-}
-
-function StageCard({ stage, locale, stages, onOpen }: StageCardProps) {
-  const copy = messages[locale];
-  const boxIds = stage.boxIds;
-  const solvedBoxIds = new Set(stages[stage.id]?.solvedBoxIds ?? []);
-  const accessKind = deriveStageAccessKind(stage.platform);
-  const state = deriveStageProgress(boxIds, solvedBoxIds);
-  const status =
-    state === "solved"
-      ? copy.solved
-      : state === "partial"
-        ? copy.partial
-        : copy.available;
-  const giftState: GiftBoxState =
-    state === "solved" ? "open" : state === "partial" ? "closed" : "ribboned";
-  const solvedBoxes = boxIds.filter((boxId) => solvedBoxIds.has(boxId)).length;
-
-  return (
-    <article
-      className={`stage-card stage-card--${accessKind}`}
-      data-progress={state}
-    >
-      <GiftBox
-        state={giftState}
-        color="var(--stage-access-color, #60a5fa)"
-        label={`${stage.name[locale]}: ${status}`}
-        size="compact"
-        decorative
-      />
-      <div className="stage-card__text">
-        <div className="stage-card__meta">
-          <p className="stage-card__id">{stage.id}</p>
-          <p className="stage-card__progress">
-            {solvedBoxes}/{boxIds.length}
-          </p>
-        </div>
-        <h3>{stage.name[locale]}</h3>
-      </div>
-      <button
-        type="button"
-        className="stage-card__hit-area"
-        onClick={() => onOpen(stage.id)}
-        aria-label={stageCardLabel(
-          locale,
-          stage.name[locale],
-          solvedBoxes,
-          boxIds.length,
-          status,
-        )}
-      >
-        <span className="sr-only">{copy.start}</span>
-      </button>
-    </article>
   );
 }
