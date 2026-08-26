@@ -23,5 +23,9 @@ jobs:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
       - name: Setup toolchain
         uses: ./.github/actions/setup-node-npm
-      - run: npm run build
-      - run: npm run check
+      - name: Check
+        run: npm run check
+      - name: Test
+        run: npm run test:ci
+      - name: Build
+        run: npm run build
