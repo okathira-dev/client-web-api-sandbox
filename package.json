@@ -51,7 +51,7 @@
     "react-dom": "^19.3.0",
     "react-i18next": "^15.7.4",
     "react-xml-viewer": "^3.0.5",
-    "three": "^0.185.1",
+    "three": "^0.186.0",
     "tone": "^15.5.36",
     "xpath": "^0.0.34"
   },
