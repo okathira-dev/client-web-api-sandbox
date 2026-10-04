@@ -177,8 +177,10 @@ export const ResultTableHeader = ({
           checked={allSelected}
           indeterminate={someSelected}
           disabled={selectionDisabled}
-          inputProps={{ "aria-label": t("table.selectAll") }}
           onChange={onToggleAll}
+          slotProps={{
+            input: { "aria-label": t("table.selectAll") },
+          }}
         />
       </Box>
 

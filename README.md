@@ -11,17 +11,19 @@ npm run dev
 - GitHub Actions の外部 `uses:` はタグではなく **コミット SHA（40 桁）** で固定する。
 - CI の依存取得は [`.github/actions/setup-node-npm`](./.github/actions/setup-node-npm) に集約し、その中で [Takumi Guard（匿名モード）](https://github.com/flatt-security/setup-takumi-guard-npm) を有効化したあと `npm ci` を実行する。
 - Dependabot は [`.github/dependabot.yml`](./.github/dependabot.yml) で `npm` と `github-actions` の両方に `cooldown: 3 days` を設定している。
-- Node / npm の想定下限は `package.json` の `engines` を参照する（CI の `actions/setup-node` は `node-version-file: package.json` を使用）。
+- 開発環境とCIのNode / npmは `package.json` の `volta` に固定する。Voltaを使用する開発環境ではプロジェクトに入ると同じ版が選ばれ、CIは `node-version-file: package.json` とnpmの明示インストールで同じ版を使用する。
+- `engines.node` と `@types/node` は採用したNode LTSのメジャーに揃える。LTSの更新時は `volta.node`・`volta.npm`・`engines` を一緒に更新し、チェック・テスト・ビルドを確認する。
 
 ### Actions の更新ルール
 
 - `uses: owner/repo@<40桁SHA>` のみで指定する。
 
-## `package.json` の `overrides`（`fast-xml-parser`）
+## 依存更新の互換性と検証
 
-[`react-xml-viewer`](https://www.npmjs.com/package/react-xml-viewer) は自身の依存として **古い `fast-xml-parser`**（例: 5.4.x）を指定している一方、本リポジトリでは [`kojo-xml-viewer`](./src/kojo-xml-viewer) の自前パース用にルートで **`fast-xml-parser@^5.5.9`** を直接依存している。
-
-[`overrides`](https://docs.npmjs.com/cli/v10/configuring-npm/package-json#overrides) で `react-xml-viewer` 配下に入る `fast-xml-parser` の解決を **5.5.9 に固定**し、ツリー内の二重バージョンと `npm audit` 上の扱いをルートの直接依存と揃えている。`overrides` を外す・バージョンを変える場合は `package-lock.json` と監査結果を確認すること。
+- TypeScriptは `ts-jest` が対応するCompiler APIの範囲に留める。DependabotのTypeScript 7以降の除外は、対応確認後に解除する。
+- Jestは `src` のテストだけを収集する。リポジトリ内の別作業用チェックアウトを重複実行しない。
+- MarkuplintのJSX設定では、Reactの `onXxx` コールバックをHTMLの文字列イベント属性と区別する。HTMLファイルにはこの例外を適用しない。
+- `npm audit` は実行時依存と開発用依存を分けて確認する。Markuplint 5のAstroパーサー経由の `braces` には、2026-10-04時点で[未修正のDoS問題](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm)がある。このプロジェクトではAstroパーサーを使用せず、チェック対象のglobも固定している。上流の修正後にロックファイルを更新して再監査する。
 
 ## プロジェクトフォルダ
 

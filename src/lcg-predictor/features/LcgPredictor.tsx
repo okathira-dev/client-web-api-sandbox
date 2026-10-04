@@ -387,14 +387,22 @@ export function LcgPredictor() {
               <MenuItem value="all-unknown">すべてのパラメータが未知</MenuItem>
             </Select>
           </FormControl>
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            sx={{
+              color: "text.secondary",
+            }}
+          >
             未知のパラメータによって、必要な乱数値の数が変わります
           </Typography>
           {predictionMode === "all-unknown" && (
             <Typography
               variant="caption"
-              color="text.secondary"
-              sx={{ display: "block", mt: 0.5 }}
+              sx={{
+                color: "text.secondary",
+                display: "block",
+                mt: 0.5,
+              }}
             >
               ※
               すべてのパラメータが未知の場合、計算は確率的処理に基づくため、入力値によっては正確なパラメータを求められない場合があります。
@@ -434,8 +442,11 @@ export function LcgPredictor() {
             </FormControl>
             <Typography
               variant="caption"
-              color="text.secondary"
-              sx={{ display: "block", mt: 0.5 }}
+              sx={{
+                color: "text.secondary",
+                display: "block",
+                mt: 0.5,
+              }}
             >
               ※
               プリセットの名前と値は例示的なものであり、実際のシステムの正確なパラメータではない場合があります。
@@ -446,7 +457,7 @@ export function LcgPredictor() {
             <Typography variant="subtitle1">パラメータ設定</Typography>
             <Grid container spacing={2}>
               {!isMultiplierUnknown && (
-                <Grid item xs={4}>
+                <Grid size={{ xs: 4 }}>
                   <TextField
                     fullWidth
                     label="乗数 (a)"
@@ -460,7 +471,7 @@ export function LcgPredictor() {
                 </Grid>
               )}
               {!isIncrementUnknown && (
-                <Grid item xs={4}>
+                <Grid size={{ xs: 4 }}>
                   <TextField
                     fullWidth
                     label="増分 (c)"
@@ -473,7 +484,7 @@ export function LcgPredictor() {
                 </Grid>
               )}
               {!isModulusUnknown && (
-                <Grid item xs={4}>
+                <Grid size={{ xs: 4 }}>
                   <TextField
                     fullWidth
                     label="法 (m)"

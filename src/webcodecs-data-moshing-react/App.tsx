@@ -19,8 +19,20 @@ export function App() {
           </Link>
         </Box>
 
-        <Box display="flex" flexDirection="column" gap={4}>
-          <Box display="flex" flexWrap="wrap" gap={2}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 4,
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 2,
+            }}
+          >
             <Box>
               <canvas width="640" height="480"></canvas>
             </Box>
@@ -28,7 +40,12 @@ export function App() {
               <canvas width="640" height="480"></canvas>
             </Box>
           </Box>
-          <Box display="flex" gap={2}>
+          <Box
+            sx={{
+              display: "flex",
+              gap: 2,
+            }}
+          >
             <Button variant="contained">Start</Button>
             <Button variant="contained">Stop</Button>
             <Button variant="contained">Play</Button>

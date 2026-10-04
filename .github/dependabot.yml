@@ -22,6 +22,13 @@ updates:
     #   https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file#open-pull-requests-limit
     open-pull-requests-limit: 1000
     versioning-strategy: "increase"
+    ignore:
+      # ts-jestのCompiler API対応範囲に合わせる。対応後に解除する。
+      - dependency-name: "typescript"
+        versions: [">=7"]
+      # 開発環境・CIのNode LTSと型のメジャーを揃える。
+      - dependency-name: "@types/node"
+        versions: [">=25"]
     cooldown:
       default-days: 3
       include:
@@ -62,6 +69,9 @@ updates:
       biome:
         patterns:
           - "@biomejs/biome"
+      commitlint:
+        patterns:
+          - "@commitlint/*"
       markuplint:
         patterns:
           - "markuplint"

@@ -62,7 +62,12 @@ export const InspectionRunner = () => {
         <Typography variant="h5" component="h1" gutterBottom>
           {t("app.title")}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography
+          variant="body2"
+          sx={{
+            color: "text.secondary",
+          }}
+        >
           {t("app.description")}
         </Typography>
       </Box>
@@ -92,9 +97,11 @@ export const InspectionRunner = () => {
       <Stack
         direction="row"
         spacing={1.5}
-        flexWrap="wrap"
         useFlexGap
-        alignItems="flex-start"
+        sx={{
+          flexWrap: "wrap",
+          alignItems: "flex-start",
+        }}
       >
         <Button
           variant="contained"

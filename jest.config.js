@@ -1,5 +1,6 @@
 /** @type {import('ts-jest').JestConfigWithTsJest} **/
 export default {
+  roots: ["<rootDir>/src"],
   testEnvironment: "node",
   // parser実装をfetch統一にしたため、Jestではfile://のみsetupで補完する。
   setupFiles: ["<rootDir>/jest.setup.ts"],

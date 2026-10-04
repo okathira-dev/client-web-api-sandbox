@@ -30,7 +30,12 @@ export const References = () => {
       </AccordionSummary>
       <AccordionDetails>
         <Stack spacing={2}>
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            sx={{
+              color: "text.secondary",
+            }}
+          >
             {t("references.description")}
           </Typography>
 
@@ -39,7 +44,12 @@ export const References = () => {
               <Typography variant="subtitle2" component="h3">
                 {t(`references.group.${group.id}`)}
               </Typography>
-              <Typography variant="caption" color="text.secondary">
+              <Typography
+                variant="caption"
+                sx={{
+                  color: "text.secondary",
+                }}
+              >
                 {t(`references.groupNote.${group.id}`)}
               </Typography>
               <Stack component="ul" spacing={0.5} sx={{ m: 0, pl: 3 }}>

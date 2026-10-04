@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "rootDir": ".",
+    "types": ["node", "jest", "emscripten", "dom-mediacapture-transform"],
     "allowJs": true,
     "checkJs": true,
     "target": "ES2024",

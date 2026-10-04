@@ -82,9 +82,11 @@ export const InspectionProgress = () => {
       <CardContent>
         <Stack
           direction="row"
-          justifyContent="space-between"
-          alignItems="baseline"
-          mb={1}
+          sx={{
+            justifyContent: "space-between",
+            alignItems: "baseline",
+            mb: 1,
+          }}
         >
           <Typography variant="subtitle1" component="h2">
             {progress.status
@@ -93,7 +95,12 @@ export const InspectionProgress = () => {
                 })
               : t("runStatus.notStarted")}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            sx={{
+              color: "text.secondary",
+            }}
+          >
             {t("progress.unitCount", {
               completed: progress.completedUnits,
               total: progress.totalUnits || "—",
@@ -120,7 +127,15 @@ export const InspectionProgress = () => {
           sx={{ mb: 1.5 }}
         />
 
-        <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap mb={1.5}>
+        <Stack
+          direction="row"
+          spacing={1}
+          useFlexGap
+          sx={{
+            flexWrap: "wrap",
+            mb: 1.5,
+          }}
+        >
           <Chip
             size="small"
             label={t("progress.elapsed", { value: formatDuration(elapsedMs) })}
@@ -169,8 +184,10 @@ export const InspectionProgress = () => {
             <Stack
               direction="row"
               spacing={1.5}
-              alignItems="center"
-              flexWrap="wrap"
+              sx={{
+                alignItems: "center",
+                flexWrap: "wrap",
+              }}
             >
               <Chip
                 size="small"
@@ -178,15 +195,30 @@ export const InspectionProgress = () => {
                   defaultValue: current.stage,
                 })}
               />
-              <Typography variant="body2" fontFamily="monospace">
+              <Typography
+                variant="body2"
+                sx={{
+                  fontFamily: "monospace",
+                }}
+              >
                 {current.codec}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "text.secondary",
+                }}
+              >
                 {current.label}
               </Typography>
             </Stack>
           ) : (
-            <Typography variant="body2" color="text.secondary">
+            <Typography
+              variant="body2"
+              sx={{
+                color: "text.secondary",
+              }}
+            >
               {t(
                 `progress.idle.${
                   IDLE_KEYS[
@@ -201,10 +233,12 @@ export const InspectionProgress = () => {
         <Stack
           direction="row"
           spacing={1}
-          alignItems="center"
-          justifyContent="space-between"
-          flexWrap="wrap"
           useFlexGap
+          sx={{
+            alignItems: "center",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+          }}
         >
           <Typography variant="subtitle2" component="h3">
             {t("progress.familyHeading")}
@@ -216,10 +250,12 @@ export const InspectionProgress = () => {
             key={kind}
             direction="row"
             spacing={1}
-            alignItems="center"
-            flexWrap="wrap"
             useFlexGap
-            mb={1}
+            sx={{
+              alignItems: "center",
+              flexWrap: "wrap",
+              mb: 1,
+            }}
           >
             <MediaKindIcon kind={kind} />
             {families
@@ -251,16 +287,24 @@ export const InspectionProgress = () => {
               ))}
           </Stack>
         ))}
-        <Typography variant="caption" color="text.secondary" display="block">
+        <Typography
+          variant="caption"
+          sx={{
+            color: "text.secondary",
+            display: "block",
+          }}
+        >
           {t("progress.familyNote")}
         </Typography>
 
         {environment && (
           <Typography
             variant="caption"
-            color="text.secondary"
-            display="block"
-            mt={1.5}
+            sx={{
+              color: "text.secondary",
+              display: "block",
+              mt: 1.5,
+            }}
           >
             {t("progress.environment")}:{" "}
             {environment.browserBrands ?? environment.userAgent}
