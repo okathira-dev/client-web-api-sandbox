@@ -76,7 +76,12 @@ export const LatencyDisplay = () => {
         latencyInfo.lookAhead;
 
   return (
-    <Stack spacing={0.5} alignItems="center">
+    <Stack
+      spacing={0.5}
+      sx={{
+        alignItems: "center",
+      }}
+    >
       <Typography
         variant="body2"
         sx={{ color: "text.secondary", fontSize: "0.9rem" }}

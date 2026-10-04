@@ -27,17 +27,17 @@ export function LcgFormula() {
         </div>
       </Typography>
       <Grid container spacing={2}>
-        <Grid item xs={4}>
+        <Grid size={{ xs: 4 }}>
           <Typography variant="body2">
             <strong>a</strong>: 乗数 (multiplier)
           </Typography>
         </Grid>
-        <Grid item xs={4}>
+        <Grid size={{ xs: 4 }}>
           <Typography variant="body2">
             <strong>c</strong>: 増分 (increment)
           </Typography>
         </Grid>
-        <Grid item xs={4}>
+        <Grid size={{ xs: 4 }}>
           <Typography variant="body2">
             <strong>m</strong>: 法 (modulus)
           </Typography>

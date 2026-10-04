@@ -106,7 +106,12 @@ export function FileUploader({ onFileLoad }: FileUploaderProps) {
             <Typography variant="body1" sx={{ mb: 1 }}>
               ファイルをドラッグ&ドロップするか、クリックして選択してください
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography
+              variant="body2"
+              sx={{
+                color: "text.secondary",
+              }}
+            >
               XMLファイルのみ対応
             </Typography>
           </>

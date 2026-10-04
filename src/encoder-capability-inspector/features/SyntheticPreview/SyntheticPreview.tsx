@@ -45,7 +45,12 @@ const PatternColumn = ({
             : "preview.compatibilityHeading",
         )}
       </Typography>
-      <Typography variant="caption" color="text.secondary">
+      <Typography
+        variant="caption"
+        sx={{
+          color: "text.secondary",
+        }}
+      >
         {t(isSustained ? "preview.sustainedNote" : "preview.compatibilityNote")}
       </Typography>
       <VideoPatternPreview testMode={testMode} playing={playing} />
@@ -87,7 +92,12 @@ export const SyntheticPreview = () => {
       </AccordionSummary>
       <AccordionDetails>
         <Stack spacing={2}>
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            sx={{
+              color: "text.secondary",
+            }}
+          >
             {t("preview.description", {
               width: PREVIEW_VIDEO_WIDTH,
               height: PREVIEW_VIDEO_HEIGHT,
@@ -111,7 +121,14 @@ export const SyntheticPreview = () => {
             </Button>
           </Box>
 
-          <Stack direction="row" spacing={3} flexWrap="wrap" useFlexGap>
+          <Stack
+            direction="row"
+            spacing={3}
+            useFlexGap
+            sx={{
+              flexWrap: "wrap",
+            }}
+          >
             <PatternColumn
               testMode="compatibility"
               playing={active && playing}
@@ -124,7 +141,12 @@ export const SyntheticPreview = () => {
             />
           </Stack>
 
-          <Typography variant="caption" color="text.secondary">
+          <Typography
+            variant="caption"
+            sx={{
+              color: "text.secondary",
+            }}
+          >
             {t("preview.volumeNote")}
           </Typography>
         </Stack>

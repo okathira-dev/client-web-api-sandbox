@@ -90,7 +90,12 @@ export const VideoPatternPreview = ({
 
   if (unavailable) {
     return (
-      <Typography variant="body2" color="text.secondary">
+      <Typography
+        variant="body2"
+        sx={{
+          color: "text.secondary",
+        }}
+      >
         {t("preview.unavailable")}
       </Typography>
     );

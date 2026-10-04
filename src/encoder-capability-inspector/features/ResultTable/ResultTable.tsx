@@ -121,11 +121,18 @@ export const ResultTable = () => {
       <Stack
         direction="row"
         spacing={2}
-        alignItems="center"
-        flexWrap="wrap"
         useFlexGap
+        sx={{
+          alignItems: "center",
+          flexWrap: "wrap",
+        }}
       >
-        <Typography variant="body2" color="text.secondary">
+        <Typography
+          variant="body2"
+          sx={{
+            color: "text.secondary",
+          }}
+        >
           {t("table.summary", {
             total: results.length,
             shown: filtered.length,
@@ -135,7 +142,12 @@ export const ResultTable = () => {
         </Typography>
       </Stack>
 
-      <Typography variant="caption" color="text.secondary">
+      <Typography
+        variant="caption"
+        sx={{
+          color: "text.secondary",
+        }}
+      >
         {t("table.budgetHint")}
       </Typography>
 
@@ -164,7 +176,12 @@ export const ResultTable = () => {
 
           {filtered.length === 0 ? (
             <Box sx={{ p: 4, textAlign: "center" }}>
-              <Typography variant="body2" color="text.secondary">
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "text.secondary",
+                }}
+              >
                 {results.length === 0 ? t("table.empty") : t("table.noMatch")}
               </Typography>
             </Box>

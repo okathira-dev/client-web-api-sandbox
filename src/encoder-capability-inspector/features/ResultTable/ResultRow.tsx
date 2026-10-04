@@ -65,10 +65,12 @@ const CaptionText = ({
 }) => (
   <Typography
     variant="caption"
-    color="text.secondary"
     noWrap
-    display="block"
     title={title}
+    sx={{
+      color: "text.secondary",
+      display: "block",
+    }}
   >
     {children}
   </Typography>
@@ -149,16 +151,24 @@ export const ResultRow = memo(
           <Checkbox
             size="small"
             checked={selected}
-            inputProps={{
-              "aria-label": t("table.selectOne", { codec: result.codec }),
-            }}
             onChange={() => {
               onToggle(result.id);
+            }}
+            slotProps={{
+              input: {
+                "aria-label": t("table.selectOne", { codec: result.codec }),
+              },
             }}
           />
         </Box>
         <Box role="cell" sx={{ overflow: "hidden" }}>
-          <Stack direction="row" spacing={0.5} alignItems="center">
+          <Stack
+            direction="row"
+            spacing={0.5}
+            sx={{
+              alignItems: "center",
+            }}
+          >
             <MediaKindIcon kind={getFamilyKind(result.family)} />
             <CellText>
               {t(`family.${result.family}`, { defaultValue: result.family })}
@@ -166,7 +176,13 @@ export const ResultRow = memo(
           </Stack>
         </Box>
         <Box role="cell" sx={{ overflow: "hidden" }}>
-          <Stack direction="row" spacing={0.5} alignItems="center">
+          <Stack
+            direction="row"
+            spacing={0.5}
+            sx={{
+              alignItems: "center",
+            }}
+          >
             <CellText mono title={result.codec}>
               {result.codec}
             </CellText>
@@ -263,7 +279,9 @@ export const ResultRow = memo(
                 variant="caption"
                 color={sustained.usable ? "success.main" : "error.main"}
                 noWrap
-                display="block"
+                sx={{
+                  display: "block",
+                }}
               >
                 {sustained.usable
                   ? t("table.statusPass")

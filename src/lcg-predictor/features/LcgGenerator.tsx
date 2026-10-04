@@ -159,8 +159,11 @@ export function LcgGenerator() {
           </FormControl>
           <Typography
             variant="caption"
-            color="text.secondary"
-            sx={{ display: "block", mt: 0.5 }}
+            sx={{
+              color: "text.secondary",
+              display: "block",
+              mt: 0.5,
+            }}
           >
             ※
             プリセットの名前と値は例示的なものであり、実際のシステムの正確なパラメータではない場合があります。
@@ -170,7 +173,7 @@ export function LcgGenerator() {
         <Box sx={{ marginTop: "16px" }}>
           <Typography variant="subtitle1">パラメータ設定</Typography>
           <Grid container spacing={2}>
-            <Grid item xs={4}>
+            <Grid size={{ xs: 4 }}>
               <TextField
                 fullWidth
                 label="乗数 (a)"
@@ -179,7 +182,7 @@ export function LcgGenerator() {
                 helperText="X_{n+1} = (a * X_n + c) mod m"
               />
             </Grid>
-            <Grid item xs={4}>
+            <Grid size={{ xs: 4 }}>
               <TextField
                 fullWidth
                 label="増分 (c)"
@@ -187,7 +190,7 @@ export function LcgGenerator() {
                 onChange={(e) => handleCustomParamChange("c", e.target.value)}
               />
             </Grid>
-            <Grid item xs={4}>
+            <Grid size={{ xs: 4 }}>
               <TextField
                 fullWidth
                 label="法 (m)"
@@ -205,7 +208,7 @@ export function LcgGenerator() {
         </Typography>
 
         <Grid container spacing={2} sx={{ marginBottom: "16px" }}>
-          <Grid item xs={6}>
+          <Grid size={{ xs: 6 }}>
             <TextField
               fullWidth
               label="シード値"
@@ -214,7 +217,7 @@ export function LcgGenerator() {
               helperText="初期値X_0"
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid size={{ xs: 6 }}>
             <TextField
               fullWidth
               label="生成数"
@@ -222,7 +225,9 @@ export function LcgGenerator() {
               onChange={(e) => setCount(e.target.value)}
               helperText="生成する乱数の数"
               type="number"
-              inputProps={{ min: 1 }}
+              slotProps={{
+                htmlInput: { min: 1 },
+              }}
             />
           </Grid>
         </Grid>

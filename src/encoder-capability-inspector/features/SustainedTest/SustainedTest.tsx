@@ -105,7 +105,13 @@ export const SustainedTest = () => {
         <Typography variant="subtitle1" component="h2" gutterBottom>
           {t("sustained.heading")}
         </Typography>
-        <Typography variant="body2" color="text.secondary" mb={2}>
+        <Typography
+          variant="body2"
+          sx={{
+            color: "text.secondary",
+            mb: 2,
+          }}
+        >
           {t("sustained.description")}
         </Typography>
 
@@ -137,9 +143,11 @@ export const SustainedTest = () => {
         <Stack
           direction="row"
           spacing={1.5}
-          flexWrap="wrap"
           useFlexGap
-          alignItems="flex-start"
+          sx={{
+            flexWrap: "wrap",
+            alignItems: "flex-start",
+          }}
         >
           <TextField
             select
@@ -222,13 +230,19 @@ export const SustainedTest = () => {
         </Stack>
 
         {sustained && (
-          <Box mt={2}>
+          <Box
+            sx={{
+              mt: 2,
+            }}
+          >
             <Stack
               direction="row"
               spacing={1}
-              flexWrap="wrap"
               useFlexGap
-              alignItems="center"
+              sx={{
+                flexWrap: "wrap",
+                alignItems: "center",
+              }}
             >
               <Chip
                 size="small"
@@ -238,7 +252,12 @@ export const SustainedTest = () => {
                   }),
                 })}
               />
-              <Typography variant="body2" color="text.secondary">
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "text.secondary",
+                }}
+              >
                 {t("sustained.statusDetail", {
                   completed: sustained.completedUnits,
                   total: sustained.totalUnits,
@@ -250,22 +269,35 @@ export const SustainedTest = () => {
                 })}
               </Typography>
               {sustained.current && (
-                <Typography variant="body2" fontFamily="monospace">
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontFamily: "monospace",
+                  }}
+                >
                   {sustained.current.codec} / {sustained.current.stage}
                 </Typography>
               )}
             </Stack>
             {sustained.error && (
-              <Typography variant="body2" color="error" mt={0.5}>
+              <Typography
+                variant="body2"
+                color="error"
+                sx={{
+                  mt: 0.5,
+                }}
+              >
                 {describeCode(sustained.error)}
               </Typography>
             )}
             {sustained.source && (
               <Typography
                 variant="caption"
-                color="text.secondary"
-                display="block"
-                mt={0.5}
+                sx={{
+                  color: "text.secondary",
+                  display: "block",
+                  mt: 0.5,
+                }}
               >
                 {t("sustained.sourceLine", {
                   width: sustained.source.width ?? "?",

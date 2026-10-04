@@ -147,7 +147,12 @@ const FactList = ({
         </Typography>
       )}
       {facts.length === 0 ? (
-        <Typography variant="body2" color="text.secondary">
+        <Typography
+          variant="body2"
+          sx={{
+            color: "text.secondary",
+          }}
+        >
           {t("bitrateGuide.noPublishedValue")}
         </Typography>
       ) : (
@@ -162,7 +167,9 @@ const FactList = ({
               <Typography
                 component="span"
                 variant="caption"
-                color="text.secondary"
+                sx={{
+                  color: "text.secondary",
+                }}
               >
                 {t(authorityKey[fact.authority])}
               </Typography>
@@ -195,7 +202,12 @@ const QuantizerDetails = ({
       <Typography variant="subtitle2" gutterBottom>
         {t("bitrateGuide.quantizerHeading")}
       </Typography>
-      <Typography variant="body2" color="text.secondary">
+      <Typography
+        variant="body2"
+        sx={{
+          color: "text.secondary",
+        }}
+      >
         {guidance.qualityDirection === "lowerIsHigherQuality"
           ? t("bitrateGuide.quantizerLowerIsHigherQuality")
           : t("bitrateGuide.quantizerNotApplicable")}
@@ -211,7 +223,12 @@ const QuantizerDetails = ({
         unit="quantizer"
       />
       {guidance.comparisonValue !== null && (
-        <Typography variant="caption" color="text.secondary">
+        <Typography
+          variant="caption"
+          sx={{
+            color: "text.secondary",
+          }}
+        >
           {t("bitrateGuide.quantizerComparisonValue", {
             value: guidance.comparisonValue,
           })}
@@ -231,7 +248,12 @@ export const BitrateGuidanceDetails = ({
   const { t } = useTranslation();
   return (
     <Box sx={{ display: "grid", gap: 1.5 }}>
-      <Typography variant={dialog ? "body2" : "body1"} color="text.secondary">
+      <Typography
+        variant={dialog ? "body2" : "body1"}
+        sx={{
+          color: "text.secondary",
+        }}
+      >
         {guidance.profile}
         {guidance.level ? ` · Level ${guidance.level}` : ""}
       </Typography>
@@ -338,7 +360,12 @@ const BitrateGuideRow = ({
         <Typography variant="body2">
           {t(`family.${guidance.family}`, { defaultValue: guidance.family })}
         </Typography>
-        <Typography variant="caption" color="text.secondary">
+        <Typography
+          variant="caption"
+          sx={{
+            color: "text.secondary",
+          }}
+        >
           {t(`kind.${getFamilyKind(guidance.family)}`)}
         </Typography>
       </Box>
@@ -363,7 +390,12 @@ const BitrateGuideRow = ({
         {guidance.quantizer ? (
           <QuantizerDetails guidance={guidance.quantizer} />
         ) : (
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            sx={{
+              color: "text.secondary",
+            }}
+          >
             —
           </Typography>
         )}
@@ -430,11 +462,22 @@ export const BitrateGuide = () => {
         <Typography variant="h6">{t("bitrateGuide.heading")}</Typography>
       </AccordionSummary>
       <AccordionDetails>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+        <Typography
+          variant="body2"
+          sx={{
+            color: "text.secondary",
+            mb: 2,
+          }}
+        >
           {t("bitrateGuide.description")}
         </Typography>
         <Stack spacing={1}>
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            sx={{
+              color: "text.secondary",
+            }}
+          >
             {t("bitrateGuide.summary", {
               total: entries.length,
               shown: filteredEntries.length,
@@ -461,7 +504,12 @@ export const BitrateGuide = () => {
               />
               {filteredEntries.length === 0 ? (
                 <Box sx={{ p: 4, textAlign: "center" }}>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "text.secondary",
+                    }}
+                  >
                     {t("bitrateGuide.noMatch")}
                   </Typography>
                 </Box>

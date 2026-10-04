@@ -330,7 +330,13 @@ export function App() {
           </FormControl>
         </Stack>
 
-        <Stack direction="row" spacing={4} alignItems="center">
+        <Stack
+          direction="row"
+          spacing={4}
+          sx={{
+            alignItems: "center",
+          }}
+        >
           <Box>
             <Typography variant="body2">Downsample Color</Typography>
             <Switch
@@ -360,7 +366,13 @@ export function App() {
           </Box>
         </Stack>
 
-        <Stack direction="row" spacing={4} alignItems="center">
+        <Stack
+          direction="row"
+          spacing={4}
+          sx={{
+            alignItems: "center",
+          }}
+        >
           <Box>
             <Typography variant="body2">Embed All Fonts</Typography>
             <Switch
@@ -419,7 +431,13 @@ export function App() {
 
         <Divider />
 
-        <Stack direction="row" spacing={2} alignItems="center">
+        <Stack
+          direction="row"
+          spacing={2}
+          sx={{
+            alignItems: "center",
+          }}
+        >
           <Typography variant="subtitle1">カスタムコマンド</Typography>
           <Switch checked={useCustom} onChange={onToggleCustom} />
           <Button onClick={() => void onCopyCommand()} disabled={busy}>

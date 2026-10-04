@@ -66,7 +66,12 @@ export function AudioDeviceSelector() {
   if (devices.length === 0) {
     return (
       <Stack spacing={2} sx={{ minWidth: 200 }}>
-        <Typography variant="body2" color="text.secondary">
+        <Typography
+          variant="body2"
+          sx={{
+            color: "text.secondary",
+          }}
+        >
           {t("accordion.audio.errors.permission")}
         </Typography>
         {audioDeviceError && <Alert severity="error">{audioDeviceError}</Alert>}

@@ -1,5 +1,5 @@
 name: Setup Node and npm
-description: Enable Takumi Guard (anonymous), install Node from package.json engines, and run npm ci.
+description: Enable Takumi Guard (anonymous), install the pinned Node and npm versions, and run npm ci.
 runs:
   using: composite
   steps:
@@ -11,6 +11,10 @@ runs:
       with:
         node-version-file: package.json
         cache: npm
+
+    - name: Pin npm version
+      shell: bash
+      run: npm install --global "npm@$(node -p 'require("./package.json").volta.npm')"
 
     - name: Install dependencies
       shell: bash
