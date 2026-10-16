@@ -65,7 +65,7 @@
     "@types/dom-mediacapture-transform": "^0.1.12",
     "@types/emscripten": "^1.41.6",
     "@types/jest": "^30.0.0",
-    "@types/node": "^24.19.1",
+    "@types/node": "^24.19.2",
     "@types/papaparse": "^5.5.2",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
