@@ -42,7 +42,7 @@
     "@tanstack/react-virtual": "^3.14.21",
     "@xmldom/xmldom": "^0.9.12",
     "fast-xml-parser": "^5.11.2",
-    "i18next": "^26.5.2",
+    "i18next": "^26.5.3",
     "i18next-browser-languagedetector": "^8.2.1",
     "jotai": "^3.0.1",
     "mediabunny": "^1.61.6",
