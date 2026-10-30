@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>レーザー検出検証PoC</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="lead">
+        <div class="k">LASER DETECTION — VERIFICATION LAB / PoC</div>
+        <h1>レーザー検出検証PoC：補正と検出のパターンを実際に切り替えて比べる</h1>
+        <p>調査の結論は「理想画像とのピクセル差分を主方式にするのは非推奨、<b>ROI内での赤＋輝度飽和＋時間差分の複合検出</b>が本命、ボトルネックは幾何ではなく<b>時間対応付けとカメラの自動露出/AWB</b>」でした。このPoCはその結論を鵜呑みにせず、<b>検出方式6種 × 補正の有無 × パラメータ</b>を同じ映像に対して同時に走らせ、検出の成否・座標・処理時間を並べて比較できるようにした検証用プロトタイプです。まずここで技術を絞り込みます。</p>
+        <div class="statusbar" role="status">
+          <span class="pill" id="pillSource">入力: <b>模擬カメラ</b></span>
+          <span class="pill" id="pillFps">処理: <b>— fps</b></span>
+          <span class="pill" id="pillCalib">キャリブレーション: <b>未実施（全画面）</b></span>
+          <span class="pill" id="pillShot">発射イベント: <b>0 発</b></span>
+        </div>
+      </header>
+
+      <!-- ============ 1. input ============ -->
+      <section class="panel" aria-labelledby="h-input">
+        <h2 id="h-input"><span class="no">STEP 1</span>入力ソースとカメラ制御</h2>
+        <p class="note">実カメラが無い環境でも検証を始められるよう、初期状態は「模擬カメラ」（このページのスクリーンを斜めから撮った映像を合成し、模擬レーザーを重ねたもの）になっています。実機では外付けWebカメラをディスプレイに向けて固定し、「実カメラ」に切り替えてください。getUserMedia は HTTPS または localhost が必須で、許可が必要です。</p>
+        <div class="btnrow">
+          <button type="button" class="btn primary" id="btnDemo" aria-pressed="true">模擬カメラを使う</button>
+          <button type="button" class="btn" id="btnCam">実カメラを開始</button>
+          <button type="button" class="btn" id="btnStop" disabled>カメラ停止</button>
+        </div>
+        <div class="cols2">
+          <div>
+            <label class="flabel" for="selDevice">カメラデバイス（許可後に一覧が出ます）</label>
+            <select id="selDevice"><option value="">（未取得）</option></select>
+          </div>
+          <div>
+            <label class="flabel" for="selRes">要求解像度</label>
+            <select id="selRes">
+              <option value="1280x720" selected>1280 × 720（推奨）</option>
+              <option value="1920x1080">1920 × 1080</option>
+              <option value="640x480">640 × 480（軽量）</option>
+            </select>
+          </div>
+        </div>
+        <h3>カメラの自動制御を固定してみる（効くかどうか自体が検証項目）</h3>
+        <p class="note">調査では「露出/WB固定が効くカメラかどうかが成否を分ける。効かない機種では色度正規化で耐える設計にする」とされています。下のボタンは <span class="bigcount">applyConstraints</span> の advanced 制約で固定を試み、実際に効いたかを <span class="bigcount">getSettings()</span> で読み返して右に記録します。Chromium系＋UVCドライバ次第で効いたり効かなかったりします。</p>
+        <div class="btnrow">
+          <button type="button" class="btn" id="btnLock">露出・WB・フォーカス固定を試す</button>
+          <button type="button" class="btn" id="btnUnlock">自動制御に戻す</button>
+          <button type="button" class="btn" id="btnCaps">対応項目（capabilities）を表示</button>
+        </div>
+        <div class="kv" id="capsBox"> capabilities はまだ取得していません。「実カメラを開始」後に表示されます。</div>
+        <div class="callout warn hidden" id="camError" role="alert"><p></p></div>
+      </section>
+
+      <div class="grid">
+        <!-- ============ 2. screen ============ -->
+        <section class="panel" aria-labelledby="h-screen">
+          <h2 id="h-screen"><span class="no">STEP 2</span>スクリーン（表示側パターン）</h2>
+          <p class="note">カメラが向いている「ゲーム画面」に相当する表示です。パターンを切り替えて、どの画面内容で誤検出・見逃しが起きるかを試します。四隅の小マーカーは表示位置の目印です（自動検出は本PoCの範囲外。下のキャリブレーション節を参照）。</p>
+          <div class="stage">
+            <div class="cap"><span>SCREEN / 960×540</span><span id="screenCap">pattern: 静止ターゲット</span></div>
+            <canvas class="view" id="screenCanvas" width="960" height="540"></canvas>
+          </div>
+          <div class="flabel">表示パターン</div>
+          <fieldset class="seg" id="segPattern" aria-label="表示パターン">
+            <button type="button" data-pat="still" aria-pressed="true">静止ターゲット</button>
+            <button type="button" data-pat="grid" aria-pressed="false">格子 5×4</button>
+            <button type="button" data-pat="moving" aria-pressed="false">移動ターゲット</button>
+            <button type="button" data-pat="white" aria-pressed="false">白画面</button>
+            <button type="button" data-pat="dark" aria-pressed="false">暗画面</button>
+            <button type="button" data-pat="busy" aria-pressed="false">赤多め・賑やか</button>
+            <button type="button" data-pat="sync" aria-pressed="false">同期カウンタ</button>
+          </fieldset>
+          <div class="btnrow">
+            <button type="button" class="btn small" id="btnMarkers" aria-pressed="true">隅マーカー表示</button>
+            <button type="button" class="btn small" id="btnGridNext">格子：次の点へ（手動）</button>
+          </div>
+          <p class="note" id="gridGuide">格子パターンでは、赤い輪で示された点を狙って撃ってください。発射イベントが立つと、その点の正解座標と検出座標の誤差を自動で記録し、次の点へ進みます（Phase 1：位置誤差の定量化）。</p>
+        </section>
+
+        <!-- ============ 3. camera view ============ -->
+        <section class="panel" aria-labelledby="h-cam">
+          <h2 id="h-cam"><span class="no">STEP 3</span>カメラ映像と正面化（ホモグラフィ）</h2>
+          <p class="note">左がカメラ生映像、右が4点キャリブレーションで正面化した画面領域（ROI）です。検出は「生映像で探して座標だけ変換」か「正面化してから探す」かを切り替えて比べられます。</p>
+          <div class="stage">
+            <div class="cap"><span id="camCapL">CAMERA（模擬）</span><span id="camCapInfo">640×480</span></div>
+            <canvas class="view clickable" id="camCanvas" width="640" height="480"></canvas>
+          </div>
+          <p class="cross-note" id="camHint">模擬モード：この映像をクリックすると、その位置に模擬レーザーを撃ち込めます（キャリブレーション中はクリックが隅の記録に使われます）。</p>
+          <div class="stage" style="margin-top:10px">
+            <div class="cap"><span>WARPED ROI / 320×180</span><span id="warpInfo">未キャリブレーション</span></div>
+            <canvas class="view" id="warpCanvas" width="320" height="180"></canvas>
+          </div>
+          <h3>4点キャリブレーション（ホモグラフィ）</h3>
+          <p class="note">調査の推奨は「幾何はまずホモグラフィ（4点）で十分。誤差の支配要因は変換そのものより隅の検出誤差」。本来は AprilTag / ArUco で隅を自動検出しますが、本PoCでは<b>隅の自動検出と検出アルゴリズムの良し悪しを切り分けるため</b>、隅は手動クリックで与え、変換と検出だけを検証します。自動検出ライブラリ（js-aruco2／AprilTag WASM）の組み込みは、ここで方式が固まった後の工程です。</p>
+          <div class="btnrow">
+            <button type="button" class="btn teal" id="btnCalibStart">キャリブレーション開始（隅を4点クリック）</button>
+            <button type="button" class="btn" id="btnCalibDemo">模擬カメラの隅を自動で入れる</button>
+            <button type="button" class="btn" id="btnCalibClear">クリア（全画面に戻す）</button>
+          </div>
+          <div class="kv" id="calibBox">隅は未設定です。順序は 左上 → 右上 → 右下 → 左下 です。</div>
+        </section>
+      </div>
+
+      <!-- ============ 4. detection compare ============ -->
+      <section class="panel" aria-labelledby="h-detect">
+        <h2 id="h-detect"><span class="no">STEP 4</span>検出方式の同時比較（同じフレーム・同じ映像）</h2>
+        <p class="note">6方式を毎フレーム並行に実行し、マスク・検出座標・候補ピクセル数・処理時間を表示します。「主方式」に選んだ方式だけが発射イベントと当たり判定を担当します。方式カードをクリックすると主方式に設定できます。</p>
+        <fieldset class="btnrow" aria-label="プリセット">
+          <span style="font-weight:700;font-size:13px;align-self:center">プリセット:</span>
+          <button type="button" class="btn small" data-preset="composite">複合（調査の推奨）</button>
+          <button type="button" class="btn small" data-preset="hsv">HSVのみ</button>
+          <button type="button" class="btn small" data-preset="rgb">単純RGB</button>
+          <button type="button" class="btn small" data-preset="ideal">理想差分（実験）</button>
+          <button type="button" class="btn small" data-preset="loose">緩め（見逃し減）</button>
+          <button type="button" class="btn small" data-preset="strict">厳しめ（誤検出減）</button>
+        </fieldset>
+        <div class="methods" id="methods"></div>
+        <div class="metrics">
+          <div class="metric"><div class="k">処理FPS（検出ループ）</div><div class="v" id="mFps">—</div></div>
+          <div class="metric"><div class="k">1フレーム処理時間（6方式合計）</div><div class="v" id="mMs">— <small>ms</small></div></div>
+          <div class="metric"><div class="k">主方式の最新検出（画面座標）</div><div class="v" id="mCoord" style="font-size:16px">—</div></div>
+          <div class="metric"><div class="k">発射イベント / ヒット</div><div class="v" id="mShots">0 <small>/ 0</small></div></div>
+        </div>
+      </section>
+
+      <div class="grid">
+        <!-- ============ 5. params ============ -->
+        <section class="panel" aria-labelledby="h-params">
+          <h2 id="h-params"><span class="no">STEP 5</span>パラメータと補正の切り替え</h2>
+          <p class="note">スライダと補正トグルは全方式に即時反映されます。「どの補正を入れると、どの方式が安定するか」を見るのが目的です。</p>
+          <h3>検出パラメータ</h3>
+          <div class="cols2">
+            <div>
+              <div class="slider"><label for="pR">RGB: R の下限</label><output id="oR">200</output><input type="range" id="pR" min="100" max="255" step="1" value="200" /></div>
+              <div class="slider"><label for="pRatio">RGB: R が G,B の何倍以上</label><output id="oRatio">1.4</output><input type="range" id="pRatio" min="1.0" max="3.0" step="0.05" value="1.4" /></div>
+              <div class="slider"><label for="pS">HSV: 彩度 S の下限</label><output id="oS">90</output><input type="range" id="pS" min="0" max="255" step="1" value="90" /></div>
+              <div class="slider"><label for="pV">HSV: 明度 V の下限</label><output id="oV">140</output><input type="range" id="pV" min="0" max="255" step="1" value="140" /></div>
+            </div>
+            <div>
+              <div class="slider"><label for="pHue">HSV: 赤の色相幅（0中心 ±、OpenCVスケール）</label><output id="oHue">12</output><input type="range" id="pHue" min="4" max="30" step="1" value="12" /></div>
+              <div class="slider"><label for="pDiff">時間差分: 変化量の下限</label><output id="oDiff">40</output><input type="range" id="pDiff" min="5" max="150" step="1" value="40" /></div>
+              <div class="slider"><label for="pMin">blob: 最小ピクセル数</label><output id="oMin">3</output><input type="range" id="pMin" min="1" max="60" step="1" value="3" /></div>
+              <div class="slider"><label for="pMax">blob: 最大ピクセル数</label><output id="oMax">600</output><input type="range" id="pMax" min="50" max="3000" step="10" value="600" /></div>
+            </div>
+          </div>
+          <div class="slider"><label for="pCool">発射イベントのクールダウン（ms）— 立ち上がり後、この間は再発火しない</label><output id="oCool">250</output><input type="range" id="pCool" min="0" max="1000" step="25" value="250" /></div>
+          <h3>補正パターン</h3>
+          <div class="btnrow">
+            <button type="button" class="btn" id="tWarp" aria-pressed="false">① 正面化してから検出</button>
+            <button type="button" class="btn" id="tBlur" aria-pressed="true">② ぼかし（モアレ・ノイズ抑制）</button>
+            <button type="button" class="btn" id="tChroma" aria-pressed="false">③ 色度正規化（露出変動に強く）</button>
+            <button type="button" class="btn" id="tBg" aria-pressed="false">④ 背景EMAとの差分を併用</button>
+          </div>
+          <label class="flabel" for="selScale">処理解像度（縮小率）— 精度と速度のトレードオフを見る</label>
+          <select id="selScale">
+            <option value="320" selected>幅 320px で処理（推奨・軽い）</option>
+            <option value="480">幅 480px で処理</option>
+            <option value="640">幅 640px で処理（重い）</option>
+            <option value="160">幅 160px で処理（最速・粗い）</option>
+          </select>
+          <h3>模擬カメラの悪条件シミュレーション（実機の失敗条件の再現）</h3>
+          <p class="note">実機で起きる失敗を模擬側で先に再現し、どの方式・補正が耐えるかを見ます。</p>
+          <div class="btnrow">
+            <button type="button" class="btn" id="tAe" aria-pressed="false">露出が勝手に揺れる（AE模擬）</button>
+            <button type="button" class="btn" id="tGlare" aria-pressed="false">画面に反射が入る</button>
+            <button type="button" class="btn" id="tNoise" aria-pressed="false">暗所ノイズが乗る</button>
+          </div>
+          <div class="btnrow">
+            <button type="button" class="btn primary" id="btnFire">模擬レーザーを撃つ（0.25秒点灯）</button>
+            <button type="button" class="btn" id="btnHold" aria-pressed="false">点灯しっぱなし</button>
+            <button type="button" class="btn" id="btnTour">自動で数カ所を撃つ</button>
+          </div>
+        </section>
+
+        <!-- ============ 6. latency ============ -->
+        <section class="panel" aria-labelledby="h-lat">
+          <h2 id="h-lat"><span class="no">STEP 6</span>遅延（時間対応付け）の実測</h2>
+          <p class="note">調査で一番のボトルネックとされたのが遅延です。方法論付きの loopback 実測例では平均 <b>87.2ms（77〜99ms、30fpsで約2.6フレーム）</b> でした（出典は末尾）。ここでは2つの物差しを用意しています。</p>
+          <h3>A. 同期カウンタ方式</h3>
+          <p class="note">表示パターンを「同期カウンタ」にすると、スクリーンにフレーム番号とミリ秒時計が大きく表示されます。カメラ映像に写った番号と、スクリーン側の現在の番号の差が、そのまま表示→カメラの遅延（フレーム数）です。模擬モードでは模擬遅延を下で設定でき、読み取り練習ができます。</p>
+          <div class="metrics" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+            <div class="metric"><div class="k">スクリーン側カウンタ（現在）</div><div class="v" id="latScreen">—</div></div>
+            <div class="metric"><div class="k">模擬カメラの遅延設定</div><div class="v" id="latDemoVal">90 <small>ms</small></div></div>
+          </div>
+          <div class="slider"><label for="pDemoDelay">模擬遅延（ms）</label><output id="oDemoDelay">90</output><input type="range" id="pDemoDelay" min="0" max="250" step="5" value="90" /></div>
+          <h3>B. requestVideoFrameCallback のメタデータ</h3>
+          <p class="note">実カメラ使用時、ブラウザが返すフレームメタデータ（<span class="bigcount">captureTime</span> は仕様上 optional で、返らない環境もあります）をそのまま表示します。「返るかどうか」自体が PoC の確認事項です。</p>
+          <div class="kv" id="rvfcBox">実カメラ未開始のため未取得です。模擬モードでは取得できません。</div>
+          <div class="callout info"><p>実務的な設計（調査の推奨）は、遅延を実測して固定値＋時間窓で吸収し、描画フレームとターゲット位置表をリングバッファ（10フレーム程度）に保持して遡って照合することです。速い移動ターゲットでズレが問題になって初めて、画面隅の色パッチにフレーム番号を埋め込む能動的同期を追加します。</p></div>
+        </section>
+      </div>
+
+      <!-- ============ 7. results ============ -->
+      <section class="panel" aria-labelledby="h-res">
+        <h2 id="h-res"><span class="no">STEP 7</span>測定結果：格子誤差と発射ログ</h2>
+        <p class="note">格子パターンで撃つたびに誤差（画面px／画面対角比%）を記録します。調査での合否目安（提案）は「ターゲット半径が対角の3〜5%級のゲームなら、誤差の95パーセンタイルが対角の1.5%未満」。中心と四隅で分けて見るのが要点です（ホモグラフィの系統誤差は隅に出ます）。</p>
+        <div class="metrics">
+          <div class="metric"><div class="k">測定点数</div><div class="v" id="gCount">0</div></div>
+          <div class="metric"><div class="k">平均誤差（対角比）</div><div class="v" id="gMean">—</div></div>
+          <div class="metric"><div class="k">最大誤差（対角比）</div><div class="v" id="gMax">—</div></div>
+          <div class="metric"><div class="k">判定（目安1.5%）</div><div class="v" id="gJudge" style="font-size:16px">未測定</div></div>
+        </div>
+        <div class="grid">
+          <div>
+            <h3 style="margin-top:4px">格子誤差の記録</h3>
+            <table class="data" id="gridTable">
+              <thead><tr><th>点</th><th>正解 (x, y)</th><th>検出 (x, y)</th><th class="num">誤差 px</th><th class="num">対角比 %</th></tr></thead>
+              <tbody><tr><td style="color:var(--ink2)">まだ記録がありません。格子パターンで赤い輪の点を撃ってください。</td><td></td><td></td><td></td><td></td></tr></tbody>
+            </table>
+          </div>
+          <div>
+            <h3 style="margin-top:4px">発射イベントログ</h3>
+            <ul class="loglist" id="shotLog"><li style="color:var(--ink2)">まだ発射イベントはありません。</li></ul>
+          </div>
+        </div>
+        <div class="btnrow" style="margin-top:12px">
+          <button type="button" class="btn teal" id="btnExport">測定結果を JSON でダウンロード</button>
+          <button type="button" class="btn" id="btnClearLog">ログと記録をクリア</button>
+        </div>
+      </section>
+
+      <!-- ============ 8. decisions ============ -->
+      <section class="panel" aria-labelledby="h-dec">
+        <h2 id="h-dec"><span class="no">READ</span>このPoCで技術を絞り込むための見方</h2>
+        <div class="grid">
+          <div>
+            <h3 style="margin-top:4px">観察ポイント（上から順に潰す）</h3>
+            <ul class="check">
+              <li><b>Phase 0・検出可否：</b>静止ターゲット＋暗めの条件で、複合方式が安定して立つか。立たなければパラメータではなく環境（画面輝度・距離・角度）の問題として切り分ける。</li>
+              <li><b>露出固定の可否：</b>STEP 1 で固定が効かないカメラは、色度正規化（補正③）を入れて誤検出が収まるかで判定する。収まらなければ対応機種の指定が必要という結論になる。</li>
+              <li><b>理想差分の実験：</b>プリセット「理想差分」で、レーザーが無いのにマスクが全面に広がる条件（AE模擬・賑やか画面）を確認する。調査の「主方式にしない」という主張を自分の目で検証する位置づけ。</li>
+              <li><b>Phase 1・位置誤差：</b>格子誤差が中心と隅でどう違うか。隅だけ大きいならホモグラフィの隅精度（＝マーカー検出精度）の問題で、レンズ歪み補正はその次。</li>
+              <li><b>Phase 2・遅延：</b>同期カウンタの差が何フレームか。移動ターゲットの速度と合わせて「窓方式で足りるか」を決める。</li>
+              <li><b>Phase 3・誤検出率：</b>レーザーを撃たずに各パターンを数分流し、方式ごとの誤発火の差を見る。特に「赤多め・賑やか」と「白画面」。</li>
+            </ul>
+          </div>
+          <div>
+            <h3 style="margin-top:4px">調査で裏取り済みの物差し</h3>
+            <table class="data">
+              <tbody>
+                <tr><td>HSI検出の先行研究（Hoang ら）の精度</td><td class="num">平均 82%</td></tr>
+                <tr><td>同研究の適用限界</td><td>「光が強く不安定な環境には不向き、暗く安定した画面で良い」と明記</td></tr>
+                <tr><td>表示→カメラ遅延の loopback 実測例</td><td class="num">平均 87.2ms（77〜99ms）</td></tr>
+                <tr><td>設計レンジとしての遅延</td><td class="num">50〜200ms を見て自機で実測</td></tr>
+                <tr><td>赤の色相範囲（OpenCVスケール）</td><td class="num">H 0〜10 と 170〜180 の2範囲</td></tr>
+                <tr><td>想定距離（商用IR製品の公称・販売文句）</td><td class="num">約1.4〜4m</td></tr>
+              </tbody>
+            </table>
+            <div class="callout warn"><p><b>このPoCの範囲外（未搭載）：</b>マーカーの自動検出（js-aruco2／AprilTag WASM）、レンズ歪み補正（OpenCV.js の ChArUco 較正）、Web Worker 化。いずれも「検出方式とホモグラフィで足りるか」を先に決めてから足す工程として切り分けています。QR系は幾何基準には不適（読むことが目的の設計で、jsQR は複数同時不可・整数ピクセル精度）という調査結果に基づき、候補から外しています。</p></div>
+            <p class="srcs">出典：Hoang-An Le et al., <i>Webcam-Based Laser Dot Detection Technique in Computer Remote Control</i>, Vietnam J. Sci. Technol. 48(4) — <a href="https://doi.org/10.15625/0866-708X/48/4/1171" target="_blank" rel="noopener">doi.org/10.15625/0866-708X/48/4/1171</a>／遅延実測 — <a href="https://webcam-test.github.io/webcam-latency-delay-test" target="_blank" rel="noopener">webcam-test.github.io/webcam-latency-delay-test</a>／マーカー候補 — <a href="https://github.com/damianofalcioni/js-aruco2" target="_blank" rel="noopener">js-aruco2</a>、<a href="https://github.com/arenaxr/apriltag-js-standalone" target="_blank" rel="noopener">apriltag-js-standalone</a>／rVFC — <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLVideoElement/requestVideoFrameCallback" target="_blank" rel="noopener">MDN: requestVideoFrameCallback</a>／背景差分＋滑らかさ検出の先行実装 — <a href="https://github.com/sanette/laser" target="_blank" rel="noopener">sanette/laser</a></p>
+          </div>
+        </div>
+      </section>
+
+      <p class="foot">安全：レーザーはクラス1／クラス2の正規品を使い、目に向けないでください。検出に必要なのは出力ではなくコントラスト（暗めの環境＋露出設定）です。このページは検証用プロトタイプで、映像はブラウザ内でのみ処理され、どこにも送信されません。映像処理はメインスレッドで実行しているため、高解像度＋全方式同時実行ではフレームレートが落ちます（それ自体も処理コストの観察対象です）。</p>
+    </div>
+
+    <video id="videoEl" playsinline muted class="hidden">
+      <track kind="captions" label="字幕なし（カメラ入力専用）" srclang="ja" src="data:text/vtt,WEBVTT" />
+    </video>
+
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
