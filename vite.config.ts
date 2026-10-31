@@ -52,6 +52,7 @@ export default defineConfig({
           "encoder-capability-inspector",
           "index.html",
         ),
+        "edge-mobile-upload": resolve(root, "edge-mobile-upload", "index.html"),
       },
     },
   },

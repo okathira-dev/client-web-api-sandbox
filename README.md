@@ -67,6 +67,10 @@ npm run dev
 
 WebCodecs の映像・音声エンコード設定が実際に使えるかを、実エンコード・デコード・多重化まで通して検査するツール
 
+### [./src/edge-mobile-upload](./src/edge-mobile-upload)
+
+Microsoft Edge の「モバイルからアップロード」でスマートフォンからファイルを受け取るためだけのページ
+
 ## 開発サポートファイル
 
 ### [./Scratchpad.md](./Scratchpad.md)

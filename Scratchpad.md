@@ -1,18 +1,14 @@
 # Scratchpad
 
-## 依存更新と開発環境・CIのLTS統一
+## PR #619 のローカル検証とコミット整理
 
-- [x] 最新mainから codex/dependency-updates-lts-mui9 を作成し、既存変更を保持
-- [x] Node・npm統一と更新前の検証
-- [x] 通常依存・翻訳・Jest・TypeScript 6・開発ツール更新
-- [x] Biome・Markuplintの指摘解消
-- [x] MUI 9・Tree View 9・Jotai 3へ移行
-- [x] Actions更新と監査・チェック・テスト・ビルド・画面確認
-- [x] 差分レビューと結果記録
+- [x] PR・関連ルール・差分とコミット履歴を確認
+- [x] チェック・既存テスト・ビルドと追加DOM検証を実行
+- [x] ファイル選択ボタンのキーボード対応、長い名前の配置、viewportを修正
+- [x] 保存方法の説明を実装に合わせ、実測と未確認範囲をREADMEに記録
+- [x] 変更を機能・登録と文書に分けてコミットを積み直す
 
 ## 結果
 
-- クリーンインストール、Markuplint・Biome、24スイート222テスト、ビルドが成功。
-- ブラウザーで乱数生成、翻訳、エンコーダーの進捗・選択、XML帳票の読込とツリー展開、アコーディオン左右表示を確認。
-- TypeScriptはts-jestの対応範囲内、Nodeの型は採用LTSに合わせる。固定版の正本はpackage.json。
-- 実行時依存の監査は問題なし。Markuplint経由の未修正braces問題と上流修正後の対応はREADMEに記録。
+- 検証結果と未確認範囲は `src/edge-mobile-upload/README.md` に記録。
+- Blob URLの解放はクリアとアンマウントの両方で確認する。file inputをlabelで包む場合は、クリックだけでなくキーボードでも開けることを確認する。
