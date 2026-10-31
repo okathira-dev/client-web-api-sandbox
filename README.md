@@ -67,6 +67,10 @@ npm run dev
 
 WebCodecs の映像・音声エンコード設定が実際に使えるかを、実エンコード・デコード・多重化まで通して検査するツール
 
+### [./src/laser-detection-poc](./src/laser-detection-poc)
+
+Webカメラでディスプレイを撮影し、赤色レーザーの着弾点を検出する方式を比較・検証するためのPoC。実カメラが無くても模擬カメラで試せます
+
 ## 開発サポートファイル
 
 ### [./Scratchpad.md](./Scratchpad.md)

@@ -52,6 +52,11 @@ export default defineConfig({
           "encoder-capability-inspector",
           "index.html",
         ),
+        "laser-detection-poc": resolve(
+          root,
+          "laser-detection-poc",
+          "index.html",
+        ),
       },
     },
   },

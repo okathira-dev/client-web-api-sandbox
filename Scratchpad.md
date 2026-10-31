@@ -1,18 +1,14 @@
 # Scratchpad
 
-## 依存更新と開発環境・CIのLTS統一
+## レーザー検出検証PoC: Codex への引き継ぎ文書の追加
 
-- [x] 最新mainから codex/dependency-updates-lts-mui9 を作成し、既存変更を保持
-- [x] Node・npm統一と更新前の検証
-- [x] 通常依存・翻訳・Jest・TypeScript 6・開発ツール更新
-- [x] Biome・Markuplintの指摘解消
-- [x] MUI 9・Tree View 9・Jotai 3へ移行
-- [x] Actions更新と監査・チェック・テスト・ビルド・画面確認
-- [x] 差分レビューと結果記録
+- [x] `src/laser-detection-poc/` に index.html + main.ts + style.css + README.md で配置し、登録3点（vite.config.ts / src/index.html / ルート README.md）を追加（`npm run check` / `npm run build` 成功）
+- [x] ブランチ feat/laser-detection-poc へ push し、PR #620 を作成
+- [x] PR #620 の追加行の個人情報チェック（該当なし）
+- [x] 現状とやりたいことを `src/laser-detection-poc/HANDOVER.md` にまとめ、本ブランチへ追加
 
-## 結果
+## 結果と引き継ぎ
 
-- クリーンインストール、Markuplint・Biome、24スイート222テスト、ビルドが成功。
-- ブラウザーで乱数生成、翻訳、エンコーダーの進捗・選択、XML帳票の読込とツリー展開、アコーディオン左右表示を確認。
-- TypeScriptはts-jestの対応範囲内、Nodeの型は採用LTSに合わせる。固定版の正本はpackage.json。
-- 実行時依存の監査は問題なし。Markuplint経由の未修正braces問題と上流修正後の対応はREADMEに記録。
+- 詳細は `src/laser-detection-poc/HANDOVER.md` を正とする（目的・調査結論・実装状態・未検証範囲・次の作業候補・未決定事項）。
+- 未完了の主なもの: PR #620 のマージ（署名必須ルールに当たる可能性あり）、マージ後の GitHub Pages での実カメラ実機確認、実測に基づく検出方式の絞り込み。
+- 教訓: 単体HTMLの検証ページをこのリポジトリへ移植する場合は、最初から vanilla 分離構成にすると lint 対応が最小で済む。CodeSandbox（外部サービス）と client-web-api-sandbox（このリポジトリ）は別物なので混同しない。
