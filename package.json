@@ -52,7 +52,7 @@
     "react-i18next": "^17.1.10",
     "react-xml-viewer": "^3.0.5",
     "three": "^0.187.0",
-    "tone": "^15.5.64",
+    "tone": "^15.5.66",
     "xpath": "^0.0.36"
   },
   "devDependencies": {
