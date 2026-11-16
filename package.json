@@ -46,7 +46,7 @@
     "i18next-browser-languagedetector": "^8.3.0",
     "jotai": "^3.0.2",
     "mediabunny": "^1.65.2",
-    "papaparse": "^5.7.0",
+    "papaparse": "^5.7.1",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "react-i18next": "^17.1.13",
